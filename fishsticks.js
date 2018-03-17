@@ -11,7 +11,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.5.2";
+const fsbuild = "1.5.4";
 
 let engmode = false;
 
