@@ -11,13 +11,14 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.4.4.3";
+const fsbuild = "1.5.2";
 
 let engmode = false;
 
 var fsconsoleChannel;
 var announceChannel;
 var fstempchclone;
+var staffChannel;
 
 var tempChannels = [];
 
@@ -43,6 +44,7 @@ fishsticks.on('ready', () => {
 	fsconsoleChannel = fishsticks.channels.get('420001817825509377');
 	announceChannel = fishsticks.channels.get('125825436650307584');
 	fstempchclone = fishsticks.channels.get('420512697654706196');
+	staffChannel = fishsticks.channels.get('140153900996100097');
 
 	//Startup Message - console
 	console.log(`Successfully Logged ${fishsticks.user.tag} into the server.`);
@@ -341,6 +343,10 @@ function formatDate(date) {
 fishsticks.on('message', async msg => {
 	const args = msg.content.split(" ").slice(1);
 
+	//Role Definitions
+	var staffRole = msg.guild.roles.find('name', 'Staff');
+	var techRole = msg.guild.roles.find('name', 'Tech Support');
+
 	//Commands sorted alphabetically
 	//Channels
 	if (command("channels", msg)) {
@@ -445,14 +451,61 @@ fishsticks.on('message', async msg => {
 
 		if (msg.member.roles.find("name", "Staff") || msg.member.roles.find("name", "CC Member") || msg.member.roles.find("name", "Trusted")) {
 
-			var reportCmdSplit = msg.split(" ");
+			var reportCmdSplit = msg.content.split(" ");
 			var type = reportCmdSplit.splice(1, 1);
-			var target = reportCmdSplit (1, 1);
-			var reason = reportCmdSplit (1).join(' ');
+			var target = reportCmdSplit.splice(1, 1);
+			var reason = reportCmdSplit.splice(1).join(' ');
 
-			console.log("Type: " + type);
-			console.log("Target: " + target);
-			console.log("Reason: " + reason);
+			//[ENG-MODE]
+
+			console.log("[SERV-REP] Type: " + type + "\n           Target: " + target + "\n           Reason: " + reason);
+
+			//RICH-EMBEDS
+			//Server Report
+			var serverReport = new Discord.RichEmbed();
+				serverReport.setTitle("o0o - SERVER ISSUE REPORT - o0o")
+				serverReport.setColor(fsemercolor)
+				serverReport.setDescription(
+					"A report has been issued by " + msg.author + " concerning the server " + target + ".\n"+
+					"Reason: " + reason + "\n" + 
+					techRole
+				)
+
+			//Conduct Report
+			var conductReport = new Discord.RichEmbed();
+				conductReport.setTitle("o0o - MEMBER CONDUCT REPORT - o0o")
+				conductReport.setColor(fsemercolor)
+				conductReport.setDescription(
+					"A report has been issued by " + msg.author + " concerning the behavior of " + target + ".\n"+
+					"Reason: " + reason + "\n" + 
+					staffRole
+				)
+
+			//Tech Report
+			var techReport = new Discord.RichEmbed();
+				techReport.setTitle("o0o - TS/DISCORD ISSUE REPORT - o0o")
+				techReport.setColor(fsemercolor)
+				techReport.setDescription(
+					"A report has been issued by " + msg.author + " concerning an issue with TS or Discord.\n"+
+					"Reason: " + reason + "\n"+
+					techRole
+				)
+
+			if (type == "server") {
+				msg.reply("The " + type + " report has been shunted to the Tech Support team and they will review the case as soon as possible. Thanks!");
+
+				staffChannel.send({embed: serverReport});
+			}
+			else if (type == "conduct") {
+				msg.reply("The " + type + " report has been shunted to Staff and will be reviewed.");
+
+				staffChannel.send({embed: conductReport});
+			}
+			else if (type == "tech") {
+				msg.reply("The " + type + " report has been shunted to Tech Support and will be reviewed as soon as possible.");
+
+				staffChannel.send({embed: techReport});
+			}
 		}
 	}
 
