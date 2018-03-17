@@ -1,0 +1,19 @@
+{
+  "name": "fishsticks",
+  "version": "1.4.5",
+  "description": "Official CC Discord Bot",
+  "main": "fishsticks.js",
+  "scripts": {
+    "test": "!hello"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SkyeRangerDelta/Fishsticks.git"
+  },
+  "author": "SkyeRangerDelta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SkyeRangerDelta/Fishsticks/issues"
+  },
+  "homepage": "https://github.com/SkyeRangerDelta/Fishsticks#readme"
+}
