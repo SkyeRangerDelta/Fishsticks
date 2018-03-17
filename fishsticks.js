@@ -214,6 +214,26 @@ function formatDate(date) {
 			"``!engm``: Toggles Engineering Mode on or off depending on current state.\n\n"+
 			"``This menu will delete itself in 45 seconds.``")
 
+	//Info Report
+	var infoReport = new Discord.RichEmbed();
+		infoReport.setTitle("o0o - INFO CODEX - o0o")
+		infoReport.setColor(fscolor)
+		infoReport.setDescription(
+			"``!report [type] [target] [reason]``\n"+
+			"Valid Types:\n"+
+			"	``server``:\n"+
+			"		Used when a CC game server is having trouble. Notifies Tech Support.\n"+
+			"		Valid Targets: ``server IP`` or ``name of server``\n"+
+			"	``conduct``:\n"+
+			"		Used to report troublesome members (trolls). Notifies Staff members.\n"+
+			"		Valid Targets: ``member ID (Tag)``\n"+
+			"	``tech``:\n" +
+			"		Used to report TS/Discord program problems such as permissions issues. Notifies Tech Support\n"+
+			"		Valid Targets: ``TS`` or ``Discord``\n\n"+
+			"Valid Reasons: Use your best judgement to describe the problem and any insight you may have. Keep it quick and to the point.\n\n"+
+			"``This message will delete itself in 30 seconds.``"
+		)
+
 	//IPS
 	var ips = new Discord.RichEmbed();
 		ips.setTitle("o0o - CC 'THE FISH' SERVERS - o0o")
@@ -431,6 +451,13 @@ fishsticks.on('message', async msg => {
 		msg.reply("Hey yourself! :P");
 	}
 
+	//Info - Report
+	if (command("info-report", msg)) {
+		msg.delete();
+
+		msg.channel.send({embed: infoReport}).then(sent => sent.delete(30000));
+	}
+
 	//Ips
 	if (command("ips", msg)) {
 		msg.delete();
@@ -505,6 +532,10 @@ fishsticks.on('message', async msg => {
 				msg.reply("The " + type + " report has been shunted to Tech Support and will be reviewed as soon as possible.");
 
 				staffChannel.send({embed: techReport});
+			}
+			else {
+				msg.reply("The report could not be filed because of an incorrect type parameter. Be sure you are following the proper format:\n"+
+				"``!report [type] [target] [reason]`` - use ``!info-report`` for more information.")
 			}
 		}
 	}
