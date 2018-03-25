@@ -11,7 +11,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.5.7";
+const fsbuild = "1.5.9";
 
 let engmode = false;
 
@@ -427,7 +427,7 @@ fishsticks.on('message', async msg => {
 
 			console.log("[ENG-MODE] Toggled to " + engmode + " by: " + msg.author.tag);
 
-			msg.reply("Engineering Mode is now: " + engmode + ".");
+			msg.reply("Engineering Mode is now: " + engmode + ".").then(sent => sent.delete(15000));
 
 			fsconsoleChannel.send("Fishsticks Engineering Mode has been toggled to " + engmode + " by: " + msg.author);
 
@@ -586,7 +586,61 @@ fishsticks.on('message', async msg => {
 				var user = msg.member;
 
 				var tempCmd = msg.content.split(" ");
-				var tname = tempCmd.splice(1, 1).join(' ');
+				var maxUsersParam = tempCmd.splice(1, 1);
+				var maxUsers = parseInt(maxUsersParam);
+				var tname = tempCmd.splice(1).join(' ');
+
+				var tempChannelCat = '372453830161465345';
+				var channelSpawner = '420512697654706196';
+				var tchID;
+
+				const userVC = user.voiceChannelID;
+
+				console.log(maxUsers);
+
+				if (userVC == undefined || userVC != channelSpawner) {
+					msg.reply("Join the #channel-spawner channel first!");
+				}
+				else if (userVC === channelSpawner) {
+					fstempchclone.clone(tname)
+					.then(clone => {
+					console.log("[TEMP-CHA] Channel created called: " + tname + " by: " + msg.author.tag);
+
+					tchID = clone.id;
+					tempChannels.push(tchID);
+
+					console.log("[TEMP-CHA] Channel " + tname + " has ID: " + tchID);
+					console.log("[TEMP-CHA] Temp Channels now include " + tempChannels.length + " channels of IDs: ");
+
+					msg.reply("Channel created!")
+
+					for (x = 0; x < tempChannels.length; x++) {
+						console.log(tempChannels[x]);
+					}
+
+					clone.setParent(tempChannelCat);
+
+					if (maxUsers > 1) {
+						clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))
+						msg.reply("Setting user maximum to: " + maxUsers);
+					}
+
+					msg.member.setVoiceChannel(tchID);
+				
+					})
+					.catch(console.error);
+				}
+			}
+			/*else if (msg.author.roles.find('name', 'Bot')) {
+				msg.reply("Overriding Engineering Mode: Executing command: ``" + msg.content + "``.");
+
+				msg.delete();
+
+				var user = msg.member;
+
+				var tempCmd = msg.content.split(" ");
+				var maxUsers = tempCmd.splice(1, 1);
+				var tname = tempCmd.splice(1).join(' ');
 
 				var tempChannelCat = '372453830161465345';
 				var channelSpawner = '420512697654706196';
@@ -614,12 +668,16 @@ fishsticks.on('message', async msg => {
 
 					clone.setParent(tempChannelCat);
 
+					if (maxUsers > 1) {
+						clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))
+					}
+
 					msg.member.setVoiceChannel(tchID);
 				
 					})
 					.catch(console.error);
 				}
-			}
+			}*/
 			else {
 				msg.reply("Engineering Mode is enabled! Turn it off before using this command!");
 			}
