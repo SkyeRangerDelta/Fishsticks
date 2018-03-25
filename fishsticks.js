@@ -11,7 +11,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.6.4";
+const fsbuild = "1.6.5";
 
 let engmode = false;
 
@@ -580,10 +580,9 @@ fishsticks.on('message', async msg => {
 
 				var user = msg.member;
 
-				var tempCmd = msg.content.split(" ");
-				var maxUsersParam = tempCmd.splice(1, 1);
-				var maxUsers = parseInt(maxUsersParam);
-				var tname = tempCmd.splice(1).join(' ');
+				var tempCmd = msg.content.split(" ").slice(1);
+				var maxUsers = parseInt(tempCmd[0]) || 0;
+				var tname = args[1] ? args.slice(1).join(" ") : args.join(' ');
 
 				var tempChannelCat = '372453830161465345';
 				var channelSpawner = '420512697654706196';
@@ -618,6 +617,9 @@ fishsticks.on('message', async msg => {
 					if (maxUsers > 1) {
 						clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))
 						msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete(15000));
+					}
+					else if (maxUsers = null) {
+
 					}
 
 					msg.member.setVoiceChannel(tchID);
