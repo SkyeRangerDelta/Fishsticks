@@ -11,7 +11,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.5.4";
+const fsbuild = "1.5.6";
 
 let engmode = false;
 
@@ -427,7 +427,11 @@ fishsticks.on('message', async msg => {
 
 			console.log("[ENG-MODE] Toggled to " + engmode + " by: " + msg.author.tag);
 
+			msg.reply("Engineering Mode is now: " + engmode + ".");
+
 			fsconsoleChannel.send("Fishsticks Engineering Mode has been toggled to " + engmode + " by: " + msg.author);
+
+			fishsticks.user.setActivity("ENGM Enabled | !help")
 		}
 		else {
 			msg.reply("You don't have the proper permissions to toggle Engineering Mode!");
@@ -570,7 +574,7 @@ fishsticks.on('message', async msg => {
 
 	//Temporary Voice Channels
 	if (command("tempch", msg)) {
-		if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', "Bot") || msg.member.roles.find('name', 'CC Member')) {
+		if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', "Bot") || msg.member.roles.find('name', 'CC Member') || msg.member.roles.find('name', 'Trusted')) {
 			if (engmode == false) {
 				msg.delete();
 
