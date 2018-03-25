@@ -631,7 +631,7 @@ fishsticks.on('message', async msg => {
 					.catch(console.error);
 				}
 			}
-			else if (msg.author.roles.find('name', 'Bot')) {
+			else if (msg.member.roles.find('name', 'Bot')) {
 				msg.delete();
 
 				msg.reply("Overriding Engineering Mode: Executing command: ``" + msg.content + "``.");
