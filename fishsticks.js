@@ -11,7 +11,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.5.6";
+const fsbuild = "1.5.7";
 
 let engmode = false;
 
@@ -431,7 +431,12 @@ fishsticks.on('message', async msg => {
 
 			fsconsoleChannel.send("Fishsticks Engineering Mode has been toggled to " + engmode + " by: " + msg.author);
 
-			fishsticks.user.setActivity("ENGM Enabled | !help")
+			if (engmode == true) {
+				fishsticks.user.setActivity("ENGM Enabled | !help");
+			}
+			else {
+				fishsticks.user.setActivity("!help | V" + fsbuild);
+			}
 		}
 		else {
 			msg.reply("You don't have the proper permissions to toggle Engineering Mode!");
