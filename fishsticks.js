@@ -11,7 +11,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.5.10";
+const fsbuild = "1.6.4";
 
 let engmode = false;
 
@@ -203,11 +203,8 @@ function formatDate(date) {
 			"**CC Member Commands**\n"+
 			"-----------------------------------------------\n" +
 			"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+
-			"	*Valid Parameters:*\n"+
-			"	``server``: (Target: ``serverIP or name``) You are reporting an issue with one of CC's Game Servers such as TF2\n"+
-			"	``conduct``: (Target: ``memberID or Tag``) Reporting an issue with a certain member's conduct\n"+
-			"	``tech``: (Target: ``TS`` or ``Discord``) Reporting an issue with TS or Discord\n"+
-			"``!tempch [name]``: Creates a temporary channel.  You must have the CC Members, Staff, or Bot to run. Join the Channel Spawner first before running the command.\n\n"+
+			"  --> ``!info-report``: Details on how to use ``!report``.\n" +
+			"``!tempch [max users <0 if none>] [name]``: Creates a temporary channel.  You must have the CC Members, Staff, or Bot to run. Join the Channel Spawner first before running the command.\n\n"+
 			"**Administrative Commands**\n" +
 			"-----------------------------------------------\n" +
 			"``!echo [time] [message]``: This command will take your message and broadcast it as an announcement after the specified time (in minutes) has passed.\n" +
@@ -321,7 +318,7 @@ function formatDate(date) {
 			version.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
 			version.setDescription(
 				"Fishsticks is currently running version " + fsbuild + ".\n\n" +
-				"For build information and or changelogs, check with @SkyeRangerDelta#0458 .\n\n"+
+				"For build information and or changelogs, check with SkyeRanger or submit a tech report.\n\n"+
 				"``This message will delete itself in 20 seconds.``")
 
 	//Status
@@ -408,11 +405,11 @@ fishsticks.on('message', async msg => {
 				setTimeout(echofunc, alttime, "@everyone " + keepMsg);
 			}
 			else {
-				msg.reply("Engineering Mode is enabled. Turn it off before using this command!");
+				msg.reply("Engineering Mode is enabled. Turn it off before using this command!").then(sent => sent.delete(15000));
 			}
 		}
 		else {
-			msg.reply("You don't have the correct permissions!");
+			msg.reply("You don't have the correct permissions!").then(sent => sent.delete(15000));
 		}
 	}
 
@@ -429,7 +426,7 @@ fishsticks.on('message', async msg => {
 
 			msg.reply("Engineering Mode is now: " + engmode + ".").then(sent => sent.delete(15000));
 
-			fsconsoleChannel.send("Fishsticks Engineering Mode has been toggled to " + engmode + " by: " + msg.author);
+			fsconsoleChannel.send("Fishsticks Engineering Mode has been toggled to " + engmode + " by: " + msg.author).then(sent => sent.delete(15000));
 
 			if (engmode == true) {
 				fishsticks.user.setActivity("ENGM Enabled | !help");
@@ -439,7 +436,7 @@ fishsticks.on('message', async msg => {
 			}
 		}
 		else {
-			msg.reply("You don't have the proper permissions to toggle Engineering Mode!");
+			msg.reply("You don't have the proper permissions to toggle Engineering Mode!").then(sent => sent.delete(15000));
 		}
 	}
 
@@ -492,8 +489,6 @@ fishsticks.on('message', async msg => {
 			var target = reportCmdSplit.splice(1, 1);
 			var reason = reportCmdSplit.splice(1).join(' ');
 
-			//[ENG-MODE]
-
 			console.log("[SERV-REP] Type: " + type + "\n           Target: " + target + "\n           Reason: " + reason);
 
 			//RICH-EMBEDS
@@ -530,21 +525,21 @@ fishsticks.on('message', async msg => {
 			if (type == "server") {
 				msg.reply("The " + type + " report has been shunted to the Tech Support team and they will review the case as soon as possible. Thanks!");
 
-				staffChannel.send({embed: serverReport});
+				staffChannel.send({embed: serverReport}).then(sent => sent.delete(20000));
 			}
 			else if (type == "conduct") {
 				msg.reply("The " + type + " report has been shunted to Staff and will be reviewed.");
 
-				staffChannel.send({embed: conductReport});
+				staffChannel.send({embed: conductReport}).then(sent => sent.delete(20000));
 			}
 			else if (type == "tech") {
 				msg.reply("The " + type + " report has been shunted to Tech Support and will be reviewed as soon as possible.");
 
-				staffChannel.send({embed: techReport});
+				staffChannel.send({embed: techReport}).then(sent => sent.delete(20000));
 			}
 			else {
 				msg.reply("The report could not be filed because of an incorrect type parameter. Be sure you are following the proper format:\n"+
-				"``!report [type] [target] [reason]`` - use ``!info-report`` for more information.")
+				"``!report [type] [target] [reason]`` - use ``!info-report`` for more information.").then(sent => sent.delete(20000))
 			}
 		}
 	}
@@ -579,7 +574,7 @@ fishsticks.on('message', async msg => {
 
 	//Temporary Voice Channels
 	if (command("tempch", msg)) {
-		if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', "Bot") || msg.member.roles.find('name', 'CC Member') || msg.member.roles.find('name', 'Trusted')) {
+		if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', "Bot") || msg.member.roles.find('name', 'Members') || msg.member.roles.find('name', 'Trusted')) {
 			if (engmode == false) {
 				msg.delete();
 
@@ -599,7 +594,7 @@ fishsticks.on('message', async msg => {
 				console.log(maxUsers);
 
 				if (userVC == undefined || userVC != channelSpawner) {
-					msg.reply("Join the #channel-spawner channel first!");
+					msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete(15000));
 				}
 				else if (userVC === channelSpawner) {
 					fstempchclone.clone(tname)
@@ -612,7 +607,7 @@ fishsticks.on('message', async msg => {
 					console.log("[TEMP-CHA] Channel " + tname + " has ID: " + tchID);
 					console.log("[TEMP-CHA] Temp Channels now include " + tempChannels.length + " channels of IDs: ");
 
-					msg.reply("Channel created!")
+					msg.reply("Channel created!").then(sent => sent.delete(15000));
 
 					for (x = 0; x < tempChannels.length; x++) {
 						console.log(tempChannels[x]);
@@ -622,60 +617,7 @@ fishsticks.on('message', async msg => {
 
 					if (maxUsers > 1) {
 						clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))
-						msg.reply("Setting user maximum to: " + maxUsers);
-					}
-
-					msg.member.setVoiceChannel(tchID);
-				
-					})
-					.catch(console.error);
-				}
-			}
-			else if (msg.member.roles.find('name', 'Bot')) {
-				msg.delete();
-
-				msg.reply("Overriding Engineering Mode: Executing command: ``" + msg.content + "``.");
-
-				var user = msg.member;
-
-				var tempCmd = msg.content.split(" ");
-				var maxUsersParam = tempCmd.splice(1, 1);
-				var maxUsers = parseInt(maxUsersParam);
-				var tname = tempCmd.splice(1).join(' ');
-
-				var tempChannelCat = '372453830161465345';
-				var channelSpawner = '420512697654706196';
-				var tchID;
-
-				const userVC = user.voiceChannelID;
-
-				console.log(maxUsers);
-
-				if (userVC == undefined || userVC != channelSpawner) {
-					msg.reply("Join the #channel-spawner channel first!");
-				}
-				else if (userVC === channelSpawner) {
-					fstempchclone.clone(tname)
-					.then(clone => {
-					console.log("[TEMP-CHA] Channel created called: " + tname + " by: " + msg.author.tag);
-
-					tchID = clone.id;
-					tempChannels.push(tchID);
-
-					console.log("[TEMP-CHA] Channel " + tname + " has ID: " + tchID);
-					console.log("[TEMP-CHA] Temp Channels now include " + tempChannels.length + " channels of IDs: ");
-
-					msg.reply("Channel created!")
-
-					for (x = 0; x < tempChannels.length; x++) {
-						console.log(tempChannels[x]);
-					}
-
-					clone.setParent(tempChannelCat);
-
-					if (maxUsers > 1) {
-						clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))
-						msg.reply("Setting user maximum to: " + maxUsers);
+						msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete(15000));
 					}
 
 					msg.member.setVoiceChannel(tchID);
@@ -685,11 +627,64 @@ fishsticks.on('message', async msg => {
 				}
 			}
 			else {
-				msg.reply("Engineering Mode is enabled! Turn it off before using this command!");
+				msg.reply("Engineering Mode is enabled! Turn it off before using this command!").then(sent => sent.delete(15000));
+
+				if (msg.member.roles.find('name', 'Bot')) {
+					msg.delete();
+	
+					msg.reply("Overriding Engineering Mode: Executing command: ``" + msg.content + "``.").then(sent => sent.delete(15000));
+					console.log("[TEMP-CHA] OVERRIDE: Temporary Channel Created")
+	
+					var user = msg.member;
+	
+					var tempCmd = msg.content.split(" ");
+					var maxUsersParam = tempCmd.splice(1, 1);
+					var maxUsers = parseInt(maxUsersParam);
+					var tname = tempCmd.splice(1).join(' ');
+	
+					var tempChannelCat = '372453830161465345';
+					var channelSpawner = '420512697654706196';
+					var tchID;
+	
+					const userVC = user.voiceChannelID;
+	
+					if (userVC == undefined || userVC != channelSpawner) {
+						msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete(15000));
+					}
+					else if (userVC === channelSpawner) {
+						fstempchclone.clone(tname)
+						.then(clone => {
+						console.log("[TEMP-CHA] Channel created called: " + tname + " by: " + msg.author.tag);
+	
+						tchID = clone.id;
+						tempChannels.push(tchID);
+	
+						console.log("[TEMP-CHA] Channel " + tname + " has ID: " + tchID);
+						console.log("[TEMP-CHA] Temp Channels now include " + tempChannels.length + " channels of IDs: ");
+	
+						msg.reply("Channel created!").then(sent => sent.delete(15000));
+	
+						for (x = 0; x < tempChannels.length; x++) {
+							console.log(tempChannels[x]);
+						}
+	
+						clone.setParent(tempChannelCat);
+	
+						if (maxUsers > 1) {
+							clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))
+							msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete(15000));
+						}
+	
+						msg.member.setVoiceChannel(tchID);
+					
+						})
+						.catch(console.error);
+					}
+				}
 			}
 		}
 		else {
-			msg.reply("You don't have the permissions to run this command!");
+			msg.reply("You don't have the permissions to run this command!").then(sent => sent.delete(15000));
 		}
 	}
 
