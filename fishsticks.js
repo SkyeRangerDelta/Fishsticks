@@ -11,7 +11,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.5.9";
+const fsbuild = "1.5.10";
 
 let engmode = false;
 
@@ -631,15 +631,16 @@ fishsticks.on('message', async msg => {
 					.catch(console.error);
 				}
 			}
-			/*else if (msg.author.roles.find('name', 'Bot')) {
-				msg.reply("Overriding Engineering Mode: Executing command: ``" + msg.content + "``.");
-
+			else if (msg.author.roles.find('name', 'Bot')) {
 				msg.delete();
+
+				msg.reply("Overriding Engineering Mode: Executing command: ``" + msg.content + "``.");
 
 				var user = msg.member;
 
 				var tempCmd = msg.content.split(" ");
-				var maxUsers = tempCmd.splice(1, 1);
+				var maxUsersParam = tempCmd.splice(1, 1);
+				var maxUsers = parseInt(maxUsersParam);
 				var tname = tempCmd.splice(1).join(' ');
 
 				var tempChannelCat = '372453830161465345';
@@ -647,6 +648,8 @@ fishsticks.on('message', async msg => {
 				var tchID;
 
 				const userVC = user.voiceChannelID;
+
+				console.log(maxUsers);
 
 				if (userVC == undefined || userVC != channelSpawner) {
 					msg.reply("Join the #channel-spawner channel first!");
@@ -662,6 +665,8 @@ fishsticks.on('message', async msg => {
 					console.log("[TEMP-CHA] Channel " + tname + " has ID: " + tchID);
 					console.log("[TEMP-CHA] Temp Channels now include " + tempChannels.length + " channels of IDs: ");
 
+					msg.reply("Channel created!")
+
 					for (x = 0; x < tempChannels.length; x++) {
 						console.log(tempChannels[x]);
 					}
@@ -670,6 +675,7 @@ fishsticks.on('message', async msg => {
 
 					if (maxUsers > 1) {
 						clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))
+						msg.reply("Setting user maximum to: " + maxUsers);
 					}
 
 					msg.member.setVoiceChannel(tchID);
@@ -677,7 +683,7 @@ fishsticks.on('message', async msg => {
 					})
 					.catch(console.error);
 				}
-			}*/
+			}
 			else {
 				msg.reply("Engineering Mode is enabled! Turn it off before using this command!");
 			}
