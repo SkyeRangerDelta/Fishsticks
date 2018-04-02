@@ -11,7 +11,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.6.6";
+const fsbuild = "1.6.7";
 
 let engmode = false;
 
@@ -391,17 +391,15 @@ fishsticks.on('message', async msg => {
 	const args = msg.content.split(" ").slice(1);
 
 	//LANGUAGE FILTRATION SYSTEM
-	var foul = ["fuck", "shit", "ass", "pussy", "bastard", "bitch", "fucking"];
+	/*var foul = ["fuck", "shit", "ass", "pussy", "bastard", "bitch", "fucking"];
 
-	if (msg.content.includes(foul)) {
-		console.log("[LANG-FIL] " + msg.author.tag + " caused a trigger with " + msg.content);
+	for (word of foul) {
+		if (msg.content.toLowerCase().includes(word)) {
+			msg.delete();
 
-		msg.delete();
-		msg.reply("Your message contained an object that is against the rules of this Discord and CC in general. This has event has been recorded and you have been sent to timeout.");
-
-		//msg.author.removeRoles();
-		//msg.author.addRole('Timeout');
-	}
+			msg.reply("The previous message contained something you shouldn't have said.");
+		}
+	}*/
 
 	//COMMAND SYSTEMS
 	//Role Definitions
@@ -492,7 +490,7 @@ fishsticks.on('message', async msg => {
 	//Help
 	if (command("help", msg)) {
 		msg.delete();
-		
+
 		if (engmode == true) {
 			msg.channel.send({embed: helpeng}).then(sent => sent.delete(45000));
 		}
