@@ -392,6 +392,7 @@ fishsticks.on('message', async msg => {
 
 	//LANGUAGE FILTRATION SYSTEM
 	/*var foul = ["fuck", "shit", "ass", "pussy", "bastard", "bitch", "fucking"];
+	
 
 	for (word of foul) {
 		if (msg.content.toLowerCase().includes(word)) {
