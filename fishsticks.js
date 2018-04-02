@@ -11,7 +11,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.6.5";
+const fsbuild = "1.6.6";
 
 let engmode = false;
 
@@ -204,12 +204,43 @@ function formatDate(date) {
 			"-----------------------------------------------\n" +
 			"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+
 			"  --> ``!info-report``: Details on how to use ``!report``.\n" +
-			"``!tempch [max users <0 if none>] [name]``: Creates a temporary channel.  You must have the CC Members, Staff, or Bot to run. Join the Channel Spawner first before running the command.\n\n"+
+			"``!tempch [max users <0 if none>] [name]``: Creates a temporary channel.  You must have the CC Members, Staff, or Bot to run. Join the Channel Spawner first before running the command.\n"+
+			"``*!vouch [memberID]``: When 2 verified members of CC vouch for an newcomer, they will gain the Trusted role.*\n\n"+
 			"**Administrative Commands**\n" +
 			"-----------------------------------------------\n" +
 			"``!echo [time] [message]``: This command will take your message and broadcast it as an announcement after the specified time (in minutes) has passed.\n" +
 			"``!engm``: Toggles Engineering Mode on or off depending on current state.\n\n"+
 			"``This menu will delete itself in 45 seconds.``")
+
+	//Help (Eng Mode)
+	var helpeng = new Discord.RichEmbed();
+		helpeng.setTitle("o0o - FISHSTICKS HELP (ENGM) - o0o")
+		helpeng.setColor(fscolor)
+		helpeng.setDescription(
+			"Engineering mode enabled? Here are the commands you can still use:\n"+
+			"===============================================\n\n" +
+			"**Normal Commands**\n" +
+			"-----------------------------------------------\n" +
+			"``!channels``: Displays description for all the channels!\n"+
+			"``!divisions``: Lists the official CC Divisions and their leaders.\n"+
+			"``!hello``: Says hello!\n" +
+			"``!help``: Displays this menu.\n" +
+			"``!hi``: Hey yourself!\n"+
+			"``!ips``: Displays Official CC Server IP addresses\n"+
+			"``!links``: Provides a list of useful links.\n" +
+			"``!roles``: Lists all the roles and their descriptions.\n" +
+			"``!rules``: Shows the rules of the CC Discord server.\n" +
+			"``!version``: Fishsticks version report.\n" +
+			"``!status``: Displays current running information for Fishsticks.\n\n" +
+			"**CC Member Commands**\n"+
+			"-----------------------------------------------\n" +
+			"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+
+			"  --> ``!info-report``: Details on how to use ``!report``.\n" +
+			"**Administrative Commands**\n" +
+			"-----------------------------------------------\n" +
+			"``!engm``: Toggles Engineering Mode on or off depending on current state.\n\n"+
+			"``This menu will delete itself in 45 seconds.``"
+		)
 
 	//Info Report
 	var infoReport = new Discord.RichEmbed();
@@ -355,11 +386,24 @@ function formatDate(date) {
 		//Status
 		//Temporary Voice Channel
 
-//COMMAND EXECUTION
-
+//MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
 	const args = msg.content.split(" ").slice(1);
 
+	//LANGUAGE FILTRATION SYSTEM
+	var foul = ["fuck", "shit", "ass", "pussy", "bastard", "bitch", "fucking"];
+
+	if (msg.content.includes(foul)) {
+		console.log("[LANG-FIL] " + msg.author.tag + " caused a trigger with " + msg.content);
+
+		msg.delete();
+		msg.reply("Your message contained an object that is against the rules of this Discord and CC in general. This has event has been recorded and you have been sent to timeout.");
+
+		//msg.author.removeRoles();
+		//msg.author.addRole('Timeout');
+	}
+
+	//COMMAND SYSTEMS
 	//Role Definitions
 	var staffRole = msg.guild.roles.find('name', 'Staff');
 	var techRole = msg.guild.roles.find('name', 'Tech Support');
@@ -448,8 +492,13 @@ fishsticks.on('message', async msg => {
 	//Help
 	if (command("help", msg)) {
 		msg.delete();
-
-		msg.channel.send({embed: help}).then(sent => sent.delete(45000));
+		
+		if (engmode == true) {
+			msg.channel.send({embed: helpeng}).then(sent => sent.delete(45000));
+		}
+		else {
+			msg.channel.send({embed: help}).then(sent => sent.delete(45000));
+		}
 	}
 
 	//Hi
