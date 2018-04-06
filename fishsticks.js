@@ -11,7 +11,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.6.7";
+const fsbuild = "1.7.1";
 
 let engmode = false;
 
@@ -24,18 +24,17 @@ var tempChannels = [];
 
 
 
-//SESSION RECORDER
+//SESSION/ENGM MANAGER
 var fsvarsdoc = JSON.parse(fs.readFileSync('./fishsticks_vars.json', 'utf8'));
-
-console.log(fsvarsdoc);
-
 var fs_session = fsvarsdoc.sessionnum++;
-
-console.log(fsvarsdoc);
 
 fs.writeFileSync("./fishsticks_vars.json", JSON.stringify(fsvarsdoc));
 
+var fsengmdoc = JSON.parse(fs.readFileSync('./fishsticks_engm.json', 'utf8'));
+engmode = fsengmdoc.engmode;
 
+//VOUCH FILE SYSTEM
+var fsvouchesdoc = JSON.parse(fs.readFileSync('./fishsticks_vouches.json', 'utf8'));
 
 //STARTUP PROCEDURE
 fishsticks.on('ready', () => {
@@ -54,7 +53,11 @@ fishsticks.on('ready', () => {
 	console.log("[ENG-MODE] Currently: " + engmode)
 
 	//Startup Message - Discord
-	fishsticks.user.setActivity("!help | V" + fsbuild);
+	if (engmode == true) {
+		fishsticks.user.setActivity('ENGM Enabled! | !help');
+	} else {
+		fishsticks.user.setActivity("!help | V" + fsbuild);
+	}
 
 	var startupseq = new Discord.RichEmbed();
 		startupseq.setTitle("o0o - FISHSTICKS STARTUP - o0o")
@@ -80,11 +83,6 @@ function command(str, msg) {
 function echofunc(statement) {
 
 	announceChannel.send(statement);
-}
-
-//TEMP CHANNEL CREATION FUNCTION
-function tempVChannel() {
-
 }
 
 
@@ -267,16 +265,8 @@ function formatDate(date) {
 		ips.setTitle("o0o - CC 'THE FISH' SERVERS - o0o")
 		ips.setColor(fscolor)
 		ips.setDescription(
-			"**__Ark: Survival Evolved__**\n"+
-			"Ark Ragnarok: ``172.86.182.219``\n"+
-			"Ark PVP: ``172.86.182.220``\n"+
-			"Ark PVE: ``172.86.182.221``\n\n"+
-			"**__TF2__**\n"+
-			"TF2 'The Fish' Stock: ``172.86.182.214:27015``\n"+
-			"TF2 Event Map: ``172.86.182.215``\n\n"+
-			"**__CSGO__**\n"+
-			"CSGO Casual: ``172.86.182.217``\n\n"+
-			"``This message will delete itself in 45 seconds.``"
+			"You know, this is a good question\n" +
+			"What are the IP addresses now?"
 		);
 
 	//Links
@@ -286,6 +276,7 @@ function formatDate(date) {
 			links.setDescription(
 				"[CC Gaming Website](https://www.ccgaming.com)\n" +
 				"[CC Forums](https://forums.ccgaming.com)\n\n" +
+				"[Skye's Definitive Guide to Discord](https://forums.ccgaming.com/viewtopic.php?f=2&t=24357)\n\n"+
 				"``This message will delete itself in 30 seconds.``")
 
 	//Roles
@@ -360,6 +351,7 @@ function formatDate(date) {
 				"Current variables listing in this Fishsticks session.\n"+
 				"-----------------------------------------------\n"+
 				"File Read Syst: ``Online``" + "\n"+
+				"Active External Files: `2`"+
 				"Session Number: ``" + fs_session + "``\n"+
 				"Version Number: ``" + fsbuild + "``\n" +
 				"Engineering Mode: ``" + engmode + "``\n"+
@@ -385,6 +377,7 @@ function formatDate(date) {
 		//Version
 		//Status
 		//Temporary Voice Channel
+		//Vouch
 
 //MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
@@ -477,6 +470,9 @@ fishsticks.on('message', async msg => {
 			else {
 				fishsticks.user.setActivity("!help | V" + fsbuild);
 			}
+
+			fsengmdoc.engmode = engmode;
+			fs.writeFileSync('./fishsticks_engm.json', JSON.stringify(fsengmdoc));
 		}
 		else {
 			msg.reply("You don't have the proper permissions to toggle Engineering Mode!").then(sent => sent.delete(15000));
@@ -738,6 +734,23 @@ fishsticks.on('message', async msg => {
 		}
 	}
 
+	//VOUCH SYSTEM
+	if (command("vouch", msg)) {
+		msg.delete();
+
+		var vouchestot = fsvouchesdoc.vouchnumtotal++;
+
+		var vouchRequester = msg.author.id;
+		var vouchCMD = msg.content.split(" ");
+		var memberFor = vouchCMD.splice(1, 1).join(' ');
+		var memberForID = parseInt(memberFor);
+
+		console.log(memberFor);
+		console.log(memberForID);
+		console.log(vouchestot);
+		
+	}
+
 
 });
 
@@ -751,6 +764,16 @@ fishsticks.on('voiceStateUpdate', (oldMember, newMember) => {
 		if (oldUserChannel.members.size === 0) {
 			oldUserChannel.delete()
 			.then(deleted => console.log("[TEMP-CHA] Deleted channel " + oldMember.voiceChannelID + ". (Everyone Left)"));
+
+			var vcIDIndex = tempChannels.indexOf(oldMember.voiceChannelID);
+			if (vcIDIndex > -1) {
+				tempChannels.splice(vcIDIndex, 1);
+				console.log("[TEMP-CHA] Channel Index removed. Channels online now: " + tempChannels.length + " with IDs:");
+
+				for (var t = 0; t < tempChannels.length; t++) {
+					console.log(tempChannels[t]);
+				}
+			}
 		}
 	}
 });
