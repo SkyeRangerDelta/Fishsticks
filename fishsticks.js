@@ -205,12 +205,8 @@ function formatDate(date) {
 			"-----------------------------------------------\n" +
 			"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+
 			"  --> ``!info-report``: Details on how to use ``!report``.\n" +
-<<<<<<< HEAD
-			"``!tempch [max users] [name]``: Creates a temporary channel.  You must have the CC Members, Staff, or Bot to run. Join the Channel Spawner first before running the command.\n\n"+
-=======
 			"``!tempch [max users <0 if none>] [name]``: Creates a temporary channel.  You must have the CC Members, Staff, or Bot to run. Join the Channel Spawner first before running the command.\n"+
 			"``*!vouch [memberID]``: When 2 verified members of CC vouch for an newcomer, they will gain the Trusted role.*\n\n"+
->>>>>>> 69c8e7708c00a09ee4348ca67949e8604415768a
 			"**Administrative Commands**\n" +
 			"-----------------------------------------------\n" +
 			"``!echo [time] [message]``: This command will take your message and broadcast it as an announcement after the specified time (in minutes) has passed.\n" +
