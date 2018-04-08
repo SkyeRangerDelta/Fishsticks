@@ -7,6 +7,7 @@
 
 # dependencies & random data stuff
 /node_modules
+fs_systems.js
 
 # IDEs and editors
 /.idea
