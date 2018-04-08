@@ -14,7 +14,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.6.5";
+const fsbuild = "1.7.2";
 
 let engmode = false;
 
@@ -27,18 +27,17 @@ var tempChannels = [];
 
 
 
-//SESSION RECORDER
+//SESSION/ENGM MANAGER
 var fsvarsdoc = JSON.parse(fs.readFileSync('./fishsticks_vars.json', 'utf8'));
-
-console.log(fsvarsdoc);
-
 var fs_session = fsvarsdoc.sessionnum++;
-
-console.log(fsvarsdoc);
 
 fs.writeFileSync("./fishsticks_vars.json", JSON.stringify(fsvarsdoc));
 
+var fsengmdoc = JSON.parse(fs.readFileSync('./fishsticks_engm.json', 'utf8'));
+engmode = fsengmdoc.engmode;
 
+//VOUCH FILE SYSTEM
+var fsvouchesdoc = JSON.parse(fs.readFileSync('./fishsticks_vouches.json', 'utf8'));
 
 //STARTUP PROCEDURE
 fishsticks.on('ready', () => {
@@ -57,7 +56,11 @@ fishsticks.on('ready', () => {
 	console.log("[ENG-MODE] Currently: " + engmode)
 
 	//Startup Message - Discord
-	fishsticks.user.setActivity("!help | V" + fsbuild);
+	if (engmode == true) {
+		fishsticks.user.setActivity('ENGM Enabled! | !help');
+	} else {
+		fishsticks.user.setActivity("!help | V" + fsbuild);
+	}
 
 	var startupseq = new Discord.RichEmbed();
 		startupseq.setTitle("o0o - FISHSTICKS STARTUP - o0o")
@@ -83,11 +86,6 @@ function command(str, msg) {
 function echofunc(statement) {
 
 	announceChannel.send(statement);
-}
-
-//TEMP CHANNEL CREATION FUNCTION
-function tempVChannel() {
-
 }
 
 
@@ -207,12 +205,47 @@ function formatDate(date) {
 			"-----------------------------------------------\n" +
 			"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+
 			"  --> ``!info-report``: Details on how to use ``!report``.\n" +
+<<<<<<< HEAD
 			"``!tempch [max users] [name]``: Creates a temporary channel.  You must have the CC Members, Staff, or Bot to run. Join the Channel Spawner first before running the command.\n\n"+
+=======
+			"``!tempch [max users <0 if none>] [name]``: Creates a temporary channel.  You must have the CC Members, Staff, or Bot to run. Join the Channel Spawner first before running the command.\n"+
+			"``*!vouch [memberID]``: When 2 verified members of CC vouch for an newcomer, they will gain the Trusted role.*\n\n"+
+>>>>>>> 69c8e7708c00a09ee4348ca67949e8604415768a
 			"**Administrative Commands**\n" +
 			"-----------------------------------------------\n" +
 			"``!echo [time] [message]``: This command will take your message and broadcast it as an announcement after the specified time (in minutes) has passed.\n" +
 			"``!engm``: Toggles Engineering Mode on or off depending on current state.\n\n"+
 			"``This menu will delete itself in 45 seconds.``")
+
+	//Help (Eng Mode)
+	var helpeng = new Discord.RichEmbed();
+		helpeng.setTitle("o0o - FISHSTICKS HELP (ENGM) - o0o")
+		helpeng.setColor(fscolor)
+		helpeng.setDescription(
+			"Engineering mode enabled? Here are the commands you can still use:\n"+
+			"===============================================\n\n" +
+			"**Normal Commands**\n" +
+			"-----------------------------------------------\n" +
+			"``!channels``: Displays description for all the channels!\n"+
+			"``!divisions``: Lists the official CC Divisions and their leaders.\n"+
+			"``!hello``: Says hello!\n" +
+			"``!help``: Displays this menu.\n" +
+			"``!hi``: Hey yourself!\n"+
+			"``!ips``: Displays Official CC Server IP addresses\n"+
+			"``!links``: Provides a list of useful links.\n" +
+			"``!roles``: Lists all the roles and their descriptions.\n" +
+			"``!rules``: Shows the rules of the CC Discord server.\n" +
+			"``!version``: Fishsticks version report.\n" +
+			"``!status``: Displays current running information for Fishsticks.\n\n" +
+			"**CC Member Commands**\n"+
+			"-----------------------------------------------\n" +
+			"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+
+			"  --> ``!info-report``: Details on how to use ``!report``.\n" +
+			"**Administrative Commands**\n" +
+			"-----------------------------------------------\n" +
+			"``!engm``: Toggles Engineering Mode on or off depending on current state.\n\n"+
+			"``This menu will delete itself in 45 seconds.``"
+		)
 
 	//Info Report
 	var infoReport = new Discord.RichEmbed();
@@ -239,16 +272,8 @@ function formatDate(date) {
 		ips.setTitle("o0o - CC 'THE FISH' SERVERS - o0o")
 		ips.setColor(fscolor)
 		ips.setDescription(
-			"**__Ark: Survival Evolved__**\n"+
-			"Ark Ragnarok: ``172.86.182.219``\n"+
-			"Ark PVP: ``172.86.182.220``\n"+
-			"Ark PVE: ``172.86.182.221``\n\n"+
-			"**__TF2__**\n"+
-			"TF2 'The Fish' Stock: ``172.86.182.214:27015``\n"+
-			"TF2 Event Map: ``172.86.182.215``\n\n"+
-			"**__CSGO__**\n"+
-			"CSGO Casual: ``172.86.182.217``\n\n"+
-			"``This message will delete itself in 45 seconds.``"
+			"You know, this is a good question\n" +
+			"What are the IP addresses now?"
 		);
 
 	//Links
@@ -258,6 +283,7 @@ function formatDate(date) {
 			links.setDescription(
 				"[CC Gaming Website](https://www.ccgaming.com)\n" +
 				"[CC Forums](https://forums.ccgaming.com)\n\n" +
+				"[Skye's Definitive Guide to Discord](https://forums.ccgaming.com/viewtopic.php?f=2&t=24357)\n\n"+
 				"``This message will delete itself in 30 seconds.``")
 
 	//Roles
@@ -332,6 +358,7 @@ function formatDate(date) {
 				"Current variables listing in this Fishsticks session.\n"+
 				"-----------------------------------------------\n"+
 				"File Read Syst: ``Online``" + "\n"+
+				"Active External Files: `2`"+
 				"Session Number: ``" + fs_session + "``\n"+
 				"Version Number: ``" + fsbuild + "``\n" +
 				"Engineering Mode: ``" + engmode + "``\n"+
@@ -357,12 +384,25 @@ function formatDate(date) {
 		//Version
 		//Status
 		//Temporary Voice Channel
+		//Vouch
 
-//COMMAND EXECUTION
-
+//MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
 	const args = msg.content.split(" ").slice(1);
 
+	//LANGUAGE FILTRATION SYSTEM
+	/*var foul = ["fuck", "shit", "ass", "pussy", "bastard", "bitch", "fucking"];
+	
+
+	for (word of foul) {
+		if (msg.content.toLowerCase().includes(word)) {
+			msg.delete();
+
+			msg.reply("The previous message contained something you shouldn't have said.");
+		}
+	}*/
+
+	//COMMAND SYSTEMS
 	//Role Definitions
 	var staffRole = msg.guild.roles.find('name', 'Staff');
 	var techRole = msg.guild.roles.find('name', 'Tech Support');
@@ -437,6 +477,9 @@ fishsticks.on('message', async msg => {
 			else {
 				fishsticks.user.setActivity("!help | V" + fsbuild);
 			}
+
+			fsengmdoc.engmode = engmode;
+			fs.writeFileSync('./fishsticks_engm.json', JSON.stringify(fsengmdoc));
 		}
 		else {
 			msg.reply("You don't have the proper permissions to toggle Engineering Mode!").then(sent => sent.delete(15000));
@@ -452,7 +495,12 @@ fishsticks.on('message', async msg => {
 	if (command("help", msg)) {
 		msg.delete();
 
-		msg.channel.send({embed: help}).then(sent => sent.delete(45000));
+		if (engmode == true) {
+			msg.channel.send({embed: helpeng}).then(sent => sent.delete(45000));
+		}
+		else {
+			msg.channel.send({embed: help}).then(sent => sent.delete(45000));
+		}
 	}
 
 	//Hi
@@ -693,6 +741,23 @@ fishsticks.on('message', async msg => {
 		}
 	}
 
+	//VOUCH SYSTEM
+	if (command("vouch", msg)) {
+		msg.delete();
+
+		var vouchestot = fsvouchesdoc.vouchnumtotal++;
+
+		var vouchRequester = msg.author.id;
+		var vouchCMD = msg.content.split(" ");
+		var memberFor = vouchCMD.splice(1, 1).join(' ');
+		var memberForID = parseInt(memberFor);
+
+		console.log(memberFor);
+		console.log(memberForID);
+		console.log(vouchestot);
+		
+	}
+
 
 });
 
@@ -706,6 +771,16 @@ fishsticks.on('voiceStateUpdate', (oldMember, newMember) => {
 		if (oldUserChannel.members.size === 0) {
 			oldUserChannel.delete()
 			.then(deleted => console.log("[TEMP-CHA] Deleted channel " + oldMember.voiceChannelID + ". (Everyone Left)"));
+
+			var vcIDIndex = tempChannels.indexOf(oldMember.voiceChannelID);
+			if (vcIDIndex > -1) {
+				tempChannels.splice(vcIDIndex, 1);
+				console.log("[TEMP-CHA] Channel Index removed. Channels online now: " + tempChannels.length + " with IDs:");
+
+				for (var t = 0; t < tempChannels.length; t++) {
+					console.log(tempChannels[t]);
+				}
+			}
 		}
 	}
 });
