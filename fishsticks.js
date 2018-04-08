@@ -14,7 +14,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.7.2.2";
+const fsbuild = "1.7.3";
 
 let engmode = false;
 
@@ -354,7 +354,7 @@ function formatDate(date) {
 				"Current variables listing in this Fishsticks session.\n"+
 				"-----------------------------------------------\n"+
 				"File Read Syst: ``Online``" + "\n"+
-				"Active External Files: `2`"+
+				"Active External Files: `2`\n"+
 				"Session Number: ``" + fs_session + "``\n"+
 				"Version Number: ``" + fsbuild + "``\n" +
 				"Engineering Mode: ``" + engmode + "``\n"+
@@ -620,7 +620,7 @@ fishsticks.on('message', async msg => {
 	}
 
 	//Temporary Voice Channels
-	if (command("tempch", msg)) {
+	if (command("tempch", msg) || command("Tempch", msg)) {
 		if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', "Bot") || msg.member.roles.find('name', 'Members') || msg.member.roles.find('name', 'Trusted')) {
 			if (engmode == false) {
 				msg.delete();
@@ -752,6 +752,32 @@ fishsticks.on('message', async msg => {
 		console.log(memberForID);
 		console.log(vouchestot);
 		
+	}
+
+	//SECRET
+	if (msg.content.toLowerCase() === "fishsticks, how are you feeling?") {
+		msg.reply("I'm a little rattled, feeling pretty good right now though. SkyeRanger is a pretty darn good bot doctor.");
+	}
+
+	if (msg.content.toLowerCase() == "Fishsticks, how are you?") {
+		if (engmode == true) {
+			msg.reply("Well, looks like engineering mode is on, so that means I'm probably being worked on. I'll be better than ever soon though. :)");
+		}
+		else {
+			msg.reply("I'm doin' pretty good right now. That whole hijacking thing caught me off gaurd but I'm good.");
+		}
+	}
+
+	if (msg.content == "good evening Fishsticks" || msg.content == "good evening fishsticks") {
+		msg.reply("Good evening to you!");
+	}
+
+	if (msg.content == "ey up" || msg.content == "eyup") {
+		msg.reply("Greetings! I'm right chuffed you're 'ere.");
+	}
+
+	if (msg.content == "football" || msg.content == "ffootballl") {
+		msg.reply("*Erm, hrm, ~~troll~~ cough*");
 	}
 
 
