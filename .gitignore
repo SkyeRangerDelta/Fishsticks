@@ -5,6 +5,9 @@
 /tmp
 .LICENSE.txt
 
+# Fishsticks Systems
+fs_systems.json
+
 # dependencies & random data stuff
 /node_modules
 
