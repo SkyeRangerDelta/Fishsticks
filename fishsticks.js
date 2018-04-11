@@ -14,7 +14,7 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.7.3";
+const fsbuild = "1.7.3.1";
 
 let engmode = false;
 
@@ -570,19 +570,13 @@ fishsticks.on('message', async msg => {
 				)
 
 			if (type == "server") {
-				msg.reply("The " + type + " report has been shunted to the Tech Support team and they will review the case as soon as possible. Thanks!");
-
-				staffChannel.send({embed: serverReport}).then(sent => sent.delete(20000));
+				msg.reply("The " + type + " report has been shunted to the Tech Support team and they will review the case as soon as possible. Thanks!").then(sent => sent.delete(30000));
 			}
 			else if (type == "conduct") {
-				msg.reply("The " + type + " report has been shunted to Staff and will be reviewed.");
-
-				staffChannel.send({embed: conductReport}).then(sent => sent.delete(20000));
+				msg.reply("The " + type + " report has been shunted to Staff and will be reviewed.").then(sent => sent.delete(30000));
 			}
 			else if (type == "tech") {
-				msg.reply("The " + type + " report has been shunted to Tech Support and will be reviewed as soon as possible.");
-
-				staffChannel.send({embed: techReport}).then(sent => sent.delete(20000));
+				msg.reply("The " + type + " report has been shunted to Tech Support and will be reviewed as soon as possible.").then(sent => sent.delete(30000));
 			}
 			else {
 				msg.reply("The report could not be filed because of an incorrect type parameter. Be sure you are following the proper format:\n"+
