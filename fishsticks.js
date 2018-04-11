@@ -571,12 +571,18 @@ fishsticks.on('message', async msg => {
 
 			if (type == "server") {
 				msg.reply("The " + type + " report has been shunted to the Tech Support team and they will review the case as soon as possible. Thanks!").then(sent => sent.delete(30000));
+
+				staffChannel.send({embed: serverReport});
 			}
 			else if (type == "conduct") {
 				msg.reply("The " + type + " report has been shunted to Staff and will be reviewed.").then(sent => sent.delete(30000));
+
+				staffChannel.send({embed: conductReport});
 			}
 			else if (type == "tech") {
 				msg.reply("The " + type + " report has been shunted to Tech Support and will be reviewed as soon as possible.").then(sent => sent.delete(30000));
+
+				staffChannel.send({embed: techReport});
 			}
 			else {
 				msg.reply("The report could not be filed because of an incorrect type parameter. Be sure you are following the proper format:\n"+
