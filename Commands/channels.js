@@ -1,12 +1,12 @@
 const Discord = require('discord.js');
-const embed = require('./embeds/channels.json');
+const config = require('../Modules/Core/corecfg.json');
 
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
     var channels = new Discord.RichEmbed();
-		channels.setTitle("o0o - CC DISCORD CHANNELS - o0o")
-		channels.setColor(fscolor)
+		channels.setTitle("o0o - CC DISCORD CHANNELS - o0o");
+		channels.setColor(config.fscolor);
 		channels.setDescription(
 			"Wondering about all these channels off to the left? Here's a nifty list to explain it all!\n"+
 			"===============================================\n"+
@@ -47,7 +47,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			"**Fishsticks Console 🔒**: Skye's Fishsticks engineering deck. It might be dangerous!\n"+
 			"**AFK**: Aversion to Flying Kangaroos.\n\n"+
 			"``This message will delete itself in a minute and a half.``"
-		)
+		);
 
-    msg.channel.send({embed: embed}).then(sent => sent.delete(60000));
+    msg.channel.send({embed: channels}).then(sent => sent.delete(90000));
 }
