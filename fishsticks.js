@@ -7,6 +7,7 @@ const Discord = require("discord.js");
 const fs = require('fs');
 const fishsticks = new Discord.Client();
 const systems = require('./fs_systems.json');
+const channels = require('./fs_channels.json');
 
 const token = systems.token;
 
@@ -14,11 +15,11 @@ const prefix = "!";
 const fscolor = "#f4eb42";
 const fsemercolor = "#d3150e";
 
-const fsbuild = "1.7.3.1";
+const fsbuild = "1.8.0";
 
 let engmode = false;
 
-var fsconsoleChannel;
+var fsconsoleChanne = fishsticks.channels.get(channels.fsconsole);
 var announceChannel;
 var fstempchclone;
 var staffChannel;
@@ -41,9 +42,6 @@ var fsvouchesdoc = JSON.parse(fs.readFileSync('./fishsticks_vouches.json', 'utf8
 
 //STARTUP PROCEDURE
 fishsticks.on('ready', () => {
-
-	//Channel Definitions
-	fsconsoleChannel = fishsticks.channels.get('420001817825509377');
 	announceChannel = fishsticks.channels.get('125825436650307584');
 	fstempchclone = fishsticks.channels.get('420512697654706196');
 	staffChannel = fishsticks.channels.get('140153900996100097');
@@ -77,50 +75,13 @@ fishsticks.on('ready', () => {
 
 });
 
-//COMMAND FUNCTION
-function command(str, msg) {
-	return msg.content.startsWith(prefix + str);
-}
-
-//ECHO FUNCTION
-function echofunc(statement) {
-
-	announceChannel.send(statement);
-}
-
-
-
-//DATE FORMATTING
-function formatDate(date) {
-	var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	var day = date.getDate();
-	var month = date.getMonth();
-	var year = date.getFullYear();
-	var hour = date.getHours();
-	var minute = date.getMinutes();
-	var amPM = (hour > 11) ? "PM" : "AM";
-
-	if (hour > 12) {
-		hour -= 12;
-	}
-	else if (hours == 0) {
-		hours = "12";
-	}
-
-	if (minute < 10) {
-		minute = "0" + minute;
-	}
-
-	return day + " " + months[month] + " " + year + " at " + hour + ":" + minute + ":" + amPM;
-}
-
-
 //----------------------------------
 //FISHSTICKS COMMAND LISTING
 //----------------------------------
 
 //RICH EMBEDS
-	//Channels
+	//Channels 
+	/*
 	var channels = new Discord.RichEmbed();
 		channels.setTitle("o0o - CC DISCORD CHANNELS - o0o")
 		channels.setColor(fscolor)
@@ -313,28 +274,16 @@ function formatDate(date) {
 			rules.setColor(fsemercolor)
 			rules.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
 			rules.setDescription(
-				"1.  Do not move anyone without that person’s permission.\n " +
-				"2.  Do not kick or ban anyone to be funny or without reason. Do not kick yourself either.\n" +
-				"3.  Do not abuse your Registered User or Trusted powers. They can be taken away!\n" +
-				"4.  Do not swear or be disrespectful to ANYONE!\n" +
-				"5.  Do not make noises that are annoying people.\n" +
-				"6.  Do not act obnoxious.\n" +
-				"7.  Do not play music or sing without permission from all people in the channel.\n" +
-				"8.  Do not join a channel and speak right away; wait until the conversation stops.\n" +
-				"9.  Use the proper channels as they are labeled. Don’t annoy people by talking in a channel such as Big Fish when someone is trying to play.\n" +
-				"10. Do not ask to be kicked or banned. Your wish may be granted.\n" +
-				"11. No “Your Mom” jokes in TeamSpeak, Discord, Forums, or Servers.\n" +
-				"12. Do not discuss or link stolen/pirated software, music, movies, or private MMO servers.\n" +
-				"13. Use your normal in-game or forums username.\n" +
-				"14. Multiple connections or sessions, (including ‘bots’) will be considered hacking and will NOT be tolerated.\n" +
-				"15. Please respect the private channels. Do not join without permission.\n" +
-				"16. Please add the name or abbreviation of the game you are playing to your temporary channel name so we know what game you are playing.\n" +
-				"17. Users may not have any inappropriate names and may not introduce any inappropriate or profane chat, links, or content. \n" +
-				"18. Swearing is not permitted.\n" +
-				"19. Users may not use The Christian Crew servers for advertisement.\n" +
-				"20. Disputes or complaints regarding Members or an Admin must be handled in private. Do not post or voice complaints publicly. You may ask a admin to create a private channel to discuss issues with a member if you need. \n" +
-				"21. No emojis in nicknames.\n\n" +
-				"``This message will delete itself in 1 minute.``")
+				"1. Follow all General Conduct Rules\n" +
+				"2. Be respectful of others. If someone does not like your behavior, stop or go to a new channel.\n"+
+				"3. Please only stream or record in a channel after obtaining permission from others in the channel to do so.\n\n"+
+				"======================================================\n"+
+				"General Conduct Rules:\n"+
+				"A. Be respectful to others, their personhood, beliefs, gender, race, nationality, disability, or any other way they may differ from you. (Matthews 7:12)\n"+
+				"B. Obey all laws and end user agreements. (No sharing or talking about pirated software whatsoever. Fishsticks will have your head.) Romans 13:8\n"+
+				"C. If you feel someone to be guilty of any wrong doing, please talk to them privately or not at all (`!report` is a thing too.) Matthew 18:15\n"+
+				"D. Please refrain from advertising or recruiting for anything without prior approval."
+			)
 
 	//Version
 		var version = new Discord.RichEmbed();
@@ -360,7 +309,7 @@ function formatDate(date) {
 				"Engineering Mode: ``" + engmode + "``\n"+
 				"Bot Identifier: ``8663``\n\n"+
 				"``This message will delete itself in 1 minute.``"
-			);
+			); */
 
 //COMMAND STRUCTURE
 	//Listed alphabetically
@@ -384,19 +333,23 @@ function formatDate(date) {
 
 //MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
-	const args = msg.content.split(" ").slice(1);
+	if (msg.author.bot) return
+	if (msg.author.id == bot.user.id) return
+	if (msg.content.indexOf(prefix) !== 0) return
 
-	//LANGUAGE FILTRATION SYSTEM
-	/*var foul = ["fuck", "shit", "ass", "pussy", "bastard", "bitch", "fucking"];
-	
+	const cmd = msg.content.slice(prefix.length).trim().split(/ +/g);
+	const cmdID = cmd.shift().toLowerCase();
 
-	for (word of foul) {
-		if (msg.content.toLowerCase().includes(word)) {
-			msg.delete();
+	try {
+		let cmdFile = require(`./Commands/${cmdID}.js`);
+		cmdFile.run(fishsticks, msg, cmd);
+	} catch (err) {
+		console.error(err);
+		msg.reply("You trying to thonk me? That's not a command silly. Use `!help` to get a reference.");
+	}
+});
 
-			msg.reply("The previous message contained something you shouldn't have said.");
-		}
-	}*/
+/*
 
 	//COMMAND SYSTEMS
 	//Role Definitions
@@ -412,14 +365,14 @@ fishsticks.on('message', async msg => {
 	}
 
 	//Divisions
-	if (command("divisions", msg)) {
+	else if (command("divisions", msg)) {
 		msg.delete();
 
 		msg.channel.send({embed: divisions}).then(sent => sent.delete(30000));
 	}
 
 	//Echo(S)
-	if (command("echo", msg)) {
+	else if (command("echo", msg)) {
 
 		if (msg.member.roles.find("name", "Staff") || msg.member.roles.find("name", "Bot")) {
 			
@@ -453,7 +406,7 @@ fishsticks.on('message', async msg => {
 	}
 
 	//Engineering Mode(S)
-	if (command("engm", msg)) {
+	else if (command("engm", msg)) {
 
 		msg.delete();
 
@@ -483,12 +436,12 @@ fishsticks.on('message', async msg => {
 	}
 
 	//Hello
-	if (command("hello", msg)) {
+	else if (command("hello", msg)) {
 		msg.reply("Hello to you too!");
 	}
 
 	//Help
-	if (command("help", msg)) {
+	else if (command("help", msg)) {
 		msg.delete();
 
 		if (engmode == true) {
@@ -500,33 +453,33 @@ fishsticks.on('message', async msg => {
 	}
 
 	//Hi
-	if (command("hi", msg)) {
+	else if (command("hi", msg)) {
 		msg.reply("Hey yourself! :P");
 	}
 
 	//Info - Report
-	if (command("info-report", msg)) {
+	else if (command("info-report", msg)) {
 		msg.delete();
 
 		msg.channel.send({embed: infoReport}).then(sent => sent.delete(30000));
 	}
 
 	//Ips
-	if (command("ips", msg)) {
+	else if (command("ips", msg)) {
 		msg.delete();
 
 		msg.channel.send({embed: ips}).then(sent => sent.delete(45000));
 	}
 
 	//Links
-	if (command("links", msg)) {
+	else if (command("links", msg)) {
 		msg.delete();
 
 		msg.channel.send({embed: links}).then(sent => sent.delete(30000));
 	}
 
 	//Report
-	if (command("report", msg)) {
+	else if (command("report", msg)) {
 		msg.delete();
 
 		if (msg.member.roles.find("name", "Staff") || msg.member.roles.find("name", "CC Member") || msg.member.roles.find("name", "Trusted")) {
@@ -592,35 +545,35 @@ fishsticks.on('message', async msg => {
 	}
 
 	//Roles
-	if (command("roles", msg)) {
+	else if (command("roles", msg)) {
 		msg.delete();
 
 		msg.channel.send({embed: roles}).then(sent => sent.delete(60000));
 	}
 
 	//Rules
-	if (command("rules", msg)) {
+	else if (command("rules", msg)) {
 		msg.delete();
 
 		msg.channel.send({embed: rules}).then(sent => sent.delete(60000))
 	}
 
 	//Version
-	if (command("version", msg)) {
+	else if (command("version", msg)) {
 		msg.delete();
 
 		msg.channel.send({embed: version}).then(sent => sent.delete(20000));
 	}
 
 	//Status
-	if (command("status", msg)) {
+	else if (command("status", msg)) {
 		msg.delete();
 
 		msg.channel.send({embed: status}).then(sent => sent.delete(60000));
 	}
 
 	//Temporary Voice Channels
-	if (command("tempch", msg) || command("Tempch", msg)) {
+	else if (command("tempch", msg) || command("Tempch", msg)) {
 		if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', "Bot") || msg.member.roles.find('name', 'Members') || msg.member.roles.find('name', 'Trusted')) {
 			if (engmode == false) {
 				msg.delete();
@@ -738,7 +691,7 @@ fishsticks.on('message', async msg => {
 	}
 
 	//VOUCH SYSTEM
-	if (command("vouch", msg)) {
+	else if (command("vouch", msg)) {
 		msg.delete();
 
 		var vouchestot = fsvouchesdoc.vouchnumtotal++;
@@ -752,6 +705,8 @@ fishsticks.on('message', async msg => {
 		console.log(memberForID);
 		console.log(vouchestot);
 		
+	} else {
+		msg.reply("Was that command? Perhaps try again and reference `!help` if you don't know?")
 	}
 
 	//SECRET
@@ -780,8 +735,12 @@ fishsticks.on('message', async msg => {
 		msg.reply("*Erm, hrm, ~~troll~~ cough*");
 	}
 
+	if (command("feed", msg)) {
+		msg.reply("Probably not a good idea. :)")
+	}
 
-});
+
+}); */
 
 
 //VOICE CHANNEL CONNECTION CHECK
