@@ -20,6 +20,42 @@ exports.run = (fishsticks, msg, cmd) => {
 
             var user = msg.member;
             const userVC = user.voiceChannelID;
+
+            if (userVC == undefined || userVC != channelSpawner) {
+                msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete(15000));
+            }
+            else if (userVC === channelSpawner) {
+                fstempchclone.clone(tname)
+                .then(clone => {
+                console.log("[TEMP-CHA] Channel created called: " + tname + " by: " + msg.author.tag);
+
+                tchID = clone.id;
+                tempChannels.push(tchID);
+
+                console.log("[TEMP-CHA] Channel " + tname + " has ID: " + tchID);
+                console.log("[TEMP-CHA] Temp Channels now include " + tempChannels.length + " channels of IDs: ");
+
+                msg.reply("Channel created!").then(sent => sent.delete(15000));
+
+                for (x = 0; x < tempChannels.length; x++) {
+                    console.log(tempChannels[x]);
+                }
+
+                clone.setParent(tempChannelCat);
+
+                if (maxUsers > 1) {
+                    clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))
+                    msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete(15000));
+                }
+                else if (maxUsers = null) {
+
+                }
+
+                msg.member.setVoiceChannel(tchID);
+            
+                })
+                .catch(console.error);
+            }
             
         }
     }
