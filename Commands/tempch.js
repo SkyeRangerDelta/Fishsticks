@@ -4,44 +4,52 @@ const fs = require('fs');
 const engm = require('../Modules/fishsticks_engm.json');
 const chs = require('../Modules/fs_channels.json');
 
+var tempChannels = [];
+
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
     let engmode = engm.engmode;
 
-    if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', 'Bot')) {
+    if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', 'Bot') || msg.member.roles.find('name', 'Holodeck Dev')) {
         if (engmode == true) {
+            
+        } else {
             var maxUsers = parseInt(cmd[0]) || 0;
-            var tname = args[1] ? args.slice(1).join(" ") : args.join(' ');
+            var tname = cmd[1] ? cmd.slice(1).join(" ") : cmd.join(' ');
 
-            var tempChannelCategory = fishsticks.channels.get(chs.tempchannelCat);
-            var channelCloner = fishsticks.channels.get(chs.fs_vcclone);
+            var tempChannelCategory = chs.tempchannelCat;
+            var channelCloner = chs.fs_vcclone;
+            var channelClonerClone = fishsticks.channels.get(chs.fs_vcclone);
             var tchID;
 
             var user = msg.member;
             const userVC = user.voiceChannelID;
 
-            if (userVC == undefined || userVC != channelSpawner) {
+            console.log("Channel Cloner/Spawner: " + channelCloner)
+            console.log("User's VC: " + userVC)
+
+            if (userVC == undefined || userVC != channelCloner) {
                 msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete(15000));
             }
-            else if (userVC === channelSpawner) {
-                fstempchclone.clone(tname)
+            else if (userVC === channelCloner) {
+                channelClonerClone.clone(tname)
                 .then(clone => {
                 console.log("[TEMP-CHA] Channel created called: " + tname + " by: " + msg.author.tag);
 
                 tchID = clone.id;
-                tempChannels.push(tchID);
+                fishsticks.tempChannels.push(tchID);
 
                 console.log("[TEMP-CHA] Channel " + tname + " has ID: " + tchID);
-                console.log("[TEMP-CHA] Temp Channels now include " + tempChannels.length + " channels of IDs: ");
+                console.log("[TEMP-CHA] Temp Channels now include " + fishsticks.tempChannels.length + " channels of IDs: ");
 
                 msg.reply("Channel created!").then(sent => sent.delete(15000));
 
-                for (x = 0; x < tempChannels.length; x++) {
-                    console.log(tempChannels[x]);
+                for (x = 0; x < fishsticks.tempChannels.length; x++) {
+                    console.log(fishsticks.tempChannels[x]);
                 }
 
-                clone.setParent(tempChannelCat);
+                clone.setParent(tempChannelCategory);
 
                 if (maxUsers > 1) {
                     clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))

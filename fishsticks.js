@@ -12,19 +12,18 @@ const channels = require('./Modules/fs_channels.json');
 const config = require('./Modules/Core/corecfg.json');
 
 const token = systems.token;
-
+const fscolor = config.fscolor;
 const prefix = config.prefix;
 
 const fsbuild = "1.8.0";
 
 let engmode = false;
 
+fishsticks.tempChannels = [];
 
 var announceChannel;
 var fstempchclone;
 var staffChannel;
-
-var tempChannels = [];
 
 
 
@@ -44,7 +43,6 @@ var fsvouchesdoc = JSON.parse(fs.readFileSync('./fishsticks_vouches.json', 'utf8
 fishsticks.on('ready', () => {
 	const fsconsoleChannel = fishsticks.channels.get(channels.fsconsole);
 	announceChannel = fishsticks.channels.get('125825436650307584');
-	fstempchclone = fishsticks.channels.get('420512697654706196');
 	staffChannel = fishsticks.channels.get('140153900996100097');
 
 	//Startup Message - console
@@ -677,18 +675,18 @@ fishsticks.on('voiceStateUpdate', (oldMember, newMember) => {
 	let newUserChannel = newMember.voiceChannel;
 	let oldUserChannel = oldMember.voiceChannel;
 
-	if (tempChannels.includes(oldMember.voiceChannelID)) {
+	if (fishsticks.tempChannels.includes(oldMember.voiceChannelID)) {
 		if (oldUserChannel.members.size === 0) {
 			oldUserChannel.delete()
 			.then(deleted => console.log("[TEMP-CHA] Deleted channel " + oldMember.voiceChannelID + ". (Everyone Left)"));
 
-			var vcIDIndex = tempChannels.indexOf(oldMember.voiceChannelID);
+			var vcIDIndex = fishsticks.tempChannels.indexOf(oldMember.voiceChannelID);
 			if (vcIDIndex > -1) {
-				tempChannels.splice(vcIDIndex, 1);
-				console.log("[TEMP-CHA] Channel Index removed. Channels online now: " + tempChannels.length + " with IDs:");
+				fishsticks.tempChannels.splice(vcIDIndex, 1);
+				console.log("[TEMP-CHA] Channel Index removed. Channels online now: " + fishsticks.tempChannels.length + " with IDs:");
 
-				for (var t = 0; t < tempChannels.length; t++) {
-					console.log(tempChannels[t]);
+				for (var t = 0; t < fishsticks.tempChannels.length; t++) {
+					console.log(fishsticks.tempChannels[t]);
 				}
 			}
 		}
