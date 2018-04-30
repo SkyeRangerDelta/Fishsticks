@@ -2,41 +2,48 @@
 //"FISHSTICKS" - OFFICIAL CC DISCORD BOT
 //======================================
 
+//--------------------------------------
+//..........SYSTEM VARIABLES............
+//--------------------------------------
 //CONSTANT DECLARATIONS
 const Discord = require("discord.js");
 const fs = require('fs');
 const fishsticks = new Discord.Client();
-const systems = require('./Modules/fs_systems.json');
-const channels = require('./Modules/fs_channels.json');
 
+const systems = require('./Modules/fs_systems.json');
+const sys = require('./Modules/Core/coresys.json');
+const channels = require('./Modules/fs_channels.json');
 const config = require('./Modules/Core/corecfg.json');
 
 const token = systems.token;
 const fscolor = config.fscolor;
 const prefix = config.prefix;
 
-const fsbuild = "1.8.0";
-
+//ENGINEERING MODE
 let engmode = false;
 
 fishsticks.tempChannels = [];
+fishsticks.version = sys.fsversion;
 
 var announceChannel;
 var fstempchclone;
 var staffChannel;
 
-
-
+//--------------------------------------
+//............MAIN SCRIPT...............
+//--------------------------------------
 //SESSION/ENGM MANAGER
 var fsvarsdoc = JSON.parse(fs.readFileSync('./fishsticks_vars.json', 'utf8'));
 var fs_session = fsvarsdoc.sessionnum++;
+fishsticks.syssession = fs_session;
 
 fs.writeFileSync("./fishsticks_vars.json", JSON.stringify(fsvarsdoc));
 
 var fsengmdoc = JSON.parse(fs.readFileSync('./Modules/fishsticks_engm.json', 'utf8'));
 engmode = fsengmdoc.engmode;
+fishsticks.engmode = engmode;
 
-//VOUCH FILE SYSTEM
+//VOUCH FILE SYSTEM (that does nothing...)
 var fsvouchesdoc = JSON.parse(fs.readFileSync('./fishsticks_vouches.json', 'utf8'));
 
 //STARTUP PROCEDURE
@@ -47,16 +54,16 @@ fishsticks.on('ready', () => {
 
 	//Startup Message - console
 	console.log(`Successfully Logged ${fishsticks.user.tag} into the server.`);
-	console.log("Initialized and booted Fishsticks version " + fsbuild);
+	console.log("Initialized and booted Fishsticks version " + fishsticks.version);
 	console.log("===========================================================");
-	console.log("[SESSION#] " + fs_session);
+	console.log("[SESSION#] " + fishsticks.syssession);
 	console.log("[ENG-MODE] Currently: " + engmode)
 
 	//Startup Message - Discord
 	if (engmode == true) {
 		fishsticks.user.setActivity('ENGM Enabled! | !help');
 	} else {
-		fishsticks.user.setActivity("!help | V" + fsbuild);
+		fishsticks.user.setActivity("!help | V" + fishsticks.version);
 	}
 
 	var startupseq = new Discord.RichEmbed();
@@ -66,7 +73,7 @@ fishsticks.on('ready', () => {
 		startupseq.setDescription(
 			"Dipping in flour...\n" +
 			"Baking at 400°...\n" +
-			"Fishsticks V" + fsbuild + " is ready to go!")
+			"Fishsticks V" + fishsticks.version + " is ready to go!")
 
 	fsconsoleChannel.send({embed: startupseq}).catch(console.error).then(sent => sent.delete(30000));
 
@@ -145,26 +152,6 @@ fishsticks.on('ready', () => {
 			"``This menu will delete itself in 45 seconds.``"
 		)
 
-	//Info Report
-	var infoReport = new Discord.RichEmbed();
-		infoReport.setTitle("o0o - INFO CODEX - o0o")
-		infoReport.setColor(fscolor)
-		infoReport.setDescription(
-			"``!report [type] [target] [reason]``\n"+
-			"Valid Types:\n"+
-			"	``server``:\n"+
-			"		Used when a CC game server is having trouble. Notifies Tech Support.\n"+
-			"		Valid Targets: ``server IP`` or ``name of server``\n"+
-			"	``conduct``:\n"+
-			"		Used to report troublesome members (trolls). Notifies Staff members.\n"+
-			"		Valid Targets: ``member ID (Tag)``\n"+
-			"	``tech``:\n" +
-			"		Used to report TS/Discord program problems such as permissions issues. Notifies Tech Support\n"+
-			"		Valid Targets: ``TS`` or ``Discord``\n\n"+
-			"Valid Reasons: Use your best judgement to describe the problem and any insight you may have. Keep it quick and to the point.\n\n"+
-			"``This message will delete itself in 30 seconds.``"
-		)
-
 	//IPS
 	var ips = new Discord.RichEmbed();
 		ips.setTitle("o0o - CC 'THE FISH' SERVERS - o0o")
@@ -173,84 +160,7 @@ fishsticks.on('ready', () => {
 			"You know, this is a good question\n" +
 			"What are the IP addresses now?"
 		);
-
-	//Links
-		var links = new Discord.RichEmbed();
-			links.setTitle("o0o - CC GAMING LINKS - o0o")
-			links.setColor(fscolor)
-			links.setDescription(
-				"[CC Gaming Website](https://www.ccgaming.com)\n" +
-				"[CC Forums](https://forums.ccgaming.com)\n\n" +
-				"[Skye's Definitive Guide to Discord](https://forums.ccgaming.com/viewtopic.php?f=2&t=24357)\n\n"+
-				"``This message will delete itself in 30 seconds.``")
-
-	//Roles
-		var roles = new Discord.RichEmbed();
-			roles.setTitle("o0o - CC DISCORD ROLES - o0o")
-			roles.setColor(fscolor);
-			roles.setDescription(
-				"Roles are the 'groups' that you as a user can be assigned to. They control the permissions that you have the power to work with. Here's a nifty list to describe them.\n" +
-				"**Everyone**: No color assignment, default white. You can talk in the voice channels and read text history.\n"+
-				"**Logger**: The logger bot's role.\n" +
-				"**Trusted**: Everyone role plus text chat functions. Can change nickname.\n" +
-				"**Applicant**: Trusted, but cannot attach files.\n" +
-				"**Members**: Trusted but can also move users.\n" +
-				"**ACC Member**: Identifier for ACC - no perms, works in tangent with Members role.\n" +
-				"**CC Members**: Identifier for CC - no permissions, works in tangent with Members role.\n" +
-				"**Timeout**: No permissions except for reading text channels.\n" +
-				"**Admin**: There's a lot of permissions in there. Cannot create invites or manage emojis.\n"+
-				"**Bot**: Default bot role (plus SkyeRanger). Can ban you.\n" +
-				"**Staff**: All perms except server management.\n" +
-				"**Event Coordinator**: Identifier for ECs. Used in tangent with another permissions role such as Staff.\n" +
-				"**Division Leader**: Identifier for DLs. Used in tangent with another permissions role.\n" +
-				"**Tech Support**: Administrator level permissions. Add-on permissions used in tangent with another role.\n" +
-				"**Council Advisor**: Server administration permissions. Add-on permissions used in tangent with another role.\n" +
-				"**Council Member**: Administrator level permissions. Add-on permissions used in tangent with another role.\n\n" +
-				"``This message will delete itself in 1 minute.``"
-			)
-
-	//Rules
-		var rules = new Discord.RichEmbed();
-			rules.setTitle("o0o - CC DISCORD RULES - o0o")
-			rules.setColor(fsemercolor)
-			rules.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
-			rules.setDescription(
-				"1. Follow all General Conduct Rules\n" +
-				"2. Be respectful of others. If someone does not like your behavior, stop or go to a new channel.\n"+
-				"3. Please only stream or record in a channel after obtaining permission from others in the channel to do so.\n\n"+
-				"======================================================\n"+
-				"General Conduct Rules:\n"+
-				"A. Be respectful to others, their personhood, beliefs, gender, race, nationality, disability, or any other way they may differ from you. (Matthews 7:12)\n"+
-				"B. Obey all laws and end user agreements. (No sharing or talking about pirated software whatsoever. Fishsticks will have your head.) Romans 13:8\n"+
-				"C. If you feel someone to be guilty of any wrong doing, please talk to them privately or not at all (`!report` is a thing too.) Matthew 18:15\n"+
-				"D. Please refrain from advertising or recruiting for anything without prior approval."
-			)
-
-	//Version
-		var version = new Discord.RichEmbed();
-			version.setTitle("o0o - FISHSTICKS VERSION REPORT - o0o")
-			version.setColor(fscolor)
-			version.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
-			version.setDescription(
-				"Fishsticks is currently running version " + fsbuild + ".\n\n" +
-				"For build information and or changelogs, check with SkyeRanger or submit a tech report.\n\n"+
-				"``This message will delete itself in 20 seconds.``")
-
-	//Status
-		var status = new Discord.RichEmbed();
-			status.setTitle("o0o - FISHSTICKS STATUS REPORT - o0o");
-			status.setColor(fscolor);
-			status.setDescription(
-				"Current variables listing in this Fishsticks session.\n"+
-				"-----------------------------------------------\n"+
-				"File Read Syst: ``Online``" + "\n"+
-				"Active External Files: `2`\n"+
-				"Session Number: ``" + fs_session + "``\n"+
-				"Version Number: ``" + fsbuild + "``\n" +
-				"Engineering Mode: ``" + engmode + "``\n"+
-				"Bot Identifier: ``8663``\n\n"+
-				"``This message will delete itself in 1 minute.``"
-			); */
+		*/
 
 //COMMAND STRUCTURE
 	//Listed alphabetically

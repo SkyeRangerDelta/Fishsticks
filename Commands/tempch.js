@@ -26,9 +26,6 @@ exports.run = (fishsticks, msg, cmd) => {
             var user = msg.member;
             const userVC = user.voiceChannelID;
 
-            console.log("Channel Cloner/Spawner: " + channelCloner)
-            console.log("User's VC: " + userVC)
-
             if (userVC == undefined || userVC != channelCloner) {
                 msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete(15000));
             }

@@ -12,6 +12,7 @@ exports.run = (fishsticks, msg, cmd) => {
         engmode = engmFile.engmode;
 
         engmode = !engmode;
+        fishsticks.engmode = engmode;
 
         console.log("[ENG-MODE] Toggled to " + engmode + " by " + msg.author.tag);
         msg.reply("Fishsticks Engineering Mode has been toggled " + engmode + ".");

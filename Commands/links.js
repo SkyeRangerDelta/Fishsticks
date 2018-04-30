@@ -13,5 +13,5 @@ exports.run = (fishsticks, msg, cmd) => {
 				"[Skye's Definitive Guide to Discord](https://forums.ccgaming.com/viewtopic.php?f=2&t=24357)\n\n"+
 				"``This message will delete itself in 30 seconds.``")
 
-    msg.channel.send({embed: links}).then(sent => sent.delete(90000));
+    msg.channel.send({embed: links}).then(sent => sent.delete(30000));
 }
