@@ -25,6 +25,10 @@ exports.run = (fishsticks, msg, cmd) => {
 				"**Tech Support**: Administrator level permissions. Add-on permissions used in tangent with another role.\n" +
 				"**Council Advisor**: Server administration permissions. Add-on permissions used in tangent with another role.\n" +
 				"**Council Member**: Administrator level permissions. Add-on permissions used in tangent with another role.\n\n" +
+				"**Ark: SE**: Ark: Survival Evolved player.\n"+
+				"**Overwatch**: Overwatch player.\n"+
+				"**PUBG**: PLAYERUNKNOWN'S BATTLEGROUNDS player.\n"+
+				"**Rocket League**: Rocket League player.\n\n"+
 				"``This message will delete itself in 1 minute.``"
 			)
 

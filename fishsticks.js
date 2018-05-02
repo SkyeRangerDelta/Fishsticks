@@ -86,72 +86,8 @@ fishsticks.on('ready', () => {
 //----------------------------------
 
 //RICH EMBEDS
-	//Channels 
 	/*
 	
-	//Help
-	var help = new Discord.RichEmbed();
-		help.setTitle("o0o - FISHSTICKS HELP - o0o")
-		help.setColor(fscolor)
-		help.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
-		help.setDescription(
-			"Hi there, looking for a command to use? See below:\n" + 
-			"===============================================\n\n" +
-			"**Normal Commands**\n" +
-			"-----------------------------------------------\n" +
-			"``!channels``: Displays description for all the channels!\n"+
-			"``!divisions``: Lists the official CC Divisions and their leaders.\n"+
-			"``!hello``: Says hello!\n" +
-			"``!help``: Displays this menu.\n" +
-			"``!hi``: Hey yourself!\n"+
-			"``!ips``: Displays Official CC Server IP addresses\n"+
-			"``!links``: Provides a list of useful links.\n" +
-			"``!roles``: Lists all the roles and their descriptions.\n" +
-			"``!rules``: Shows the rules of the CC Discord server.\n" +
-			"``!version``: Fishsticks version report.\n" +
-			"``!status``: Displays current running information for Fishsticks.\n\n" +
-			"**CC Member Commands**\n"+
-			"-----------------------------------------------\n" +
-			"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+
-			"  --> ``!info-report``: Details on how to use ``!report``.\n" +
-			"``!tempch [max users <0 if none>] [name]``: Creates a temporary channel.  You must have the CC Members, Staff, or Bot to run. Join the Channel Spawner first before running the command.\n"+
-			"``*!vouch [memberID]``: When 2 verified members of CC vouch for an newcomer, they will gain the Trusted role.*\n\n"+
-			"**Administrative Commands**\n" +
-			"-----------------------------------------------\n" +
-			"``!echo [time] [message]``: This command will take your message and broadcast it as an announcement after the specified time (in minutes) has passed.\n" +
-			"``!engm``: Toggles Engineering Mode on or off depending on current state.\n\n"+
-			"``This menu will delete itself in 45 seconds.``")
-
-	//Help (Eng Mode)
-	var helpeng = new Discord.RichEmbed();
-		helpeng.setTitle("o0o - FISHSTICKS HELP (ENGM) - o0o")
-		helpeng.setColor(fscolor)
-		helpeng.setDescription(
-			"Engineering mode enabled? Here are the commands you can still use:\n"+
-			"===============================================\n\n" +
-			"**Normal Commands**\n" +
-			"-----------------------------------------------\n" +
-			"``!channels``: Displays description for all the channels!\n"+
-			"``!divisions``: Lists the official CC Divisions and their leaders.\n"+
-			"``!hello``: Says hello!\n" +
-			"``!help``: Displays this menu.\n" +
-			"``!hi``: Hey yourself!\n"+
-			"``!ips``: Displays Official CC Server IP addresses\n"+
-			"``!links``: Provides a list of useful links.\n" +
-			"``!roles``: Lists all the roles and their descriptions.\n" +
-			"``!rules``: Shows the rules of the CC Discord server.\n" +
-			"``!version``: Fishsticks version report.\n" +
-			"``!status``: Displays current running information for Fishsticks.\n\n" +
-			"**CC Member Commands**\n"+
-			"-----------------------------------------------\n" +
-			"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+
-			"  --> ``!info-report``: Details on how to use ``!report``.\n" +
-			"**Administrative Commands**\n" +
-			"-----------------------------------------------\n" +
-			"``!engm``: Toggles Engineering Mode on or off depending on current state.\n\n"+
-			"``This menu will delete itself in 45 seconds.``"
-		)
-
 	//IPS
 	var ips = new Discord.RichEmbed();
 		ips.setTitle("o0o - CC 'THE FISH' SERVERS - o0o")
@@ -160,7 +96,6 @@ fishsticks.on('ready', () => {
 			"You know, this is a good question\n" +
 			"What are the IP addresses now?"
 		);
-		*/
 
 //COMMAND STRUCTURE
 	//Listed alphabetically
@@ -180,7 +115,7 @@ fishsticks.on('ready', () => {
 		//Version
 		//Status
 		//Temporary Voice Channel
-		//Vouch
+		//Vouch */
 
 //MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
@@ -201,119 +136,7 @@ fishsticks.on('message', async msg => {
 });
 
 /*
-	//Divisions
-	else if (command("divisions", msg)) {
-		msg.delete();
 
-		msg.channel.send({embed: divisions}).then(sent => sent.delete(30000));
-	}
-
-	//Echo(S)
-	else if (command("echo", msg)) {
-
-		if (msg.member.roles.find("name", "Staff") || msg.member.roles.find("name", "Bot")) {
-			
-			if (engmode == false) {
-
-				var splitCmd = msg.content.split(" ");
-
-				var waitTime = splitCmd.splice(1, 1);
-
-				var keepMsg = splitCmd.splice(1).join(' ');
-
-				var alttime = waitTime * 60;
-				alttime = alttime * 1000;
-
-				console.log(keepMsg);
-
-				msg.delete();
-
-				console.log("[ECHO-CMD]: " + waitTime + " minute(s): " + keepMsg);
-				msg.reply("Command received. Awaiting " + waitTime + " minute(s) to respond.").then(sent => sent.delete(10000));
-
-				setTimeout(echofunc, alttime, "@everyone " + keepMsg);
-			}
-			else {
-				msg.reply("Engineering Mode is enabled. Turn it off before using this command!").then(sent => sent.delete(15000));
-			}
-		}
-		else {
-			msg.reply("You don't have the correct permissions!").then(sent => sent.delete(15000));
-		}
-	}
-
-	//Engineering Mode(S)
-	else if (command("engm", msg)) {
-
-		msg.delete();
-
-		if (msg.member.roles.find("name", "Staff") || msg.member.roles.find("name", "Bot")) {
-
-			engmode = !engmode;
-
-			console.log("[ENG-MODE] Toggled to " + engmode + " by: " + msg.author.tag);
-
-			msg.reply("Engineering Mode is now: " + engmode + ".").then(sent => sent.delete(15000));
-
-			fsconsoleChannel.send("Fishsticks Engineering Mode has been toggled to " + engmode + " by: " + msg.author).then(sent => sent.delete(15000));
-
-			if (engmode == true) {
-				fishsticks.user.setActivity("ENGM Enabled | !help");
-			}
-			else {
-				fishsticks.user.setActivity("!help | V" + fsbuild);
-			}
-
-			fsengmdoc.engmode = engmode;
-			fs.writeFileSync('./fishsticks_engm.json', JSON.stringify(fsengmdoc));
-		}
-		else {
-			msg.reply("You don't have the proper permissions to toggle Engineering Mode!").then(sent => sent.delete(15000));
-		}
-	}
-
-	//Hello
-	else if (command("hello", msg)) {
-		msg.reply("Hello to you too!");
-	}
-
-	//Help
-	else if (command("help", msg)) {
-		msg.delete();
-
-		if (engmode == true) {
-			msg.channel.send({embed: helpeng}).then(sent => sent.delete(45000));
-		}
-		else {
-			msg.channel.send({embed: help}).then(sent => sent.delete(45000));
-		}
-	}
-
-	//Hi
-	else if (command("hi", msg)) {
-		msg.reply("Hey yourself! :P");
-	}
-
-	//Info - Report
-	else if (command("info-report", msg)) {
-		msg.delete();
-
-		msg.channel.send({embed: infoReport}).then(sent => sent.delete(30000));
-	}
-
-	//Ips
-	else if (command("ips", msg)) {
-		msg.delete();
-
-		msg.channel.send({embed: ips}).then(sent => sent.delete(45000));
-	}
-
-	//Links
-	else if (command("links", msg)) {
-		msg.delete();
-
-		msg.channel.send({embed: links}).then(sent => sent.delete(30000));
-	}
 
 	//Report
 	else if (command("report", msg)) {

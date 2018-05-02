@@ -22,10 +22,56 @@ exports.run = (fishsticks, msg, cmd) => {
             "               Used to report Discord problems. Alerts tech support.\n"+
             "               Valid Targets: `role`, `username`, `invite`, or `channel`\n"+
             "   ->`target`: Dependent on type, see above.\n"+
-            "   ->`reason`: Describe the problem with the most insight you can provide.\n\n"+
+            "   ->`reason`: Describe the problem with the most insight you can provide.\n"+
+            "Description: `Submits a ticket to leadership concerning a problem with various parts of CC.`\n\n"+
             "``This message will delete itself in 30 seconds.``"
         )
         
         msg.channel.send({embed: infoReport}).then(sent => sent.delete(30000));
+    }
+    else if (cmd[0] == "tempch" || cmd[0] == "Tempch") {
+        var infoTempCh = new Discord.RichEmbed();
+		infoReport.setTitle("o0o - INFO CODEX - o0o")
+		infoReport.setColor(config.fscolor)
+		infoReport.setDescription(
+			"Command ID:``!tempch <maxUsers> [channelName]``\n"+
+			"Parameters:\n"+
+			"	->`maxUsers`:\n"+
+			"		-->The maximum number of users that can connect to the channel. Can be ignored (see below).\n" +
+            "   ->`channelName`:\n"+
+            "       -->Required, the name of the channel you are creating.\n"+
+            "   Note: If you are making a channel that has more than one (1) word in it's name, you need to add a number for `maxUsers`. If you don't, you'll lose the first word of  your channel name. (0 and 1 are safe numbers to use)\n"+
+            "Description: `Creates a new temporary voice channel. Has a customizable parameter for maximum users. Temporary channels will auto-delete themselves when everyone leaves.`\n\n"+
+            "``This message will delete itself in 30 seconds.``"
+        )
+        
+        msg.channel.send({embed: infoTempCh}).then(sent => sent.delete(30000));
+    }
+    else if (cmd[0] == "engm" || cmd[0] == "ENGM") {
+        var infoengm = new Discord.RichEmbed();
+		infoReport.setTitle("o0o - INFO CODEX - o0o")
+		infoReport.setColor(config.fscolor)
+		infoReport.setDescription(
+			"Command ID:``!engm``\n"+
+            "Parameters: `none`\n"+
+            "Description: `Toggles Fishsticks between active or inactive Engineering Mode. Used by staff/bot developers for when work is being done on Fishsticks' code. It disables commands such as tempch and echo because of the possibility of an code failure or command termination on restart.`"+
+            "``This message will delete itself in 30 seconds.``"
+        )
+        
+        msg.channel.send({embed: infoengm}).then(sent => sent.delete(30000));
+    }
+    else  if (cmd[0] == "info" || cmd[0] == "Info") {
+        var infoinfo = new Discord.RichEmbed();
+		infoReport.setTitle("o0o - INFO CODEX - o0o")
+		infoReport.setColor(config.fscolor)
+		infoReport.setDescription(
+			"Command ID:``!info [commandID]``\n"+
+            "Parameters:\n"+
+            "   ->`commandID`: the part of a command that comes after the `!`.\n"+
+            "Description: `Describes a command. Like this!`\n\n"+
+            "``This message will delete itself in 30 seconds.``"
+        )
+        
+        msg.channel.send({embed: infoinfo}).then(sent => sent.delete(30000));
     }
 }
