@@ -7,6 +7,7 @@
 
 # Fishsticks Systems
 ./Modules/fs_systems.json
+Modules/fs_systems.json
 
 # dependencies & random data stuff
 /node_modules

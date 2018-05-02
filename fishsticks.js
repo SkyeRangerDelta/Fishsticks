@@ -25,6 +25,7 @@ let engmode = false;
 fishsticks.tempChannels = [];
 fishsticks.version = sys.fsversion;
 
+var fsconsoleChannel;
 var announceChannel;
 var fstempchclone;
 var staffChannel;
@@ -48,9 +49,10 @@ var fsvouchesdoc = JSON.parse(fs.readFileSync('./fishsticks_vouches.json', 'utf8
 
 //STARTUP PROCEDURE
 fishsticks.on('ready', () => {
-	const fsconsoleChannel = fishsticks.channels.get(channels.fsconsole);
-	announceChannel = fishsticks.channels.get('125825436650307584');
-	staffChannel = fishsticks.channels.get('140153900996100097');
+
+	fsconsoleChannel = fishsticks.channels.get(channels.fsconsole);
+	announceChannel = fishsticks.channels.get(channels.announcements);
+	staffChannel = fishsticks.channels.get(channels.staffChannel);
 
 	//Startup Message - console
 	console.log(`Successfully Logged ${fishsticks.user.tag} into the server.`);
