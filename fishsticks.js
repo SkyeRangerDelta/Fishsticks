@@ -105,10 +105,20 @@ function comm(str, msg) {
 //MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
 
-	if (msg.content == "hi") {
+	//PASSIVE COMMANDS
+	if (msg.content == "hi" || msg.content == "Hi") {
 		msg.reply("Hello!");
 	}
-	else {
+	else if (msg.content == "eyup" || msg.content == "ey up") {
+		msg.reply("'Ello, I'm right chuffed you're 'ere.");
+	}
+	else if (msg.content == "hello" || msg.content == "Hello") {
+		msg.reply("Hi there!");
+	}
+	else if ((msg.content == "fishsticks" || "Fishsticks") && (msg.author.id !== fishsticks.user.id)) {
+		msg.channel.send("Mmmm, fishsticks...", {files:["./images/fsimg.jpg"]});
+	}
+	else { //MESSAGE COMMAND HANDLER
 		if (msg.author.fishsticks) return
 		if (msg.author.id == fishsticks.user.id) return
 		if (msg.content.indexOf(prefix) !== 0) return

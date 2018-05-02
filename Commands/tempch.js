@@ -11,7 +11,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
     let engmode = fishsticks.engmode;
 
-    if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', 'Member') || msg.member.roles.find('name', 'Trusted')) {
+    if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', 'Members') || msg.member.roles.find('name', 'Trusted')) {
         if (engmode == true) {
             if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', 'Bot')) {
                 console.log("[TEMP-CHA] ENGM Override Executed: Permission granted to " + msg.author.tag + ".");

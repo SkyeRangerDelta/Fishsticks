@@ -17,9 +17,7 @@ exports.run = (fishsticks, msg, cmd) => {
 				"-----------------------------------------------\n" +
 				"``!channels``: Displays description for all the channels!\n"+
 				"``!divisions``: Lists the official CC Divisions and their leaders.\n"+
-				"``!hello``: Says hello!\n" +
 				"``!help``: Displays this menu.\n" +
-				"``!hi``: Hey yourself!\n"+
 				"``!info [commandID]``: Tutorial on the given commandID.\n"+
 				"``!ips``: Displays Official CC Server IP addresses\n"+
 				"``!links``: Provides a list of useful links.\n" +
@@ -58,15 +56,20 @@ exports.run = (fishsticks, msg, cmd) => {
 			"-----------------------------------------------\n" +
 			"``!channels``: Displays description for all the channels!\n"+
 			"``!divisions``: Lists the official CC Divisions and their leaders.\n"+
-			"``!hello``: Says hello!\n" +
 			"``!help``: Displays this menu.\n" +
-			"``!hi``: Hey yourself!\n"+
 			"``!ips``: Displays Official CC Server IP addresses\n"+
 			"``!links``: Provides a list of useful links.\n" +
 			"``!roles``: Lists all the roles and their descriptions.\n" +
 			"``!rules``: Shows the rules of the CC Discord server.\n" +
 			"``!version``: Fishsticks version report.\n" +
 			"``!status``: Displays current running information for Fishsticks.\n\n" +
+			"**Divisional Role Commands**\n"+
+			"-----------------------------------------------\n" +
+			"Use any of these commands to add the divisional role to yourself. These are used for announcements regaurding that divison.\n"+
+			"`!ark`: Ark: Survival Evolved\n"+
+			"`!overwatch`: Overwatch\n"+
+			"`!pubg`: PLAYERUNKNOWN'S BATTLEGROUNDS\n"+
+			"`!rocketleague`: Rocket League\n\n"+
 			"**CC Member Commands**\n"+
 			"-----------------------------------------------\n" +
 			"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+
