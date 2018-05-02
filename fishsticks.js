@@ -87,268 +87,44 @@ fishsticks.on('ready', () => {
 
 //RICH EMBEDS
 	/*
-	
-	//IPS
-	var ips = new Discord.RichEmbed();
-		ips.setTitle("o0o - CC 'THE FISH' SERVERS - o0o")
-		ips.setColor(fscolor)
-		ips.setDescription(
-			"You know, this is a good question\n" +
-			"What are the IP addresses now?"
-		);
 
 //COMMAND STRUCTURE
 	//Listed alphabetically
 	//-Current List-
-		//Channels
-		//Divisions
-		//Echo(S)
-		//Engineering Mode(S)
 		//Hello
-		//Help
 		//Hi
-		//Ips
-		//Links
-		//Log(S)*
-		//Roles
-		//Rules
-		//Version
-		//Status
-		//Temporary Voice Channel
+		//Log(S)
 		//Vouch */
+
+function comm(str, msg) {
+	return msg.content.startsWith(prefix + str);
+}
 
 //MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
-	if (msg.author.fishsticks) return
-	if (msg.author.id == fishsticks.user.id) return
-	if (msg.content.indexOf(prefix) !== 0) return
 
-	const cmd = msg.content.slice(prefix.length).trim().split(/ +/g);
-	const cmdID = cmd.shift().toLowerCase();
-
-	try {
-		let cmdFile = require(`./Commands/${cmdID}.js`);
-		cmdFile.run(fishsticks, msg, cmd);
-	} catch (err) {
-		console.error(err);
-		msg.reply("You trying to thonk me? That's not a command silly. Use `!help` to get a reference.");
+	if (msg.content == "hi") {
+		msg.reply("Hello!");
+	}
+	else {
+		if (msg.author.fishsticks) return
+		if (msg.author.id == fishsticks.user.id) return
+		if (msg.content.indexOf(prefix) !== 0) return
+	
+		const cmd = msg.content.slice(prefix.length).trim().split(/ +/g);
+		const cmdID = cmd.shift().toLowerCase();
+	
+		try {
+			let cmdFile = require(`./Commands/${cmdID}.js`);
+			cmdFile.run(fishsticks, msg, cmd);
+		} catch (err) {
+			console.error(err);
+			msg.reply("You trying to thonk me? That's not a command silly. Use `!help` to get a reference.");
+		}
 	}
 });
 
 /*
-
-
-	//Report
-	else if (command("report", msg)) {
-		msg.delete();
-
-		if (msg.member.roles.find("name", "Staff") || msg.member.roles.find("name", "CC Member") || msg.member.roles.find("name", "Trusted")) {
-
-			var reportCmdSplit = msg.content.split(" ");
-			var type = reportCmdSplit.splice(1, 1);
-			var target = reportCmdSplit.splice(1, 1);
-			var reason = reportCmdSplit.splice(1).join(' ');
-
-			console.log("[SERV-REP] Type: " + type + "\n           Target: " + target + "\n           Reason: " + reason);
-
-			//RICH-EMBEDS
-			//Server Report
-			var serverReport = new Discord.RichEmbed();
-				serverReport.setTitle("o0o - SERVER ISSUE REPORT - o0o")
-				serverReport.setColor(fsemercolor)
-				serverReport.setDescription(
-					"A report has been issued by " + msg.author + " concerning the server " + target + ".\n"+
-					"Reason: " + reason + "\n" + 
-					techRole
-				)
-
-			//Conduct Report
-			var conductReport = new Discord.RichEmbed();
-				conductReport.setTitle("o0o - MEMBER CONDUCT REPORT - o0o")
-				conductReport.setColor(fsemercolor)
-				conductReport.setDescription(
-					"A report has been issued by " + msg.author + " concerning the behavior of " + target + ".\n"+
-					"Reason: " + reason + "\n" + 
-					staffRole
-				)
-
-			//Tech Report
-			var techReport = new Discord.RichEmbed();
-				techReport.setTitle("o0o - TS/DISCORD ISSUE REPORT - o0o")
-				techReport.setColor(fsemercolor)
-				techReport.setDescription(
-					"A report has been issued by " + msg.author + " concerning an issue with TS or Discord.\n"+
-					"Reason: " + reason + "\n"+
-					techRole
-				)
-
-			if (type == "server") {
-				msg.reply("The " + type + " report has been shunted to the Tech Support team and they will review the case as soon as possible. Thanks!").then(sent => sent.delete(30000));
-
-				staffChannel.send({embed: serverReport});
-			}
-			else if (type == "conduct") {
-				msg.reply("The " + type + " report has been shunted to Staff and will be reviewed.").then(sent => sent.delete(30000));
-
-				staffChannel.send({embed: conductReport});
-			}
-			else if (type == "tech") {
-				msg.reply("The " + type + " report has been shunted to Tech Support and will be reviewed as soon as possible.").then(sent => sent.delete(30000));
-
-				staffChannel.send({embed: techReport});
-			}
-			else {
-				msg.reply("The report could not be filed because of an incorrect type parameter. Be sure you are following the proper format:\n"+
-				"``!report [type] [target] [reason]`` - use ``!info-report`` for more information.").then(sent => sent.delete(20000))
-			}
-		}
-	}
-
-	//Roles
-	else if (command("roles", msg)) {
-		msg.delete();
-
-		msg.channel.send({embed: roles}).then(sent => sent.delete(60000));
-	}
-
-	//Rules
-	else if (command("rules", msg)) {
-		msg.delete();
-
-		msg.channel.send({embed: rules}).then(sent => sent.delete(60000))
-	}
-
-	//Version
-	else if (command("version", msg)) {
-		msg.delete();
-
-		msg.channel.send({embed: version}).then(sent => sent.delete(20000));
-	}
-
-	//Status
-	else if (command("status", msg)) {
-		msg.delete();
-
-		msg.channel.send({embed: status}).then(sent => sent.delete(60000));
-	}
-
-	//Temporary Voice Channels
-	else if (command("tempch", msg) || command("Tempch", msg)) {
-		if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', "Bot") || msg.member.roles.find('name', 'Members') || msg.member.roles.find('name', 'Trusted')) {
-			if (engmode == false) {
-				msg.delete();
-
-				var user = msg.member;
-
-				var tempCmd = msg.content.split(" ").slice(1);
-				var maxUsers = parseInt(tempCmd[0]) || 0;
-				var tname = args[1] ? args.slice(1).join(" ") : args.join(' ');
-
-				var tempChannelCat = '372453830161465345';
-				var channelSpawner = '420512697654706196';
-				var tchID;
-
-				const userVC = user.voiceChannelID;
-
-				console.log(maxUsers);
-
-				if (userVC == undefined || userVC != channelSpawner) {
-					msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete(15000));
-				}
-				else if (userVC === channelSpawner) {
-					fstempchclone.clone(tname)
-					.then(clone => {
-					console.log("[TEMP-CHA] Channel created called: " + tname + " by: " + msg.author.tag);
-
-					tchID = clone.id;
-					tempChannels.push(tchID);
-
-					console.log("[TEMP-CHA] Channel " + tname + " has ID: " + tchID);
-					console.log("[TEMP-CHA] Temp Channels now include " + tempChannels.length + " channels of IDs: ");
-
-					msg.reply("Channel created!").then(sent => sent.delete(15000));
-
-					for (x = 0; x < tempChannels.length; x++) {
-						console.log(tempChannels[x]);
-					}
-
-					clone.setParent(tempChannelCat);
-
-					if (maxUsers > 1) {
-						clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))
-						msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete(15000));
-					}
-					else if (maxUsers = null) {
-
-					}
-
-					msg.member.setVoiceChannel(tchID);
-				
-					})
-					.catch(console.error);
-				}
-			}
-			else {
-				msg.reply("Engineering Mode is enabled! Turn it off before using this command!").then(sent => sent.delete(15000));
-
-				if (msg.member.roles.find('name', 'Bot')) {
-					msg.delete();
-	
-					msg.reply("Overriding Engineering Mode: Executing command: ``" + msg.content + "``.").then(sent => sent.delete(15000));
-					console.log("[TEMP-CHA] OVERRIDE: Temporary Channel Created")
-	
-					var user = msg.member;
-	
-					var tempCmd = msg.content.split(" ");
-					var maxUsersParam = tempCmd.splice(1, 1);
-					var maxUsers = parseInt(maxUsersParam);
-					var tname = tempCmd.splice(1).join(' ');
-	
-					var tempChannelCat = '372453830161465345';
-					var channelSpawner = '420512697654706196';
-					var tchID;
-	
-					const userVC = user.voiceChannelID;
-	
-					if (userVC == undefined || userVC != channelSpawner) {
-						msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete(15000));
-					}
-					else if (userVC === channelSpawner) {
-						fstempchclone.clone(tname)
-						.then(clone => {
-						console.log("[TEMP-CHA] Channel created called: " + tname + " by: " + msg.author.tag);
-	
-						tchID = clone.id;
-						tempChannels.push(tchID);
-	
-						console.log("[TEMP-CHA] Channel " + tname + " has ID: " + tchID);
-						console.log("[TEMP-CHA] Temp Channels now include " + tempChannels.length + " channels of IDs: ");
-	
-						msg.reply("Channel created!").then(sent => sent.delete(15000));
-	
-						for (x = 0; x < tempChannels.length; x++) {
-							console.log(tempChannels[x]);
-						}
-	
-						clone.setParent(tempChannelCat);
-	
-						if (maxUsers > 1) {
-							clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))
-							msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete(15000));
-						}
-	
-						msg.member.setVoiceChannel(tchID);
-					
-						})
-						.catch(console.error);
-					}
-				}
-			}
-		}
-		else {
-			msg.reply("You don't have the permissions to run this command!").then(sent => sent.delete(15000));
-		}
-	}
 
 	//VOUCH SYSTEM
 	else if (command("vouch", msg)) {
