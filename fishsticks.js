@@ -109,10 +109,16 @@ fishsticks.on('message', async msg => {
 	if (msg.content == "hi" || msg.content == "Hi") {
 		msg.reply("Hello!");
 	}
-	else if (msg.content == "eyup" || msg.content == "ey up") {
+	
+	if (msg.content == "eyup" || msg.content == "ey up") {
 		msg.reply("'Ello, I'm right chuffed you're 'ere.");
 	}
-	else if (msg.content == "hello" || msg.content == "Hello") {
+
+	if (msg.content == "fishsticks" || msg.content == "Fishsticks") {
+		msg.channel.send("Mmmm, fishsticks....", {files: ["./images/fsimg.jpg"]});
+	}
+	
+	if (msg.content == "hello" || msg.content == "Hello") {
 		msg.reply("Hi there!");
 	}
 	else { //MESSAGE COMMAND HANDLER
