@@ -115,9 +115,6 @@ fishsticks.on('message', async msg => {
 	else if (msg.content == "hello" || msg.content == "Hello") {
 		msg.reply("Hi there!");
 	}
-	else if ((msg.content == "fishsticks" || "Fishsticks") && (msg.author.id !== fishsticks.user.id)) {
-		msg.channel.send("Mmmm, fishsticks...", {files:["./images/fsimg.jpg"]});
-	}
 	else { //MESSAGE COMMAND HANDLER
 		if (msg.author.fishsticks) return
 		if (msg.author.id == fishsticks.user.id) return
