@@ -12,8 +12,8 @@ exports.run = (fishsticks, msg, cmd) => {
 				"1. Follow all General Conduct Rules\n" +
 				"2. Be respectful of others. If someone does not like your behavior, stop or go to a new channel.\n"+
 				"3. Please only stream or record in a channel after obtaining permission from others in the channel to do so.\n\n"+
-				"======================================================\n"+
-				"General Conduct Rules:\n"+
+				"===============================================\n"+
+				"**General Conduct Rules**:\n"+
 				"A. Be respectful to others, their personhood, beliefs, gender, race, nationality, disability, or any other way they may differ from you. (Matthews 7:12)\n"+
 				"B. Obey all laws and end user agreements. (No sharing or talking about pirated software whatsoever. Fishsticks will have your head.) Romans 13:8\n"+
 				"C. If you feel someone to be guilty of any wrong doing, please talk to them privately or not at all (`!report` is a thing too.) Matthew 18:15\n"+

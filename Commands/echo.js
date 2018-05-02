@@ -2,10 +2,10 @@ const Discord = require('discord.js');
 const config = require('../Modules/Core/corecfg.json');
 const chs = require('../Modules/fs_channels.json');
 
-const announcements = fishsticks.channels.get(chs.announcements);
-
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
+
+    const announcements = fishsticks.channels.get(chs.announcements);
 
     function echoFunc(statement) {
         announcements.send(statement);
@@ -21,12 +21,13 @@ exports.run = (fishsticks, msg, cmd) => {
                 var milTime = cmd[0];
                 var waitTime = milTime * 60;
                 var cmdTime = waitTime * 1000;
+
                 var relayMSg = cmd.splice(1).join(' ');
 
-                console.log("[ECHO-CMD] Message Received. Awaiting " + waitTime + " minute(s) to relay message: " + relayMSg);
-                msg.reply("Command Received. Awaiting " + waitTime + " minute(s) to deploy.").then(sent => sent.delete(10000));
+                console.log("[ECHO-CMD] Message Received. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.").then(sent => sent.delete(10000));
 
-                setTimeout(echoFunc, cmdTime, "@everyone " + relayMSg);
+                setTimeout(echoFunc, cmdTime, "@here " + relayMSg);
             }
             else {
                 msg.reply("Engineering Mode is enabled. Command restricted.");
@@ -36,10 +37,11 @@ exports.run = (fishsticks, msg, cmd) => {
             var milTime = cmd[0];
             var waitTime = milTime * 60;
             var cmdTime = waitTime * 1000;
+
             var relayMSg = cmd.splice(1).join(' ');
 
-            console.log("[ECHO-CMD] Message Received. Awaiting " + waitTime + " minute(s) to relay message: " + relayMSg);
-            msg.reply("Command Received. Awaiting " + waitTime + " minute(s) to deploy.").then(sent => sent.delete(10000));
+            console.log("[ECHO-CMD] Message Received. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+            msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.").then(sent => sent.delete(10000));
 
             setTimeout(echoFunc, cmdTime, "@here " + relayMSg);
         }

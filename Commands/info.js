@@ -49,12 +49,12 @@ exports.run = (fishsticks, msg, cmd) => {
     }
     else if (cmd[0] == "engm" || cmd[0] == "ENGM") {
         var infoengm = new Discord.RichEmbed();
-		infoReport.setTitle("o0o - INFO CODEX - o0o")
-		infoReport.setColor(config.fscolor)
-		infoReport.setDescription(
+		infoengm.setTitle("o0o - INFO CODEX - o0o")
+		infoengm.setColor(config.fscolor)
+		infoengm.setDescription(
 			"Command ID:``!engm``\n"+
             "Parameters: `none`\n"+
-            "Description: `Toggles Fishsticks between active or inactive Engineering Mode. Used by staff/bot developers for when work is being done on Fishsticks' code. It disables commands such as tempch and echo because of the possibility of an code failure or command termination on restart.`"+
+            "Description: `Toggles Fishsticks between active or inactive Engineering Mode. Used by staff/bot developers for when work is being done on Fishsticks' code. It disables commands such as tempch and echo because of the possibility of an code failure or command termination on restart.`\n\n"+
             "``This message will delete itself in 30 seconds.``"
         )
         
@@ -62,9 +62,9 @@ exports.run = (fishsticks, msg, cmd) => {
     }
     else  if (cmd[0] == "info" || cmd[0] == "Info") {
         var infoinfo = new Discord.RichEmbed();
-		infoReport.setTitle("o0o - INFO CODEX - o0o")
-		infoReport.setColor(config.fscolor)
-		infoReport.setDescription(
+		infoinfo.setTitle("o0o - INFO CODEX - o0o")
+		infoinfo.setColor(config.fscolor)
+		infoinfo.setDescription(
 			"Command ID:``!info [commandID]``\n"+
             "Parameters:\n"+
             "   ->`commandID`: the part of a command that comes after the `!`.\n"+

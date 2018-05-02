@@ -6,7 +6,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
     var links = new Discord.RichEmbed();
 			links.setTitle("o0o - CC GAMING LINKS - o0o")
-			links.setColor(fscolor)
+			links.setColor(config.fscolor)
 			links.setDescription(
 				"[CC Gaming Website](https://www.ccgaming.com)\n" +
 				"[CC Forums](https://forums.ccgaming.com)\n\n" +
