@@ -102,7 +102,7 @@ function comm(str, msg) {
 	return msg.content.startsWith(prefix + str);
 }
 
-var svu = ["fishsticks is bad", "fishsticks are bad", "fishsticks are gross", "fishsticks eww", "hate fishsticks"];
+var svuArr = ["fishsticks is bad", "fishsticks are bad", "fishsticks are gross", "fishsticks eww", "hate fishsticks"];
 
 //MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
