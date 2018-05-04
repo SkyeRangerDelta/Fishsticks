@@ -124,8 +124,10 @@ fishsticks.on('message', async msg => {
 		msg.reply("Hao!");
 	}
 
-	if (msg.content.includes(svuArr)) {
-		msg.reply("Excuse me!? We are going to have to have a talk about where your standards lie and where they should be. Keep that attitude up and I'll have to take extra measures... (automatic 15 respect point loss).\n\n *Very idea...\nHating fishsticks...")
+	for (var i = 0; i < svuArr.length; i++) {
+		if (msg.content.includes(svuArr[i])) {
+			msg.reply("Excuse me!? We are going to have to have a talk about where your standards lie and where they should be. Keep that attitude up and I'll have to take extra measures... (automatic 15 respect point loss).\n\n *Very idea...\nHating fishsticks...")
+		}
 	}
 
 	if (msg.content == "svu") {
