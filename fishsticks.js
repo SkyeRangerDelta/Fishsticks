@@ -102,6 +102,8 @@ function comm(str, msg) {
 	return msg.content.startsWith(prefix + str);
 }
 
+var svu = ["fishsticks is bad", "fishsticks are bad", "fishsticks are gross", "fishsticks eww", "hate fishsticks"];
+
 //MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
 
@@ -118,8 +120,12 @@ fishsticks.on('message', async msg => {
 		msg.channel.send("Mmmm, fishsticks....", {files: ["./images/fsimg.jpg"]});
 	}
 
-	if (msg.content == "ni hao") {
+	if (msg.content == "ni hao" || msg.content == "Ni Hao" || msg.content == "Ni Hao Ma" || msg.content == "ni hao ma") {
 		msg.reply("Hao!");
+	}
+
+	if (msg.content.includes(svuArr)) {
+		msg.reply("Excuse me!? We are going to have to have a talk about where your standards lie and where they should be. Keep that attitude up and I'll have to take extra measures... (automatic 15 respect point loss).\n\n *Very idea...\nHating fishsticks...")
 	}
 
 	if (msg.content == "svu") {
