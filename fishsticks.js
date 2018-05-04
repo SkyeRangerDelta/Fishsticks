@@ -117,6 +117,16 @@ fishsticks.on('message', async msg => {
 	if (msg.content == "fishsticks" || msg.content == "Fishsticks") {
 		msg.channel.send("Mmmm, fishsticks....", {files: ["./images/fsimg.jpg"]});
 	}
+
+	if (msg.content == "ni hao") {
+		msg.reply("Hao!");
+	}
+
+	if (msg.content == "svu") {
+		msg.delete();
+
+		msg.channel.send("*In the criminal justice system, bot based offenses are considered especially heinous. In this Discord, the dedicated detectives who investigate these vicious felonies are members of an elite squad known as the Special Developers Unit. These are their stories.* GLUNG GLUNG", {files: ["./images/fs_defense.png"]});
+	}
 	
 	if (msg.content == "hello" || msg.content == "Hello") {
 		msg.reply("Hi there!");
