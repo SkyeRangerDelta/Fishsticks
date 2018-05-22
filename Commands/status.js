@@ -11,9 +11,9 @@ exports.run = (fishsticks, msg, cmd) => {
 	
 	if (engmode == true) {
 		var statusENG = new Discord.RichEmbed();
-		status.setTitle("o0o - FISHSTICKS STATUS REPORT - o0o");
-		status.setColor(config.fscolor);
-		status.setDescription(
+		statusENG.setTitle("o0o - FISHSTICKS STATUS REPORT - o0o");
+		statusENG.setColor(config.fscolor);
+		statusENG.setDescription(
 			"Current variables listing in this Fishsticks session.\n"+
 			"-----------------------------------------------\n"+
 			"File Read Syst: ``Limited``" + "\n"+
