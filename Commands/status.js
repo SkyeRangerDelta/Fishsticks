@@ -10,7 +10,7 @@ exports.run = (fishsticks, msg, cmd) => {
 	let engmmode = fishsticks.engmmode;
 	
 	if (engmode == true) {
-		var status = new Discord.RichEmbed();
+		var statusENG = new Discord.RichEmbed();
 		status.setTitle("o0o - FISHSTICKS STATUS REPORT - o0o");
 		status.setColor(config.fscolor);
 		status.setDescription(
@@ -30,7 +30,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			"``This message will delete itself in 1 minute.``"
 		);
 
-		msg.channel.send({embed: status}).then(sent => sent.delete(30000));
+		msg.channel.send({embed: statusENG}).then(sent => sent.delete(30000));
 	}
 	else {
 		var status = new Discord.RichEmbed();

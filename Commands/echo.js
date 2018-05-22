@@ -92,34 +92,42 @@ exports.run = (fishsticks, msg, cmd) => {
                     console.log("[ECHO-CMD] Message Received for Division: Rocket League. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
                     msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: Rocket League").then(sent => sent.delete(10000));
 
-                    setTimeout(echoFunc, cmdTime, "@Rocket League " + relayMSg);
+                    setTimeout(echoFunc, cmdTime, rl + " " + relayMSg);
                 break;
                 case "pubg":
                     console.log("[ECHO-CMD] Message Received for Division: PUBG. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
                     msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: PUBG").then(sent => sent.delete(10000));
 
-                    setTimeout(echoFunc, cmdTime, "@PUBG " + relayMSg);
+                    setTimeout(echoFunc, cmdTime, pubg + " " + relayMSg);
                 break;
                 case "ark":
                     console.log("[ECHO-CMD] Message Received for Division: Ark SE. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
                     msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: Ark SE").then(sent => sent.delete(10000));
 
-                    setTimeout(echoFunc, cmdTime, "@Ark: SE " + relayMSg);
+                    setTimeout(echoFunc, cmdTime, ark + " " + relayMSg);
                 break;
                 case "ow":
                     console.log("[ECHO-CMD] Message Received for Division: Overwatch. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
                     msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: Overwatch").then(sent => sent.delete(10000));
 
-                    setTimeout(echoFunc, cmdTime, "@Overwatch " + relayMSg);
+                    setTimeout(echoFunc, cmdTime, ow + " " + relayMSg);
                 break;
-                case "none" || "all":
+                case "none":
+                    console.log("[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                    msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete(10000));
+
+                    setTimeout(echoFunc, cmdTime, "@here " + relayMSg);
+                break;
+                case "all":
                     console.log("[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
                     msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete(10000));
 
                     setTimeout(echoFunc, cmdTime, "@here " + relayMSg);
                 break;
                 default:
+                    console.log("[ECHO-CMD] Command halted on account of invalid parameter.");
                     msg.reply("Invalid type selection; post stopped.");
+                break;
             }
         }
     }

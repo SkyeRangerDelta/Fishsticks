@@ -146,6 +146,8 @@ fishsticks.on('message', async msg => {
 	}
 
 	if (msg.content.includes("thonk")) {
+
+		if (msg.author.id == fishsticks.user.id) return
 		msg.react(fishsticks.emojis.find("name", "thonk"));
 
 		msg.channel.send("Hehe. *Thonk*", {files: ["./images/thonk.png"]});
