@@ -18,7 +18,7 @@ exports.run = (fishsticks, msg, cmd) => {
             "       -->`conduct`:\n"+
             "               Used to report troublesome users (trolls). Alerts staff.\n"+
             "               Valid Targets: `member ID (mention/tag)`\n"+
-            "       -->`tech`:\n"+
+            "       -->`discord`:\n"+
             "               Used to report Discord problems. Alerts tech support.\n"+
             "               Valid Targets: `role`, `username`, `invite`, or `channel`\n"+
             "   ->`target`: Dependent on type, see above.\n"+
@@ -73,5 +73,26 @@ exports.run = (fishsticks, msg, cmd) => {
         )
         
         msg.channel.send({embed: infoinfo}).then(sent => sent.delete(30000));
+    }
+    else if (cmd[0] == "echo" || cmd[0] == "Echo") {
+        var infoecho = new Discord.RichEmbed();
+            infoecho.setTitle("o0o - INFO CODEX - o0o");
+            infoecho.setColor(config.fscolor);
+            infoecho.setDescription(
+                "Command ID: `!echo [type] [time] [message]`\n"+
+                "Parameters:\n"+
+                    "   ->`type`: Used to define divisional announcement or not. Recognized types are as follows:\n"+
+                        "`rl`: Rocket League\n"+
+                        "`pubg`: PUBG\n"+
+                        "`ark`: Ark: SE\n"+
+                        "`ow`: Overwatch\n"+
+                        "`all` or `none`: General announcement, non-divisional.\n"+
+                    "   ->`time`: Specify the time in minutes to wait before announcing.\n"+
+                    "   ->`message`: The message to be announced, do not include mentions such as `@here` because that'll be repetetive.\n"+
+                "Description: `Delayed announcing, useful for events and server messages. Wait time can be 0. Types allow for divisional tagging. All parameters required.`\n\n"+
+                "`This message will delete itself in 30 seconds`"
+            );
+
+        msg.channel.send({embed: infoecho}).then(sent => sent.delete(30000));
     }
 }
