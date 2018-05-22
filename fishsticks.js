@@ -102,10 +102,25 @@ function comm(str, msg) {
 	return msg.content.startsWith(prefix + str);
 }
 
-var svuArr = ["fishsticks is bad", "fishsticks are bad", "fishsticks are gross", "fishsticks eww", "hate fishsticks"];
+var svuArr = ["fishsticks is bad", "fishsticks are bad", "fishsticks are gross", "fishsticks eww", "hate fishsticks", "fishsticks is nasty", "fishsticks are nasty", "fishsticks shush up", "shut up fishsticks", "fishticks shut up", "fishsticks, shut up", "caught fishsticks", "fishsticks is a girl", "fishsticks a girl"];
 
 //MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
+
+	//TWITCH DOMAIN SCREEN
+	if (msg.content.includes("twitch.tv")) {
+		if (msg.member.roles.find("name", "The Nod")) {
+			msg.reply("Post clearance granted, you have *The Nod*.").then(sent => sent.delete(10000));
+		}
+		else if (msg.member.roles.find("name", "Staff")) {
+			msg.reply("Post clearance overridden by Staff. I'd look into getting *The Nod*.").then(sent => sent.delete(10000));
+		}
+		else {
+			msg.delete();
+
+			msg.reply("Post unauthorized and cleared. You need *The Nod* before posting Twitch links! See `!rules`.").then(sent => sent.delete(20000));
+		}
+	}
 
 	//PASSIVE COMMANDS
 	if (msg.content == "hi" || msg.content == "Hi") {
@@ -126,8 +141,14 @@ fishsticks.on('message', async msg => {
 
 	for (var i = 0; i < svuArr.length; i++) {
 		if (msg.content.includes(svuArr[i])) {
-			msg.reply("Excuse me!? We are going to have to have a talk about where your standards lie and where they should be. Keep that attitude up and I'll have to take extra measures... (automatic 15 respect point loss).\n\n *Very idea...\nHating fishsticks...")
+			msg.reply("Excuse me!? We are going to have to have a talk about where your standards lie and where they should be. Keep that attitude up and I'll have to take extra measures... (automatic 15 respect point loss).\n\n *Very idea...\nHating fishsticks...*")
 		}
+	}
+
+	if (msg.content.includes("thonk")) {
+		msg.react(fishsticks.emojis.find("name", "thonk"));
+
+		msg.channel.send("Hehe. *Thonk*", {files: ["./images/thonk.png"]});
 	}
 
 	if (msg.content == "svu") {

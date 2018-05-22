@@ -18,32 +18,96 @@ exports.run = (fishsticks, msg, cmd) => {
 
                 msg.reply("ENGM Override Recognized. Granting permissions to " + msg.author.tag + ".");
 
-                var milTime = cmd[0];
+                var type = cmd[0];
+
+                var milTime = cmd[1];
                 var waitTime = milTime * 60;
                 var cmdTime = waitTime * 1000;
 
-                var relayMSg = cmd.splice(1).join(' ');
+                var relayMSg = cmd.splice(2).join(' ');
 
-                console.log("[ECHO-CMD] Message Received. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
-                msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.").then(sent => sent.delete(10000));
+                switch (type) {
+                    case "rl":
+                        console.log("[ECHO-CMD] Message Received for Division: Rocket League. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                        msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: Rocket League").then(sent => sent.delete(10000));
+    
+                        setTimeout(echoFunc, cmdTime, "@Rocket League " + relayMSg);
+                    break;
+                    case "pubg":
+                        console.log("[ECHO-CMD] Message Received for Division: PUBG. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                        msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: PUBG").then(sent => sent.delete(10000));
 
-                setTimeout(echoFunc, cmdTime, "@here " + relayMSg);
+                        setTimeout(echoFunc, cmdTime, "@PUBG " + relayMSg);
+                    break;
+                    case "ark":
+                        console.log("[ECHO-CMD] Message Received for Division: Ark SE. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                        msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: Ark SE").then(sent => sent.delete(10000));
+
+                        setTimeout(echoFunc, cmdTime, "@Ark: SE " + relayMSg);
+                    break;
+                    case "ow":
+                        console.log("[ECHO-CMD] Message Received for Division: Overwatch. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                        msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: Overwatch").then(sent => sent.delete(10000));
+
+                        setTimeout(echoFunc, cmdTime, "@Overwatch " + relayMSg);
+                    break;
+                    case "none" || "all":
+                        console.log("[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                        msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete(10000));
+
+                        setTimeout(echoFunc, cmdTime, "@here " + relayMSg);
+                    break;
+                    default:
+                        msg.reply("Invalid type selection; post stopped.");
+                }
             }
             else {
                 msg.reply("Engineering Mode is enabled. Command restricted.");
             }
         }
         else {
-            var milTime = cmd[0];
+            var type = cmd[0];
+
+            var milTime = cmd[1];
             var waitTime = milTime * 60;
             var cmdTime = waitTime * 1000;
 
-            var relayMSg = cmd.splice(1).join(' ');
+            var relayMSg = cmd.splice(2).join(' ');
 
-            console.log("[ECHO-CMD] Message Received. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
-            msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.").then(sent => sent.delete(10000));
+            switch (type) {
+                case "rl":
+                    console.log("[ECHO-CMD] Message Received for Division: Rocket League. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                    msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: Rocket League").then(sent => sent.delete(10000));
 
-            setTimeout(echoFunc, cmdTime, "@here " + relayMSg);
+                    setTimeout(echoFunc, cmdTime, "@Rocket League " + relayMSg);
+                break;
+                case "pubg":
+                    console.log("[ECHO-CMD] Message Received for Division: PUBG. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                    msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: PUBG").then(sent => sent.delete(10000));
+
+                    setTimeout(echoFunc, cmdTime, "@PUBG " + relayMSg);
+                break;
+                case "ark":
+                    console.log("[ECHO-CMD] Message Received for Division: Ark SE. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                    msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: Ark SE").then(sent => sent.delete(10000));
+
+                    setTimeout(echoFunc, cmdTime, "@Ark: SE " + relayMSg);
+                break;
+                case "ow":
+                    console.log("[ECHO-CMD] Message Received for Division: Overwatch. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                    msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: Overwatch").then(sent => sent.delete(10000));
+
+                    setTimeout(echoFunc, cmdTime, "@Overwatch " + relayMSg);
+                break;
+                case "none" || "all":
+                    console.log("[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                    msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete(10000));
+
+                    setTimeout(echoFunc, cmdTime, "@here " + relayMSg);
+                break;
+                default:
+                    msg.reply("Invalid type selection; post stopped.");
+            }
         }
     }
     else {
