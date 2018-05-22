@@ -108,7 +108,7 @@ var svuArr = ["fishsticks is bad", "fishsticks are bad", "fishsticks are gross",
 fishsticks.on('message', async msg => {
 
 	//TWITCH DOMAIN SCREEN
-	if (msg.content.includes("twitch.tv")) {
+	if (((msg.content.includes("streaming now")) || ((msg.content.includes("twitch")) && (msg.content.includes(".tv"))))) {
 		if (msg.member.roles.find("name", "The Nod")) {
 			msg.reply("Post clearance granted, you have *The Nod*.").then(sent => sent.delete(10000));
 		}
