@@ -11,6 +11,11 @@ exports.run = (fishsticks, msg, cmd) => {
         announcements.send(statement);
     }
 
+    var rl = msg.guild.roles.find('name', 'Rocket League');
+    var pubg = msg.guild.roles.find('name', 'PUBG');
+    var ark = msg.guild.roles.find('name', 'Ark: SE');
+    var ow = msg.guild.roles.find('name', 'Overwatch');
+
     if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', 'Bot')) {
         if (fishsticks.engmode == true) {
             if (msg.member.roles.find('name', 'Bot')) {
@@ -31,25 +36,25 @@ exports.run = (fishsticks, msg, cmd) => {
                         console.log("[ECHO-CMD] Message Received for Division: Rocket League. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
                         msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: Rocket League").then(sent => sent.delete(10000));
     
-                        setTimeout(echoFunc, cmdTime, "@Rocket League " + relayMSg);
+                        setTimeout(echoFunc, cmdTime, rl + " " + relayMSg);
                     break;
                     case "pubg":
                         console.log("[ECHO-CMD] Message Received for Division: PUBG. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
                         msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: PUBG").then(sent => sent.delete(10000));
 
-                        setTimeout(echoFunc, cmdTime, "@PUBG " + relayMSg);
+                        setTimeout(echoFunc, cmdTime, pubg + " " + relayMSg);
                     break;
                     case "ark":
                         console.log("[ECHO-CMD] Message Received for Division: Ark SE. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
                         msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: Ark SE").then(sent => sent.delete(10000));
 
-                        setTimeout(echoFunc, cmdTime, "@Ark: SE " + relayMSg);
+                        setTimeout(echoFunc, cmdTime, ark + " " + relayMSg);
                     break;
                     case "ow":
                         console.log("[ECHO-CMD] Message Received for Division: Overwatch. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
                         msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nDivision recognized: Overwatch").then(sent => sent.delete(10000));
 
-                        setTimeout(echoFunc, cmdTime, "@Overwatch " + relayMSg);
+                        setTimeout(echoFunc, cmdTime, ow + " " + relayMSg);
                     break;
                     case "none" || "all":
                         console.log("[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
