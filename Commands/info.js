@@ -82,11 +82,11 @@ exports.run = (fishsticks, msg, cmd) => {
                 "Command ID: `!echo [type] [time] [message]`\n"+
                 "Parameters:\n"+
                     "   ->`type`: Used to define divisional announcement or not. Recognized types are as follows:\n"+
-                        "`rl`: Rocket League\n"+
-                        "`pubg`: PUBG\n"+
-                        "`ark`: Ark: SE\n"+
-                        "`ow`: Overwatch\n"+
-                        "`all` or `none`: General announcement, non-divisional.\n"+
+                    "       `rl`: Rocket League\n"+
+                    "       `pubg`: PUBG\n"+
+                    "       `ark`: Ark: SE\n"+
+                    "       `ow`: Overwatch\n"+
+                    "       `all` or `none`: General announcement, non-divisional.\n"+
                     "   ->`time`: Specify the time in minutes to wait before announcing.\n"+
                     "   ->`message`: The message to be announced, do not include mentions such as `@here` because that'll be repetetive.\n"+
                 "Description: `Delayed announcing, useful for events and server messages. Wait time can be 0. Types allow for divisional tagging. All parameters required.`\n\n"+

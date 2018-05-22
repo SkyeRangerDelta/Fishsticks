@@ -56,7 +56,13 @@ exports.run = (fishsticks, msg, cmd) => {
 
                         setTimeout(echoFunc, cmdTime, ow + " " + relayMSg);
                     break;
-                    case ("none" || "all"):
+                    case "none":
+                        console.log("[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
+                        msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete(10000));
+
+                        setTimeout(echoFunc, cmdTime, "@here " + relayMSg);
+                    break;
+                    case "all":
                         console.log("[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg);
                         msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete(10000));
 
