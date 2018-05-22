@@ -7,7 +7,7 @@ const ses = require('../fishsticks_vars.json');
 exports.run = (fishsticks, msg, cmd) => {
 	msg.delete();
 
-	let engmmode = fishsticks.engmmode;
+	let engmode = fishsticks.engmode;
 	
 	if (engmode == true) {
 		var statusENG = new Discord.RichEmbed();
@@ -21,7 +21,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			"Active External Directories: `6`\n"+
 			"Session Number: ``" + fishsticks.syssession + "``\n"+
 			"Version Number: ``" + sys.fsversion + "``\n" +
-			"Engineering Mode: ``" + fishsticks.engmmode + "``\n"+
+			"Engineering Mode: ``" + engmode + "``\n"+
 			"Online Temporary Channels: `" + fishsticks.tempChannels.length + "`.\n" +
 			"Passive Systems: `Online`\n" +
 			"Twitch Screen: `Online`\n" +
@@ -44,7 +44,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			"Active External Directories: `6`\n"+
 			"Session Number: ``" + fishsticks.syssession + "``\n"+
 			"Version Number: ``" + sys.fsversion + "``\n" +
-			"Engineering Mode: ``" + fishsticks.engmmode + "``\n"+
+			"Engineering Mode: ``" + engmode + "``\n"+
 			"Online Temporary Channels: `" + fishsticks.tempChannels.length + "`.\n" +
 			"Passive Systems: `Online`\n" +
 			"Twitch Screen: `Online`\n" +
