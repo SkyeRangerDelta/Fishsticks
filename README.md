@@ -1,6 +1,8 @@
 # Fishsticks
 Official CC Discord Bot
 
+This Discord bot has entered a stage of advancement that has surpassed my other bot, LCARS47 by nothing less than leaps and bounds. Use it wisely, and you may have some fun.
+
 Current Commands
 
 -Extras*
