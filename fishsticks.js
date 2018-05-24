@@ -146,7 +146,7 @@ fishsticks.on('message', async msg => {
 		msg.channel.send("**Execute all the Jedis**", {files: ["./images/dewit.gif"]});
 	}
 
-	if (msg.content.includes == "good music" || msg.content == "great music") {
+	if (msg.content.includes("good music") || msg.content.includes("great music")) {
 		msg.channel.send("*Did someone say, `music`?*", {files: ["./sounds/sepWays.mp3"]});
 	}
 
