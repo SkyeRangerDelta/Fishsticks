@@ -22,9 +22,12 @@ const prefix = config.prefix;
 //ENGINEERING MODE
 let engmode = false;
 
+//BOT GLOBAL VARIABLES
 fishsticks.tempChannels = [];
 fishsticks.version = sys.fsversion;
+fishsticks.queue = new Map();
 
+//CHANNEL INITIALIZATIONS
 var fsconsoleChannel;
 var announceChannel;
 var fstempchclone;
@@ -137,6 +140,14 @@ fishsticks.on('message', async msg => {
 
 	if (msg.content == "ni hao" || msg.content == "Ni Hao" || msg.content == "Ni Hao Ma" || msg.content == "ni hao ma") {
 		msg.reply("Hao!");
+	}
+
+	if (msg.content == "Order 66" || msg.content == "order 66") {
+		msg.channel.send("**Execute all the Jedis**", {files: ["./images/dewit.gif"]});
+	}
+
+	if (msg.content.includes == "good music" || msg.content == "great music") {
+		msg.channel.send("*Did someone say, `music`?*", {files: ["./sounds/sepWays.mp3"]});
 	}
 
 	for (var i = 0; i < svuArr.length; i++) {

@@ -32,6 +32,9 @@ exports.run = (fishsticks, msg, cmd) => {
 				"`!overwatch`: Overwatch\n"+
 				"`!pubg`: PLAYERUNKNOWN'S BATTLEGROUNDS\n"+
 				"`!rocketleague`: Rocket League\n\n"+
+				"**Music Player Commands**\n"+
+				"-----------------------------------------------\n" +
+				"`What's that? You were looking for these? Don't get bent into a pretzel, these will be along soon.`\n\n"+
 				"**CC Member Commands**\n"+
 				"-----------------------------------------------\n" +
 				"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+

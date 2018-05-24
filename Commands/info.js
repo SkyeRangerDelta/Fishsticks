@@ -93,6 +93,20 @@ exports.run = (fishsticks, msg, cmd) => {
                 "`This message will delete itself in 30 seconds`"
             );
 
-        msg.channel.send({embed: infoecho}).then(sent => sent.delete(30000));
+        msg.channel.send({embed: infoplay}).then(sent => sent.delete(30000));
+    }
+    else if (cmd[0] == "play" || cmd[0] == "Play") {
+        var infoplay = new Discord.RichEmbed();
+            infoplay.setTitle("o0o - INFO CODEX - o0o");
+            infoplay.setColor(config.fscolor);
+            infoplay.setDescription(
+                "Command ID: `!play [youtubeURL]`\n"+
+                "Parameters:\n"+
+                "   ->`youtubeURL`: This is the YouTube link that the bot will pull the music from.\n"+
+                "Description: `Utilizes the bot's music player function via a youtube video link.`\n\n"+
+                "`This message will delete itself in 30 seconds`"
+            );
+
+        msg.channel.send({embed: infoplay}).then(sent => sent.delete(30000));
     }
 }
