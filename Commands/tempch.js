@@ -16,7 +16,7 @@ exports.run = (fishsticks, msg, cmd) => {
             if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', 'Bot')) {
                 console.log("[TEMP-CHA] ENGM Override Executed: Permission granted to " + msg.author.tag + ".");
 
-                msg.reply("ENGM Override Recognized. Granting permissions to " + msg.author.tag + ".");
+                msg.channel.send("ENGM Override Recognized. Granting permissions to " + msg.author.tag + ".");
 
                 var maxUsers = parseInt(cmd[0]) || 0;
                 var tname = cmd[1] ? cmd.slice(1).join(" ") : cmd.join(' ');
