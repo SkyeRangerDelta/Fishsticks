@@ -102,7 +102,12 @@ exports.run = (fishsticks, msg, cmd) => {
     }
 
     //COMMAND CONDITIONS (CHECKS BEFORE EXECUTING FUNCTIONS)
-    if (msg.member.roles.find('name', 'Members')) { //If member
+    if (msg.member.roles.find('name', 'Bot')) {
+        msg.channel.send("Command permissions authorized and granted to " + msg.author.tag + ".");
+        accept();
+    }
+
+    /* if (msg.member.roles.find('name', 'Members')) { //If member
         if (engmode == true) { //If ENGM is on
             console.log("[MUSI-SYS] Play command ignored via ENGM being true.")
 
@@ -137,5 +142,5 @@ exports.run = (fishsticks, msg, cmd) => {
 
             accept();
         }
-    }
+    } */
 }
