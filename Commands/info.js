@@ -93,7 +93,7 @@ exports.run = (fishsticks, msg, cmd) => {
                 "`This message will delete itself in 30 seconds`"
             );
 
-        msg.channel.send({embed: infoplay}).then(sent => sent.delete(30000));
+        msg.channel.send({embed: infoecho}).then(sent => sent.delete(30000));
     }
     else if (cmd[0] == "play" || cmd[0] == "Play") {
         var infoplay = new Discord.RichEmbed();

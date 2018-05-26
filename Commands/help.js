@@ -42,7 +42,7 @@ exports.run = (fishsticks, msg, cmd) => {
 				"``*!vouch [memberID]``: When 2 verified members of CC vouch for an newcomer, they will gain the Trusted role.*\n\n"+
 				"**Administrative Commands**\n" +
 				"-----------------------------------------------\n" +
-				"``!echo [time] [message]``: This command will take your message and broadcast it as an announcement after the specified time (in minutes) has passed.\n" +
+				"``!echo [type] [time] [message]``: This command will take your message and broadcast it as an announcement after the specified time (in minutes) has passed.\n" +
 				"``!engm``: Toggles Engineering Mode on or off depending on current state.\n\n"+
 				"``This menu will delete itself in 45 seconds.``")
         
@@ -76,7 +76,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			"**CC Member Commands**\n"+
 			"-----------------------------------------------\n" +
 			"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+
-			"  --> ``!info-report``: Details on how to use ``!report``.\n" +
+			"  --> ``!info report``: Details on how to use ``!report``.\n\n" +
 			"**Administrative Commands**\n" +
 			"-----------------------------------------------\n" +
 			"``!engm``: Toggles Engineering Mode on or off depending on current state.\n\n"+
