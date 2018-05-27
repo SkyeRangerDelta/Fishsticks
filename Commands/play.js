@@ -17,6 +17,9 @@ exports.run = (fishsticks, msg, cmd) => {
     var ranger = fishsticks.users.get("107203929447616512");
     var logger = fishsticks.channels.get(chs.musiclog);
 
+    var song;
+    var songInfo;
+
     var playerSongTitle;
 
     let engmode = fishsticks.engmode;
@@ -27,20 +30,27 @@ exports.run = (fishsticks, msg, cmd) => {
     function denied() {
         console.log("[MUSI-SYS] Play command rejected.");
 
-        msg.reply("Request denied. You have to join a tempch channel first!").then(sent => sent.delete(30000));
+        msg.reply("Request denied. You have to join a tempch channel first!\n\n*If this request was made from a temporary channel, Fishsticks has been restarted at some point and you need to recreate your channel for the music player to work.*").then(sent => sent.delete(30000));
     }
 
     async function accept() {
         console.log("[MUSI-SYS] Play command granted.");
 
-        const songInfo = await ytdl.getInfo(cmd[0]);
-        const song = {
-            title: songInfo.title,
-            url: songInfo.video_url
-        }
+        try {
+            console.log("[MUSI-SYS] Attempting to gather song info...");
 
-        playerSongTitle = song.title;
-        playerSongTitle = playerSongTitle.toLowerCase();
+            songInfo = await ytdl.getInfo(cmd[0]);
+            song = {
+                title: songInfo.title,
+                url: songInfo.video_url
+            }
+
+            playerSongTitle = song.title;
+            playerSongTitle = playerSongTitle.toLowerCase();
+        }
+        catch (error) {
+            console.log("[MUSI-SYS] Failed to collect song information.");
+        }
 
         if (!fishsticks.playlist) {
             const queueConstruct = {
@@ -89,15 +99,6 @@ exports.run = (fishsticks, msg, cmd) => {
             return;
         }
 
-        if (playerSongTitle.includes("mattyb") || playerSongTitle.includes("matt b")) {
-            msg.reply("WHY. Why do you make me play this terrible stuff!? (-5 respect points).").then(sent => sent.delete(20000));
-            return;
-        }
-
-        if (playerSongTitle.includes("rush") || playerSongTitle.includes("journey")) {
-            msg.reply("Here we go, see now **this** is *music*.").then(sent => sent.delete(20000));
-        }
-
         const dispatch = fishsticks.serverQueue.connection.playStream(ytdl(song.url))
             .on('end', () => {
                 console.log("[MUSI-SYS] Song ended.");
@@ -112,35 +113,43 @@ exports.run = (fishsticks, msg, cmd) => {
     }
 
     //COMMAND CONDITIONS (CHECKS BEFORE EXECUTING FUNCTIONS)
-    if (msg.member.roles.find('name', 'Bot') || msg.member.roles.find("name", "Staff")) {
-        logger.send("Command permissions authorized and granted to " + msg.author.tag + ".");
-        accept();
+    if (!cmd[0].includes("youtube.com")) {
+        msg.reply("That's not a proper YouTube link! (Make sure it's a `.com` and not a `.be`");
+        console.log("[MUSI-SYS] Improper YouTube link.");
     }
-    else if (msg.member.roles.find('name', 'Members')) { //If member
-        if (engmode == true) { //If ENGM is on
-            console.log("[MUSI-SYS] Play command ignored via ENGM being true.")
-
-            msg.reply("I can't play music while Engineering Mode is enabled! Ask" + ranger + " to clarify.");
+    else {
+        if (msg.member.roles.find('name', 'Bot') || msg.member.roles.find("name", "Staff")) {
+            logger.send("Command permissions authorized and granted to " + msg.author.tag + ".");
+            console.log("[MUSI-SYS] Staff override acknowledged.")
+            accept();
         }
-        else { //If ENGM is not on
-            if (!memberVC) {
-                msg.reply("You're not attached to a voice channel silly; you can't play music if you can't hear it. :thonk:");
+        else if (msg.member.roles.find('name', 'Members')) { //If member
+            if (engmode == true) { //If ENGM is on
+                console.log("[MUSI-SYS] Play command ignored via ENGM being true.")
+    
+                msg.reply("I can't play music while Engineering Mode is enabled! Ask " + ranger + " to clarify.");
             }
-            else if (memberVC == hangoutVC) {
-                msg.reply("No no, get out of the Hangout channel. You can't play music in there.");
-            }
-            else if (memberVC == channelSpawner) {
-                msg.reply("The channel spawner channel is not meant for music! Spawn one and then use the play system.");
-            }
-        
-            for (var t = 0; t < fishsticks.tempChannels.length; t++) {
-                if (memberVC == (fishsticks.channels.get(fishsticks.tempChannels[t]))) {
-                    accept();
+            else { //If ENGM is not on
+                if (!memberVC) {
+                    msg.reply("You're not attached to a voice channel silly; you can't play music if you can't hear it. :thonk:");
+                }
+                else if (memberVC == hangoutVC) {
+                    msg.reply("No no, get out of the Hangout channel. You can't play music in there.");
+                }
+                else if (memberVC == channelSpawner) {
+                    msg.reply("The channel spawner channel is not meant for music! Spawn one and then use the play system.");
+                }
+                else {
+                    for (var t = 0; t < fishsticks.tempChannels.length; t++) {
+                        if (memberVC == (fishsticks.channels.get(fishsticks.tempChannels[t]))) {
+                            accept();
+                        }
+                    }
                 }
             }
         }
-    }
-    else {
-        msg.reply("You lack the necessary permissions to use the music player. You must be a member!").then(sent => sent.delete(10000));
+        else {
+            msg.reply("You lack the necessary permissions to use the music player. You must be a member!").then(sent => sent.delete(10000));
+        }
     }
 }
