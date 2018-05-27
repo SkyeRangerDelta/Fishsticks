@@ -19,8 +19,7 @@ exports.run = (fishsticks, msg, cmd) => {
             console.log("[MUSI-SYS] Staff override: Playback termination by " + msg.author.tag);
         }
     }
-
-    if (msg.member.voiceChannel != fishsticks.vc) {
+    else if (msg.member.voiceChannel != fishsticks.vc) {
         msg.reply("Who are you? You're not even in the same channel as me!");
     }
     else {
