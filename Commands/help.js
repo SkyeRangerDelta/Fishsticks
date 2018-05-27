@@ -32,16 +32,9 @@ exports.run = (fishsticks, msg, cmd) => {
 				"`!overwatch`: Overwatch\n"+
 				"`!pubg`: PLAYERUNKNOWN'S BATTLEGROUNDS\n"+
 				"`!rocketleague`: Rocket League\n\n"+
-				"**Music Player Commands**\n"+
-				"-----------------------------------------------\n" +
-				"`!play [youtubeLink]`: If you meet the conditions (Member+, in a temporary channel), issuing this will attach fishsticks to your channel and play music.\n"+
-				"`!stop`: If you are attached to the same channel as fishsticks, this halts playback.\n"+
-				"`!skip`: Skips to the next song in the playlist queue.\n"+
-				"`!queue`: Lists the songs in the playlist.\n"+
-				"`!playing`: Shows the currently playing song.\n"+
-				"`!volume <numValue>`: Shows the current volume of the music player. Assigning a value changes it (Can only be 1-5).\n\n"+
 				"**CC Member Commands**\n"+
 				"-----------------------------------------------\n" +
+				"`!musichelp`: Shows the list of music player commands\n"+
 				"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+
 				"``!tempch <maxUsers> [name]``: Creates a temporary channel.  You must have the CC Members, Staff, or Bot to run. Join the Channel Spawner first before running the command.\n\n"+
 				"**Administrative Commands**\n" +
