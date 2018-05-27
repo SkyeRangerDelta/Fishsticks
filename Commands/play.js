@@ -95,7 +95,7 @@ exports.run = (fishsticks, msg, cmd) => {
         }
 
         if (playerSongTitle.includes("rush") || playerSongTitle.includes("journey")) {
-            msg.reply("Here we go, see now **this** is good music.").then(sent => sent.delete(20000));
+            msg.reply("Here we go, see now **this** is *music*.").then(sent => sent.delete(20000));
         }
 
         const dispatch = fishsticks.serverQueue.connection.playStream(ytdl(song.url))
