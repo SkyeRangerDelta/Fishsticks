@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../Modules/Core/corecfg.json');
-const chs = require('./Modules/fs_channels.json');
+const chs = require('../Modules/fs_channels.json');
 
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
