@@ -1,5 +1,8 @@
 const Discord = require('discord.js');
 const config = require('../Modules/Core/corecfg.json');
+const chs = require('../Modules/fs_channels.json');
+
+var logger = fishsticks.channels.get(chs.musiclog);
 
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
@@ -8,15 +11,15 @@ exports.run = (fishsticks, msg, cmd) => {
         msg.reply("Who are you? You're not even in the same channel as me!");
     }
     else {
-        if (msg.member.roles.find('name', 'Members')) {
+        if (msg.member.roles.find('name', 'Staff')) {
 
             if (!fishsticks.serverQueue) {
                 msg.reply("There's nothing to skip!");
             }
             else {
                 fishsticks.serverQueue.connection.dispatcher.end();
-                msg.channel.send("Playback skipped a song. Authorized by " + msg.author.tag);
-                msg.channel.send(`**Now Playing**: ${fishsticks.serverQueue.songs[0].title}`);
+                logger.send("Playback skipped a song. Authorized by " + msg.author.tag);
+                logger.send(`**Now Playing**: ${fishsticks.serverQueue.songs[0].title}`);
 
                 console.log("[MUSI-SYS] Playback skipped a song by " + msg.author.tag);
             }

@@ -2,6 +2,8 @@ const Discord = require('discord.js');
 const config = require('../Modules/Core/corecfg.json');
 const chs = require('../Modules/fs_channels.json');
 
+var logger = fishsticks.channels.get(chs.musiclog);
+
 const ytdl = require('ytdl-core');
 
 exports.run = (fishsticks, msg, cmd) => {
@@ -60,7 +62,6 @@ exports.run = (fishsticks, msg, cmd) => {
                 fishsticks.vc = memberVC;
 
                 queueConstruct.connection = connection;
-                msg.channel.send(`**Now Playing**: ${song.title}`)
                 play(msg.guild, queueConstruct.songs[0]);
     
                 console.log("[MUSI-SYS] Attached to channel and playing song...");
@@ -70,12 +71,12 @@ exports.run = (fishsticks, msg, cmd) => {
 
                 fishsticks.queue.delete(msg.guild.id);
 
-                return msg.channel.send("I failed to connect to a channel, check the log! " + ranger);
+                return logger.send("I failed to connect to a channel, check the log! " + ranger);
             }
         }
         else {
             fishsticks.playlist.songs.push(song);
-            msg.channel.send(`The song **${song.title}** has been added to the play queue.`);
+            logger.send(`The song **${song.title}** has been added to the play queue.`);
         }
     }
 
@@ -89,11 +90,13 @@ exports.run = (fishsticks, msg, cmd) => {
             return;
         }
 
-        if (playerSongTitle.includes("mattyb")) {
-            msg.reply("No. Not playing that. Begone.");
-            fishsticks.serverQueue.vCh.leave();
-            fishsticks.queue.delete(guild.id);
+        if (playerSongTitle.includes("mattyb") || playerSongTitle.includes("matt b")) {
+            msg.reply("WHY. Why do you make me play this terrible stuff!? (-5 respect points).").then(sent => sent.delete(20000));
             return;
+        }
+
+        if (playerSongTitle.includes("rush") || playerSongTitle.includes("journey")) {
+            msg.reply("Here we go, see now **this** is good music.").then(sent => sent.delete(20000));
         }
 
         const dispatch = fishsticks.serverQueue.connection.playStream(ytdl(song.url))
@@ -106,12 +109,12 @@ exports.run = (fishsticks, msg, cmd) => {
         
         dispatch.setVolumeLogarithmic(fishsticks.serverQueue.volume / 5);
 
-        msg.channel.send(`**Now playing**: ${song.title}`);
+        logger.send(`**Now playing**: ${song.title}`);
     }
 
     //COMMAND CONDITIONS (CHECKS BEFORE EXECUTING FUNCTIONS)
     if (msg.member.roles.find('name', 'Bot') || msg.member.roles.find("name", "Staff")) {
-        msg.channel.send("Command permissions authorized and granted to " + msg.author.tag + ".");
+        logger.send("Command permissions authorized and granted to " + msg.author.tag + ".");
         accept();
     }
     else if (msg.member.roles.find('name', 'Members')) { //If member

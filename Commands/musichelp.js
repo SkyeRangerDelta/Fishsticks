@@ -12,10 +12,10 @@ exports.run = (fishsticks, msg, cmd) => {
             "===============================================\n\n" +
             "`!play [youtubeLink]`: Launches Fishsticks' music player or adds a song to the queue.\n"+
             "`!stop`: Halts playback and disconnects Fishsticks.\n"+
-            "`!skip`: Skips playback to the next song in the queue.\n"+
+            "`!skip`: Skips playback to the next song in the queue. (Staff only)\n"+
             "`!playing`: Shows what is currently playing.\n"+
             "`!queue`: Shows the queue of songs.\n"+
-            "`!volume <value>`: Shows the current volume of the player. If issued with a value, will change the volume.\n\n"+
+            "`!volume <value>`: Shows the current volume of the player. If issued with a value, will change the volume. (1-5 : Inclusive)\n\n"+
             "`This menu will delete itself in 45 seconds.`"
         );
 
