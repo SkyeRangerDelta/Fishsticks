@@ -43,12 +43,10 @@ exports.run = (fishsticks, msg, cmd) => {
 				"**CC Member Commands**\n"+
 				"-----------------------------------------------\n" +
 				"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+
-				"``!tempch [max users <0 if none>] [name]``: Creates a temporary channel.  You must have the CC Members, Staff, or Bot to run. Join the Channel Spawner first before running the command.\n"+
-				"``*!vouch [memberID]``: When 2 verified members of CC vouch for an newcomer, they will gain the Trusted role.*\n\n"+
+				"``!tempch <maxUsers> [name]``: Creates a temporary channel.  You must have the CC Members, Staff, or Bot to run. Join the Channel Spawner first before running the command.\n\n"+
 				"**Administrative Commands**\n" +
 				"-----------------------------------------------\n" +
-				"``!echo [type] [time] [message]``: This command will take your message and broadcast it as an announcement after the specified time (in minutes) has passed.\n" +
-				"``!engm``: Toggles Engineering Mode on or off depending on current state.\n\n"+
+				"``!echo [type] [time] [message]``: This command will take your message and broadcast it as an announcement after the specified time (in minutes) has passed.\n\n" +
 				"``This menu will delete itself in 45 seconds.``")
         
         msg.channel.send({embed: help}).then(sent => sent.delete(45000));
