@@ -2,8 +2,6 @@ const Discord = require('discord.js');
 const config = require('../Modules/Core/corecfg.json');
 const chs = require('../Modules/fs_channels.json');
 
-var logger = fishsticks.channels.get(chs.musiclog);
-
 const ytdl = require('ytdl-core');
 
 exports.run = (fishsticks, msg, cmd) => {
@@ -17,6 +15,7 @@ exports.run = (fishsticks, msg, cmd) => {
     var hangoutVC = fishsticks.channels.get(chs.hangoutVC);
     var channelSpawner = fishsticks.channels.get(chs.fs_vcclone);
     var ranger = fishsticks.users.get("107203929447616512");
+    var logger = fishsticks.channels.get(chs.musiclog);
 
     var playerSongTitle;
 

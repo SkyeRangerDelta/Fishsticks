@@ -2,11 +2,11 @@ const Discord = require('discord.js');
 const config = require('../Modules/Core/corecfg.json');
 const chs = require('../Modules/fs_channels.json');
 
-var logger = fishsticks.channels.get(chs.musiclog);
-
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
+    var logger = fishsticks.channels.get(chs.musiclog);
+    
     if (msg.member.voiceChannel != fishsticks.vc) {
         msg.reply("Who are you? You're not even in the same channel as me!");
     }
