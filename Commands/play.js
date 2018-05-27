@@ -16,15 +16,13 @@ exports.run = (fishsticks, msg, cmd) => {
     var channelSpawner = fishsticks.channels.get(chs.fs_vcclone);
     var ranger = fishsticks.users.get("107203929447616512");
 
+    var playerSongTitle;
+
     let engmode = fishsticks.engmode;
 
     console.log("[MUSI-SYS] Play command recognized from user " + msg.author.tag + ".");
 
     //ACTIVE FUNCTIONS
-    function denyTemp() {
-        msg.reply("Nonono, you can't do this just yet!").then(sent => sent.delete(15000));
-    }
-
     function denied() {
         console.log("[MUSI-SYS] Play command rejected.");
 
@@ -39,6 +37,9 @@ exports.run = (fishsticks, msg, cmd) => {
             title: songInfo.title,
             url: songInfo.video_url
         }
+
+        playerSongTitle = song.title;
+        playerSongTitle = playerSongTitle.toLowerCase();
 
         if (!fishsticks.playlist) {
             const queueConstruct = {
@@ -88,6 +89,13 @@ exports.run = (fishsticks, msg, cmd) => {
             return;
         }
 
+        if (playerSongTitle.includes("mattyb")) {
+            msg.reply("No. Not playing that. Begone.");
+            fishsticks.serverQueue.vCh.leave();
+            fishsticks.queue.delete(guild.id);
+            return;
+        }
+
         const dispatch = fishsticks.serverQueue.connection.playStream(ytdl(song.url))
             .on('end', () => {
                 console.log("[MUSI-SYS] Song ended.");
@@ -102,12 +110,11 @@ exports.run = (fishsticks, msg, cmd) => {
     }
 
     //COMMAND CONDITIONS (CHECKS BEFORE EXECUTING FUNCTIONS)
-    if (msg.member.roles.find('name', 'Bot')) {
+    if (msg.member.roles.find('name', 'Bot') || msg.member.roles.find("name", "Staff")) {
         msg.channel.send("Command permissions authorized and granted to " + msg.author.tag + ".");
         accept();
     }
-
-    /* if (msg.member.roles.find('name', 'Members')) { //If member
+    else if (msg.member.roles.find('name', 'Members')) { //If member
         if (engmode == true) { //If ENGM is on
             console.log("[MUSI-SYS] Play command ignored via ENGM being true.")
 
@@ -126,21 +133,12 @@ exports.run = (fishsticks, msg, cmd) => {
         
             for (var t = 0; t < fishsticks.tempChannels.length; t++) {
                 if (memberVC == (fishsticks.channels.get(fishsticks.tempChannels[t]))) {
-                    denyTemp();
+                    accept();
                 }
             }
         }
     }
-    else if (msg.member.roles.find('name', 'Bot')) { //If Bot
-        if (engmode == true) { //If ENGM is on
-            msg.reply("ENGM Override Recognized. Command authorization granted to " + msg.author.tag);
-
-            accept();
-        }
-        else { //If ENGM is not on
-            msg.reply("Command authorization recognized; executing command...");
-
-            accept();
-        }
-    } */
+    else {
+        msg.reply("You lack the necessary permissions to use the music player. You must be a member!").then(sent => sent.delete(10000));
+    }
 }

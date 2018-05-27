@@ -34,7 +34,12 @@ exports.run = (fishsticks, msg, cmd) => {
 				"`!rocketleague`: Rocket League\n\n"+
 				"**Music Player Commands**\n"+
 				"-----------------------------------------------\n" +
-				"`What's that? You were looking for these? Don't get bent into a pretzel, these will be along soon.`\n\n"+
+				"`!play [youtubeLink]`: If you meet the conditions (Member+, in a temporary channel), issuing this will attach fishsticks to your channel and play music.\n"+
+				"`!stop`: If you are attached to the same channel as fishsticks, this halts playback.\n"+
+				"`!skip`: Skips to the next song in the playlist queue.\n"+
+				"`!queue`: Lists the songs in the playlist.\n"+
+				"`!playing`: Shows the currently playing song.\n"+
+				"`!volume <numValue>`: Shows the current volume of the music player. Assigning a value changes it (Can only be 1-5).\n\n"+
 				"**CC Member Commands**\n"+
 				"-----------------------------------------------\n" +
 				"``!report [type] [target] [reason]``: report a problem to the necessary member.\n"+

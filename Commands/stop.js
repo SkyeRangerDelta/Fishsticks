@@ -25,4 +25,17 @@ exports.run = (fishsticks, msg, cmd) => {
             msg.reply("Are you qualified to run this thing?");
         }
     }
+
+    if (msg.member.roles.find("name", "Staff")) {
+        if (!fishsticks.serverQueue) {
+            msg.reply("There's nothing to stop!");
+        }
+        else {
+            fishsticks.serverQueue.songs = [];
+            fishsticks.serverQueue.connection.dispatcher.end();
+            msg.channel.send("Staff override: playback terminated by " + msg.author.tag);
+
+            console.log("[MUSI-SYS] Staff override: Playback termination by " + msg.author.tag);
+        }
+    }
 }
