@@ -4,7 +4,7 @@ const config = require('../Modules/Core/corecfg.json');
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
-    var musichelp = Discord.RichEmbed();
+    var musichelp = new Discord.RichEmbed();
         musichelp.setTitle("o0o - MUSIC PLAYER HELP - o0o");
         musichelp.setColor(config.fscolor);
         musichelp.setDescription(
