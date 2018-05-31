@@ -32,6 +32,10 @@ var fsconsoleChannel;
 var announceChannel;
 var fstempchclone;
 var staffChannel;
+var hangoutch;
+
+//USER INITIALIZATIONS
+var ranger;
 
 //--------------------------------------
 //............MAIN SCRIPT...............
@@ -56,6 +60,9 @@ fishsticks.on('ready', () => {
 	fsconsoleChannel = fishsticks.channels.get(channels.fsconsole);
 	announceChannel = fishsticks.channels.get(channels.announcements);
 	staffChannel = fishsticks.channels.get(channels.staffChannel);
+	hangoutch = fishsticks.channels.get(channels.hangout);
+
+	ranger = fishsticks.users.get("107203929447616512");
 
 	//Startup Message - console
 	console.log(`Successfully Logged ${fishsticks.user.tag} into the server.`);
@@ -269,20 +276,22 @@ fishsticks.on('voiceStateUpdate', (oldMember, newMember) => {
 	}
 });
 
-
-
 //MEMBER JOIN/LEAVE SYSTEM  ==EXPERIMENTAL==
-/*fishsticks.on('guildMemberAdd', member => {
+fishsticks.on('guildMemberAdd', member => {
 	var join = new Discord.RichEmbed();
 		join.setTitle("o0o - Welcome! - o0o")
 		join.setColor(fscolor)
 		join.setThumbnail(member.user.avatarURL)
-		join.addField("Welcome to the offical CC Discord, " + member.user.username + "! Stick around for some fish!")
-		join.setDescription(member.user.username +" Joined at | " +formatDate(new Date()))
-    						member.guild.channels.find("name", "fishsticks-console").send({join})
+		join.addField("Welcome to the offical CC Discord, " + member.user.username + "! Stick around for some fish!", msg.member.username + "joined us!")
+		join.setDescription("The community is open to questions, but formal inquieries should be sent to any of our staff team." +
+		" Council Members are open to any concerns you may have and moderators can answer immediate questions. If you wish to know more about me, Fishsticks, then you " +
+		"can ask " + ranger + ".");
+		
+		hangoutch.send({embed: join});
+		fsconsoleChannel.send({embed: join});
+		staffChannel.send("A newcomer has appeared in our humble abode. " + member.user.username + " may have questions for you. @here")
 
     console.log("+USER: " + member.user.username + " joined the server.");
 });
-*/
 
 fishsticks.login(token);
