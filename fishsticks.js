@@ -282,7 +282,7 @@ fishsticks.on('guildMemberAdd', member => {
 		join.setTitle("o0o - Welcome! - o0o")
 		join.setColor(fscolor)
 		join.setThumbnail(member.user.avatarURL)
-		join.addField("Welcome to the offical CC Discord, " + member.user.username + "! Stick around for some fish!", msg.member.username + "joined us!")
+		join.addField("Welcome to the offical CC Discord, " + member.user.username + "! Stick around for some fish!", member.user.username + "joined us!")
 		join.setDescription("The community is open to questions, but formal inquieries should be sent to any of our staff team." +
 		" Council Members are open to any concerns you may have and moderators can answer immediate questions. If you wish to know more about me, Fishsticks, then you " +
 		"can ask " + ranger + ".");
