@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const sys = require('../Modules/Core/coresys.json');
+const sys = require('../../Modules/Core/coresys.json');
 const fs = require('fs');
 
 let engmode;

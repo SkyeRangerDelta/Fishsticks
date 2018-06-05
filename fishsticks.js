@@ -99,17 +99,6 @@ fishsticks.on('ready', () => {
 //FISHSTICKS COMMAND LISTING
 //----------------------------------
 
-//RICH EMBEDS
-	/*
-
-//COMMAND STRUCTURE
-	//Listed alphabetically
-	//-Current List-
-		//Hello
-		//Hi
-		//Log(S)
-		//Vouch */
-
 function comm(str, msg) {
 	return msg.content.startsWith(prefix + str);
 }
@@ -135,18 +124,6 @@ fishsticks.on('message', async msg => {
 	}
 
 	//PASSIVE COMMANDS
-	if (msg.content == "hi" || msg.content == "Hi") {
-		msg.reply("Hello!");
-	}
-	
-	if (msg.content == "eyup" || msg.content == "ey up") {
-		msg.reply("'Ello, I'm right chuffed you're 'ere.");
-	}
-
-	if (msg.content == "fishsticks" || msg.content == "Fishsticks") {
-		msg.channel.send("Mmmm, fishsticks....", {files: ["./images/fsimg.jpg"]});
-	}
-
 	if (msg.content == "ni hao" || msg.content == "Ni Hao" || msg.content == "Ni Hao Ma" || msg.content == "ni hao ma") {
 		msg.reply("Hao!");
 	}
@@ -172,36 +149,42 @@ fishsticks.on('message', async msg => {
 
 		msg.channel.send("Hehe. *Thonk*", {files: ["./images/thonk.png"]});
 	}
-
-	if (msg.content == "svu") {
-		msg.delete();
-
-		msg.channel.send("*In the criminal justice system, bot based offenses are considered especially heinous. In this Discord, the dedicated detectives who investigate these vicious felonies are members of an elite squad known as the Special Developers Unit. These are their stories.* GLUNG GLUNG", {files: ["./images/fs_defense.png"]});
-	}
-	
-	if (msg.content == "hello" || msg.content == "Hello") {
-		msg.reply("Hi there!");
-	}
 	else { //MESSAGE COMMAND HANDLER
 		if (msg.author.fishsticks) return
 		if (msg.author.id == fishsticks.user.id) return
-		if (msg.content.indexOf(prefix) !== 0) return
-	
+
+		const pcmd = msg.content.split(" ");
 		const cmd = msg.content.slice(prefix.length).trim().split(/ +/g);
 		const cmdID = cmd.shift().toLowerCase();
 	
-		try {
-			let cmdFile = require(`./Commands/${cmdID}.js`);
-			cmdFile.run(fishsticks, msg, cmd);
-		} catch (err) {
-			console.error(err);
-			msg.reply("You trying to thonk me? That's not a command silly. Use `!help` to get a reference.");
+		//ACTIVE COMMANDS
+		if (msg.content.charAt(0) == prefix) {
+			console.log("[ACT-COMM] Attempting Resolution for command: " + cmdID);
+			try {
+				let cmdFile = require(`./Commands/Active/${cmdID}.js`);
+				cmdFile.run(fishsticks, msg, cmd);
+				console.log("[ACT-COMM] Success")
+			}
+			catch (err) {
+				console.log("[ACT-COMM] Failed:\n" + err);
+				msg.reply(", You trying to thonk me? That's not a command! Use `!help` to get a reference.");
+			}
+		}
+		//PASSIVE COMMANDS
+		else {
+			console.log("[PAS-COMM] Attempting Resolution for command: " + pcmd[0]);
+			try {
+				let pCmdFile = require(`./Commands/Passive/${pcmd[0]}.js`);
+				pCmdFile.run(fishsticks, msg, cmd);
+				console.log("[PAS-COMM] Success");
+			} catch (err) {
+				console.log("[PAS-COMM] Failed: " + err);
+			}
 		}
 	}
 });
 
 /*
-
 	//VOUCH SYSTEM
 	else if (command("vouch", msg)) {
 		msg.delete();
@@ -217,41 +200,7 @@ fishsticks.on('message', async msg => {
 		console.log(memberForID);
 		console.log(vouchestot);
 		
-	} else {
-		msg.reply("Was that command? Perhaps try again and reference `!help` if you don't know?")
 	}
-
-	//SECRET
-	if (msg.content.toLowerCase() === "fishsticks, how are you feeling?") {
-		msg.reply("I'm a little rattled, feeling pretty good right now though. SkyeRanger is a pretty darn good bot doctor.");
-	}
-
-	if (msg.content.toLowerCase() == "Fishsticks, how are you?") {
-		if (engmode == true) {
-			msg.reply("Well, looks like engineering mode is on, so that means I'm probably being worked on. I'll be better than ever soon though. :)");
-		}
-		else {
-			msg.reply("I'm doin' pretty good right now. That whole hijacking thing caught me off gaurd but I'm good.");
-		}
-	}
-
-	if (msg.content == "good evening Fishsticks" || msg.content == "good evening fishsticks") {
-		msg.reply("Good evening to you!");
-	}
-
-	if (msg.content == "ey up" || msg.content == "eyup") {
-		msg.reply("Greetings! I'm right chuffed you're 'ere.");
-	}
-
-	if (msg.content == "football" || msg.content == "ffootballl") {
-		msg.reply("*Erm, hrm, ~~troll~~ cough*");
-	}
-
-	if (command("feed", msg)) {
-		msg.reply("Probably not a good idea. :)")
-	}
-
-
 }); */
 
 
@@ -289,8 +238,7 @@ fishsticks.on('guildMemberAdd', member => {
 		" Council Members are open to any concerns you may have and moderators can answer immediate questions. If you wish to know more about me, Fishsticks, then you " +
 		"can ask " + ranger + ".\n\nNote that as a newcomer to our server, you are without text chat permissions until granted Trusted. You can join a voice channel though!");
 		
-		hangoutch.send({embed: join});
-		crashpad.send("A newcomer has appeared in our humble abode. " + member.user.username + " may have questions for you. @here")
+		crashpad.send({embed: join});
 
     console.log("+USER: " + member.user.username + " joined the server.");
 });

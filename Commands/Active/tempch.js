@@ -1,8 +1,8 @@
 const Discord = require('discord.js');
-const sys = require('../Modules/Core/coresys.json');
+const sys = require('../../Modules/Core/coresys.json');
 const fs = require('fs');
-const engm = require('../Modules/fishsticks_engm.json');
-const chs = require('../Modules/fs_channels.json');
+const engm = require('../../Modules/fishsticks_engm.json');
+const chs = require('../../Modules/fs_channels.json');
 
 var tempChannels = [];
 

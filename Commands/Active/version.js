@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
-const config = require('../Modules/Core/corecfg.json');
-const coresys = require('../Modules/Core/coresys.json');
+const config = require('../../Modules/Core/corecfg.json');
+const coresys = require('../../Modules/Core/coresys.json');
 
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();

@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
-const config = require('../Modules/Core/corecfg.json');
-const chs = require('../Modules/fs_channels.json');
+const config = require('../../Modules/Core/corecfg.json');
+const chs = require('../../Modules/fs_channels.json');
 
 const ytdl = require('ytdl-core');
 

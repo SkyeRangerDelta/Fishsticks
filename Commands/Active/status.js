@@ -1,8 +1,8 @@
 const Discord = require('discord.js');
-const config = require('../Modules/Core/corecfg.json');
-const eng = require('../Modules/fishsticks_engm.json');
-const sys = require('../Modules/Core/coresys.json');
-const ses = require('../fishsticks_vars.json');
+const config = require('../../Modules/Core/corecfg.json');
+const eng = require('../../Modules/fishsticks_engm.json');
+const sys = require('../../Modules/Core/coresys.json');
+const ses = require('../../fishsticks_vars.json');
 
 exports.run = (fishsticks, msg, cmd) => {
 	msg.delete();
