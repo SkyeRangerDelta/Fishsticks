@@ -3,11 +3,26 @@ const config = require('../../Modules/Core/corecfg.json');
 const eng = require('../../Modules/fishsticks_engm.json');
 const sys = require('../../Modules/Core/coresys.json');
 const ses = require('../../fishsticks_vars.json');
+const counter = require('count-files');
 
 exports.run = (fishsticks, msg, cmd) => {
 	msg.delete();
 
 	let engmode = fishsticks.engmode;
+	
+	const activeDir = './';
+	const passiveDir = '../Passive';
+	const mainDir = '../../';
+
+	var activeDirs = "`Under Development`";
+	var passiveDirs = "`Under Development`";
+	var externalDirs = "`Under Development`";
+
+	/*counter(activeDir, function (err, results) {
+		console.log("[SYS-STAT] Counting directories and files...");
+		console.log(results);
+		activeDirs = results;
+	}); */
 	
 	if (engmode == true) {
 		var statusENG = new Discord.RichEmbed();
@@ -17,8 +32,9 @@ exports.run = (fishsticks, msg, cmd) => {
 			"Current variables listing in this Fishsticks session.\n"+
 			"-----------------------------------------------\n"+
 			"File Read Syst: ``Limited``" + "\n"+
-			"Active External Files: `18`\n"+
-			"Active External Directories: `6`\n"+
+			"Active External Directories: `" + externalDirs + "`\n"+
+			"Active External Active Commands: `" + activeDirs + "`\n"+
+			"Active External Passive Commands: `" + passiveDirs + "`\n"+
 			"Session Number: ``" + fishsticks.syssession + "``\n"+
 			"Version Number: ``" + sys.fsversion + "``\n" +
 			"Engineering Mode: ``" + engmode + "``\n"+
@@ -40,8 +56,9 @@ exports.run = (fishsticks, msg, cmd) => {
 			"Current variables listing in this Fishsticks session.\n"+
 			"-----------------------------------------------\n"+
 			"File Read Syst: ``Online``" + "\n"+
-			"Active External Files: `18`\n"+
-			"Active External Directories: `6`\n"+
+			"Active External Directories: `" + externalDirs + "`\n"+
+			"Active External Active Commands: `" + activeDirs + "`\n"+
+			"Active External Passive Commands: `" + passiveDirs + "`\n"+
 			"Session Number: ``" + fishsticks.syssession + "``\n"+
 			"Version Number: ``" + sys.fsversion + "``\n" +
 			"Engineering Mode: ``" + engmode + "``\n"+

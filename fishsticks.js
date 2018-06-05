@@ -167,7 +167,7 @@ fishsticks.on('message', async msg => {
 			}
 			catch (err) {
 				console.log("[ACT-COMM] Failed:\n" + err);
-				msg.reply(", You trying to thonk me? That's not a command! Use `!help` to get a reference.");
+				msg.reply("You trying to thonk me? That's not a command! Use `!help` to get a reference.");
 			}
 		}
 		//PASSIVE COMMANDS
