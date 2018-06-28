@@ -17,6 +17,7 @@ const config = require('./Modules/Core/corecfg.json');
 
 const token = systems.token;
 const fscolor = config.fscolor;
+const fsemercolor = config.fsemercolor;
 const prefix = config.prefix;
 
 //ENGINEERING MODE
@@ -26,6 +27,7 @@ let engmode = false;
 fishsticks.tempChannels = [];
 fishsticks.version = sys.fsversion;
 fishsticks.queue = new Map();
+fishsticks.servStatus;
 
 //CHANNEL INITIALIZATIONS
 var fsconsoleChannel;
@@ -34,6 +36,11 @@ var fstempchclone;
 var staffChannel;
 var hangoutch;
 var crashpad;
+var moderator;
+
+//ROLE INITIALIZATIONS
+let newcomer;
+let staff;
 
 //USER INITIALIZATIONS
 var ranger;
@@ -58,12 +65,15 @@ var fsvouchesdoc = JSON.parse(fs.readFileSync('./fishsticks_vouches.json', 'utf8
 //STARTUP PROCEDURE
 fishsticks.on('ready', () => {
 
+	//CHANNEL DEFINITIONS
 	fsconsoleChannel = fishsticks.channels.get(channels.fsconsole);
 	announceChannel = fishsticks.channels.get(channels.announcements);
 	staffChannel = fishsticks.channels.get(channels.staffChannel);
 	hangoutch = fishsticks.channels.get(channels.hangout);
 	crashpad = fishsticks.channels.get(channels.crashpad);
+	moderator = fishsticks.channels.get(channels.moderator);
 
+	//USER DEFINITIONS
 	ranger = fishsticks.users.get("107203929447616512");
 
 	//Startup Message - console
@@ -98,10 +108,6 @@ fishsticks.on('ready', () => {
 //----------------------------------
 //FISHSTICKS COMMAND LISTING
 //----------------------------------
-
-function comm(str, msg) {
-	return msg.content.startsWith(prefix + str);
-}
 
 var svuArr = ["fishsticks is bad", "fishsticks are bad", "fishsticks are gross", "fishsticks eww", "hate fishsticks", "fishsticks is nasty", "fishsticks are nasty", "fishsticks shush up", "shut up fishsticks", "fishticks shut up", "fishsticks, shut up", "caught fishsticks", "fishsticks is a girl", "fishsticks a girl"];
 
@@ -229,18 +235,42 @@ fishsticks.on('voiceStateUpdate', (oldMember, newMember) => {
 
 //MEMBER JOIN/LEAVE SYSTEM  ==EXPERIMENTAL==
 fishsticks.on('guildMemberAdd', member => {
+
+	//DEFINE GUILD
+	server = member.guild;
+
+	//DEFINE NEWCOMER
+	newcomer = server.roles.find('name', 'Newcomer');
+
 	var join = new Discord.RichEmbed();
 		join.setTitle("o0o - Welcome! - o0o")
 		join.setColor(fscolor)
 		join.setThumbnail(member.user.avatarURL)
 		join.addField("Welcome to the offical CC Discord, " + member.user.username + "! Stick around for some fish!", member.user.username + " joined us!")
-		join.setDescription("The community is open to questions, but formal inquieries should be sent to any of our staff team. (Visible on the top of our members list)." +
-		" Council Members are open to any concerns you may have and moderators can answer immediate questions. If you wish to know more about me, Fishsticks, then you " +
-		"can ask " + ranger + ".\n\nNote that as a newcomer to our server, you are without text chat permissions until granted Trusted. You can join a voice channel though!");
-		
-		crashpad.send({embed: join});
+		join.setDescription(
+			"Salutations be unto you. This is the official CCG Discord server. The community is open to any questions that you may have and should you need to consult any of the staff"+
+			" members, they can be found at the top of our members listing from Moderators and up. I am Fishsticks, the server's liaison - here to aid in whatever may need to be done! "+
+			"If you should have questions concerning me, ask " + ranger + ".\n\n"+
+			"Note that as a newcomer to our server, you will be limited in your abilities until granted the Recognized role. How do you get it? Join a voice channel and get to know people!"	
+	);
 
-    console.log("+USER: " + member.user.username + " joined the server.");
+	console.log("+USER: Attempting to attach Newcomer role...");
+		
+	member.addRole(newcomer).catch(attacherror => {
+		var newcomerAlert = new Discord.RichEmbed();
+			newcomerAlert.setTitle("o0o - NEWCOMER WARNING - o0o");
+			newcomerAlert.setColor(fsemercolor);
+			newcomerAlert.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png");
+			newcomerAlert.setDescription("HEY, @here ! A new user joined but Fishsticks encountered an error.");
+			newcomerAlert.addField("Fishsticks failed to assign the user the newcomer role!", "The new user, " + member.user.username + "cannot see anything! Put this to rememdy NOW! You may need to DM them to let them know that the problem has been solved.");
+
+		moderator.send({embed: newcomerAlert});
+
+		console.log(attacherror);
+	});
+
+	console.log("+USER: " + member.user.username + " joined the server.");
+	crashpad.send({embed: join});
 });
 
 fishsticks.login(token);
