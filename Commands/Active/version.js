@@ -9,10 +9,13 @@ exports.run = (fishsticks, msg, cmd) => {
 			version.setTitle("o0o - FISHSTICKS VERSION REPORT - o0o")
 			version.setColor(config.fscolor)
 			version.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
-			version.setDescription(
-				"Fishsticks is currently running version " + coresys.fsversion + ".\n\n" +
-				"For build information and or changelogs, check with SkyeRanger or submit a tech report.\n\n"+
-				"``This message will delete itself in 20 seconds.``")
+			version.setDescription("This contains information regarding Fishsticks' current version and where to find out more concerning his structure.")
+			version.addField("Version: ", "V" + fishsticks.version);
+			version.addField("Current Status: ", "Online");
+			version.addField("Fishsticks' GitHub Repository: ", "[Official Fishsticks Repo](https://github.com/SkyeRangerDelta/Fishsticks)");
+			version.addField("Test Fishsticks Git Hub Repository: ", "[Unstable Fishsticks Repo](https://github.com/SkyeRangerDelta/Test-Fishsticks)");
+			version.addField("Complete Fishsticks Guide: ", "[KBase Article](https://forums.ccgaming.com/kb/viewarticle?a=3)");
+			version.addField("Note", "`This message will delete itself in 30 seconds.`")
 
-    msg.channel.send({embed: version}).then(sent => sent.delete(60000));
+    msg.channel.send({embed: version}).then(sent => sent.delete(30000));
 }

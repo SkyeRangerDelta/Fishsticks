@@ -32,6 +32,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			"Current variables listing in this Fishsticks session.\n"+
 			"-----------------------------------------------\n"+
 			"File Read Syst: ``Limited``" + "\n"+
+			"Registered Server Status: `" + fishsticks.servStatus + "`\n" +
 			"Active External Directories: `" + externalDirs + "`\n"+
 			"Active External Active Commands: `" + activeDirs + "`\n"+
 			"Active External Passive Commands: `" + passiveDirs + "`\n"+
@@ -56,6 +57,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			"Current variables listing in this Fishsticks session.\n"+
 			"-----------------------------------------------\n"+
 			"File Read Syst: ``Online``" + "\n"+
+			"Registered Server Status: `" + fishsticks.servStatus + "`\n" +
 			"Active External Directories: `" + externalDirs + "`\n"+
 			"Active External Active Commands: `" + activeDirs + "`\n"+
 			"Active External Passive Commands: `" + passiveDirs + "`\n"+

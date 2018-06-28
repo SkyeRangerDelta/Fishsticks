@@ -8,9 +8,10 @@ exports.run = (fishsticks, msg, cmd) => {
 			links.setTitle("o0o - CC GAMING LINKS - o0o")
 			links.setColor(config.fscolor)
 			links.setDescription(
+				"[CC Forums](https://forums.ccgaming.com)\n" +
 				"[CC Gaming Website](https://www.ccgaming.com)\n" +
-				"[CC Forums](https://forums.ccgaming.com)\n\n" +
-				"[Skye's Definitive Guide to Discord](https://forums.ccgaming.com/viewtopic.php?f=2&t=24357)\n\n"+
+				"[CC Knowledgebase](https://forums.ccgaming.com/kb/index)\n\n" +
+				"[Skye's Definitive Guide to Discord](https://forums.ccgaming.com/kb/viewarticle?a=2)\n\n"+
 				"``This message will delete itself in 30 seconds.``")
 
     msg.channel.send({embed: links}).then(sent => sent.delete(30000));
