@@ -123,7 +123,7 @@ exports.run = (fishsticks, msg, cmd) => {
             console.log("[MUSI-SYS] Staff override acknowledged.")
             accept();
         }
-        else if (msg.member.roles.find('name', 'Members')) { //If member
+        else if ((msg.member.roles.find('name', 'CC Member')) || (msg.member.roles.find('name', 'ACC Member'))) { //If member
             if (engmode == true) { //If ENGM is on
                 console.log("[MUSI-SYS] Play command ignored via ENGM being true.")
     

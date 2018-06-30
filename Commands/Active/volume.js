@@ -11,7 +11,7 @@ exports.run = (fishsticks, msg, cmd) => {
         msg.reply("Who are you? You're not even in the same channel as me!");
     }
     else {
-        if (msg.member.roles.find('name', 'Members')) {
+        if ((msg.member.roles.find('name', 'CC Member')) || (msg.member.roles.find('name', 'ACC Member')) || (msg.member.roles.find('name', 'Staff'))) {
 
             if (!fishsticks.serverQueue) {
                 msg.reply("There's nothing to stop!");

@@ -19,7 +19,7 @@ exports.run = (fishsticks, msg, cmd) => {
             "`This menu will delete itself in 45 seconds.`"
         );
 
-    if (msg.member.roles.find("name", "Members")) {
+    if ((msg.member.roles.find("name", "CC Member")) || (msg.member.roles.find('name', 'ACC Member')) || (msg.member.roles.find('name', 'Staff'))) {
         msg.channel.send({embed: musichelp}).then(sent => sent.delete(45000));
     }
     else {
