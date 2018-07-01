@@ -52,40 +52,52 @@ exports.run = (fishsticks, msg, cmd) => {
             console.log("[MUSI-SYS] Failed to collect song information.");
         }
 
-        if (!fishsticks.playlist) {
-            const queueConstruct = {
-                txtCh: msg.channel,
-                vCh: memberVC,
-                connection: null,
-                songs: [],
-                volume: 5,
-                playing: true
-            };
-
-            fishsticks.queue.set(msg.guild.id, queueConstruct);
-
-            queueConstruct.songs.push(song);
-
-            try {
-                var connection = await memberVC.join();
-                fishsticks.vc = memberVC;
-
-                queueConstruct.connection = connection;
-                play(msg.guild, queueConstruct.songs[0]);
-    
-                console.log("[MUSI-SYS] Attached to channel and playing song...");
-            }
-            catch (error) {
-                console.error(`[MUSI-SYS] Connection to channel refused: ${error}`);
-
-                fishsticks.queue.delete(msg.guild.id);
-
-                return logger.send("I failed to connect to a channel, check the log! " + ranger);
-            }
+        if (songInfo == null) {
+            console.log("[TEMP-CHA] Caught an error at invalid songInfo.");
+            msg.reply("I can't play that for some reason. Most likely it's got a copyright on it. Try a different video!");
+            return;
+        }
+        else if (song == null) {
+            console.log("[TEMP-CHA] Caught an error at invalid song.");
+            msg.reply("I can't play that for some reason. Most likely it's got a copyright on it. Try a different video!");
+            return;
         }
         else {
-            fishsticks.playlist.songs.push(song);
-            logger.send(`The song **${song.title}** has been added to the play queue.`);
+            if (!fishsticks.playlist) {
+                const queueConstruct = {
+                    txtCh: msg.channel,
+                    vCh: memberVC,
+                    connection: null,
+                    songs: [],
+                    volume: 5,
+                    playing: true
+                };
+    
+                fishsticks.queue.set(msg.guild.id, queueConstruct);
+    
+                queueConstruct.songs.push(song);
+    
+                try {
+                    var connection = await memberVC.join();
+                    fishsticks.vc = memberVC;
+    
+                    queueConstruct.connection = connection;
+                    play(msg.guild, queueConstruct.songs[0]);
+        
+                    console.log("[MUSI-SYS] Attached to channel and playing song...");
+                }
+                catch (error) {
+                    console.error(`[MUSI-SYS] Connection to channel refused: ${error}`);
+    
+                    fishsticks.queue.delete(msg.guild.id);
+    
+                    return logger.send("I failed to connect to a channel, check the log! " + ranger);
+                }
+            }
+            else {
+                fishsticks.playlist.songs.push(song);
+                logger.send(`The song **${song.title}** has been added to the play queue.`);
+            }
         }
     }
 
@@ -114,7 +126,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
     //COMMAND CONDITIONS (CHECKS BEFORE EXECUTING FUNCTIONS)
     if (!cmd[0].includes("youtube.com")) {
-        msg.reply("That's not a proper YouTube link! (Make sure it's a `.com` and not a `.be`");
+        msg.reply("That's not a proper YouTube link! (Make sure it's a `.com` and not a `.be`)");
         console.log("[MUSI-SYS] Improper YouTube link.");
     }
     else {
