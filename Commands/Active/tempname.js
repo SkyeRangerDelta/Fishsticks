@@ -14,7 +14,7 @@ exports.run = (fishsticks, msg, cmd) => {
     for (c = 0; c < fishsticks.tempChannels.length; c++) {
         if (userChannel == (fishsticks.channels.get(fishsticks.tempChannels[c]))) {
             check();
-            inTempCh == true;
+            inTempCh = true;
         }
     }
 
@@ -31,7 +31,9 @@ exports.run = (fishsticks, msg, cmd) => {
 
     function accept() {
         console.log("[TEMP-CHA] Accepted, changing name...");
+
         userChannel.setName(newName).then(newChannel => console.log("[TEMP-CHA] Channel name changed to " + newChannel + " successfully."));
+
         msg.reply("Channel name changed to " + newName + " successfully!").then(sent => sent.delete(10000));
     }
 
