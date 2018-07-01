@@ -12,7 +12,7 @@ exports.run = (fishsticks, msg, cmd) => {
     var ranger = fishsticks.users.get("107203929447616512");
 
     for (c = 0; c < fishsticks.tempChannels.length; c++) {
-        if (userChannel == (fishsticks.tempChannels.get(fishsticks.tempChannels[c]))) {
+        if (userChannel == (fishsticks.channels.get(fishsticks.tempChannels[c]))) {
             inTempCh = true;
             break;
         }
