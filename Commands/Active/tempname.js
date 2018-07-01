@@ -18,7 +18,7 @@ exports.run = (fishsticks, msg, cmd) => {
         }
     }
 
-    if (inTempCh != true) {
+    if (inTempCh !== true) {
         if (msg.member.roles.find('name', 'Staff')) {
             msg.reply("You're trying to change a channel name for a channel that is not temporary! Check with " + ranger + " before doing that!");
         }
