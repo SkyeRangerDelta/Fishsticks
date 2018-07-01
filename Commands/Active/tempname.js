@@ -5,8 +5,8 @@ const chs = require('../../Modules/fs_channels.json');
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
-    var newName = cmd;
-    var userChannel = msg.member.voiceChannel.id;
+    var newName = cmd[0] ? cmd.slice(1).join(" ") : cmd.join(' ');
+    var userChannel = msg.member.voiceChannel;
     let inTempCh = false;
 
     var ranger = fishsticks.users.get("107203929447616512");
