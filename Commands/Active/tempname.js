@@ -5,16 +5,15 @@ const chs = require('../../Modules/fs_channels.json');
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
-    var newName = cmd[1];
+    var newName = cmd;
     var userChannel = msg.member.voiceChannel.id;
-    var inTempCh = false;
+    let inTempCh = false;
 
     var ranger = fishsticks.users.get("107203929447616512");
 
     for (c = 0; c < fishsticks.tempChannels.length; c++) {
         if (userChannel == (fishsticks.channels.get(fishsticks.tempChannels[c]))) {
-            inTempCh = true;
-            break;
+            inTempCh == true;
         }
     }
 
