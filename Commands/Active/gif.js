@@ -8,8 +8,16 @@ const apik = gip.giphyapi;
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
+    console.log("[GIF-COMM] Attempting GIF embed...")
+    console.log("[GIF-COMM] API: " + apik);
+
     var cmdStr = cmd.splice(0);
     var res = 0;
+
+    if (cmdStr == null) {
+        msg.reply("Hey, I can't search for nothing! Gimmie something to look up!");
+        return;
+    }
 
     gif();
 
