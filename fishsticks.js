@@ -182,8 +182,7 @@ fishsticks.on('message', async msg => {
 				msg.reply("You trying to thonk me? That's not a command! Use `!help` to get a reference.");
 			}
 		}
-		//PASSIVE COMMANDS
-		else {
+		else {//PASSIVE COMMANDS
 			console.log("[PAS-COMM] Attempting Resolution for command: " + pcmd[0]);
 			try {
 				let pCmdFile = require(`./Commands/Passive/${pcmd[0]}.js`);
