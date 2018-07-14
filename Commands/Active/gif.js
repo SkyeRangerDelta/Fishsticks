@@ -9,7 +9,7 @@ exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
     var cmdStr = cmd.splice(0);
-    const res = 0;
+    var res = 0;
 
     gif();
 
