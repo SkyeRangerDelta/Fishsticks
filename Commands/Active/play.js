@@ -73,7 +73,7 @@ exports.run = (fishsticks, msg, cmd) => {
                     console.log("[MATB-MOD] Name caught.");
                 }
 
-                if ((songInfo.title.includes(mattybentries[p])) && fishsticks.playrejects == 0) {
+                if ((songInfo.title.toLowerCase().includes(mattybentries[p])) && fishsticks.playrejects == 0) {
                     msg.reply("Oh dear. As GlaDOS would say: If we're to blow up, let's at least blow up with some dignity. - aka, we're not playing that.");
                     fishsticks.playrejects++;
                     return;
@@ -132,7 +132,7 @@ exports.run = (fishsticks, msg, cmd) => {
             }
 
             for (var k = 0; k < mattybsongs.length; k++) {
-                if ((songInfo.title.includes(mattybsongs[k])) == fishsticks.playrejects == 0) {
+                if ((songInfo.title.toLowerCase().includes(mattybsongs[k])) == fishsticks.playrejects == 0) {
                     msg.reply("Thought you were slick ey? Nope, not playing it!");
                     fishsticks.playrejects++;
                     return;
