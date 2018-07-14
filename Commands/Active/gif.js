@@ -8,12 +8,13 @@ const apik = gip.giphyapi;
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
+    var cmdStr = cmd.splice(0);
     const res = 0;
 
     gif();
 
     async function gif() {
-        res = await got(`http://api.giphy.com/v1/gifs/random?api-key=${apik}&tag=${encodeURIComponent(cmd[0])}`, {json: true});
+        res = await got(`http://api.giphy.com/v1/gifs/search?q=${cmdStr}$api_key=${apik}&limit=5`, {json: true}).catch(console.error);
     }
 
     if (!res || !res.body || !res.body.data) {
