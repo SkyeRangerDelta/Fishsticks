@@ -68,6 +68,10 @@ exports.run = (fishsticks, msg, cmd) => {
             "sants claus is coming to town (cover)", "bad blood", "blank space", "boyfriend"];
 
             for (var p = 0; p < mattybentries.length; p++) {
+                if ((songInfo.title.includes(mattybentries[p])) || (song.title.includes(mattybentries[p]))) {
+                    console.log("[MATB-MOD] Name caught.");
+                }
+
                 if ((songInfo.title.includes(mattybentries[p])) && fishsticks.playrejects == 0) {
                     msg.reply("Oh dear. As GlaDOS would say: If we're to blow up, let's at least blow up with some dignity. - aka, we're not playing that.");
                     fishsticks.playrejects++;

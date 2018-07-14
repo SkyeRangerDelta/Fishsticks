@@ -12,7 +12,7 @@ const fishsticks = new Discord.Client();
 
 const systems = require('./Modules/fs_systems.json');
 const sys = require('./Modules/Core/coresys.json');
-const channels = require('./Modules/fs_channels.json');
+const chs = require('./Modules/fs_channels.json');
 const config = require('./Modules/Core/corecfg.json');
 
 const token = systems.token;
@@ -68,12 +68,12 @@ var fsvouchesdoc = JSON.parse(fs.readFileSync('./fishsticks_vouches.json', 'utf8
 fishsticks.on('ready', () => {
 
 	//CHANNEL DEFINITIONS
-	fsconsoleChannel = fishsticks.channels.get(channels.fsconsole);
-	announceChannel = fishsticks.channels.get(channels.announcements);
-	staffChannel = fishsticks.channels.get(channels.staffChannel);
-	hangoutch = fishsticks.channels.get(channels.hangout);
-	crashpad = fishsticks.channels.get(channels.crashpad);
-	moderator = fishsticks.channels.get(channels.moderator);
+	fsconsoleChannel = fishsticks.channels.get(chs.fsconsole);
+	announceChannel = fishsticks.channels.get(chs.announcements);
+	staffChannel = fishsticks.channels.get(chs.staffChannel);
+	hangoutch = fishsticks.channels.get(chs.hangout);
+	crashpad = fishsticks.channels.get(chs.crashpad);
+	moderator = fishsticks.channels.get(chs.moderator);
 
 	//USER DEFINITIONS
 	ranger = fishsticks.users.get("107203929447616512");
