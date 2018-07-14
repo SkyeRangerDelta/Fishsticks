@@ -30,6 +30,8 @@ fishsticks.queue = new Map();
 fishsticks.servStatus;
 fishsticks.mattybmode = true;
 fishsticks.playrejects = 0;
+fishsticks.commandAttempts = 0;
+fishsticks.commandSuccess = 0;
 
 //CHANNEL INITIALIZATIONS
 var fsconsoleChannel;
@@ -134,18 +136,22 @@ fishsticks.on('message', async msg => {
 	//PASSIVE COMMANDS
 	if (msg.content == "ni hao" || msg.content == "Ni Hao" || msg.content == "Ni Hao Ma" || msg.content == "ni hao ma") {
 		msg.reply("Hao!");
+		fishsticks.commandSuccess++;
 	}
 
 	if (msg.content == "Order 66" || msg.content == "order 66") {
 		msg.channel.send("**Execute all the Jedis**", {files: ["./images/dewit.gif"]});
+		fishsticks.commandSuccess++;
 	}
 
-	if (msg.content == "fire phasers " || msg.content == "Fire Phasers" || msg.content == "Fire phasers") {
-		msg.content.send("**Aye Captain; firing all phaser banks.", {files: ["./images/phasers.gif"]});
+	if (msg.content.toLocaleLowerCase() == "fire phasers") {
+		msg.channel.send("**Aye Captain; firing all phaser banks.", {files: ["./images/phasers.gif"]});
+		fishsticks.commandSuccess++;
 	}
 
 	if (msg.content.includes("good music") || msg.content.includes("great music")) {
 		msg.channel.send("*Did someone say, `music`?*", {files: ["./sounds/sepWays.mp3"]});
+		fishsticks.commandSuccess++;
 	}
 
 	for (var i = 0; i < svuArr.length; i++) {
@@ -160,6 +166,7 @@ fishsticks.on('message', async msg => {
 		msg.react(fishsticks.emojis.find("name", "thonk"));
 
 		msg.channel.send("Hehe. *Thonk*", {files: ["./images/thonk.png"]});
+		fishsticks.commandSuccess++;
 	}
 	else { //MESSAGE COMMAND HANDLER
 		if (msg.author.fishsticks) return
@@ -172,10 +179,12 @@ fishsticks.on('message', async msg => {
 		//ACTIVE COMMANDS
 		if (msg.content.charAt(0) == prefix) {
 			console.log("[ACT-COMM] Attempting Resolution for command: " + cmdID);
+			fishsticks.commandAttempts++;
 			try {
 				let cmdFile = require(`./Commands/Active/${cmdID}.js`);
 				cmdFile.run(fishsticks, msg, cmd);
 				console.log("[ACT-COMM] Success")
+				fishsticks.commandSuccess++;
 			}
 			catch (err) {
 				console.log("[ACT-COMM] Failed:\n" + err);
@@ -184,10 +193,12 @@ fishsticks.on('message', async msg => {
 		}
 		else {//PASSIVE COMMANDS
 			console.log("[PAS-COMM] Attempting Resolution for command: " + pcmd[0]);
+			fishsticks.commandAttempts++;
 			try {
 				let pCmdFile = require(`./Commands/Passive/${pcmd[0]}.js`);
 				pCmdFile.run(fishsticks, msg, cmd);
 				console.log("[PAS-COMM] Success");
+				fishsticks.commandSuccess++;
 			} catch (err) {
 				console.log("[PAS-COMM] Failed: " + err);
 			}

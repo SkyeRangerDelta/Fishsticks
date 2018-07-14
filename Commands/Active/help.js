@@ -17,6 +17,7 @@ exports.run = (fishsticks, msg, cmd) => {
 				"-----------------------------------------------\n" +
 				"``!channels``: Displays description for all the channels!\n"+
 				"``!divisions``: Lists the official CC Divisions and their leaders.\n"+
+				"``!gif <value>``: Shows a random GIF! Specify a value to get some targeted results.\n"+
 				"``!help``: Displays this menu.\n" +
 				"``!info [commandID]``: Tutorial on the given commandID.\n"+
 				"``!ips``: Displays Official CC Server IP addresses\n"+
@@ -55,6 +56,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			"-----------------------------------------------\n" +
 			"``!channels``: Displays description for all the channels!\n"+
 			"``!divisions``: Lists the official CC Divisions and their leaders.\n"+
+			"``!gif <value>``: Shows a random GIF! Specify a value to get some targeted results.\n"+
 			"``!help``: Displays this menu.\n" +
 			"``!ips``: Displays Official CC Server IP addresses\n"+
 			"``!links``: Provides a list of useful links.\n" +
