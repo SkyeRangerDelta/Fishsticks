@@ -8,7 +8,13 @@ const apik = gip.giphyapi;
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
-    const res = await got(`http://api.giphy.com/v1/gifs/random?api-key=${apik}&tag=${encodeURIComponent(cmd[0])}`, {json: true});
+    const res;
+
+    gif();
+
+    async function gif() {
+        res = await got(`http://api.giphy.com/v1/gifs/random?api-key=${apik}&tag=${encodeURIComponent(cmd[0])}`, {json: true});
+    }
 
     if (!res || !res.body || !res.body.data) {
         msg.reply("I can't find a GIF like that it would seem.");
