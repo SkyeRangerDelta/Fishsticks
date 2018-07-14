@@ -9,31 +9,27 @@ exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
     console.log("[GIF-COMM] Attempting GIF embed...")
-    console.log("[GIF-COMM] API: " + apik);
 
     var cmdStr = cmd.splice(0);
-    var res = 0;
-
-    if (cmdStr == null) {
-        msg.reply("Hey, I can't search for nothing! Gimmie something to look up!");
-        return;
-    }
 
     gif();
 
     async function gif() {
-        res = await got(`http://api.giphy.com/v1/gifs/search?q=${cmdStr}$api_key=${apik}&limit=5`, {json: true}).catch(console.error);
-    }
+        var res = await got(`http://api.giphy.com/v1/gifs/random?api_key=${apik}&tag=${cmdStr}&rating=g`, {json: true}).catch(console.error);
 
-    if (!res || !res.body || !res.body.data) {
-        msg.reply("I can't find a GIF like that it would seem.");
-        return;
-    }
+        if (!res || !res.body || !res.body.data) {
+            msg.reply("I can't find a GIF like that it would seem.");
+            return;
+        }
 
-    var dispatch = new Discord.RichEmbed();
+        console.log("[GIF-COMM] Embed URL: " + "http://media2.giphy.com/media/" + res.body.data.id + "/giphy.gif")
+
+        var dispatch = new Discord.RichEmbed();
         dispatch.setTitle("o0o - RANDOM GIF! - o0o");
         dispatch.setColor(config.fscolor);
-        dispatch.setImage(res.body.data.image_url);
+        dispatch.setDescription("(" + cmdStr + ")")
+        dispatch.setImage("http://media2.giphy.com/media/" + res.body.data.id + "/giphy.gif");
 
-    msg.channel.send({embed: dispatch});
+        msg.channel.send({embed: dispatch});
+    }
 }
