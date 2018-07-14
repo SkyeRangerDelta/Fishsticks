@@ -28,6 +28,8 @@ fishsticks.tempChannels = [];
 fishsticks.version = sys.fsversion;
 fishsticks.queue = new Map();
 fishsticks.servStatus;
+fishsticks.mattybmode = true;
+fishsticks.playrejects = 0;
 
 //CHANNEL INITIALIZATIONS
 var fsconsoleChannel;
@@ -136,6 +138,10 @@ fishsticks.on('message', async msg => {
 
 	if (msg.content == "Order 66" || msg.content == "order 66") {
 		msg.channel.send("**Execute all the Jedis**", {files: ["./images/dewit.gif"]});
+	}
+
+	if (msg.content == "fire phasers " || msg.content == "Fire Phasers" || msg.content == "Fire phasers") {
+		msg.content.send("**Aye Captain; firing all phaser banks.", {files: ["./images/phasers.gif"]});
 	}
 
 	if (msg.content.includes("good music") || msg.content.includes("great music")) {

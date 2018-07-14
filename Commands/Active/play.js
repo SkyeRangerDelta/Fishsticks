@@ -23,6 +23,7 @@ exports.run = (fishsticks, msg, cmd) => {
     var playerSongTitle;
 
     let engmode = fishsticks.engmode;
+    let mattybmode = fishsticks.mattybmode;
 
     console.log("[MUSI-SYS] Play command recognized from user " + msg.author.tag + ".");
 
@@ -50,6 +51,88 @@ exports.run = (fishsticks, msg, cmd) => {
         }
         catch (error) {
             console.log("[MUSI-SYS] Failed to collect song information.");
+        }
+
+        if (mattybmode = true) {
+            var mattybentries = ["mattybraps", "mattyb", "matt b", "matthew david morris", "mattew morris", "matthew morris", "mat b", "mattb", "matthew", "mattbraps",
+            "that terrible rapper", "#overhyped", "#why"];
+
+            var mattybsongs = ["right in front of you", "gone", "friend zone", "little bit", "turn up the track", "spend it all on you", "stuck in the middle", "on my own",
+            "hey matty", "can't get you off my mind", "shoulda coulda woulda", "live for today", "california dreamin", "trust me", "shine", "true colors", "thats the way",
+            "right now i'm missing you", "you are my shining star", "blue skies", "life is unfair", "the king", "now kids", "video game", "imma be", "clique (cover)", "clique",
+            "crush on you", "my oh my", "you make my heart skip", "royal wedding", "sugar sugar", "i just wanna love you", "moment", "be mine", "never too young", "far away",
+            "so alive", "ms. jackson", "ms jackson", "goliath", "you", "flyin high", "guaranteed", "right on time", "back in time", "slow down", "low key", "that girl is mine",
+            "hooked on you", "little bit (song)", "little bit(song)", "little bit", "turned out the lights", "talk dirty", "my first girlfriend", "see you again", "the good life",
+            "ride it", "without you here", "to the top", "clap", "juicy", "be right there", "forever and always", "shake it off", "turn it up", "the royal wedding song", "i'm mattyb",
+            "im mattyb", "burnout", "fancy", "enie meenie", "as long as you love me", "santa claus is coming to town (cover)", "santa claus is coming to town", "sants claus is coming to town",
+            "sants claus is coming to town (cover)", "bad blood", "blank space", "boyfriend"];
+
+            for (var p = 0; p < mattybentries.length; p++) {
+                if ((songInfo.includes(mattybentries[p])) && fishsticks.playrejects == 0) {
+                    msg.reply("Oh dear. As GlaDOS would say: If we're to blow up, let's at least blow up with some dignity. - aka, we're not playing that.");
+                    fishsticks.playrejects++;
+                    return;
+                }
+                else if (fishsticks.playrejects == 1) {
+                    msg.reply("Oh we're playing this game? Ok...let's go. Still not playing that.");
+                    fishsticks.playrejects++;
+                    return;
+                }
+                else if (fishsticks.playrejects == 2) {
+                    msg.reply("Alright, here we go. Let's start deducting respect points: -5. How low can you go? Not playing that!");
+                    fishsticks.playrejects++;
+                    return;
+                }
+                else if (fishsticks.playrejects == 3) {
+                    msg.reply("That's another 5. You know, you're really good at this. Still not playing it!");
+                    fishsticks.playrejects++;
+                    return;
+                }
+                else if (fishsticks.playrejects == 4) {
+                    msg.reply("Listen, I'm getting a little concerned. Here, lemme have 10 more respect points (-10), because I'm not gonna play that.");
+                    fishsticks.playrejects++;
+                    return;
+                }
+                else if (fishsticks.playrejects == 5) {
+                    msg.reply("Your mental health may be called into question. This is the 6th time now (and another -10) that I'm not going to play that!");
+                    fishsticks.playrejects++;
+                    return;
+                }
+                else if (fishsticks.playrejects == 6) {
+                    msg.reply("-10 more points. We might need to step this up. Do you enjoy doing this to yourself? Not playing it!");
+                    fishsticks.playrejects++;
+                    return;
+                }
+                else if (fishsticks.playrejects == 7) {
+                    msg.reply("I mean, I guess if you get a kick out of it, we can keep going... (-15 respect points). I will not yield.");
+                    fishsticks.playrejects++;
+                    return;
+                }
+                else if (fishsticks.playrejects == 8) {
+                    msg.reply("I wonder how much better your time could be spent than with me here trying to play a song. (-15 respect points). I like having you around too.");
+                    fishsticks.playrejects++;
+                    return;
+                }
+                else if (fishsticks.playrejects == 9) {
+                    msg.reply("Wow, you've spent the last 10 play commands trying to get me to do this. Alright (-30 respect points). We'll do this. Let's go. I will not yield.");
+                    fishsticks.playrejects++;
+                    return;
+                }
+                else if (fishsticks.playrejects >= 10) {
+                    msg.reply("Attempt " + (fishsticks.playrejects + 1) + ": minus " + (fishsticks.playrejects * 5) + " respect points. (It only gets worse).");
+                    fishsticks.playrejects++;
+                    return;
+                }
+
+            }
+
+            for (var k = 0; k < mattybsongs.length; k++) {
+                if ((songInfo.includes(mattybsongs[k])) == fishsticks.playrejects == 0) {
+                    msg.reply("Thought you were slick ey? Nope, not playing it!");
+                    fishsticks.playrejects++;
+                    return;
+                }
+            }
         }
 
         if (songInfo == null) {
@@ -85,6 +168,8 @@ exports.run = (fishsticks, msg, cmd) => {
                     play(msg.guild, queueConstruct.songs[0]);
         
                     console.log("[MUSI-SYS] Attached to channel and playing song...");
+
+                    fishsticks.playrejects = 0;
                 }
                 catch (error) {
                     console.error(`[MUSI-SYS] Connection to channel refused: ${error}`);
