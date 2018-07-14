@@ -8,7 +8,7 @@ const apik = gip.giphyapi;
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
-    const res;
+    const res = 0;
 
     gif();
 
