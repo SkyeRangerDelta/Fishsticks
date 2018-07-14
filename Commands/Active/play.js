@@ -26,6 +26,7 @@ exports.run = (fishsticks, msg, cmd) => {
     let mattybmode = fishsticks.mattybmode;
 
     console.log("[MUSI-SYS] Play command recognized from user " + msg.author.tag + ".");
+    console.log("[MATB-mod] MattyB Mode is currently: " + fishsticks.mattybmode);
 
     //ACTIVE FUNCTIONS
     function denied() {
@@ -68,7 +69,7 @@ exports.run = (fishsticks, msg, cmd) => {
             "sants claus is coming to town (cover)", "bad blood", "blank space", "boyfriend"];
 
             for (var p = 0; p < mattybentries.length; p++) {
-                if ((songInfo.title.includes(mattybentries[p])) || (song.title.includes(mattybentries[p]))) {
+                if ((songInfo.title.toLowerCase().includes(mattybentries[p])) || (song.title.toLowerCase().includes(mattybentries[p]))) {
                     console.log("[MATB-MOD] Name caught.");
                 }
 
