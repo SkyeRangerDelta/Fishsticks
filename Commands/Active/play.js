@@ -132,13 +132,13 @@ exports.run = (fishsticks, msg, cmd) => {
 
             for (var k = 0; k < mattybsongs.length; k++) {
                 if ((songInfo.title.toLowerCase().includes(mattybsongs[k])) || song.title.toLowerCase().includes(mattybsongs[k])) {
-                    console.log("[MATB-MOD] Song title caught.")
-                }
+                    console.log("[MATB-MOD] Song title caught.");
 
-                if ((songInfo.title.toLowerCase().includes(mattybsongs[k])) == fishsticks.playrejects == 0) {
-                    msg.reply("Thought you were slick ey? Nope, not playing it!");
-                    fishsticks.playrejects++;
-                    return;
+                    if ((songInfo.title.toLowerCase().includes(mattybsongs[k])) == fishsticks.playrejects == 0) {
+                        msg.reply("Thought you were slick ey? Nope, not playing it!");
+                        fishsticks.playrejects++;
+                        return;
+                    }
                 }
             }
         }
