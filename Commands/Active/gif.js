@@ -10,7 +10,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
     console.log("[GIF-COMM] Attempting GIF embed...")
 
-    var cmdStr = cmd.splice(0);
+    var cmdStr = cmd.splice(0).join(' ');
 
     gif();
 

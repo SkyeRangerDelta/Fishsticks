@@ -38,7 +38,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			"Active External Passive Commands: `" + passiveDirs + "`\n"+
 			"Session Number: ``" + fishsticks.syssession + "``\n"+
 			"Attempted Commands: " + fishsticks.commandAttempts + "\n"+
-			"Attempted Commands: " + fishsticks.commandSuccess + "\n"+
+			"Successful Commands: " + fishsticks.commandSuccess + "\n"+
 			"Version Number: ``" + sys.fsversion + "``\n" +
 			"Engineering Mode: ``" + engmode + "``\n"+
 			"Online Temporary Channels: `" + fishsticks.tempChannels.length + "`.\n" +
@@ -65,7 +65,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			"Active External Passive Commands: `" + passiveDirs + "`\n"+
 			"Session Number: ``" + fishsticks.syssession + "``\n"+
 			"Attempted Commands: " + fishsticks.commandAttempts + "\n"+
-			"Attempted Commands: " + fishsticks.commandSuccess + "\n"+
+			"Successful Commands: " + fishsticks.commandSuccess + "\n"+
 			"Version Number: ``" + sys.fsversion + "``\n" +
 			"Engineering Mode: ``" + engmode + "``\n"+
 			"Online Temporary Channels: `" + fishsticks.tempChannels.length + "`.\n" +

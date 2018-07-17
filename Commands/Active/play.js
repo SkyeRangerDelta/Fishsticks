@@ -47,6 +47,8 @@ exports.run = (fishsticks, msg, cmd) => {
                 url: songInfo.video_url
             }
 
+            console.log('[MUSI-SYS] Logging Song Info' + songInfo);
+
             playerSongTitle = song.title;
             playerSongTitle = playerSongTitle.toLowerCase();
         }
