@@ -206,26 +206,6 @@ fishsticks.on('message', async msg => {
 	}
 });
 
-/*
-	//VOUCH SYSTEM
-	else if (command("vouch", msg)) {
-		msg.delete();
-
-		var vouchestot = fsvouchesdoc.vouchnumtotal++;
-
-		var vouchRequester = msg.author.id;
-		var vouchCMD = msg.content.split(" ");
-		var memberFor = vouchCMD.splice(1, 1).join(' ');
-		var memberForID = parseInt(memberFor);
-
-		console.log(memberFor);
-		console.log(memberForID);
-		console.log(vouchestot);
-		
-	}
-}); */
-
-
 //VOICE CHANNEL CONNECTION CHECK
 fishsticks.on('voiceStateUpdate', (oldMember, newMember) => {
 	let newUserChannel = newMember.voiceChannel;

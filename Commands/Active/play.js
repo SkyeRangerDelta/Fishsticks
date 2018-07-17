@@ -21,6 +21,8 @@ exports.run = (fishsticks, msg, cmd) => {
     var songInfo;
 
     var playerSongTitle;
+    var playerSongDescription;
+    var playerSongAuthor;
 
     let engmode = fishsticks.engmode;
     let mattybmode = fishsticks.mattybmode;
@@ -44,19 +46,23 @@ exports.run = (fishsticks, msg, cmd) => {
             songInfo = await ytdl.getInfo(cmd[0]);
             song = {
                 title: songInfo.title,
+                description: songInfo.description,
+                author: songInfo.author.name,
                 url: songInfo.video_url
             }
 
-            console.log('[MUSI-SYS] Logging Song Info' + songInfo);
+            console.log('[MUSI-SYS] Logging Song Info:\n' + ytdl.getInfo(cmd[0]));
 
             playerSongTitle = song.title;
+            playerSongDescription = song.description;
+            playerSongAuthor = song.author;
             playerSongTitle = playerSongTitle.toLowerCase();
         }
         catch (error) {
             console.log("[MUSI-SYS] Failed to collect song information.");
         }
 
-        if (mattybmode = true) {
+        if (mattybmode == true) {
             var mattybentries = ["mattybraps", "mattyb", "matt b", "matthew david morris", "mattew morris", "matthew morris", "mat b", "mattb", "matthew", "mattbraps",
             "that terrible rapper", "#overhyped", "#why"];
 
@@ -70,7 +76,7 @@ exports.run = (fishsticks, msg, cmd) => {
             "im mattyb", "burnout", "fancy", "enie meenie", "as long as you love me", "santa claus is coming to town (cover)", "santa claus is coming to town", "sants claus is coming to town",
             "sants claus is coming to town (cover)", "bad blood", "blank space", "boyfriend"];
 
-            for (var p = 0; p < mattybentries.length; p++) {
+            for (var p = 0; p < mattybentries.length; p++) { //NAME CHECK IN TITLE
                 if ((songInfo.title.toLowerCase().includes(mattybentries[p]))) {
                     console.log("[MATB-MOD] Name caught.");
 
@@ -132,12 +138,51 @@ exports.run = (fishsticks, msg, cmd) => {
                 }
             }
 
-            for (var k = 0; k < mattybsongs.length; k++) {
+            for (var k = 0; k < mattybsongs.length; k++) { //SONG CHECK IN TITLE
                 if ((songInfo.title.toLowerCase().includes(mattybsongs[k])) || song.title.toLowerCase().includes(mattybsongs[k])) {
                     console.log("[MATB-MOD] Song title caught.");
 
-                    if ((songInfo.title.toLowerCase().includes(mattybsongs[k])) == fishsticks.playrejects == 0) {
+                    if ((songInfo.title.toLowerCase().includes(mattybsongs[k])) && fishsticks.playrejects == 0) {
                         msg.reply("Thought you were slick ey? Nope, not playing it!");
+                        fishsticks.playrejects++;
+                        return;
+                    }
+                    else {
+                        msg.reply("You just don't seem to understand that I don't wanna play that...");
+                        fishsticks.playrejects++;
+                        return;
+                    }
+                }
+            }
+
+            for (var y = 0; y < mattybentries.length; y++) { //NAME CHECK IN DESCRIPTION
+                if ((songInfo.description.toLowerCase().includes(mattybentries[y]) || song.description.toLowerCase().includes(mattybentries[y]))) {
+                    console.log("[MATB-MOD] Description caught.");
+
+                    if ((songInfo.description.toLowerCase().includes(mattybentries[y])) && fishsticks.playrejects == 0) {
+                        msg.reply("Ooooh, smooth one. Ain't in the title, but it's in the description! Not playing it!");
+                        fishsticks.playrejects++;
+                        return;
+                    }
+                    else {
+                        msg.reply("Hehe. I saw that one too! Still not playing it!");
+                        fishsticks.playrejects++;
+                        return;
+                    }
+                }
+            }
+
+            for (var f = 0; f < mattybentries.length; f++) { //NAME CHECK IN AUTHOR
+                if ((song.author.toLowerCase().includes(mattybentries[f]))) {
+                    console.log("[MATB-MOD] Name caught in author.");
+
+                    if ((songInfo.author.toLowerCase().includes(mattybentries[f])) && fishsticks.playrejects == 0) {
+                        msg.reply("Man, you're getting really good at this. Got busted at the author though. It's kind of right there on the video. Not playing it.");
+                        fishsticks.playrejects++;
+                        return;
+                    }
+                    else {
+                        msg.reply("I feel like we've been here before. Perhaps you shouldn't do that! Definately not playing it.");
                         fishsticks.playrejects++;
                         return;
                     }
@@ -206,7 +251,7 @@ exports.run = (fishsticks, msg, cmd) => {
             return;
         }
 
-        const dispatch = fishsticks.serverQueue.connection.playStream(ytdl(song.url))
+        const dispatch = fishsticks.serverQueue.connection.playStream(ytdl(song.url, {quality: 'highestaudio'}))
             .on('end', () => {
                 console.log("[MUSI-SYS] Song ended.");
                 fishsticks.serverQueue.songs.shift();
