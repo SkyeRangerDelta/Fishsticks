@@ -74,7 +74,7 @@ exports.run = (fishsticks, msg, cmd) => {
             "hooked on you", "little bit (song)", "little bit(song)", "little bit", "turned out the lights", "talk dirty", "my first girlfriend", "see you again", "the good life",
             "ride it", "without you here", "to the top", "clap", "juicy", "be right there", "forever and always", "shake it off", "turn it up", "the royal wedding song", "i'm mattyb",
             "im mattyb", "burnout", "fancy", "enie meenie", "as long as you love me", "santa claus is coming to town (cover)", "santa claus is coming to town", "sants claus is coming to town",
-            "sants claus is coming to town (cover)", "bad blood", "blank space", "boyfriend"];
+            "sants claus is coming to town (cover)", "bad blood", "blank space", "boyfriend", "pressure rise"];
 
             for (var p = 0; p < mattybentries.length; p++) { //NAME CHECK IN TITLE
                 if ((songInfo.title.toLowerCase().includes(mattybentries[p]))) {

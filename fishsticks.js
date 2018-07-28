@@ -145,7 +145,7 @@ fishsticks.on('message', async msg => {
 	}
 
 	if (msg.content.toLocaleLowerCase() == "fire phasers") {
-		msg.channel.send("**Aye Captain; firing all phaser banks.", {files: ["./images/phasers.gif"]});
+		msg.channel.send("**Aye Captain; firing all phaser banks.**", {files: ["./images/phasers.gif"]});
 		fishsticks.commandSuccess++;
 	}
 
