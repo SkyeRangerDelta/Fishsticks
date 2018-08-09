@@ -229,7 +229,7 @@ fishsticks.on('voiceStateUpdate', (oldMember, newMember) => {
 	}
 });
 
-//MEMBER JOIN/LEAVE SYSTEM  ==EXPERIMENTAL==
+//MEMBER JOIN/LEAVE SYSTEM
 fishsticks.on('guildMemberAdd', member => {
 
 	//DEFINE GUILD

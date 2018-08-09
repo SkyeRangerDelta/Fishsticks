@@ -1,8 +1,12 @@
 const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
 const chs = require('../../Modules/fs_channels.json');
+const syst = require('../../Modules/fs_systems.json');
 
 const ytdl = require('ytdl-core');
+const YouTube = require('simple-youtube-api');
+
+const yt = new YouTube(syst.googleYT_API);
 
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
@@ -17,8 +21,13 @@ exports.run = (fishsticks, msg, cmd) => {
     var ranger = fishsticks.users.get("107203929447616512");
     var logger = fishsticks.channels.get(chs.musiclog);
 
+    const url = cmd[0] ? cmd[0].replace(/<(.+)>/g, '$1') : '';
+    var searchString = cmd.slice(0).join(' ');
+
     var song;
-    var songInfo;
+    var video;
+    var videos;
+    var numResults = 0;
 
     var playerSongTitle;
     var playerSongDescription;
@@ -28,7 +37,7 @@ exports.run = (fishsticks, msg, cmd) => {
     let mattybmode = fishsticks.mattybmode;
 
     console.log("[MUSI-SYS] Play command recognized from user " + msg.author.tag + ".");
-    console.log("[MATB-mod] MattyB Mode is currently: " + fishsticks.mattybmode);
+    console.log("[MATB-MOD] MattyB Mode is currently: " + fishsticks.mattybmode);
 
     //ACTIVE FUNCTIONS
     function denied() {
@@ -40,18 +49,106 @@ exports.run = (fishsticks, msg, cmd) => {
     async function accept() {
         console.log("[MUSI-SYS] Play command granted.");
 
+        if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
+            console.log("[MUSI-SYS] Playlist Detected.");
+
+            const playlist = await yt.getPlaylist(url);
+
+            videos = await playlist.getVideos();
+
+            for (const video of Object.values(videos)) {
+                const video2 = await yt.getVideoByID(video.id);
+                await handleStuff(video2, msg, memberVC, true);
+            }
+
+            var playlistInfoPanel = new Discord.RichEmbed();
+                playlistInfoPanel.setTitle("o0o - Playlist Added - o0o");
+                playlistInfoPanel.setColor(config.fscolor);
+                playlistInfoPanel.setDescription(
+                    "**Playlist Title**: " + playlist.title + "\n" +
+                    "**Author**: " + playlist.channel.title
+                )
+            logger.send({embed: playlistInfoPanel});
+        }
+        else {
+            console.log("[MUSI-SYS] No playlist detected, attempting to collect video data.")
+            try {
+                video = await yt.getVideo(url);
+            }
+            catch (error) {
+                try {
+                    videos = await yt.searchVideos(searchString);
+    
+                    console.log("[MUSI-SYS] Videos")
+                    for (var t = 0; t < videos.length; t++) {
+                        result = await yt.getVideoByID(videos[t].id);
+                        console.log(t + ": " + result.title);
+                    }
+                    
+                    numResults = videos.length;
+
+                    let searchIndex = 0;
+    
+                    var searchResult = new Discord.RichEmbed();
+                        searchResult.setTitle("o0o - Player Search Result - o0o");
+                        searchResult.setColor(config.fscolor);
+                        searchResult.setDescription(
+                            "**Search Term**: " + searchString + "\n" +
+                            "**Result Count**: Top " + numResults + "\n" +
+                            "**========================================**\n" +
+                            `${videos.map(songresults => `${++searchIndex} -> ${songresults.title}`).join('\n')}\nSelect a video using 1-5 as your next message. (No ! required)`);
+                    msg.reply({embed: searchResult}).then(sent => sent.delete(30000));
+
+                    var response;
+
+                    try {
+                        response = await msg.channel.awaitMessages(msg2 => msg2.content > 0 && msg2.content < 6, {
+                            maxMatches: 1,
+                            time: 10000,
+                            errors: ['time']
+                        });
+                    } catch (error) {
+                        console.log("[MUSI-SYS] YouTube Search failed because user didnt select a response.");
+                        msg.reply("You didn't select a video!").then(sent => sent.delete(30000));
+                    }
+                    var videoIndex = parseInt(response.first().content);
+
+                    video = await yt.getVideoByID(videos[videoIndex - 1].id);
+                }
+                catch (error) {
+                    msg.reply("I couldn't find any videos for that.");
+                    console.log("[MUSI-SYS] Data Collection Error - Level 2: \n" + error);
+                }
+    
+                console.log("[MUSI-SYS] Data Collection Error - Level 1: \n" + error);
+            }
+
+            return handleStuff(video, msg, memberVC);
+
+        }
+
+    }
+
+    async function handleStuff(video, msg, voiceChannel, playlist = false) {
+
+        fishsticks.playlist = fishsticks.queue.get(msg.guild.id);
+
         try {
             console.log("[MUSI-SYS] Attempting to gather song info...");
 
-            songInfo = await ytdl.getInfo(cmd[0]);
             song = {
-                title: songInfo.title,
-                description: songInfo.description,
-                author: songInfo.author.name,
-                url: songInfo.video_url
+                title: video.title,
+                description: video.description,
+                author: video.channel.title,
+                url: `https://www.youtube.com/watch?v=${video.id}`,
+                id: video.id
             }
 
-            console.log('[MUSI-SYS] Logging Song Info:\n' + ytdl.getInfo(cmd[0]));
+            console.log('[MUSI-SYS] Logging Song Info:\n'+
+                '->Title: ' + song.title + '\n'+
+                '->Author: ' + song.author + '\n' +
+                '->ID: ' + song.id + '\n' +
+                '->URL: ' + song.url);
 
             playerSongTitle = song.title;
             playerSongDescription = song.description;
@@ -60,6 +157,8 @@ exports.run = (fishsticks, msg, cmd) => {
         }
         catch (error) {
             console.log("[MUSI-SYS] Failed to collect song information.");
+            msg.reply("I couldn't gather the song information, this is a crash prevention system. Try another song?");
+            return console.log('[MUSI-SYS] Error: \n' + error);
         }
 
         if (mattybmode == true) {
@@ -77,10 +176,10 @@ exports.run = (fishsticks, msg, cmd) => {
             "sants claus is coming to town (cover)", "bad blood", "blank space", "boyfriend", "pressure rise"];
 
             for (var p = 0; p < mattybentries.length; p++) { //NAME CHECK IN TITLE
-                if ((songInfo.title.toLowerCase().includes(mattybentries[p]))) {
+                if ((song.title.toLowerCase().includes(mattybentries[p]))) {
                     console.log("[MATB-MOD] Name caught.");
 
-                    if ((songInfo.title.toLowerCase().includes(mattybentries[p])) && fishsticks.playrejects == 0) {
+                    if ((song.title.toLowerCase().includes(mattybentries[p])) && fishsticks.playrejects == 0) {
                         msg.reply("Oh dear. As GlaDOS would say: If we're to blow up, let's at least blow up with some dignity. - aka, we're not playing that.");
                         fishsticks.playrejects++;
                         return;
@@ -139,10 +238,10 @@ exports.run = (fishsticks, msg, cmd) => {
             }
 
             for (var k = 0; k < mattybsongs.length; k++) { //SONG CHECK IN TITLE
-                if ((songInfo.title.toLowerCase().includes(mattybsongs[k])) || song.title.toLowerCase().includes(mattybsongs[k])) {
+                if ((song.title.toLowerCase().includes(mattybsongs[k])) || song.title.toLowerCase().includes(mattybsongs[k])) {
                     console.log("[MATB-MOD] Song title caught.");
 
-                    if ((songInfo.title.toLowerCase().includes(mattybsongs[k])) && fishsticks.playrejects == 0) {
+                    if ((song.title.toLowerCase().includes(mattybsongs[k])) && fishsticks.playrejects == 0) {
                         msg.reply("Thought you were slick ey? Nope, not playing it!");
                         fishsticks.playrejects++;
                         return;
@@ -156,10 +255,10 @@ exports.run = (fishsticks, msg, cmd) => {
             }
 
             for (var y = 0; y < mattybentries.length; y++) { //NAME CHECK IN DESCRIPTION
-                if ((songInfo.description.toLowerCase().includes(mattybentries[y]) || song.description.toLowerCase().includes(mattybentries[y]))) {
+                if ((song.description.toLowerCase().includes(mattybentries[y]) || song.description.toLowerCase().includes(mattybentries[y]))) {
                     console.log("[MATB-MOD] Description caught.");
 
-                    if ((songInfo.description.toLowerCase().includes(mattybentries[y])) && fishsticks.playrejects == 0) {
+                    if ((song.description.toLowerCase().includes(mattybentries[y])) && fishsticks.playrejects == 0) {
                         msg.reply("Ooooh, smooth one. Ain't in the title, but it's in the description! Not playing it!");
                         fishsticks.playrejects++;
                         return;
@@ -176,7 +275,7 @@ exports.run = (fishsticks, msg, cmd) => {
                 if ((song.author.toLowerCase().includes(mattybentries[f]))) {
                     console.log("[MATB-MOD] Name caught in author.");
 
-                    if ((songInfo.author.toLowerCase().includes(mattybentries[f])) && fishsticks.playrejects == 0) {
+                    if ((song.author.toLowerCase().includes(mattybentries[f])) && fishsticks.playrejects == 0) {
                         msg.reply("Man, you're getting really good at this. Got busted at the author though. It's kind of right there on the video. Not playing it.");
                         fishsticks.playrejects++;
                         return;
@@ -190,8 +289,8 @@ exports.run = (fishsticks, msg, cmd) => {
             }
         }
 
-        if (songInfo == null) {
-            console.log("[TEMP-CHA] Caught an error at invalid songInfo.");
+        if (song == null) {
+            console.log("[TEMP-CHA] Caught an error at invalid song data.");
             msg.reply("I can't play that for some reason. Most likely it's got a copyright on it. Try a different video!");
             return;
         }
@@ -207,7 +306,7 @@ exports.run = (fishsticks, msg, cmd) => {
                     vCh: memberVC,
                     connection: null,
                     songs: [],
-                    volume: 5,
+                    volume: 2,
                     playing: true
                 };
     
@@ -222,7 +321,19 @@ exports.run = (fishsticks, msg, cmd) => {
                     queueConstruct.connection = connection;
                     play(msg.guild, queueConstruct.songs[0]);
         
-                    console.log("[MUSI-SYS] Attached to channel and playing song...");
+                    console.log("[MUSI-SYS] Attached to channel and playing song.");
+
+                    if (!playlist) {
+                        var videoInfoPanel = new Discord.RichEmbed();
+                            videoInfoPanel.setTitle("o0o - New Song Added - o0o");
+                            videoInfoPanel.setColor(config.fscolor);
+                            videoInfoPanel.setDescription(
+                                "**Title**: " + song.title + "\n" +
+                                "**Author**: " + song.author + "\n" +
+                                "**URL**: " + song.url
+                            )
+                        logger.send({embed: videoInfoPanel});
+                    }
 
                     fishsticks.playrejects = 0;
                 }
@@ -236,8 +347,25 @@ exports.run = (fishsticks, msg, cmd) => {
             }
             else {
                 fishsticks.playlist.songs.push(song);
-                logger.send(`The song **${song.title}** has been added to the play queue.`);
+                if (playlist) {
+                    return;
+                }
+                else {
+                    var videoInfoPanel = new Discord.RichEmbed();
+                        videoInfoPanel.setTitle("o0o - New Song Added - o0o");
+                        videoInfoPanel.setColor(config.fscolor);
+                        videoInfoPanel.setDescription(
+                            "**Title**: " + song.title + "\n" +
+                            "**Author**: " + song.author + "\n" +
+                            "**URL**: " + song.url
+                        )
+                    logger.send({embed: videoInfoPanel});
+                    return;
+                }
+                
             }
+
+            return;
         }
     }
 
@@ -246,12 +374,13 @@ exports.run = (fishsticks, msg, cmd) => {
         fishsticks.serverQueue = fishsticks.queue.get(guild.id);
 
         if (!song) {
+            console.log("[MUSI-SYS] No songs detected in queue/player > terminating player.")
             fishsticks.serverQueue.vCh.leave();
             fishsticks.queue.delete(guild.id);
             return;
         }
 
-        const dispatch = fishsticks.serverQueue.connection.playStream(ytdl(song.url, {quality: 'highestaudio'}))
+        var dispatch = fishsticks.serverQueue.connection.playStream(ytdl(song.url, {quality: '251'}))
             .on('end', () => {
                 console.log("[MUSI-SYS] Song ended.");
                 fishsticks.serverQueue.songs.shift();
@@ -265,43 +394,37 @@ exports.run = (fishsticks, msg, cmd) => {
     }
 
     //COMMAND CONDITIONS (CHECKS BEFORE EXECUTING FUNCTIONS)
-    if (!cmd[0].includes("youtube.com")) {
-        msg.reply("That's not a proper YouTube link! (Make sure it's a `.com` and not a `.be`)");
-        console.log("[MUSI-SYS] Improper YouTube link.");
+    if (msg.member.roles.find('name', 'Bot') || msg.member.roles.find("name", "Staff")) {
+        logger.send("Command permissions authorized and granted to " + msg.author.tag + ".");
+        console.log("[MUSI-SYS] Staff override acknowledged.")
+        accept();
     }
-    else {
-        if (msg.member.roles.find('name', 'Bot') || msg.member.roles.find("name", "Staff")) {
-            logger.send("Command permissions authorized and granted to " + msg.author.tag + ".");
-            console.log("[MUSI-SYS] Staff override acknowledged.")
-            accept();
-        }
-        else if ((msg.member.roles.find('name', 'CC Member')) || (msg.member.roles.find('name', 'ACC Member'))) { //If member
-            if (engmode == true) { //If ENGM is on
-                console.log("[MUSI-SYS] Play command ignored via ENGM being true.")
+    else if ((msg.member.roles.find('name', 'CC Member')) || (msg.member.roles.find('name', 'ACC Member'))) { //If member
+        if (engmode == true) { //If ENGM is on
+            console.log("[MUSI-SYS] Play command ignored via ENGM being true.")
     
-                msg.reply("I can't play music while Engineering Mode is enabled! Ask " + ranger + " to clarify.");
+            msg.reply("I can't play music while Engineering Mode is enabled! Ask " + ranger + " to clarify.");
+        }
+        else { //If ENGM is not on
+            if (!memberVC) {
+                msg.reply("You're not attached to a voice channel silly; you can't play music if you can't hear it. :thonk:");
             }
-            else { //If ENGM is not on
-                if (!memberVC) {
-                    msg.reply("You're not attached to a voice channel silly; you can't play music if you can't hear it. :thonk:");
-                }
-                else if (memberVC == hangoutVC) {
-                    msg.reply("No no, get out of the Hangout channel. You can't play music in there.");
-                }
-                else if (memberVC == channelSpawner) {
-                    msg.reply("The channel spawner channel is not meant for music! Spawn one and then use the play system.");
-                }
-                else {
-                    for (var t = 0; t < fishsticks.tempChannels.length; t++) {
-                        if (memberVC == (fishsticks.channels.get(fishsticks.tempChannels[t]))) {
-                            accept();
-                        }
+            else if (memberVC == hangoutVC) {
+                msg.reply("No no, get out of the Hangout channel. You can't play music in there.");
+            }
+            else if (memberVC == channelSpawner) {
+                msg.reply("The channel spawner channel is not meant for music! Spawn one and then use the play system.");
+            }
+            else {
+                for (var t = 0; t < fishsticks.tempChannels.length; t++) {
+                    if (memberVC == (fishsticks.channels.get(fishsticks.tempChannels[t]))) {
+                        accept();
                     }
                 }
             }
         }
-        else {
-            msg.reply("You lack the necessary permissions to use the music player. You must be a member!").then(sent => sent.delete(10000));
-        }
+    }
+    else {
+        msg.reply("You lack the necessary permissions to use the music player. You must be a member!").then(sent => sent.delete(10000));
     }
 }
