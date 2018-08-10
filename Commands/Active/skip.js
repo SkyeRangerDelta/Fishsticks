@@ -17,11 +17,18 @@ exports.run = (fishsticks, msg, cmd) => {
                 msg.reply("There's nothing to skip!");
             }
             else {
+                var skipInfoPanel = new Discord.RichEmbed();
+                    skipInfoPanel.setTitle("o0o - SKIP - o0o");
+                    skipInfoPanel.setColor(config.fscolor);
+                    skipInfoPanel.setDescription(
+                        "Playback skipped a song. Authorized by " + msg.author.tag + "\n"+
+                        `**Now Playing**: ${fishsticks.serverQueue.songs[0].title}`
+                    )
+
                 fishsticks.serverQueue.connection.dispatcher.end();
-                logger.send("Playback skipped a song. Authorized by " + msg.author.tag);
-                logger.send(`**Now Playing**: ${fishsticks.serverQueue.songs[0].title}`);
 
                 console.log("[MUSI-SYS] Playback skipped a song by " + msg.author.tag);
+                logger.send({embed: skipInfoPanel});
             }
         }
         else {

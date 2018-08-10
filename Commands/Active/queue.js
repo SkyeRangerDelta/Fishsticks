@@ -12,12 +12,15 @@ exports.run = (fishsticks, msg, cmd) => {
         return;
     }
 
-    return logger.send(`
-        __**Song Queue**__
+    var queueInfoPanel = new Discord.RichEmbed();
+        queueInfoPanel.setTitle("o0o - Player Queue - o0o");
+        queueInfoPanel.setColor(config.fscolor);
+        queueInfoPanel.setDescription(
+            `${fishsticks.serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}`
+        );
+        queueInfoPanel.addField("Now Playing", `${fishsticks.serverQueue.songs[0].title}`, true);
 
-    ${fishsticks.serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
-
-    **Now Playing:** ${fishsticks.serverQueue.songs[0].title}
-    `);
+    logger.send({embed: queueInfoPanel});
+    return;
 
 }

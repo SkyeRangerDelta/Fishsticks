@@ -134,6 +134,47 @@ fishsticks.on('message', async msg => {
 	}
 
 	//PASSIVE COMMANDS
+	//--> Administrative achrules: Shows rules in the #rules channel
+	if ((msg.content == "achrules") && (msg.member.roles.find("name", "Staff"))) {
+		msg.delete();
+
+		var achrules = new Discord.RichEmbed();
+			achrules.setTitle("o0o - CCG Discord Rules - o0o");
+			achrules.setColor(config.fsemercolor);
+			achrules.setThumbnail("https://cdn.discordapp.com/attachments/420001817825509377/477289259158601729/CCG_Logo.png");
+			achrules.setDescription(
+				"We, the members of “The Christian Crew”, stand united in our effort to provide the online gaming community with a clean environment, of fellowship and exciting"+
+				" game play. Our members will conduct themselves with integrity and decency, reflecting true Christian Character, in order that our Lord and Savior, Jesus Christ,"+
+				" might be honored and glorified. We are committed to the ministry and growth of our community for the Kingdom of God, presenting the Gospel of Jesus Christ as"+
+				" the fundamental truth of God. Finally, we pledge to never forget that we are Christians first, and fellow gamers second.\n"
+			);
+			achrules.addField("Rules:",
+				"1. Follow All General Conduct Rules\n"+
+				"2. Be respectful of others. If someone does not like your behavior, stop or go to a new channel.\n"+
+				"3. Please only stream or record in a channel after obtaining permission from others in the channel to do so.\n"
+			);
+			achrules.addField("General Conduct Rules:",
+				"A. Be respectful to others, their personhood, beliefs, gender, race, nationality, disability, or any other way they may differ from you. (Matthews 7:12)\n"+
+				"B. Obey all laws and end user agreements. (No sharing or talking about pirated software whatsoever. Fishsticks will have your head.) Romans 13:8\n"+
+				"C. If you feel someone to be guilty of any wrong doing, please talk to them privately or not at all (!report is a thing too.) Matthew 18:15\n"+
+				"D. Please refrain from advertising or recruiting for anything without prior approval.\n"
+			);
+			achrules.addField("Websites:",
+				"[Christian Crew Gaming Website](https://www.ccgaming.com/)\n"+
+				"[Apply for Membership](https://www.ccgaming.com/join/)\n"+
+				"[CCG Forums](https://forums.ccgaming.com/)\n"+
+				"[Discord Server Invite Link](http://discord.ccgaming.com/)\n"
+			);
+			achrules.addField("Fishsticks & Discord Help:",
+				"[Complete Discord Guide (Forum Post)](https://forums.ccgaming.com/viewtopic.php?f=2&t=24357)\n"+
+				"[Complete Discord Reference (KBase Article)](https://forums.ccgaming.com/kb/viewarticle?a=2)\n"+
+				"[Fishsticks Official Wiki Page](https://wiki.pldyn.net/index.php/Fishsticks)\n"+
+				"[KBase Article](https://forums.ccgaming.com/kb/viewarticle?a=3)\n"
+			);
+
+		msg.channel.send({embed: achrules});
+	}
+
 	if (msg.content == "ni hao" || msg.content == "Ni Hao" || msg.content == "Ni Hao Ma" || msg.content == "ni hao ma") {
 		msg.reply("Hao!");
 		fishsticks.commandSuccess++;
@@ -252,18 +293,41 @@ fishsticks.on('guildMemberAdd', member => {
 
 	console.log("+USER: Attempting to attach Newcomer role...");
 		
+	//ADD NEWCOMER TO USER AND CATCH POTENTIAL ERROR
 	member.addRole(newcomer).catch(attacherror => {
 		var newcomerAlert = new Discord.RichEmbed();
 			newcomerAlert.setTitle("o0o - NEWCOMER WARNING - o0o");
 			newcomerAlert.setColor(fsemercolor);
 			newcomerAlert.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png");
 			newcomerAlert.setDescription("HEY, @here ! A new user joined but Fishsticks encountered an error.");
-			newcomerAlert.addField("Fishsticks failed to assign the user the newcomer role!", "The new user, " + member.user.username + "cannot see anything! Put this to rememdy NOW! You may need to DM them to let them know that the problem has been solved.");
+			newcomerAlert.addField("Fishsticks failed to assign the user the newcomer role!", "The new user, " + member.user.username + "cannot see anything! Put this to remedy NOW! You may need to DM them to let them know that the problem has been solved.");
 
 		moderator.send({embed: newcomerAlert});
 
 		console.log(attacherror);
 	});
+
+	//SEND USER A PRIVATE MESSAGE CONCERNING GENERAL CCG RULES
+	var newMemberInfoPanel = new Discord.RichEmbed();
+		newMemberInfoPanel.setTitle("o0o - Welcome! - o0o");
+		newMemberInfoPanel.setColor(config.fscolor);
+		newMemberInfoPanel.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png");
+		newMemberInfoPanel.setDescription(
+			"Greetings newcomer!\n\n"+
+			"My name is Fishsticks, the CCG server liason. Yes, I know, I'm a bot. This has no effect on our relationship I should hope though. Either way, I justed wanted"+
+			" to let you know what the down low is concerning our happy community here. We've got ground rules and those rules are enforced by both me and our staff members."+
+			" All staff members and moderators are shown in our members list from the top down to members. Any questions you may have can be asked to these members. I can only do"+
+			" so much you know, lol. Anyways, have a review of these rules:\n"+
+			"1. Follow all general conduct rules\n"+
+			"2. Be respectful of others. If someone doesn't like you behavior, stop or move to a new channel.\n"+
+			"3. Please only stream or record in a channel after obtaining permission from others in the channel to do so.\n\n"+
+			"More information concerning these can be found under the `!rules` command.\n\n"+
+			"As a further note, since you are a newcomer to this community: your permissions are limited until granted the Recognized role. Join voice channels and talk to people, show"+
+			" that you can be trusted and you will be granted these rights.\n\n"+
+			"Please also note that as a Discord user, you also agree to their terms of service. [Review them here](https://discordapp.com/guidelines)."
+		);
+	member.sendMessage({embed: newMemberInfoPanel});
+	
 
 	console.log("+USER: " + member.user.username + " joined the server.");
 	crashpad.send({embed: join});
