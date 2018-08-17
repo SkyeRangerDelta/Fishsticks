@@ -37,6 +37,7 @@ exports.run = (fishsticks, msg, cmd) => {
     let mattybmode = fishsticks.mattybmode;
 
     console.log("[MUSI-SYS] Play command recognized from user " + msg.author.tag + ".");
+    console.log("[MUSI-SYS] Guild ID is: " + fishsticks.guildID);
     console.log("[MATB-MOD] MattyB Mode is currently: " + fishsticks.mattybmode);
 
     //ACTIVE FUNCTIONS
@@ -44,6 +45,7 @@ exports.run = (fishsticks, msg, cmd) => {
         console.log("[MUSI-SYS] Play command rejected.");
 
         msg.reply("Request denied. You have to join a tempch channel first!\n\n*If this request was made from a temporary channel, Fishsticks has been restarted at some point and you need to recreate your channel for the music player to work.*").then(sent => sent.delete(30000));
+        return;
     }
 
     async function accept() {
@@ -110,6 +112,7 @@ exports.run = (fishsticks, msg, cmd) => {
                     } catch (error) {
                         console.log("[MUSI-SYS] YouTube Search failed because user didnt select a response.");
                         msg.reply("You didn't select a video!").then(sent => sent.delete(30000));
+                        return;
                     }
                     var videoIndex = parseInt(response.first().content);
 
@@ -321,7 +324,8 @@ exports.run = (fishsticks, msg, cmd) => {
                     queueConstruct.connection = connection;
                     play(msg.guild, queueConstruct.songs[0]);
         
-                    console.log("[MUSI-SYS] Attached to channel and playing song.");
+                    console.log("[MUSI-SYS] Attached to channel and playing song. Setting music playing to true.");
+                    fishsticks.musicPlaying = true;
 
                     if (!playlist) {
                         var videoInfoPanel = new Discord.RichEmbed();
@@ -377,6 +381,8 @@ exports.run = (fishsticks, msg, cmd) => {
             console.log("[MUSI-SYS] No songs detected in queue/player > terminating player.")
             fishsticks.serverQueue.vCh.leave();
             fishsticks.queue.delete(guild.id);
+            console.log("[MUSI-SYS] Setting music playing to false.")
+            fishsticks.musicPlaying = false;
             return;
         }
 
@@ -394,37 +400,44 @@ exports.run = (fishsticks, msg, cmd) => {
     }
 
     //COMMAND CONDITIONS (CHECKS BEFORE EXECUTING FUNCTIONS)
-    if (msg.member.roles.find('name', 'Bot') || msg.member.roles.find("name", "Staff")) {
-        logger.send("Command permissions authorized and granted to " + msg.author.tag + ".");
-        console.log("[MUSI-SYS] Staff override acknowledged.")
-        accept();
-    }
-    else if ((msg.member.roles.find('name', 'CC Member')) || (msg.member.roles.find('name', 'ACC Member'))) { //If member
-        if (engmode == true) { //If ENGM is on
-            console.log("[MUSI-SYS] Play command ignored via ENGM being true.")
-    
-            msg.reply("I can't play music while Engineering Mode is enabled! Ask " + ranger + " to clarify.");
+    console.log("[MUSI-SYS] Checking User Permissions...");
+    if (msg.guild.id == fishsticks.guildID) { //Check for if in-guild.
+        console.log("[MUSI-SYS] User is in CC.");
+
+        //Permissions check
+        if (msg.member.roles.find("name", "Staff")) { //STAFF
+            accept();
         }
-        else { //If ENGM is not on
-            if (!memberVC) {
-                msg.reply("You're not attached to a voice channel silly; you can't play music if you can't hear it. :thonk:");
-            }
-            else if (memberVC == hangoutVC) {
-                msg.reply("No no, get out of the Hangout channel. You can't play music in there.");
-            }
-            else if (memberVC == channelSpawner) {
-                msg.reply("The channel spawner channel is not meant for music! Spawn one and then use the play system.");
-            }
-            else {
-                for (var t = 0; t < fishsticks.tempChannels.length; t++) {
-                    if (memberVC == (fishsticks.channels.get(fishsticks.tempChannels[t]))) {
-                        accept();
-                    }
+        else if (msg.member.roles.find("name", "CC Member") || msg.member.roles.get("name", "ACC Member")) { //NORMAL MEMBER
+            accept();
+        }
+        else { //NOT STAFF OR MEMBER
+            msg.reply("You're not permitted to run this thing! Check with staff if you think you should have permissions for this.");
+            console.log("[MUSI-SYS] User did not have permissions to run PLAY.")
+            return;
+        }
+    }
+    else { //If from different guild
+        //Checking if player is connected to issuing channel
+
+        console.log("[MUSI-SYS] User is from a different guild; checking authorization...");
+        if (msg.member.roles.find("name", "FS Authorized")) { //User has FS Authorized Role?
+            if (fishsticks.musicPlaying) {
+                if (msg.member.voiceChannel != fishsticks.vc) {
+                    msg.reply("Who are you? You're not even in the same channel as me!");
+                    return;
+                }
+                else {
+                    accept();
                 }
             }
+            else {
+                accept();
+            }
         }
-    }
-    else {
-        msg.reply("You lack the necessary permissions to use the music player. You must be a member!").then(sent => sent.delete(10000));
+        else {
+            msg.reply("You're not permitted to run this thing!");
+            return;
+        }
     }
 }

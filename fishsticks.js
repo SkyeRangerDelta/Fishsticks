@@ -32,6 +32,10 @@ fishsticks.mattybmode = true;
 fishsticks.playrejects = 0;
 fishsticks.commandAttempts = 0;
 fishsticks.commandSuccess = 0;
+fishsticks.CCGuild = fishsticks.guilds.get("125677594669481984");
+fishsticks.guildID = "125677594669481984";
+fishsticks.musicPlaying = false;
+fishsticks.vc;
 
 //CHANNEL INITIALIZATIONS
 var fsconsoleChannel;
