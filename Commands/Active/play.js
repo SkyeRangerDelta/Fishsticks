@@ -406,10 +406,21 @@ exports.run = (fishsticks, msg, cmd) => {
 
         //Permissions check
         if (msg.member.roles.find("name", "Staff")) { //STAFF
-            accept();
+            if (fishsticks.engmode) {
+                msg.reply("Engeering Mode is enabled! Things might go wrong!").then(sent => sent.delete(15000));
+                accept();
+            }
+            else {
+                accept();
+            }
         }
         else if (msg.member.roles.find("name", "CC Member") || msg.member.roles.get("name", "ACC Member")) { //NORMAL MEMBER
-            accept();
+            if (fishsticks.engmode) {
+                return msg.reply("Engeering Mode is enabled! You can't play music with ENGM on!").then(sent => sent.delete(15000));
+            }
+            else {
+                accept();
+            }
         }
         else { //NOT STAFF OR MEMBER
             msg.reply("You're not permitted to run this thing! Check with staff if you think you should have permissions for this.");
