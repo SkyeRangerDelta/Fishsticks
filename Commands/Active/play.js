@@ -28,6 +28,7 @@ exports.run = (fishsticks, msg, cmd) => {
     var video;
     var videos;
     var numResults = 0;
+    var vlength;
 
     var playerSongTitle;
     var playerSongDescription;
@@ -139,18 +140,42 @@ exports.run = (fishsticks, msg, cmd) => {
         try {
             console.log("[MUSI-SYS] Attempting to gather song info...");
 
+            if (video.duration.hours == 0) {
+                vhours = ``;
+            }
+            else {
+                vhours = `${video.duration.hours}:`
+            }
+            
+            if (video.duration.seconds < 10) {
+                vseconds = `0${video.duration.seconds}`;
+            }
+            else {
+                vseconds = video.duration.seconds;
+            }
+
+            vlength = vhours + `${video.duration.minutes}:` + vseconds;
+
             song = {
                 title: video.title,
                 description: video.description,
                 author: video.channel.title,
                 url: `https://www.youtube.com/watch?v=${video.id}`,
-                id: video.id
+                id: video.id,
+                length: vlength
+            }
+
+            if (!song) {
+                console.log("[MUSI-SYS] No Song Info Found");
+                msg.reply("Something went wrong...");
+                return;
             }
 
             console.log('[MUSI-SYS] Logging Song Info:\n'+
                 '->Title: ' + song.title + '\n'+
                 '->Author: ' + song.author + '\n' +
                 '->ID: ' + song.id + '\n' +
+                '->Length: ' + song.length + "\n" +
                 '->URL: ' + song.url);
 
             playerSongTitle = song.title;
@@ -292,9 +317,9 @@ exports.run = (fishsticks, msg, cmd) => {
             }
         }
 
-        if (song == null) {
+        if (video == null) {
             console.log("[TEMP-CHA] Caught an error at invalid song data.");
-            msg.reply("I can't play that for some reason. Most likely it's got a copyright on it. Try a different video!");
+            msg.reply("I couldn't get the video from YouTube, try a different video persnaps?");
             return;
         }
         else if (song == null) {
@@ -361,6 +386,7 @@ exports.run = (fishsticks, msg, cmd) => {
                         videoInfoPanel.setDescription(
                             "**Title**: " + song.title + "\n" +
                             "**Author**: " + song.author + "\n" +
+                            "**Length**: " + song.length + "\n" +
                             "**URL**: " + song.url
                         )
                     logger.send({embed: videoInfoPanel});
@@ -368,8 +394,6 @@ exports.run = (fishsticks, msg, cmd) => {
                 }
                 
             }
-
-            return;
         }
     }
 
@@ -396,7 +420,16 @@ exports.run = (fishsticks, msg, cmd) => {
         
         dispatch.setVolumeLogarithmic(fishsticks.serverQueue.volume / 5);
 
-        logger.send(`**Now playing**: ${song.title}`);
+        var nowPlayingPanel = new Discord.RichEmbed();
+            nowPlayingPanel.setTitle("o0o - Now Playing - o0o");
+            nowPlayingPanel.setColor(config.fscolor);
+            nowPlayingPanel.setDescription(
+                `**Title**: ${song.title}\n`+
+                `**Author**: ${song.author}\n`+
+                `**Length**: ${song.length}`
+            );
+
+        logger.send({embed: nowPlayingPanel});
     }
 
     //COMMAND CONDITIONS (CHECKS BEFORE EXECUTING FUNCTIONS)
@@ -414,7 +447,7 @@ exports.run = (fishsticks, msg, cmd) => {
                 accept();
             }
         }
-        else if (msg.member.roles.find("name", "CC Member") || msg.member.roles.get("name", "ACC Member")) { //NORMAL MEMBER
+        else if ((msg.member.roles.find("name", "CC Member")) || (msg.member.roles.find("name", "ACC Member"))) { //NORMAL MEMBER
             if (fishsticks.engmode) {
                 return msg.reply("Engeering Mode is enabled! You can't play music with ENGM on!").then(sent => sent.delete(15000));
             }

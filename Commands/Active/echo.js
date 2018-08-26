@@ -71,6 +71,7 @@ exports.run = (fishsticks, msg, cmd) => {
                     default:
                         console.log("[ECHO-CMD] Command halted on account of invalid parameter.");
                         msg.reply("Invalid type selection; post stopped.");
+                        return;
                     break;
                 }
             }
