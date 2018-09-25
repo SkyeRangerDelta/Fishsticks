@@ -182,27 +182,38 @@ fishsticks.on('message', async msg => {
 	if (msg.content == "ni hao" || msg.content == "Ni Hao" || msg.content == "Ni Hao Ma" || msg.content == "ni hao ma") {
 		msg.reply("Hao!");
 		fishsticks.commandSuccess++;
+		return;
+	}
+
+	if (msg.content.toLowerCase() == "hello there") {
+		msg.reply("General Kenobi", {files: ["./images/grevious.gif"]});
+		fishsticks.commandSuccess++;
+		return;
 	}
 
 	if (msg.content == "Order 66" || msg.content == "order 66") {
 		msg.channel.send("**Execute all the Jedis**", {files: ["./images/dewit.gif"]});
 		fishsticks.commandSuccess++;
+		return;
 	}
 
 	if (msg.content.toLocaleLowerCase() == "fire phasers") {
 		msg.channel.send("**Aye Captain; firing all phaser banks.**", {files: ["./images/phasers.gif"]});
 		fishsticks.commandSuccess++;
+		return;
 	}
 
 	if (msg.content.includes("good music") || msg.content.includes("great music")) {
 		msg.channel.send("*Did someone say, `music`?*", {files: ["./sounds/sepWays.mp3"]});
 		fishsticks.commandSuccess++;
+		return;
 	}
 
 	for (var i = 0; i < svuArr.length; i++) {
 		if (msg.content.includes(svuArr[i])) {
 			msg.reply("Excuse me!? We are going to have to have a talk about where your standards lie and where they should be. Keep that attitude up and I'll have to take extra measures... (automatic 15 respect point loss).\n\n *Very idea...\nHating fishsticks...*")
 		}
+		return;
 	}
 
 	if (msg.content.includes("thonk")) {
@@ -212,6 +223,7 @@ fishsticks.on('message', async msg => {
 
 		msg.channel.send("Hehe. *Thonk*", {files: ["./images/thonk.png"]});
 		fishsticks.commandSuccess++;
+		return;
 	}
 	else { //MESSAGE COMMAND HANDLER
 		if (msg.author.fishsticks) return
