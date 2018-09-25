@@ -186,7 +186,7 @@ fishsticks.on('message', async msg => {
 	}
 
 	if (msg.content.toLowerCase() == "hello there") {
-		msg.reply("General Kenobi", {files: ["./images/grevious.gif"]});
+		msg.reply("General Kenobi", {files: ["./images/grievous.gif"]});
 		fishsticks.commandSuccess++;
 		return;
 	}
