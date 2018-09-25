@@ -186,7 +186,7 @@ fishsticks.on('message', async msg => {
 	}
 
 	if (msg.content.toLowerCase() == "hello there") {
-		msg.channel.send("General " + msg.author.tag, {files: ["./images/grievous.gif"]});
+		msg.channel.send("General " + msg.author.username + "!", {files: ["./images/grievous.gif"]});
 		fishsticks.commandSuccess++;
 		return;
 	}
