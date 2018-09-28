@@ -19,11 +19,11 @@ exports.run = (fishsticks, msg, cmd) => {
 
 	fssys.readdir(actDir, (err, files) => {
 		activeDirs = files.length;
-	});
+	}).on(console.error("[STAT-REP] Active Error:\n" + err));
 
 	fssys.readdir(pasDir, (err, files) => {
 		passiveDirs = files.length;
-	});
+	}).on(console.error("[STAT-REP] Passive Error:\n" + err));
 	
 	if (engmode == true) {
 		var statusENG = new Discord.RichEmbed();

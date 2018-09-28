@@ -11,6 +11,7 @@ exports.run = (fishsticks, msg, cmd) => {
 				"[CC Forums](https://forums.ccgaming.com)\n" +
 				"[CC Gaming Website](https://www.ccgaming.com)\n" +
 				"[CC Knowledgebase](https://forums.ccgaming.com/kb/index)\n\n" +
+				"[Fishsticks Feature Request Thread](https://forums.ccgaming.com/viewtopic.php?f=2&t=24835)\n"+
 				"[Skye's Definitive Guide to Discord](https://forums.ccgaming.com/kb/viewarticle?a=2)\n\n"+
 				"[LCARS Database: Fishsticks](https://wiki.pldyn.net/index.php/Fishsticks)\n"+
 				"[LCARS Database: Guide to Fishsticks](https://wiki.pldyn.net/index.php/Discord_Bot_Guide:_Fishsticks)\n"+
