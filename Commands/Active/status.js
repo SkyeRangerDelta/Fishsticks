@@ -3,26 +3,27 @@ const config = require('../../Modules/Core/corecfg.json');
 const eng = require('../../Modules/fishsticks_engm.json');
 const sys = require('../../Modules/Core/coresys.json');
 const ses = require('../../fishsticks_vars.json');
-const counter = require('count-files');
+const fssys = require('fs');
+
+const actDir = './Commands/Active';
+const pasDir = './Commands/Passive';
 
 exports.run = (fishsticks, msg, cmd) => {
 	msg.delete();
 
 	let engmode = fishsticks.engmode;
-	
-	const activeDir = './';
-	const passiveDir = '../Passive';
-	const mainDir = '../../';
 
-	var activeDirs = "`Under Development`";
-	var passiveDirs = "`Under Development`";
+	var activeDirs = 0;
+	var passiveDirs = 0;
 	var externalDirs = "`Under Development`";
 
-	/*counter(activeDir, function (err, results) {
-		console.log("[SYS-STAT] Counting directories and files...");
-		console.log(results);
-		activeDirs = results;
-	}); */
+	fssys.readdir(actDir, (err, files) => {
+		activeDirs = files.length;
+	});
+
+	fssys.readdir(pasDir, (err, files) => {
+		passiveDirs = files.length;
+	});
 	
 	if (engmode == true) {
 		var statusENG = new Discord.RichEmbed();

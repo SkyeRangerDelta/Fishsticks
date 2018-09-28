@@ -185,7 +185,13 @@ fishsticks.on('message', async msg => {
 	}
 
 	if (msg.content.toLowerCase() == "hello there") {
-		msg.channel.send("General " + msg.author.username + "!", {files: ["./images/grievous.gif"]});
+
+		if (msg.author == ranger) {
+			msg.channel.send("Admiral Delta!", {files: ["./images/grievous2.gif"]});
+		}
+		else {
+			msg.channel.send("General " + msg.author.username + "!", {files: ["./images/grievous.gif"]});
+		}
 		fishsticks.commandSuccess++;
 		return;
 	}
