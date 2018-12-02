@@ -9,8 +9,8 @@ exports.run = (fishsticks, msg, cmd) => {
 		ips.setColor(config.fscolor)
 		ips.setDescription(
 			"**ARK: SURVIVAL EVOLVED**\n" +
-            "Ragnarok: `192.99.83.148:7070`\n"+
-            "Abberation: `192.99.83.148:7400`"
+            "Crystal Isles: `192.99.83.148:7060`\n"+
+            "Extinction: `192.99.83.148:7370`"
 		);
 
     msg.channel.send({embed: ips}).then(sent => sent.delete(30000));

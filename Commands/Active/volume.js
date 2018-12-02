@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
-const chs = require('../../Modules/fs_channels.json');
+const chs = require('../../Modules/fs_ids.json');
 
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
@@ -15,6 +15,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
             if (!fishsticks.serverQueue) {
                 msg.reply("There's nothing to stop!");
+                return;
             }
 
             if (cmd[0] == null) {

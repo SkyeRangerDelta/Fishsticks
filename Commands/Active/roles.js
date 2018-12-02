@@ -9,26 +9,23 @@ exports.run = (fishsticks, msg, cmd) => {
 			roles.setColor(config.fscolor);
 			roles.setDescription(
 				"Roles are the 'groups' that you as a user can be assigned to. They control the permissions that you have the power to work with. Here's a nifty list to describe them.\n" +
-				"**Everyone**: No color assignment, default white. You can talk in the voice channels and read text history.\n"+
+				"**Everyone**: Welcome friend! Get to know the community and you'll be granted Recognized. Lowest level, limited permissions.\n"+
 				"**Logger**: The logger bot's role.\n" +
-				"**Trusted**: Everyone role plus text chat functions. Can change nickname.\n" +
-				"**Applicant**: Trusted, but cannot attach files.\n" +
-				"**Members**: Trusted but can also move users.\n" +
-				"**ACC Member**: Identifier for ACC - no perms, works in tangent with Members role.\n" +
-				"**CC Members**: Identifier for CC - no permissions, works in tangent with Members role.\n" +
-				"**Timeout**: No permissions except for reading text channels.\n" +
-				"**Admin**: There's a lot of permissions in there. Cannot create invites or manage emojis.\n"+
+				"**Recognized**: Non-member regular of the community. Has most functions.\n" +
+				"**Applicant**: Has applied for membership.\n" +
+				"**CC Member / ACC Member**: Facade role, mainly used by Fishsticks - designates official members.\n" +
+				"**Moderator**: Moderator role, has basic moderation permissions.\n"+
 				"**Bot**: Default bot role (plus SkyeRanger). Can ban you.\n" +
 				"**Staff**: All perms except server management.\n" +
-				"**Event Coordinator**: Identifier for ECs. Used in tangent with another permissions role such as Staff.\n" +
-				"**Division Leader**: Identifier for DLs. Used in tangent with another permissions role.\n" +
-				"**Tech Support**: Administrator level permissions. Add-on permissions used in tangent with another role.\n" +
-				"**Council Advisor**: Server administration permissions. Add-on permissions used in tangent with another role.\n" +
-				"**Council Member**: Administrator level permissions. Add-on permissions used in tangent with another role.\n\n" +
+				"**Event Coordinator**: Staff subset, coordinators setup events!\n" +
+				"**Division Leader**: Staff subset, manages a division!\n" +
+				"**Tech Support**: Staff subset with Administrator permissions; they fix/manmage stuff!\n" +
+				"**Council Advisor**: Staff/CM subset, they are advisors to the council!\n" +
+				"**Council Member**: Server administrator (all perms) - They're council members!\n\n" +
 				"**Ark: SE**: Ark: Survival Evolved player.\n"+
+				"**Creative**: Typically seen around the Art Gallery, involved with graphics/media creation."+
 				"**Overwatch**: Overwatch player.\n"+
-				"**PUBG**: PLAYERUNKNOWN'S BATTLEGROUNDS player.\n"+
-				"**Rocket League**: Rocket League player.\n\n"+
+				"**PUBG**: PLAYERUNKNOWN'S BATTLEGROUNDS player.\n\n"+
 				"``This message will delete itself in 1 minute.``"
 			)
 

@@ -1,9 +1,22 @@
 const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
+const embeds = require('../embeds/main.json');
 
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
+    var x = msg.content.split(" ");
+
+
+    let incomplete = new Discord.RichEmbed();
+        incomplete.setTitle("o0o - Command Incomplete (`" + x[0] + "`) - o0o");
+        incomplete.setColor(config.fscolor);
+        incomplete.setDescription(embeds.commands.incomplete);
+        incomplete.addField("Reason:", "Command is being re-written for optimization.", true);
+
+    return msg.channel.send({embed: incomplete}).then(sent => sent.delete(15000));
+
+    /*
     if (cmd[0] == "report" || cmd[0] == "Report") {
         var infoReport = new Discord.RichEmbed();
 		infoReport.setTitle("o0o - INFO CODEX - o0o")
@@ -109,4 +122,5 @@ exports.run = (fishsticks, msg, cmd) => {
 
         msg.channel.send({embed: infoplay}).then(sent => sent.delete(30000));
     }
+    */
 }

@@ -9,45 +9,53 @@ exports.run = (fishsticks, msg, cmd) => {
 		channels.setColor(config.fscolor);
 		channels.setDescription(
 			"Wondering about all these channels off to the left? Here's a nifty list to explain it all!\n"+
-			"===============================================\n"+
-			"**__Server Channels__**\n"+
-			"**Rules**: Lists all the rules, can also be found using ``!rules``.\n"+
-			"**Annnouncements**: Read this for important news and events information!\n\n"+
-			"**__CC Channels__**\n"+
-			"**Hangout**: The hangout channel!\n"+
-			"**Lounge**: The sub-Hangout channel!\n"+
-			"**Memes**: Self-explanitory.\n"+
-			"**Prayer Requests 🔒**: Post here with concerns you'd like support with.\n"+
-			"**Bible Study**: Biblestudy chat should be kept here.\n"+
-			"**Meeting Hall**: During CC Meetings, use this channel for meeting topics.\n"+
-			"**(V) Hangout**: Vocal hangout channel!\n"+
-			"**(V) The Lounge**: Vocal sub-Hangout channel!\n"+
-			"**(V) Safe Haven (Not-Hangout) 🔒**: Not the hangout channel. Quiet zone, hide from trolls.\n"+
-			"**(V) Bible Study**: Voice channel for Bible Study.\n"+
-			"**(V) CC Book Study**: Voice channel for the book study.\n"+
-			"**(V) Meeting Hall**: Voice channel for CC Meetings every other week.\n"+
-			"**(V) Power Prayer Tuesdays**: PPT Voice channel.\n"+
-			"**(V) Kareoke**: Like to sing? Keep it down here.\n\n"+
-			"**__The Fish (Offical Games)__**\n"+
-			"**Games**: General games topic channel.\n"+
-			"**(V) Overwatch**: General Overwatch voice channel.\n"+
-			"**(V) Rocket League**: General RL voice channel. \n"+
-			"**(V) RL Team 1**: Alt RL voice channel. \n"+
-			"**(V) RL Competitive**: Max 4 people, team for competitive matchmaking.\n"+
-			"**(V) Ark: Survival Evolved**: General voice channel for ARK.\n"+
-			"**(V) PUBG**: General PUBG voice channel.\n"+
-			"**(V) PUBG Team 1**: Alt PUBG voice channel\n"+
-			"**(V) PUBG Solo**: It's quiet in here, unless you find teammates!\n\n"+
-			"**__Staff 🔒__**\n"+
-			"*The stuff under this category is for staff!*\n\n"+
-			"**__Temp Channels__**\n"+
-			"*Channels created here are managed by Fishsticks or manually by staff. They are meant to be temporary and can serve any purpose*.\n\n"+
-			"**__Misc__**\n"+
-			"**Off Topic**: Yea, it's down here.\n"+
-			"**Fishsticks Console 🔒**: Skye's Fishsticks engineering deck. It might be dangerous!\n"+
-			"**AFK**: Aversion to Flying Kangaroos.\n\n"+
-			"``This message will delete itself in a minute and a half.``"
+			"==========================================================\n" +
+			"**Key**:\n"+
+			"🔇 : Meaning you should probably mute this channel.\n"+
+			"🔒 : Meaning this channel requires certain permissions to make full use of."
 		);
+		channels.addField("Server Channels",
+			"**Rules**: Community Statement, Rules, and nifty links.\n"+
+			"**Announcements**: Fairly self-explanitory.",
+			false);
+		channels.addField("Christian Crew Channels",
+			"**Crash Pad**: 🔒 Newcomer landing zone. Stand back.\n"+
+			"**Hangout**: The hangout channel! General chat.\n"+
+			"**Lounge**: Lounge, another general chat.\n"+
+			"**Memes**: Self-explanitory (I hope).\n"+
+			"**Games**: Discussion channel for game-related stuff.\n"+
+			"**Meeting Hall**: Used to discuss meeting topics during CC meetings.\n"+
+			"**(V) Hangout**: Hangout voice channel.\n"+
+			"**(V) Lounge**: Lounge voice channel.\n"+
+			"**(V) Meeting Hall**: CC Meeting voice channel (might get loud).\n",
+			false);
+		channels.addField("Ministry",
+			"**Prayer Requests**: Post here with your concerns (or praises!).\n"+
+			"**Bible Study**: Bible Study discussion chat channel.\n"+
+			"**(V) Bible Study**: Bible Study voice channel.\n"+
+			"**(V) CC Book Study**: Book Study voice channel.\n"+
+			"**(V) Power Prayer Tuesdays**: Power Prayer Tuesdays channel.\n",
+			false);
+		channels.addField("The Fish (Official CC Games)",
+			"'Divisional' Game channels. If you are playing a game (alone or with others), please use the appropriate channel for your game or create a temporary channel.\n",
+			false);
+		channels.addField("Temp Channels",
+			"*These channels are managed by Fishsticks. To create one, seek the `!tempch` command in `!help`.\n",
+			false);
+		channels.addField("Staff",
+			"🔒 These channels are for Staff!\n",
+			false);
+		channels.addField("Misc",
+			"**Art Gallery**: 🔒 Drawings and postings from our scribblenauts.\n"+
+			"**Fishsticks Music Log**: 🔇 This is where Fishsticks will relay all of the music player output. (Including queues).\n"+
+			"**Fishsticks Console**: 🔇 🔒 Danger zone. Fishsticks testing zone.\n"+
+			"**Fishsticks System Log**: 🔇 🔒 Fishsticks' real time console output.\n"+
+			"**Bot-Logger**: Bot Logger output.\n"+
+			"**Conference Room**: 🔒 (A)CC Member and up only.\n"+
+			"**(V) Conference Room**: 🔒 Conference Room voice channel.\n"+
+			"**(V) Art Gallery**: 🔒 Art Gallery voice channel.\n"+
+			"**AFK**: Avidly Frenetic Koalas.",
+			false);
 
     msg.channel.send({embed: channels}).then(sent => sent.delete(90000));
 }
