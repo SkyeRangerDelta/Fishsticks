@@ -10,6 +10,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			links.setDescription(
 				"[CC Forums](https://forums.ccgaming.com)\n" +
 				"[CC Gaming Website](https://www.ccgaming.com)\n" +
+				"[CCG Discord Invite Link](https://discord.ccgaming.com)\n"+
 				"[CC Knowledgebase](https://forums.ccgaming.com/kb/index)\n" +
 				"[Official CCTV Twitch Stream](https://twitch.tv/christiancrewtv)\n" +
 				"[Official CC YouTube Channel](https://www.youtube.com/user/ChristianCrewGaming)\n\n"+

@@ -279,7 +279,7 @@ fishsticks.on('message', async msg => {
 						"[Christian Crew Gaming Website](https://www.ccgaming.com/)\n"+
 						"[Apply for Membership](https://www.ccgaming.com/join/)\n"+
 						"[CCG Forums](https://forums.ccgaming.com/)\n"+
-						"[Discord Server Invite Link](http://discord.ccgaming.com/)\n"
+						"[Discord Server Invite Link](https://discord.ccgaming.com/)\n"
 					);
 					achrules.addField("Fishsticks & Discord Help:",
 						"[Complete Discord Guide (Forum Post)](https://forums.ccgaming.com/viewtopic.php?f=2&t=24357)\n"+
