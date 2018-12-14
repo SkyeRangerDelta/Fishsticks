@@ -524,9 +524,10 @@ exports.run = (fishsticks, msg, cmd) => {
                                 accept();
                             }
                         }
+                        else {
+                            return msg.reply("Doesn't look like I can play music in this channel!");
+                        }
                     }
-
-                    msg.reply("Doesn't look like I can play music in this channel!");
                 }
             }
             else { //NOT STAFF OR MEMBER
