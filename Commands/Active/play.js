@@ -521,13 +521,12 @@ exports.run = (fishsticks, msg, cmd) => {
                                 return msg.reply("Engineering Mode is enabled! You can't play music with ENGM on!").then(sent => sent.delete(15000));
                             }
                             else {
-                                accept();
+                                return accept();
                             }
                         }
-                        else {
-                            return msg.reply("Doesn't look like I can play music in this channel!");
-                        }
                     }
+
+                    return msg.reply("It doesn't look like I can play music in this channel!").then(sent => sent.delete(15000));
                 }
             }
             else { //NOT STAFF OR MEMBER
