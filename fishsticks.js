@@ -297,82 +297,84 @@ fishsticks.on('message', async msg => {
 		//Passive try/catch
 		try {
 
-			let line = msg.content.toLowerCase();
+			if (fishsticks.subroutines.get("passive")) {
+				let line = msg.content.toLowerCase();
 
-			if (line == "ni hao" || line == "ni hao ma") {
-				msg.reply("Hao!");
-				fishsticks.commandSuccess++;
-			}
-
-			if (line == "i have the high ground") {
-				msg.delete();
-				msg.channel.send({files: ["./images/highGround.gif"]});
-			}
-
-			if (line == "fly you fools") {
-				msg.delete();
-				msg.channel.send("GANDALF!", {files: ["./images/flyFools.gif"]});
-			}
-
-			if (line == "the meaning of life" || line == "the meaning of the universe" || line == "the meaning of life, the universe, and everything" || line == "the meaning of everything") {
-				msg.delete();
-				msg.channel.send("Yes, yes, it's quite simple really...", {files: ["./images/42.gif"]});
-			}
-
-			if (line == "holy hand grenade" || line == "hand grenade") {
-				msg.delete();
-				msg.channel.send("**A reading from the Book of Armaments, Chapter 4, Verses 16 through 20:**\n\n" +
-				"Then did he raise on high the Holy Hand Grenade of Antioch, saying, 'Bless this, O Lord, that with it thou mayst blow thine enemies to tiny bits, in thy mercy.' And the people did rejoice and did feast upon the lambs and toads and tree-sloths and fruit-bats and orangutans and breakfast cereals ... Now did the Lord say, 'First thou pullest the Holy Pin. Then thou must count to three. Three shall be the number of the counting and the number of the counting shall be three. Four shalt thou not count, neither shalt thou count two, excepting that thou then proceedeth to three. Five is right out. Once the number three, being the number of the counting, be reached, then lobbest thou the Holy Hand Grenade in the direction of thine foe, who, being naughty in my sight, shall snuff it'\nhttps://media.giphy.com/media/ffyetb56Iux2M/giphy.gif");
-			}
-
-			if (line == "flesh wound" || line == "just a flesh wound") {
-				msg.delete();
-				msg.channel.send("Nah it's not, your arms off!", {files: ["./images/fleshWound.gif"]});
-			}
-
-			if (line == "dark helmet") {
-				msg.delete();
-				msg.channel.send("Hehe.", {files: ["./images/helmet.gif"]});
-			}
-
-			if (line == "ludicrous speed") {
-				msg.delete();
-				msg.channel.send("Ludicrous Speed, GO!", {files: ["./images/ludicrous.gif"]});
-			}
-
-			if (line == "you're the worst") {
-				msg.channel.send({files: ["./images/dipper.gif"]});
-			}
-
-			if (line == "the duchess approves") {
-				msg.channel.send({files: ["./images/duchess.gif"]});
-			}
-
-			if (line == "plaid") {
-				msg.delete();
-				msg.channel.send({files: ["./images/plaid.gif"]});
-			}
-	
-			if (line == "hello there") {
-	
-				if (msg.author == ranger) {
-					msg.channel.send("Admiral Delta!", {files: ["./images/grievous2.gif"]});
+				if (line == "ni hao" || line == "ni hao ma") {
+					msg.reply("Hao!");
+					fishsticks.commandSuccess++;
 				}
-				else {
-					msg.channel.send("General " + msg.author.username + "!", {files: ["./images/grievous.gif"]});
+
+				if (line == "i have the high ground") {
+					msg.delete();
+					msg.channel.send({files: ["./images/highGround.gif"]});
 				}
-				fishsticks.commandSuccess++;
-				return;
-			}
-	
-			if (line == "order 66") {
-				msg.channel.send("**Execute all the Jedis**", {files: ["./images/dewit.gif"]});
-				fishsticks.commandSuccess++;
-			}
-	
-			if (msg.content.includes("good music") || msg.content.includes("great music")) {
-				msg.channel.send("*Did someone say, `music`?*", {files: ["./sounds/Journey - Separate Ways.mp3"]});
-				fishsticks.commandSuccess++;
+
+				if (line == "fly you fools") {
+					msg.delete();
+					msg.channel.send("GANDALF!", {files: ["./images/flyFools.gif"]});
+				}
+
+				if (line == "the meaning of life" || line == "the meaning of the universe" || line == "the meaning of life, the universe, and everything" || line == "the meaning of everything") {
+					msg.delete();
+					msg.channel.send("Yes, yes, it's quite simple really...", {files: ["./images/42.gif"]});
+				}
+
+				if (line == "holy hand grenade" || line == "hand grenade") {
+					msg.delete();
+					msg.channel.send("**A reading from the Book of Armaments, Chapter 4, Verses 16 through 20:**\n\n" +
+					"Then did he raise on high the Holy Hand Grenade of Antioch, saying, 'Bless this, O Lord, that with it thou mayst blow thine enemies to tiny bits, in thy mercy.' And the people did rejoice and did feast upon the lambs and toads and tree-sloths and fruit-bats and orangutans and breakfast cereals ... Now did the Lord say, 'First thou pullest the Holy Pin. Then thou must count to three. Three shall be the number of the counting and the number of the counting shall be three. Four shalt thou not count, neither shalt thou count two, excepting that thou then proceedeth to three. Five is right out. Once the number three, being the number of the counting, be reached, then lobbest thou the Holy Hand Grenade in the direction of thine foe, who, being naughty in my sight, shall snuff it'\nhttps://media.giphy.com/media/ffyetb56Iux2M/giphy.gif");
+				}
+
+				if (line == "flesh wound" || line == "just a flesh wound") {
+					msg.delete();
+					msg.channel.send("Nah it's not, your arms off!", {files: ["./images/fleshWound.gif"]});
+				}
+
+				if (line == "dark helmet") {
+					msg.delete();
+					msg.channel.send("Hehe.", {files: ["./images/helmet.gif"]});
+				}
+
+				if (line == "ludicrous speed") {
+					msg.delete();
+					msg.channel.send("Ludicrous Speed, GO!", {files: ["./images/ludicrous.gif"]});
+				}
+
+				if (line == "you're the worst") {
+					msg.channel.send({files: ["./images/dipper.gif"]});
+				}
+
+				if (line == "the duchess approves") {
+					msg.channel.send({files: ["./images/duchess.gif"]});
+				}
+
+				if (line == "plaid") {
+					msg.delete();
+					msg.channel.send({files: ["./images/plaid.gif"]});
+				}
+		
+				if (line == "hello there") {
+		
+					if (msg.author == ranger) {
+						msg.channel.send("Admiral Delta!", {files: ["./images/grievous2.gif"]});
+					}
+					else {
+						msg.channel.send("General " + msg.author.username + "!", {files: ["./images/grievous.gif"]});
+					}
+					fishsticks.commandSuccess++;
+					return;
+				}
+		
+				if (line == "order 66") {
+					msg.channel.send("**Execute all the Jedis**", {files: ["./images/dewit.gif"]});
+					fishsticks.commandSuccess++;
+				}
+		
+				if (msg.content.includes("good music") || msg.content.includes("great music")) {
+					msg.channel.send("*Did someone say, `music`?*", {files: ["./sounds/Journey - Separate Ways.mp3"]});
+					fishsticks.commandSuccess++;
+				}
 			}
 	
 			for (var i = 0; i < svuArr.length; i++) {
@@ -405,9 +407,10 @@ fishsticks.on('message', async msg => {
 					return syslog(`A message from ${msg.author.username} was deleted in the system log.`, 0);
 				}
 
-				const pcmd = msg.content.split(" ");
-				const cmd = msg.content.slice(prefix.length).trim().split(/ +/g);
-				const cmdID = cmd.shift().toLowerCase();
+				const statement = msg.content.toLowerCase();
+				const pcmd = statement.split(" ");
+				const cmd = statement.slice(prefix.length).trim().split(/ +/g);
+				const cmdID = cmd.shift();
 			
 				//ACTIVE COMMANDS
 				if (msg.content.charAt(0) == prefix) {
@@ -447,18 +450,20 @@ fishsticks.on('message', async msg => {
 					}
 				}
 				else {//PASSIVE COMMANDS
-					console.log(colors.blue("[PAS-COMM] Attempting Resolution for command: " + pcmd[0]));
-					syslog("[PAS-COMM] Attempting Resolution for command: " + pcmd[0], 0);
-					fishsticks.commandAttempts++;
-					try {
-						let pCmdFile = require(`./Commands/Passive/${pcmd[0]}.js`);
-						pCmdFile.run(fishsticks, msg, cmd);
-						console.log(colors.blue("[PAS-COMM] Success"));
-						syslog("[PAS-COMM] Success", 0);
-						fishsticks.commandSuccess++;
-					} catch (err) {
-						console.log(colors.gray("[PAS-COMM] Failed: " + err));
-						syslog("[PAS-COMM] Failed:\n" + err, 3);
+					if (fishsticks.subroutines.get("passive")) {
+						console.log(colors.blue("[PAS-COMM] Attempting Resolution for command: " + pcmd[0]));
+						syslog("[PAS-COMM] Attempting Resolution for command: " + pcmd[0], 0);
+						fishsticks.commandAttempts++;
+						try {
+							let pCmdFile = require(`./Commands/Passive/${pcmd[0]}.js`);
+							pCmdFile.run(fishsticks, msg, cmd);
+							console.log(colors.blue("[PAS-COMM] Success"));
+							syslog("[PAS-COMM] Success", 0);
+							fishsticks.commandSuccess++;
+						} catch (err) {
+							console.log(colors.gray("[PAS-COMM] Failed: " + err));
+							syslog("[PAS-COMM] Failed:\n" + err, 3);
+						}
 					}
 				}
 			} catch (commandHandlerErr) {
