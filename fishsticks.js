@@ -409,7 +409,7 @@ fishsticks.on('message', async msg => {
 
 				const statement = msg.content.toLowerCase();
 				const pcmd = statement.split(" ");
-				const cmd = statement.slice(prefix.length).trim().split(/ +/g);
+				const cmd = msg.content.slice(prefix.length).trim().split(/ +/g);
 				const cmdID = cmd.shift();
 			
 				//ACTIVE COMMANDS
