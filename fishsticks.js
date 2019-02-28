@@ -19,6 +19,8 @@ const chs = require('./Modules/fs_ids.json');
 const config = require('./Modules/Core/corecfg.json');
 const subrouts = require('./Modules/Functions/subRoutines.js');
 const log = require('./Modules/Functions/log.js');
+const syslogcore = require('./Modules/Functions/syslog.js');
+const pollInit = require('./Modules/PollingSystem/initPolls.js');
 
 const token = systems.token;
 const fscolor = config.fscolor;
@@ -73,6 +75,9 @@ fishsticks.subroutines.set("engm", engmode);
 //SUBROUTINES CHECK
 subrouts.run(fishsticks);
 
+//INITIALIZE POLLS
+pollInit.run(fishsticks, "init");
+
 //CHANNEL INITIALIZATIONS
 var fsconsoleChannel;
 var crashpad;
@@ -118,12 +123,7 @@ fishsticks.on('ready', () => {
 	}
 	//LOGGER INITIALZE
 	function syslog(message, level) {
-		try {
-			log.run(fishsticks, message, level);
-		}
-		catch (err) {
-			systemLog.send("**[SOMETHING IS WRONG]** I tried to send a message via a command, but something has gone askew. (Origin: Core Script)\n\nDetailing:\n" + err);
-		}
+		syslogcore.run(fishsticks, message, level);
 	}
 
 	//Startup Message - console
