@@ -66,7 +66,8 @@ fishsticks.subroutines = new Map([
 	["active", true],
 	["nlinkscn", true],
 	["vouch", true],
-	["poll", true]
+	["poll", true],
+	["gamerole", true]
 ]);
 
 fishsticks.engmode = engmode;
@@ -104,6 +105,7 @@ fishsticks.on('ready', () => {
 	crashpad = fishsticks.channels.get(chs.crashpad);
 	moderator = fishsticks.channels.get(chs.moderator);
 
+	fishsticks.consoleChannel = fsconsoleChannel;
 	fishsticks.systemLog = fishsticks.channels.get(chs.systemLog);
 	let systemLog = fishsticks.systemLog;
 

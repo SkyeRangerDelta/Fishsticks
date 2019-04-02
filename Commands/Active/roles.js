@@ -17,8 +17,7 @@ exports.run = (fishsticks, msg, cmd) => {
 				"**Moderator**: Moderator role, has basic moderation permissions.\n"+
 				"**Bot**: Default bot role (plus SkyeRanger). Can ban you.\n" +
 				"**Staff**: All perms except server management.\n" +
-				"**Event Coordinator**: Staff subset, coordinators setup events!\n" +
-				"**Division Leader**: Staff subset, manages a division!\n" +
+				"**Event Coordinator**: Coordinators setup events!\n" +
 				"**Tech Support**: Staff subset with Administrator permissions; they fix/manmage stuff!\n" +
 				"**Council Advisor**: Staff/CM subset, they are advisors to the council!\n" +
 				"**Council Member**: Server administrator (all perms) - They're council members!\n\n" +

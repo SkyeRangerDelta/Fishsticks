@@ -49,6 +49,7 @@ fishsticks_vars.json
 Modules/fs_ids.json
 Modules/Vouches/fs_vouches.json
 Modules/PollingSystem/polls.json
+Modules/GameRoles/gameRoles.json
 .vs/Fishsticks/v15/.suo
 .vs/ProjectSettings.json
 .vs/slnx.sqlite

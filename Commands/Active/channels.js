@@ -30,8 +30,10 @@ exports.run = (fishsticks, msg, cmd) => {
 			"**(V) Meeting Hall**: CC Meeting voice channel (might get loud).\n",
 			false);
 		channels.addField("Ministry",
+			"**Discussion Den**: Serious discussion channel - for non-silly conversations. Keep it civil, behavior enforced." +
 			"**Prayer Requests**: Post here with your concerns (or praises!).\n"+
 			"**Bible Study**: Bible Study discussion chat channel.\n"+
+			"**(V) Discussion Den**: Discussion Den voice channel." +
 			"**(V) Bible Study**: Bible Study voice channel.\n"+
 			"**(V) CC Book Study**: Book Study voice channel.\n"+
 			"**(V) Power Prayer Tuesdays**: Power Prayer Tuesdays channel.\n",

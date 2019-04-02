@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
 const emojiList = require('../../Modules/Collections/emojis.js');
 const fs = require('fs');
-const log = require('../../Modules/Functions/log.js');
+const syslogFunc = require('../../Modules/Functions/syslog.js');
 
 var pollsFile = JSON.parse(fs.readFileSync('./Modules/PollingSystem/polls.json', 'utf8'));
 
@@ -10,12 +10,7 @@ exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
     function syslog(message, level) {
-		try {
-			log.run(fishsticks, message, level);
-		}
-		catch (err) {
-			systemLog.send("**[SOMETHING IS WRONG]** I tried to send a message via a command, but something has gone askew. (Origin: Core Script)\n\nDetailing:\n" + err);
-		}
+		syslogFunc.run(message, level);
 	}
 
 
