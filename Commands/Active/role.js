@@ -264,6 +264,9 @@ exports.run = (fishsticks, msg, cmd) => {
             return msg.reply("You must specify the role description! `[PARAM 5]`");
         }
 
+        let dateObj = new Date();
+        let currDate = dateObj.getMonth() + "/" + dateObj.getDate() + "/" + dateObj.getFullYear() + " @ " + dateObj.getHours() + ":" + dateObj.getMinutes();
+
         let roleObject = {
             "name": roleName,
             "game": relatedGame,
@@ -272,6 +275,7 @@ exports.run = (fishsticks, msg, cmd) => {
             "official": false,
             "votes": 1,
             "pings": 0,
+            "lastPing": currDate,
             "members": [msg.author.id]
         }
 
