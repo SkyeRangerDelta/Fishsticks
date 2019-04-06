@@ -219,6 +219,8 @@ exports.run = (fishsticks, msg, cmd) => {
             }
         }
 
+        fs.writeFileSync("./Modules/GameRoles/gameRoles.json", JSON.stringify(rolesJSON));
+
         if (roleFound) {
             if (roleOfficialized) {
                 msg.reply("You voted for " + roleName + ", it has reached 5 votes! Officializing!");
@@ -265,7 +267,23 @@ exports.run = (fishsticks, msg, cmd) => {
         }
 
         let dateObj = new Date();
-        let currDate = dateObj.getMonth() + "/" + dateObj.getDate() + "/" + dateObj.getFullYear() + " @ " + dateObj.getHours() + ":" + dateObj.getMinutes();
+        let date = dateObj.getMonth() + "/" + dateObj.getDate() + "/" + dateObj.getFullYear() + " @ ";
+        let hour = dateObj.getHours();
+        let minute = dateObj.getMinutes();
+        let meridian = "AM";
+        
+        if (hour > 12) {
+            hour = dateObj.getHours() - 12;
+            meridian = "PM";
+        }
+
+        if (minute < 10) {
+            minute = "0" + minute;
+        }
+
+        time = hour + ":" + minute + meridian;
+
+        let currDate = date + time;
 
         let roleObject = {
             "name": roleName,
@@ -284,6 +302,8 @@ exports.run = (fishsticks, msg, cmd) => {
         rolesJSON.roles.push(roleObject);
 
         msg.reply("Role creation successful. You have been added to the members list and vote added.").then(sent => sent.delete(15000));
+
+        fs.writeFileSync("./Modules/GameRoles/gameRoles.json" ,JSON.stringify(rolesJSON));
 
     }
 
@@ -320,31 +340,35 @@ exports.run = (fishsticks, msg, cmd) => {
         msg.channel.send({embed: roleDetail}).then(sent => sent.delete(30000));
     }
 
-    function officialize() {
-        syslog("Attempting role officialization...", 2);
+    async function officialize() {
+        syslog("[GAME-ROLE] Attempting role officialization...", 2);
 
         let roleCount = fishsticks.CCGuild.roles.size;
-
         let role = capitalizeWord(cmdRef[2]);
+        let newRole;
 
-        let newRole = fishsticks.CCGuild.createRole({
+        fishsticks.CCGuild.createRole({
             name: role,
             color: '#9e876e',
             mentionable: true,
             position: roleCount
-        }, "Fishsticks' [GAME-ROLE] Subroutine has created a new role based on the votes of 5 different members.");
+        }, "Fishsticks' [GAME-ROLE] Subroutine has created a new role based on the votes of 5 different members.").then(createdRole => newRole = createdRole);
 
-        for (role in rolesJSON.roles) {
-            if (rolesJSON.roles[role].game == relatedGame) {
-                for (member in rolesJSON.roles[role].members) {
-                    fishsticks.users.get(rolesJSON.roles[role].members[member]).addRole(newRole);
+        console.log("[GAME-ROLE] Beginning role assignments.");
+
+        for (roleItem in rolesJSON.roles) {
+            if (rolesJSON.roles[roleItem].game == cmdRef[2].toLowerCase()) {
+                console.log("Found proper key: " + rolesJSON.roles[roleItem].game);
+                for (member in rolesJSON.roles[roleItem].members) {
+                    await msg.guild.fetchMember(fishsticks.users.get(rolesJSON.roles[roleItem].members[member]), 1).then(person => {
+                        console.log("Listing fetched members: " + person);
+                        person.addRole(newRole);
+                    });
                 }
             }
         }
 
     }
-
-    fs.writeFileSync("./Modules/GameRoles/gameRoles.json" ,JSON.stringify(rolesJSON));
 
     function capitalizeWord(word) {
         return word.charAt(0).toUpperCase() + word.substring(1, word.length);

@@ -21,6 +21,7 @@ const subrouts = require('./Modules/Functions/subRoutines.js');
 const log = require('./Modules/Functions/log.js');
 const syslogcore = require('./Modules/Functions/syslog.js');
 const pollInit = require('./Modules/PollingSystem/initPolls.js');
+const currDateTime = require('./Modules/Functions/currentDateTime.js');
 
 const token = systems.token;
 const fscolor = config.fscolor;
@@ -248,6 +249,25 @@ fishsticks.on('message', async msg => {
 		} catch (twitchScreenErr) {
 			console.log("[TWITCH-SCREEN] [ERROR] Something has gone wrong.\n\n" + twitchScreenErr);
 			syslog("[TWITCH-SCREEN] [ERROR] Something has gone wrong.\n\n" + twitchScreenErr, 3);
+		}
+
+		//GAME ROLE CHECK
+		if (msg.content.includes('@')) {
+			console.log("[GAME-ROLE] Ping detected, checking for role...");
+			let ping = msg.mentions.roles.first();
+
+			console.log("[GAME-ROLE] Ping: " + ping);
+			console.log("[GAME-ROLE] Ping Name: " + ping.name);
+
+			let rolesJSON = JSON.parse(fs.readFileSync('./Modules/GameRoles/gameRoles.json'));
+			for (roleItem in rolesJSON.roles) {
+				if (rolesJSON.roles[roleItem].game == ping.name) {
+					console.log("[GAME-ROLE] Game role ping detected for " + ping.name + "\nSetting new last ping to: " + currDateTime());
+					rolesJSON.roles[roleItem].lastPing = currDateTime();
+				}
+			}
+
+			fs.writeFileSync('./Modules/GameRoles/gameRoles.json', JSON.stringify(rolesJSON));
 		}
 
 		//PASSIVE COMMANDS

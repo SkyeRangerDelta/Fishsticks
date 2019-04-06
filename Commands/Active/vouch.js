@@ -83,7 +83,7 @@ exports.run = (fishsticks, msg, cmd) => {
                 let newKey = {"userID": userToVouch.id, "vouches": 1, "userIDs":[]};
                 vouchesFile.vouches.push(newKey);
                 vouchesFile.vouches[vouchesFile.vouches.length - 1].userIDs.push(msg.author.id);
-                msg.reply("You've vouched for " + userToVouch.username + "! They need another vouch before they're granted Recognized!");
+                msg.reply("You've vouched for " + userToVouch.username + "! They need another vouch before they're granted Recognized!").then(sent => sent.delete(15000));
             }
         }
         catch (err) {
