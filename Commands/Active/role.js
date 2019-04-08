@@ -17,6 +17,10 @@ exports.run = (fishsticks, msg, cmd) => {
 
     msg.delete();
 
+    if (!msg.member.roles.find("name", "Recognized")) {
+        return msg.reply("You need to be at least Recognized in order to use this!").then(sent => sent.delete(10000));
+    }
+
     //System logger
     function syslog(message, level) {
         console.log(colors.yellow("[GAME-ROLES] " + message));

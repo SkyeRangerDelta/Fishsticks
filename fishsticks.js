@@ -252,6 +252,7 @@ fishsticks.on('message', async msg => {
 		}
 
 		//GAME ROLE CHECK
+		/*
 		if (msg.content.includes('@')) {
 			console.log("[GAME-ROLE] Ping detected, checking for role...");
 			let ping = msg.mentions.roles.first();
@@ -269,6 +270,7 @@ fishsticks.on('message', async msg => {
 
 			fs.writeFileSync('./Modules/GameRoles/gameRoles.json', JSON.stringify(rolesJSON));
 		}
+		*/
 
 		//PASSIVE COMMANDS
 		//--> Administrative achrules: Shows rules in the #rules channel

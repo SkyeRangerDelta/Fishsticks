@@ -14,7 +14,7 @@ exports.run = (fishsticks, msg, cmd) => {
 				"===============================================\n" +
 				"`!bible <book num> [book] [chapter] [starting verse] [ending verse]`: Shows a selected range of verses! `*UNDER CONSTRUCTION*`\n"+
 				"`!channels`: Displays description for all the channels!\n"+
-				"`!divisions`: Lists the official CC Divisions and their leaders.\n"+
+				"`!codex [commandID]`: Displays a report of a command and it's syntax/parameters.\n"+
 				"`!gif <value>`: Shows a random GIF! Specify a value to get some targeted results.\n"+
 				"`!help`: Displays this menu.\n" +
 				"`!info [commandID]`: Tutorial on the given commandID.\n"+
@@ -31,10 +31,8 @@ exports.run = (fishsticks, msg, cmd) => {
 			help2.setColor(config.fscolor);
 			help2.setDescription(
 				"Use any of these commands to add or remove a divisional role yourself. These are used for announcements regaurding that divison.\n"+
-				"`!ark`: Ark: Survival Evolved\n"+
-				"`!creative`: Creative\n"+
-				"`!overwatch`: Overwatch\n"+
-				"`!pubg`: PLAYERUNKNOWN'S BATTLEGROUNDS"
+				"`!creative`: Creative\n" +
+				"`!role`: Allows use of game role/division based functions."
 			);
 
 		var help3 = new Discord.RichEmbed();
@@ -67,7 +65,8 @@ exports.run = (fishsticks, msg, cmd) => {
 			help4.setDescription(
 				"`!echo [type] [time] [message]`: This command will take your message and broadcast it as an announcement after the specified time (in minutes) has passed.\n" +
 				"`!subroutine [enable/disable] [subroutineName]`: Allows you to completely disable a subroutine of Fishsticks. Use with caution.\n"+
-				"`!tempname [channelName]`: Renames the current temporary channel.\n"
+				"`!tempname [channelName]`: Renames the current temporary channel.\n"+
+				"`!userinfo @user`: Generates a detailed report on a user."
 			);
         
 		msg.channel.send({embed: help1}).then(sent => sent.delete(45000));
