@@ -22,6 +22,7 @@ const log = require('./Modules/Functions/log.js');
 const syslogcore = require('./Modules/Functions/syslog.js');
 const pollInit = require('./Modules/PollingSystem/initPolls.js');
 const currDateTime = require('./Modules/Functions/currentDateTime.js');
+const dbTest = require("./Modules/Functions/db_Test.js");
 
 const token = systems.token;
 const fscolor = config.fscolor;
@@ -43,6 +44,7 @@ fishsticks.vc;
 fishsticks.eff;
 fishsticks.ranger;
 fishsticks.currentPolls = [];
+fishsticks.dbaseConnection;
 
 //SESSION/ENGM MANAGER
 var fsvarsdoc = JSON.parse(fs.readFileSync('./fishsticks_vars.json', 'utf8'));
@@ -90,6 +92,9 @@ fishsticks.systemLog;
 
 //USER INITIALIZATIONS
 var ranger;
+
+//DATABASE CONNECTION
+dbTest.run(fishsticks);
 
 //--------------------------------------
 //............MAIN SCRIPT...............
@@ -141,6 +146,9 @@ fishsticks.on('ready', () => {
 	syslog(`[ENG-MODE] Currently: ` + engmode, 0);
 	console.log(colors.gray("[*SUBR-CON*] Subroutines initialized and configured."));
 	syslog(`[*SUBR-CON*] Subroutines initialized and configured`, 1);
+
+	//Checking database state
+	console.log("[DB-TEST] DB State: " + fishsticks.dbaseConnection);
 
 	//Startup Message - Discord
 	if (engmode == true) {
