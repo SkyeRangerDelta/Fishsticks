@@ -55,3 +55,4 @@ Modules/GameRoles/gameRoles.json
 .vs/slnx.sqlite
 .vs/VSWorkspaceState.json
 .vs/*
+Modules/Core/db.json
