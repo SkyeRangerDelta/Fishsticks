@@ -6,6 +6,7 @@ const ses = require('../../fishsticks_vars.json');
 const fssys = require('fs');
 
 const subroutines = require('../../Modules/Functions/subRoutines.js');
+const dbTest = require('../../Modules/Functions/db/db_Test.js');
 
 const actDir = './Commands/Active';
 const pasDir = './Commands/Passive/';
@@ -15,6 +16,7 @@ exports.run = (fishsticks, msg, cmd) => {
 	msg.delete();
 
 	subroutines.run(fishsticks);
+	dbTest.run(fishsticks);
 
 	let engmode = fishsticks.engmode;
 
@@ -116,6 +118,9 @@ exports.run = (fishsticks, msg, cmd) => {
 					status.addField("__Vouch System__", evalRoutine("vouch"), true);
 					status.addField("__N. Link Screen__", evalRoutine("nlinkscn"), true);
 					status.addField("__Poll System__", evalRoutine("poll"), true);
+					status.addField("__Game Roles__", evalRoutine("gamerole"), true);
+					status.addBlankField();
+					status.addField("__Database Connection__", fishsticks.dbaseConnection, true);
 					status.addBlankField();
 					status.addField("System Efficiency: ", fishsticks.eff + "%");
 			

@@ -22,7 +22,7 @@ const log = require('./Modules/Functions/log.js');
 const syslogcore = require('./Modules/Functions/syslog.js');
 const pollInit = require('./Modules/PollingSystem/initPolls.js');
 const currDateTime = require('./Modules/Functions/currentDateTime.js');
-const dbTest = require("./Modules/Functions/db_Test.js");
+const dbTest = require("./Modules/Functions/db/db_Test.js");
 
 const token = systems.token;
 const fscolor = config.fscolor;
