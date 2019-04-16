@@ -10,7 +10,8 @@ exports.run = (fishsticks) => {
         host: dbInfo.db_host,
         port: dbInfo.db_port,
         user: dbInfo.db_user,
-        pass: dbInfo.db_pass
+        password: dbInfo.db_pass,
+        database: dbInfo.db_db
     });
 
     dbConnection.connect(function(err) {
@@ -24,7 +25,7 @@ exports.run = (fishsticks) => {
         fishsticks.dbaseConnection = true;
     });
 
-    if (!fishsticks.dbaseConnection) return;
+    if (fishsticks.dbaseConnection == false) return;
 
     dbConnection.end(function(err) {
         if (err) {
