@@ -142,6 +142,13 @@ exports.run = (fishsticks, msg, cmd) => {
         let roleToAdd;
 
         try {
+            msg.member.addRole(msg.mentions.roles.first);
+            return;
+        } catch {
+            console.log("[GAME-ROLES] First join pass failed...");
+        }
+
+        try {
             roleToAdd = msg.guild.roles.find("name", roleName.charAt(0).toUpperCase() + roleName.slice(1));
             msg.member.addRole(roleToAdd).catch(error => {
                 console.log("[GAME-ROLES] Role Join Error!");
@@ -158,6 +165,12 @@ exports.run = (fishsticks, msg, cmd) => {
         syslog("Attempting role leave...", 2);
 
         let roleToAdd;
+
+        try {
+            msg.member.removeRole(msg.mentions.roles.first)
+        } catch (WrongErr) {
+            console.log("[GAME-ROLES] Leave role first pass failed...");
+        }
 
         try {
             roleToAdd = msg.guild.roles.find("name", roleName.charAt(0).toUpperCase() + roleName.slice(1));
