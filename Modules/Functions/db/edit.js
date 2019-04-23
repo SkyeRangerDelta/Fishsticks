@@ -7,8 +7,9 @@ const logger = require("../../Functions/syslog.js");
 
 exports.run = (fishsticks, inquery, msg, cmd) => {
     logger.run(fishsticks, "[DB-SYS] Attempting stable connection...", 3);
+    logger.run(fishsticks, "[DB-SYS] Running the following SQL: " + inquery, 3);
 
-    let dbConnection = create(fishsticks);
+    let dbConnection = create.run(fishsticks);
 
     dbConnection.connect(function(err) {
         if (err) {
@@ -30,8 +31,8 @@ exports.run = (fishsticks, inquery, msg, cmd) => {
 
     dbConnection.query(inquery, function(err, results, fields) {
         if (err) {
-            logger.run(fishsticks, "[DB-SYS] Query failed: \n" + err);
-            msg.reply("DB Connection failed! **CHecK ThE LoGG!**" + fishsticks.ranger);
+            logger.run(fishsticks, "[DB-SYS] Query failed: \n" + err, 4);
+            msg.reply("DB Connection failed! **ChEcK ThE LoGG!**" + fishsticks.ranger);
             return;
         }
 

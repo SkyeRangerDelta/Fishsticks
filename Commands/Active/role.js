@@ -9,6 +9,9 @@ const sysLogFunc = require('../../Modules/Functions/syslog.js');
 const config = require('../../Modules/Core/corecfg.json');
 const cpf = require('../../Modules/Functions/cpf.js');
 
+const dateTime = require('../../Modules/Functions/currentDateTime.js');
+const dbEdit = require('../../Modules/Functions/db/edit.js');
+
 let categories = require('../../Modules/GameRoles/categories.json');
 
 let rolesJSON = JSON.parse(fs.readFileSync("./Modules/GameRoles/gameRoles.json", 'utf8'));
@@ -240,6 +243,44 @@ exports.run = (fishsticks, msg, cmd) => {
     }
 
     function createRole() {
+
+        //EXPERIMENTAL
+        let roleGame;
+        let roleDivi;
+        let roleDesc;
+        let roleDate = dateTime.run(fishsticks);
+        let sqlStatement;
+
+        if (notNull(cmdRef[3])) {
+            roleGame = cmdRef[3];
+        }
+
+        if (notNull(cmdRef[4])) {
+            roleDivi = compareCats();
+
+            if (roleDivi == -1) {
+                return msg.reply("You need to specify a proper division to list the role in! Check !role -list -divisions").then(sent => sent.delete(15000));
+            }
+        }
+
+        if (notNull(cmdRef[5])) {
+            roleDesc = cmdRef[5].trim();
+        }
+
+        let membersJSON = {
+            "members": []
+        };
+
+        membersJSON.members.push(msg.author.id);
+
+        membersJSON = JSON.stringify(membersJSON);
+
+        sqlStatement = `INSERT INTO fs_gr_Roles (name, game, division, description, official, votes, pings, numMembers) VALUES (${roleName}, ${roleGame}, ${roleDivi}, ${roleDesc}, 0, 1, 1);`;
+
+        dbEdit.run(fishsticks, sqlStatement, msg, cmd);
+
+        //STABLE CODE
+        /*
         syslog("Attempting role creation...", 2);
 
         let divisionStruct;
@@ -308,6 +349,7 @@ exports.run = (fishsticks, msg, cmd) => {
         msg.reply("Role creation successful. You have been added to the members list and vote added.").then(sent => sent.delete(15000));
 
         fs.writeFileSync("./Modules/GameRoles/gameRoles.json" ,JSON.stringify(rolesJSON));
+        */
 
     }
 
@@ -400,7 +442,16 @@ exports.run = (fishsticks, msg, cmd) => {
 
     function grabImage(div) {
         div = div.replace(" ", "-");
+        console.log("[GAME-ROLE] Div link: " + div);
         return `https://cf.pldyn.net/wp-content/uploads/2019/03/${div}.png`;
+    }
+
+    function notNull(item) {
+        if (item != null || item != undefined || item != NaN) {
+            return true
+        } else {
+            return false;
+        }
     }
 
 

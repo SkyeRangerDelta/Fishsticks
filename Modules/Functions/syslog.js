@@ -3,6 +3,7 @@ const log = require('./log.js');
 
 exports.run = (fishsticks, message, level) => {
     try {
+        console.log(message);
         log.run(fishsticks, message, level);
     }
     catch (err) {

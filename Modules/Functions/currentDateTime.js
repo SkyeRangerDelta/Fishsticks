@@ -1,6 +1,7 @@
 //----CURRENT DATE AND TIME----
+const syslog = require('./syslog.js');
 
-exports.run = () => {
+exports.run = (fishsticks) => {
     let dateObj = new Date();
     let date = dateObj.getMonth() + "/" + dateObj.getDate() + "/" + dateObj.getFullYear() + " @ ";
     let hour = dateObj.getHours();
@@ -19,6 +20,8 @@ exports.run = () => {
     time = hour + ":" + minute + meridian;
 
     let currDate = date + time;
+
+    syslog.run(fishsticks, "[DT-MOD] Generated current date and time: " + currDate);
 
     return currDate;
 }

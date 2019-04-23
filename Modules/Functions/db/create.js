@@ -11,7 +11,7 @@ exports.run = (fishsticks) => {
         host: dbInfo.db_host,
         user: dbInfo.db_user,
         password: dbInfo.db_pass,
-        post: dbInfo.db_port,
+        port: dbInfo.db_port,
         database: dbInfo.db_db
     });
 
