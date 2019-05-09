@@ -1,6 +1,6 @@
 //----TEST CONNECTION TO DATABASE----
 const db = require('mysql');
-const dbInfo = require("../../Core/db.json");
+const dbInfo = require("../db/db.json");
 
 exports.run = (fishsticks) => {
 

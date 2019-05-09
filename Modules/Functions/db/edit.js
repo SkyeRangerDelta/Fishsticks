@@ -1,7 +1,7 @@
 //----EDIT----
 const db = require('mysql');
 
-const dbInfo = require("../../Core/db.json");
+const dbInfo = require("../db/db.json");
 const create = require("./create.js");
 const logger = require("../../Functions/syslog.js");
 
@@ -32,7 +32,7 @@ exports.run = (fishsticks, inquery, msg, cmd) => {
     dbConnection.query(inquery, function(err, results, fields) {
         if (err) {
             logger.run(fishsticks, "[DB-SYS] Query failed: \n" + err, 4);
-            msg.reply("DB Connection failed! **ChEcK ThE LoGG!**" + fishsticks.ranger);
+            msg.reply("DB Connection failed! **ChEcK ThE LoGG!** " + fishsticks.ranger);
             return;
         }
 

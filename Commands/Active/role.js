@@ -252,7 +252,7 @@ exports.run = (fishsticks, msg, cmd) => {
         let sqlStatement;
 
         if (notNull(cmdRef[3])) {
-            roleGame = cmdRef[3];
+            roleGame = cmdRef[3].trim();
         }
 
         if (notNull(cmdRef[4])) {
@@ -275,7 +275,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
         membersJSON = JSON.stringify(membersJSON);
 
-        sqlStatement = `INSERT INTO fs_gr_Roles (name, game, division, description, official, votes, pings, numMembers) VALUES (${roleName}, ${roleGame}, ${roleDivi}, ${roleDesc}, 0, 1, 1);`;
+        sqlStatement = `INSERT INTO fs_gr_Roles (name, game, division, description, official, votes, pings, lastPing, numMembers, created) VALUES ('${roleName}', '${roleGame}', '${roleDivi}', '${roleDesc}', 0, 1, 0, '${roleDate}', 1, '${roleDate}');`;
 
         dbEdit.run(fishsticks, sqlStatement, msg, cmd);
 

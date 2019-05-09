@@ -1,7 +1,7 @@
 //----CREATE CONNECTION----
 const db = require('mysql');
 
-const dbInfo = require("../../Core/db.json");
+const dbInfo = require("../db/db.json");
 const logger = require("../syslog.js");
 
 exports.run = (fishsticks) => {
