@@ -39,6 +39,14 @@
         {
             "name": "FPS",
             "desc": "First person shooter! (This is a general division, if it fits under Battle Royale, put it under that instead.)"
+        },
+        {
+            "name": "MMO",
+            "desc": "Massively Mulitplayer Online"
+        },
+        {
+            "name": "Religious Studies",
+            "desc": "Anything related to the study of the Bible or the Faith, or even just religion in general."
         }
     ]
 }
