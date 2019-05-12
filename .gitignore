@@ -56,3 +56,4 @@ Modules/GameRoles/gameRoles.json
 .vs/VSWorkspaceState.json
 .vs/*
 Modules/Core/db.json
+Modules/Functions/db/db.json
