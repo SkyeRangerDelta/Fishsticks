@@ -10,7 +10,7 @@ const config = require('../../Modules/Core/corecfg.json');
 const cpf = require('../../Modules/Functions/cpf.js');
 
 const dateTime = require('../../Modules/Functions/currentDateTime.js');
-const dbEdit = require('../../Modules/Functions/db/edit.js');
+const dbQuery = require('../../Modules/Functions/db/query.js');
 
 let categories = require('../../Modules/GameRoles/categories.json');
 
@@ -284,13 +284,17 @@ exports.run = (fishsticks, msg, cmd) => {
             "members": []
         };
 
+        //Add creator to role members
         membersJSON.members.push(msg.author.id);
 
         membersJSON = JSON.stringify(membersJSON);
 
-        sqlStatement = `INSERT INTO fs_gr_Roles (name, game, division, description, official, votes, pings, lastPing, numMembers, created) VALUES ('${roleName}', '${roleGame}', '${roleDivi}', '${roleDesc}', 0, 1, 0, '${roleDate}', 1, '${roleDate}');`;
+        //Create SQL to submit to DB
+        let uniqueID = createID();
+        sqlStatement = `INSERT INTO fs_gr_Roles (roleID, name, game, division, description, official, votes, pings, lastPing, numMembers, created) VALUES ('${uniqueID}', '${roleName}', '${roleGame}', '${roleDivi}', '${roleDesc}', 0, 1, 0, '${roleDate}', 1, '${roleDate}');`;
 
-        dbEdit.run(fishsticks, sqlStatement, msg, cmd);
+        //Submit the SQL and log results
+        let response = dbQuery.run(fishsticks, sqlStatement);
 
         //STABLE CODE
         /*
@@ -465,6 +469,12 @@ exports.run = (fishsticks, msg, cmd) => {
         } else {
             return false;
         }
+    }
+
+    function createID() {
+        let code = Math.random().toString(36).replace('0.', '');
+        sysLogFunc.run(fishsticks, "[ROLE-SYS] Generated role ID: " + code);
+        return code;
     }
 
 
