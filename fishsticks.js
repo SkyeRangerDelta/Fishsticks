@@ -18,11 +18,11 @@ const sys = require('./Modules/Core/coresys.json');
 const chs = require('./Modules/fs_ids.json');
 const config = require('./Modules/Core/corecfg.json');
 const subrouts = require('./Modules/Functions/subRoutines.js');
-const log = require('./Modules/Functions/log.js');
 const syslogcore = require('./Modules/Functions/syslog.js');
 const pollInit = require('./Modules/PollingSystem/initPolls.js');
 const currDateTime = require('./Modules/Functions/currentDateTime.js');
 const dbTest = require("./Modules/Functions/db/db_Test.js");
+const query = require('./Modules/Functions/db/query.js');
 
 const token = systems.token;
 const fscolor = config.fscolor;
@@ -45,6 +45,10 @@ fishsticks.eff;
 fishsticks.ranger;
 fishsticks.currentPolls = [];
 fishsticks.dbaseConnection;
+
+//FS GLOBAL HS VARIABLES
+fishsticks.cardsPlayed = [];
+fishsticks.brodemode = false;
 
 //SESSION/ENGM MANAGER
 var fsvarsdoc = JSON.parse(fs.readFileSync('./fishsticks_vars.json', 'utf8'));
@@ -70,14 +74,11 @@ fishsticks.subroutines = new Map([
 	["nlinkscn", true],
 	["vouch", true],
 	["poll", true],
-	["gamerole", true]
+	["gamerole", true],
+	["sqlsys", true],
+	["acctsys", true],
+	["loggersys", true]
 ]);
-
-fishsticks.engmode = engmode;
-fishsticks.subroutines.set("engm", engmode);
-
-//SUBROUTINES CHECK
-subrouts.run(fishsticks);
 
 //INITIALIZE POLLS
 pollInit.run(fishsticks, "init");
@@ -95,6 +96,9 @@ var ranger;
 
 //DATABASE CONNECTION
 dbTest.run(fishsticks);
+
+//RANDOM MESSAGES
+let regenCountRefresh = Math.random() * (2000 - 25) + 25;
 
 //--------------------------------------
 //............MAIN SCRIPT...............
@@ -129,22 +133,20 @@ fishsticks.on('ready', () => {
 	else {
 		fishsticks.servStatus = "`Potential Outage`";
 	}
+
+	//SUBROUTINES CHECK
+	subrouts.run(fishsticks);
+
 	//LOGGER INITIALZE
 	function syslog(message, level) {
 		syslogcore.run(fishsticks, message, level);
 	}
 
-	//Startup Message - console
-	console.log(colors.green(`Successfully Logged ${fishsticks.user.tag} into the server.`));
-	console.log(colors.green("Initialized and booted Fishsticks version " + fishsticks.version));
-	console.log(colors.green("==========================================================="));
+	//Startup Message - Console
 	syslog(`Successfully Logged ${fishsticks.user.tag} into the server\nInitialized and booted Fishsticks version ` + 
 		fishsticks.version + `\n===========================================================`, 0);
-	console.log(colors.green("[SESSION#] " + fishsticks.syssession));
 	syslog(`[SESSION#] ` + fishsticks.syssession, 0);
-	console.log(colors.green("[ENG-MODE] Currently: " + engmode));
 	syslog(`[ENG-MODE] Currently: ` + engmode, 0);
-	console.log(colors.gray("[*SUBR-CON*] Subroutines initialized and configured."));
 	syslog(`[*SUBR-CON*] Subroutines initialized and configured`, 1);
 
 	//Checking database state
@@ -175,7 +177,7 @@ fishsticks.on('ready', () => {
 //LOGGER CONTROLLER (Log levels 0-4)
 function syslog(message, level) {
 	try {
-		log.run(fishsticks, message, level);
+		syslogcore.run(fishsticks, message, level);
 	}
 	catch (err) {
 		systemLog.send("**[SOMETHING IS WRONG]** I tried to send a message via a command, but something has gone askew. (Origin: Core Script)\n\nDetailing:\n" + err);
@@ -186,16 +188,40 @@ function syslog(message, level) {
 //FISHSTICKS COMMAND SYSTEMS
 //----------------------------------
 
-var svuArr = ["fishsticks is bad", "fishsticks are bad", "fishsticks are gross", "fishsticks eww", "hate fishsticks", "fishsticks is nasty", "fishsticks are nasty", "fishsticks shush up", "shut up fishsticks", "fishticks shut up", "fishsticks, shut up", "caught fishsticks", "fishsticks is a girl", "fishsticks a girl"];
+let svuArr = ["shut up", "hush", "go away", "stop", "shoosh", "be quiet", "dummy"];
 
 //MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
 
+	//Random message generator
+	regenCountRefresh--;
+	if (regenCountRefresh == 0) {
+		regenCountRefresh = Math.random() * (2000 - 25) + 25;
+		console.log("[RDMNUMGEN] A new random context quote interval has been generated - " + regenCountRefresh);
+		generateRandomQuote(msg);
+	}
+
+	if (msg.channel.id == chs.discussionden) {
+
+		if (msg.author.id == fishsticks.user.id) return
+		if (msg.author.fishsticks) return
+
+		if (!msg.member.roles.find("name", "Debater")) {
+			msg.delete();
+
+			return msg.reply("You need to be a debater to have post permissions here!").then(sent => sent.delete(10000));
+		}
+	}
+
 	if (msg.channel instanceof Discord.DMChannel) { //ALPHA LEVEL COMMANDS
+		if (msg.author.bot) return
+		if (msg.author.id == fishsticks.user.id) return
+		if (msg.author.fishsticks) return
+
 		if (msg.author.id == chs.ranger) {
 			console.log(colors.red("[ALPHA LEVEL] Incoming Command: " + msg))
 			syslog("[ALPHA LEVEL] Incoming Command " + msg, 4);
-			msg.channel.send("Greetings. Attempting to process command...");
+			return msg.channel.send("Greetings. Attempting to process command...");
 
 			/*
 			const cmd = msg.content.trim().split(/ +/g);
@@ -209,6 +235,14 @@ fishsticks.on('message', async msg => {
 				msg.channel.send("I'm sorry Dave, I can't do that.");
 			}
 			*/
+		} else {
+			if (msg.content == "I accept the rules of the den.") {
+				return fishsticks.CCGuild.member(msg.author).addRole(fishsticks.CCGuild.roles.find("name", "Debater")).then(done => {
+					msg.channel.send("Debater role added!").then(sent => sent.delete(10000));
+				});
+			} else {
+				return msg.channel.send("Only commands please. :D").then(sent => sent.delete(10000));
+			}
 		}
 	}
 	else { //NON-ALPHA LEVEL COMMANDS
@@ -410,7 +444,7 @@ fishsticks.on('message', async msg => {
 			}
 	
 			for (var i = 0; i < svuArr.length; i++) {
-				if (msg.content.toLowerCase().includes(svuArr[i])) {
+				if (msg.content.toLowerCase().includes(svuArr[i]) && (msg.content.toLowerCase().includes('fishsticks') || msg.content.toLowerCase().includes('fishy'))) {
 					msg.reply("Excuse me!? We are going to have to have a talk about where your standards lie and where they should be. Keep that attitude up and I'll have to take extra measures... (automatic 15 respect point loss).\n\n *Very idea...\nHating fishsticks...*")
 				}
 			}
@@ -447,6 +481,7 @@ fishsticks.on('message', async msg => {
 				//ACTIVE COMMANDS
 				if (msg.content.charAt(0) == prefix) {
 					if (fishsticks.subroutines.get("active")) {
+						await verifyMember();
 						console.log(colors.green("[ACT-COMM] Attempting Resolution for command: " + cmdID));
 						syslog("[ACT-COMM] Attempting Resolution for command: " + cmdID, 0);
 						fishsticks.commandAttempts++;
@@ -456,11 +491,13 @@ fishsticks.on('message', async msg => {
 							console.log(colors.green("[ACT-COMM] Success"));
 							syslog("[ACT-COMM] Success", 0);
 							fishsticks.commandSuccess++;
+							handleMember("succeeded");
 						}
 						catch (err) {
 							console.log(colors.yellow("[ACT-COMM] Failed:\n" + err));
 							syslog("[ACT-COMM] Failed:\n" + err, 3);
 							msg.reply("You trying to thonk me? That's not a command! Use `!help` to get a reference.").then(sent => sent.delete(20000));
+							handleMember("issued");
 						}
 					}
 					else {
@@ -483,17 +520,14 @@ fishsticks.on('message', async msg => {
 				}
 				else {//PASSIVE COMMANDS
 					if (fishsticks.subroutines.get("passive")) {
-						console.log(colors.blue("[PAS-COMM] Attempting Resolution for command: " + pcmd[0]));
 						syslog("[PAS-COMM] Attempting Resolution for command: " + pcmd[0], 0);
 						fishsticks.commandAttempts++;
 						try {
 							let pCmdFile = require(`./Commands/Passive/${pcmd[0]}.js`);
 							pCmdFile.run(fishsticks, msg, cmd);
-							console.log(colors.blue("[PAS-COMM] Success"));
 							syslog("[PAS-COMM] Success", 0);
 							fishsticks.commandSuccess++;
 						} catch (err) {
-							console.log(colors.gray("[PAS-COMM] Failed: " + err));
 							syslog("[PAS-COMM] Failed:\n" + err, 3);
 						}
 					}
@@ -504,9 +538,48 @@ fishsticks.on('message', async msg => {
 			}
 		}
 	}
-});
 
-	
+	//HANDLE MEMBER FUNCTIONS - FISHSTICKS ONLINE
+	async function handleMember(state) {
+		syslog("[FS-ONLINE] Syncing member stats...", 1);
+
+		let commandsIssued;
+		let commandsSucceeded;
+		let memberID;
+
+		//Get the member
+		let member = await query.run(fishsticks, `SELECT * FROM fs_members WHERE memberDiscordID = ${msg.author.id}`);
+		commandsIssued = member[0].commandsIssued;
+		commandsSucceeded = member[0].commandsSucceeded;
+		memberID = member[0].memberID;
+
+		if (state == "issued") {
+			let incrementIssues = await query.run(fishsticks, `UPDATE fs_members SET commandsIssued = ${commandsIssued + 1} WHERE memberID = ${memberID};`);
+		} else if (state == "succeeded") {
+			let incrementSuccesses = await query.run(fishsticks, `UPDATE fs_members SET commandsSucceeded = ${commandsSucceeded + 1} WHERE memberID = ${memberID};`);
+			let incrementIssues = await query.run(fishsticks, `UPDATE fs_members SET commandsIssued = ${commandsIssued + 1} WHERE memberID = ${memberID};`);
+		}
+
+		syslog("[FS-ONLINE] Sync complete.", 1);
+	}
+
+	async function verifyMember() {
+
+		syslog("[FS-ONLINE] Verifying member record...");
+
+		let memberStandardNickname = msg.author.tag.substring(0, msg.author.tag.length - 5);
+
+		//Process getting member
+		let memberResponse = await query.run(fishsticks, `SELECT 1 FROM fs_members WHERE memberDiscordID = ${msg.author.id};`);
+		//If member doesn't exist, create the record
+		if (memberResponse[0] == null || memberResponse == undefined) {
+			syslog("[FS-ONLINE] Creating new member record with values...\n\tDiscord ID: " + msg.author.id + "\n\tNickname: " + memberStandardNickname + "\n\tTag: " + msg.author.tag, 2);
+			let memberCreation = await query.run(fishsticks, `INSERT INTO fs_members (memberDiscordID, memberNickname, memberTag, commandsIssued, commandsSucceeded, passivesSucceeded, suggestionsPosted) VALUES (${msg.author.id}, '${memberStandardNickname}', '${msg.author.tag}', 0, 0, 0, 0);`);
+		}
+
+		syslog("[FS-ONLINE] Verification complete.");
+	}
+});
 
 //VOICE CHANNEL CONNECTION CHECK
 fishsticks.on('voiceStateUpdate', (oldMember, newMember) => {
@@ -667,4 +740,42 @@ try {
 }
 catch (logErr) {
 	console.log(colors.red("[FATAL] There's a problem with the login!"));
+}
+
+
+//-----------------------------------
+//HELPER METHODOLOGIES
+//-----------------------------------
+let randomQuotes = ["This is literally the exact opposite of what you told me earlier.", "WE HAVE FAILED THIS CITY.", "We free if you is.",
+	"I straight up stabbed my self in the face with a fork.", "I laid on my chapstick and it pinched my belly.", 
+	"When y'all eat peanut butter do you smell like peanut butter the next day?", "I stabbed myself with an eggshell.", "I think I almost got frostbite at 51­­°F.",
+	"A bird saw me naked and now I'm uncomfortable.", "The white stuff is powdered sugar not cocain btw", "Sometimes I like to open and close doors for fun.",
+	"Do any of y'all wake up with your phone charger around your neck sometimes?", "Well don't murder me! I'm an unsaved soul!", "Confession may be good for the soul but it isn't for hubby's who don't pay attention.",
+	"'You're an elf!'\n'That doesn't mean I can't wear pants!'", "Change your name to predator chair.", "Switch party and quaker.", "Always have a trash can", "When cutting anything measure twice, interrogate the man who measured, and then maybe cut when you're absolutely sure nobody made a mistake... make a mistake anyway.",
+	"In the 70s, attics were a myth, and instead there are tiny crawlspaces where an attic should be.", "Nail guns can jam, don't let your friend continue to smack the wall with compressed air while the nails bend further and further and the jam becomes a scientific marvel.", 
+	"V6 engine accessories will fit on a V8 engine... do not buy a V8 belt for them.", "No, I would run home and let you die.", "When will you people learn...\nTHAT YOUR THONKS HAVE CONSEQUENCES.", "Love you Dodge, but don't tell anybody!",
+	"The problem is Windows wanting to make a massive amount of fake RAM.", "So, there was a post that discussed cutting Listerine tablets into circles and replacing your friend's eye contacts with them.\n\nI couldn't say 'Minty fresh eyeballs with a straight face.\n\nSuch freshness.",
+	"I was |this| close to killing a fellow CM.", "I'm a part-time Protoss.", "I'm Mary Poppins y'all!", "Hi! I'm Kesa and I make questionable decisions!", "Ever notice how Skye's initial response problems is 'let me take it down and I'll fix it' and Kesa's reponse is 'ban it'.",
+	"Wow, I go to work for five hours and Skye's bot deletes his car.", "The bot promptly began yelling at itself.", ":facepalm:", "Neo even opened an issue about it. The dilemma has been resolved by simply turning him purple.",
+	"I like to think of chat like a tree. Sometimes the tree gets moving from a gust of wind blowing through the branches. Sometimes the tree is surrounded by other beings that interact with the tree or just hang out around it. And SOMETIMES, a fire is accidentally lit by the tree, and the whole forest comes alive! :laughing:",
+	"Alrighty. I'll stick with ~~Barbie~~ Narnia :thumbsup:\n\n(*autocorreeeeeect*)", "I'm 100% prepared to unleash horrible horrors on the world.", "Maybe I should stop ordering ice cream through amazon :thonk:", "I assure you there are much worse things than Star Trek aliens.\n\nRocketChair's teamkilling in PUBG, for example.",
+	"Allo, do I need to lock you in your room again?", "Allo is beating people up on my behalf. I don't know how to respond.", "Does this make me a gang leader?", "I was going to say I'm the most beautiful woman in the room, but...\n\nLet me go get my banhammer.", "Mom, strangers on the internet are telling me to starve myself.",
+	"*What did I just walk into? The first thing I heard was poop and chicken sandwich.*", "You are all terrible people.", "I am the keeper of the secret ammo, wielder of the flame of America. The dark fire will not avail you, Flame of Communism!!!!", "'Grenade'\n\n'No David, I didn't do it on purpose.", "*Skye, did you just call us problems.*",
+	"======================,,,============================================================================================================================-===================================,====================,='", "'Where is your accent from?'\n\n'I don't have one'\n\n*Skye's dad doing a stereotypical southern accent in the background*",
+	"`The Nod: A role used explicitly by Fishsticks to grant Twitch links to be allowed in chat. Links sent my users without the Nod are breaking rule D of self-advertising.` To acquire the role, it must be granted by a staff member. To be deemed worthy of the role....you gotta, well...talk to some staff peoples.", "So begins the great corner controversy of 2019.",
+	"Alex, I'll take necessities I don't get for 400", "I'm with Skye. Take your princess to another castle!", "Yep, take your female friend and skeedaddle.", "Since when does glitter = vampie", "The power of the cow", "Request of the night: that nobody wrote down Football's credit card number.",
+	"I'm playing a sadistic game of whack-a-mole with my car.", "'Tier one Christian here'", "All 'good' things come to an end, because we have not yet attained perfection. Once we're there, then the party don't stop.", "'To go all Paul on someone'", "Next week, I will teach you all how to Baptist. Because we're gonna be here so long, I'm gonna ask each of you to bring a covered dish and a dessert.",
+	"'Wait, what' moment.", "'Big Decision Minefield'", "Independent Baptist that don't need no man.", "Compassion unawares", "I'd throw them all in a pit and tell them they can come out when they actually open a Bible and read it.", "'A Christian's life is not good because of his circumstances. It is good in spite of them.'",
+	"Big, shiny person right outside Damascus.", "The kick wasn't mine.\nAnd no, I can't rhyme.\nThat was the last time.", "Too much effort anyway.", "Sorry, too busy trying to log into my developer Discord site and changing the Fishsticks logo to the amazing one you didn't do.", "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+	"I personally took a chance on a few, but they were calculated risks.", "I was proud of everyone. Lot's of puns, but most were above average.", "Everything about this is terrible.", "I have a bag of snowflakes in my freezer marked as 'rescued snow.' It makes me happy to know they're in a better place than they would be with him.",
+	"THE WHOLE PIE.", "'If you need Christianity made wierd, talk to Amroth.'", "The image of Bob as a migraine dispelling wizard is all I can think of now.", "It created the role...and then proceeded to go insane."]
+
+function generateRandomQuote(msg) {
+	let msgNumber = Math.floor(Math.random() * randomQuotes.length);
+	console.log("[RDM-QUOTE GEN] Firing off message number " + msgNumber + " to the " + msg.channel.name);
+	msg.channel.send(randomQuotes[msgNumber]);
+}
+
+function calibrateSubroutines() {
+
 }

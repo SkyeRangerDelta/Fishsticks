@@ -1,8 +1,14 @@
 const colors = require('colors');
+const query = require("./db/query.js");
 
 exports.run = (fishsticks) => {
 
     //SUBROUTINES CHECK
+    let currSubroutinesResponse = query.run(fishsticks, "SELECT * FROM fs_subroutines");
+
+
+
+    /*
     console.log(colors.red("Initiating system self diagnostic..."));
     let on = 0;
     let off = 0;
@@ -32,4 +38,5 @@ exports.run = (fishsticks) => {
     }
 
     console.log(colors.yellow("Fishsticks is operating at " + fishsticks.eff + "% efficiency."));
+    */
 }

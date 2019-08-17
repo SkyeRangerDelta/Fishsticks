@@ -6,7 +6,7 @@ const logger = require("../syslog.js");
 
 exports.run = async (fishsticks, inquery) => {
     logger.run(fishsticks, "[DB-SYS] Attempting stable connection...", 3);
-    logger.run(fishsticks, "[DB-SYS] Running the following SQL: " + inquery, 3);
+    logger.run(fishsticks, "[DB-SYS] Executing the SQL query...", 3);
 
     function submitQuery() {
 
