@@ -24,6 +24,8 @@ const currDateTime = require('./Modules/Functions/currentDateTime.js');
 const dbTest = require("./Modules/Functions/db/db_Test.js");
 const query = require('./Modules/Functions/db/query.js');
 
+const cmdResponses = require('./Modules/SystemResponses/commandErrors.json');
+
 const token = systems.token;
 const fscolor = config.fscolor;
 const fsemercolor = config.fsemercolor;
@@ -45,6 +47,9 @@ fishsticks.eff;
 fishsticks.ranger;
 fishsticks.currentPolls = [];
 fishsticks.dbaseConnection;
+
+fishsticks.commandRejects = 0;
+fishsticks.rejectingCommands = false;
 
 //FS GLOBAL HS VARIABLES
 fishsticks.cardsPlayed = [];
@@ -491,12 +496,22 @@ fishsticks.on('message', async msg => {
 							console.log(colors.green("[ACT-COMM] Success"));
 							syslog("[ACT-COMM] Success", 0);
 							fishsticks.commandSuccess++;
+							fishsticks.rejectingCommands = false;
+							fishsticks.commandRejects = 0;
 							handleMember("succeeded");
 						}
 						catch (err) {
 							console.log(colors.yellow("[ACT-COMM] Failed:\n" + err));
 							syslog("[ACT-COMM] Failed:\n" + err, 3);
-							msg.reply("You trying to thonk me? That's not a command! Use `!help` to get a reference.").then(sent => sent.delete(20000));
+							fishsticks.rejectingCommands = true;
+							
+							if (fishsticks.commandRejects < 11) {
+								msg.reply(cmdResponses.commandErrors[fishsticks.commandRejects]).then(sent => sent.delete(15000));
+							} else {
+								msg.reply("You brought this on yourself! -" + Math.pow(fishsticks.commandRejects, 2) + " points!").then(sent => sent.delete(15000));
+							}
+
+							fishsticks.commandRejects++;
 							handleMember("issued");
 						}
 					}

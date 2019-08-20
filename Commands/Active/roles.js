@@ -21,10 +21,7 @@ exports.run = (fishsticks, msg, cmd) => {
 				"**Tech Support**: Staff subset with Administrator permissions; they fix/manmage stuff!\n" +
 				"**Council Advisor**: Staff/CM subset, they are advisors to the council!\n" +
 				"**Council Member**: Server administrator (all perms) - They're council members!\n\n" +
-				"**Ark: SE**: Ark: Survival Evolved player.\n"+
 				"**Creative**: Typically seen around the Art Gallery, involved with graphics/media creation.\n"+
-				"**Overwatch**: Overwatch player.\n"+
-				"**PUBG**: PLAYERUNKNOWN'S BATTLEGROUNDS player.\n\n"+
 				"``This message will delete itself in 1 minute.``"
 			)
 

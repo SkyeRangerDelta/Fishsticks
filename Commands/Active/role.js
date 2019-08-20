@@ -83,35 +83,37 @@ exports.run = (fishsticks, msg, cmd) => {
     }
 
     //FUNCTIONS
-    function listRoles() {
+    async function listRoles() { //Generates a complete list of *all* roles.
 
-        if (cmdRef[2] == "divisions") {
+        if (cmdRef[2] == "divisions") { //If thrown, print list of recognized divisions instead.
 
+            let divList = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Divisions;`);
             let catsList = "";
+            let lastEntry = 1;
 
-            for (item in categories.cats) {
-                catsList = catsList.concat("- **" + categories.cats[item].name + "**: " + categories.cats[item].desc + "\n");
+            for (item in divList) {
+                if (item % 5 == 0 && item != 0) {
+                    catsList = catsList.concat(`- **${divList[item].name}**: ${divList[item].description}\n`);
+                    postList(catsList, lastEntry++);
+                    catsList = "";
+                } else {
+                    catsList = catsList.concat(`- **${divList[item].name}**: ${divList[item].description}\n`);
+                }
             }
 
-            let catListEmbed = new Discord.RichEmbed();
-                catListEmbed.setTitle("o0o - Game Divisions Listing - o0o");
-                catListEmbed.setColor(config.fscolor);
-                catListEmbed.setFooter("List will delete itself in 30 seconds. List was summoned by " + msg.author.username);
-                catListEmbed.setDescription("All game roles in CC fall under at least one division. When you create a role, you have to specify one of these following divisions.");
-                catListEmbed.addField("Divisions", catsList);
-            
-            return msg.channel.send({embed: catListEmbed}).then(sent => sent.delete(30000));
+            postList(catsList, lastEntry++); //Post anything less than 5 entries.
+            catsList = "";
+            return;
         }
 
         syslog("Attempting role list...", 2);
 
-        let officialRoles = "";
-        let unofficialRoles = "";
+        let roles = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles;`);
         let oRoleCount = 0;
         let uRoleCount = 0;
 
-        for (role in rolesJSON.roles) {
-            if (rolesJSON.roles[role].official) {
+        for (role in roles) {
+            if (roles[role].official == 1) {
                 officialRoles = officialRoles.concat("- " + capitalizeWord(rolesJSON.roles[role].name) + " : " + capitalizeWord(rolesJSON.roles[role].game) + "\n");
                 oRoleCount++;
             } else {
@@ -139,7 +141,30 @@ exports.run = (fishsticks, msg, cmd) => {
         return msg.channel.send({embed: listEmbed}).then(sent => sent.delete(30000));
     }
 
-    function joinRole() {
+    //Subfunction - post embed (List)
+    function postList(catsList, lastEntry) {
+        if (lastEntry == 1) {
+            let catListEmbed = new Discord.RichEmbed();
+                catListEmbed.setTitle(`o0o - Game Divisions Listing [Page ${lastEntry}] - o0o`);
+                catListEmbed.setColor(config.fscolor);
+                catListEmbed.setFooter("List will delete itself in 30 seconds. List was summoned by " + msg.author.username);
+                catListEmbed.setDescription("All game roles in CC fall under at least one division. When you create a role, you have to specify one of these following divisions.");
+                catListEmbed.addField("Divisions", catsList);
+
+            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete(30000));
+        } else {
+            let catListEmbed = new Discord.RichEmbed();
+                catListEmbed.setTitle(`o0o - Game Divisions Listing [Page ${lastEntry}] - o0o`);
+                catListEmbed.setColor(config.fscolor);
+                catListEmbed.setFooter("List will delete itself in 30 seconds. List was summoned by " + msg.author.username);
+                catListEmbed.setDescription("Divisions, continued.");
+                catListEmbed.addField("Divisions", catsList);
+
+            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete(30000));
+        }
+    }
+
+    function joinRole() { //Join a role once officialized
         syslog("Attempting role join...", 2);
 
         let roleToAdd;
