@@ -12,6 +12,10 @@ exports.run = (fishsticks, msg, cmd) => {
 
     let user = msg.mentions.users.first();
 
+    if (user == null || user == undefined) {
+        return msg.channel.send("I don't have those records on file...").then(sent => sent.delete(10000));
+    }
+
     let uClient = user.client;
 
     let created = user.createdAt;

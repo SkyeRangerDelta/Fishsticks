@@ -167,29 +167,43 @@ exports.run = (fishsticks, msg, cmd) => {
     function joinRole() { //Join a role once officialized
         syslog("Attempting role join...", 2);
 
+        let testRole = msg.guild.roles.find("name", "Bot");
         let roleToAdd;
 
+        //Attempt role add from mention
         try {
-            msg.member.addRole(msg.mentions.roles.first);
-            return;
-        } catch {
-            console.log("[GAME-ROLES] First join pass failed...");
-        }
+            syslog("Attempting to add role based on mention...", 2);
+            roleToAdd = msg.mentions.roles.first;
 
-        try {
-            roleToAdd = msg.guild.roles.find("name", roleName.charAt(0).toUpperCase() + roleName.slice(1));
-            msg.member.addRole(roleToAdd).catch(error => {
-                console.log("[GAME-ROLES] Role Join Error!");
-                msg.reply("Was that an actual role?").then(sent => sent.delete(15000));
-                return cpf.run(fishsticks, msg);
-            });
-        } catch (GameRoleAddErr) {
-            msg.reply("It would seem I couldn't find the role " + roleName.charAt(0).toUpperCase() + roleName.slice(1) + " did you spell it right?").then(sent => sent.delete(15000));
+            if (typeof roleToAdd != typeof testRole) {
+                throw "Invalid role type found!";
+            }
+
+            msg.member.addRole(roleToAdd);
+
+            syslog("Success.", 2);
+            return msg.reply("Role assigned!").then(sent => sent.delete(10000));
+        } catch (addOnMentionErr) {
+            try { //Attempt to add role based on name
+                console.log("[GAME ROLES] Smacked an addOnMention:\n" + addOnMentionErr);
+                syslog("Failed. Attempting to add role based on given value: " + cmdRef2[2], 2);
+                let roleTitle = convertToTitleCase(cmdRef[2]);
+                syslog("Reprocessed role name to " + roleTitle, 2);
+
+                roleToAdd = msg.guild.roles.find("name", roleTitle);
+                msg.member.addRole(roleToAdd);
+
+                syslog("Success.", 2);
+                return msg.reply("Role assigned!").then(sent => sent.delete(10000));
+            } catch (addOnNameErr) {
+                console.log("[GAME ROLES] Smacked an addOnName:\n" + addOnNameErr);
+                syslog("Failed. Attempting to add role via game.", 2);
+            }
         }
 
     }
 
-    function leaveRole() {
+    function leaveRole() { //Leave a role once officialized
         syslog("Attempting role leave...", 2);
 
         let roleToAdd;
@@ -210,6 +224,42 @@ exports.run = (fishsticks, msg, cmd) => {
         } catch (GameRoleAddErr) {
             msg.reply("It would seem I couldn't find the role " + roleName.charAt(0).toUpperCase() + roleName.slice(1) + " did you spell it right?").then(sent => sent.delete(15000));
         }
+    }
+
+    async function processRoleChange(shift, role) {
+        //Process role change for user
+
+        if (shift == 1) { //Adding role
+            if (role == undefined) {
+                return msg.reply("Mmmmm theres something wrong with that. I dunno what it is - but it doesn't look right.");
+            } else {
+                syslog("Adding role to member.", 1);
+                msg.member.addRole(role);
+            }
+
+            //Begin DB Sync
+            //Get role ID of role being added
+            syslog("Collecting role ID.", 1);
+            let roleID = await dbQuery.run(fishsticks, `SELECT roleID, official FROM fs_gr_Roles WHERE name = ${role.name}`);
+
+            //Verify official
+            if (roleID[0].official != 1) {
+                syslog("Role returned unofficial.", 2);
+                return msg.reply("Whoa whoa whoa, you can't swear up my roles system. Go find a role that's official first!").then(sent => sent.delete(15000));
+            }
+
+            //Get memberID of command issuer
+            syslog("Collecting member ID.", 1);
+            let memberID = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_Members WHERE memberDiscordID = ${msg.author.id}`);
+
+            //Add roleID and memberID to roles cross-table
+            syslog("Assigning role in DB.", 1);
+            let roleAddResult = await dbQuery.run(fishsticks, `INSERT INTO fs_gr_MemberRoles (memberID, roleID) VALUES (${memberID[0].memberID}, ${roleID[0].roleID});`);
+
+        } else { //Removing role
+
+        }
+
     }
 
     async function voteRole() {
@@ -330,7 +380,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
         //Create SQL to submit to DB
         let uniqueID = createID();
-        sqlStatement = `INSERT INTO fs_gr_Roles (name, game, division, description, official, votes, pings, lastPing, numMembers, created) VALUES ('${roleName}', '${roleGame}', '${roleDivi}', '${roleDesc}', 0, 1, 0, '${roleDate}', 1, '${roleDate}');`;
+        sqlStatement = `INSERT INTO fs_gr_Roles (name, game, division, description, official, votes, pings, lastPing, numMembers, created) VALUES ('${convertToTitleCase(roleName)}', '${roleGame}', '${roleDivi}', '${roleDesc}', 0, 1, 0, '${roleDate}', 1, '${roleDate}');`;
 
         //Submit the SQL and log results
         let response = await dbQuery.run(fishsticks, sqlStatement);
@@ -344,38 +394,49 @@ exports.run = (fishsticks, msg, cmd) => {
         console.log("Collected: " + roleID);
 
         //Add creator to votes table
-        let voteAddResponse = await dbQuery.run(fishsticks, `INSERT INTO fs_gr_memberVotes (memberID, roleID) VALUES (${memberID}, ${roleID})`);
+        let voteAddResponse = await dbQuery.run(fishsticks, `INSERT INTO fs_gr_memberVotes (memberID, roleID) VALUES (${memberID}, ${roleID});`);
     }
 
-    function showRole() {
+    async function showRole() {
         syslog("Attempting show role...", 2);
 
         if (cmdRef[2] == null || cmdRef[2] == undefined) {
             return msg.reply("Nah, not how it works. If you wanna see something, you gotta tell me what it is.").then(sent => sent.delete(15000));
         }
 
-        let roleNum;
-        for (role in rolesJSON.roles) {
-            if (rolesJSON.roles[role].name == roleName || rolesJSON.roles[role].game == roleName) {
-                roleNum = role;
+        //Collect role from FSO
+        let roleResponse = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE name = "${convertToTitleCase(cmdRef[2])}";`);
+
+        if (roleResponse.length != 1) {
+            return msg.reply("It seems I couldn't find that role in my databanks. Did you do a typo?").then(sent => sent.delete(10000));
+        }
+
+        //Create memberlist
+        let memberList;
+        let memberListResponse = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_gr_MemberRoles WHERE roleID = ${roleResponse[0].roleID}`);
+
+        if (memberListResponse.length > 10) {
+            memberList = "There's too many to list! There's " + memberListResponse.length + " members in here!";
+        } else {
+            for (memberObjA in memberListResponse) {
+                let memberUsername = await dbQuery.run(fishsticks, `SELECT memberNickname FROM fs_members WHERE memberID = ${memberListResponse[memberObjA]}`);
+                memberList = memberList.concat(`- ${memberUsername[0].memberUsername}\n`);
             }
         }
 
-        let memberList = "";
-        for (aMember in rolesJSON.roles[roleNum].members) {
-            let user = fishsticks.users.get(rolesJSON.roles[roleNum].members[aMember]);
-            memberList = memberList.concat("- " + user.username + "\n");
+        if (memberList == undefined) {
+            memberList = "*Looks pretty empty here.* ¯|_(ツ)_/¯";
         }
 
         let roleDetail = new Discord.RichEmbed();
-            roleDetail.setTitle("o0o - " + capitalizeWord(cmdRef[2]) + " - o0o");
+            roleDetail.setTitle("o0o - " + roleResponse[0].name + " - o0o");
             roleDetail.setColor(config.fscolor);
             roleDetail.setFooter("This menu will disappear in 30 seconds. Report was summoned by " + msg.author.username);
-            roleDetail.setDescription(rolesJSON.roles[roleNum].description);
-            roleDetail.addField("Official?", convertBool(rolesJSON.roles[roleNum].official), true);
-            roleDetail.addField("Division", capitalizeWord(rolesJSON.roles[roleNum].division), true);
+            roleDetail.setDescription(roleResponse[0].description);
+            roleDetail.addField("Official?", convertBool(roleResponse[0].official), true);
+            roleDetail.addField("Division", convertToTitleCase(roleResponse[0].division), true);
             roleDetail.addField("Members", memberList, false);
-            roleDetail.setThumbnail(grabImage(rolesJSON.roles[roleNum].division));
+            roleDetail.setThumbnail(grabImage(roleResponse[0].division));
 
         msg.channel.send({embed: roleDetail}).then(sent => sent.delete(30000));
     }
@@ -386,7 +447,7 @@ exports.run = (fishsticks, msg, cmd) => {
         syslog("[GAME-ROLE] Attempting role officialization...", 2);
 
         let roleCount = fishsticks.CCGuild.roles.size;
-        let role = capitalizeWord(cmdRef[2]);
+        let role = convertToTitleCase(cmdRef[2]);
         let newRole;
 
         fishsticks.CCGuild.createRole({
@@ -409,7 +470,7 @@ exports.run = (fishsticks, msg, cmd) => {
         console.log("[GAME-ROLE] Collecting role voters...");
 
         //Collect Voters
-        let responseB = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_members JOIN fs_gr_memberVotes USING (${responseA[0]});`);
+        let responseB = await dbQuery.run(fishsticks, `SELECT memberID, memberDiscordID FROM fs_members JOIN fs_gr_memberVotes USING (${responseA[0]});`);
 
         //Execute SQL to add role to member
         console.log("[GAME-ROLE] Beginning role assignments.");
@@ -421,27 +482,19 @@ exports.run = (fishsticks, msg, cmd) => {
 
         console.log("[GAME-ROLE] Assignments complete.");
 
-        //Assign Discord role to Voters
-
-
-        /*
-        for (roleItem in rolesJSON.roles) {
-            if (rolesJSON.roles[roleItem].game == cmdRef[2].toLowerCase()) {
-                console.log("Found proper key: " + rolesJSON.roles[roleItem].game);
-                for (member in rolesJSON.roles[roleItem].members) {
-                    await msg.guild.fetchMember(fishsticks.users.get(rolesJSON.roles[roleItem].members[member]), 1).then(person => {
-                        console.log("Listing fetched members: " + person);
-                        person.addRole(newRole);
-                    });
-                }
-            }
+        //Collect Discord members
+        let membersToAssignRole = [];
+        for (memberIDItem in responseB) {
+            membersToAssignRole.push(msg.guild.members.get(`${responseB[memberIDItem].memberDiscordID}`));
         }
-        */
 
-    }
+        //Assign Discord role to Voters
+        let newlyCreatedRole = msg.guild.roles.find("name", role);
 
-    function capitalizeWord(word) {
-        return word.charAt(0).toUpperCase() + word.substring(1, word.length);
+        for (memberObj in membersToAssignRole) {
+            membersToAssignRole[memberObj].addRole(newlyCreatedRole);
+            msg.channel.send(`${membersToAssignRole[memberObj]} - you've been auto-assigned ${role} because you voted for it!`).then(sent => sent.delete(10000));
+        }
     }
 
     async function compareCats() {
@@ -490,4 +543,37 @@ exports.run = (fishsticks, msg, cmd) => {
 
 
 
+}
+
+//EXTERNAL FUNCTIONS
+
+//Convert whole string into title case (This Is Title Case)
+function convertToTitleCase(title) {
+    title = title.toLowerCase();
+
+    console.log("[Convert to Title] Title: " + title);
+    
+    let breakup = title.split('');
+    let newTitle = [];
+    let bumpNext = false;
+
+    for (letter in breakup) {
+        if (letter == 0) {
+            newTitle.push(breakup[letter].toUpperCase());
+        } else if (breakup[letter] == ' ') {
+            newTitle.push(' ');
+            bumpNext = true;
+        } else {
+            if (bumpNext) {
+                newTitle.push(breakup[letter].toUpperCase());
+                bumpNext = false;
+            } else {
+                newTitle.push(breakup[letter]);
+            }
+        }
+    }
+
+    let reprocessedTitle = newTitle.join('');
+    console.log("[Convert to Title] Reprocessed: " + reprocessedTitle);
+    return reprocessedTitle;
 }

@@ -47,6 +47,7 @@ fishsticks.eff;
 fishsticks.ranger;
 fishsticks.currentPolls = [];
 fishsticks.dbaseConnection;
+fishsticks.debaterMsgIDs = [];
 
 fishsticks.commandRejects = 0;
 fishsticks.rejectingCommands = false;
@@ -56,11 +57,11 @@ fishsticks.cardsPlayed = [];
 fishsticks.brodemode = false;
 
 //SESSION/ENGM MANAGER
-var fsvarsdoc = JSON.parse(fs.readFileSync('./fishsticks_vars.json', 'utf8'));
+var fsvarsdoc = JSON.parse(fs.readFileSync('./session_id.json', 'utf8'));
 var fs_session = fsvarsdoc.sessionnum++;
 fishsticks.syssession = fs_session;
 
-fs.writeFileSync("./fishsticks_vars.json", JSON.stringify(fsvarsdoc));
+fs.writeFileSync("./session_id.json", JSON.stringify(fsvarsdoc));
 
 let engDoc = JSON.parse(fs.readFileSync('./Modules/fishsticks_engm.json', 'utf8'));
 let engmode = engDoc.engmode;
@@ -213,6 +214,27 @@ fishsticks.on('message', async msg => {
 
 		if (!msg.member.roles.find("name", "Debater")) {
 			msg.delete();
+
+			let debaterPanel = new Discord.RichEmbed();
+				debaterPanel.setTitle("o0o - Discussion Den Rules - o0o");
+				debaterPanel.setColor(config.fscolor);
+				debaterPanel.setFooter("This message has been sent to you because you've tried posting in the Discussion Den without having the Debater role.");
+				debaterPanel.setDescription(
+					"As you are apart of CC, it is my pleasure to permit you access to this free-fire zone of discussion that we call the Discussion Den."+
+					" *I personally would have liked to call it the Agora, but whatever.* But before I can let you post anything in there, I need you to understand that "+
+					"there are some specifics that you need to agree to. I won't ramble on, but this is the gist of it.\n\n"+
+					"- This is a free-fire zone. If you get butthurt, don't go to Staff. If you can't take the heat, get out of the kitchen.\n"+
+					"- Do not dominate the discussion. There's a difference between a conversation, a debate, and an absolute massacre.\n" +
+					"- Obey staff. I will ban you from this channel if you don't.\n"+
+					"- There are ramifications to permitting this channel; one of them is that you don't ignite flaming political discussions...at least all the time.\n"+
+					"- Following the above, do not troll this channel. This is intended for some of the most serious discussion. **DO NOT TROLL THIS CHANNEL OR I WILL BAN YOU FROM CC.**\n\n"+
+					"Right, I think that's it then. If you agree with these rules, slap that happy emoji down there and I'll give you that noice shiny debater role. Note that this can be removed with like 2 clicks."
+				);
+
+			msg.author.send({embed: debaterPanel}).then(sent => {
+				sent.react("✅");
+				fishsticks.debaterMsgIDs.push(sent.id);
+			});
 
 			return msg.reply("You need to be a debater to have post permissions here!").then(sent => sent.delete(10000));
 		}
@@ -683,6 +705,20 @@ fishsticks.on('messageReactionAdd', (postReaction, reactor) => {
 
 	if (reactor.id == fishsticks.user.id) {
 		return;
+	}
+
+	syslog("[DEBATE-SYS] Checking IDs...", 2);
+	for (id in fishsticks.debaterMsgIDs) {
+		if (postReaction.message.id == fishsticks.debaterMsgIDs[id]) {
+			try {
+				roleToAdd = fishsticks.CCGuild.roles.find("name", "Debater");
+				guildMem = fishsticks.CCGuild.fetchMember(reactor).then(debater => debater.addRole(roleToAdd));
+				return postReaction.message.channel.send("Done!");
+			} catch (addRoleErr) {
+				postReaction.message.channel.send("Hmmmm, something's not right. Ask SkyeRanger to do this instead. I'm...not alright.");
+				console.log(addRoleErr);
+			}
+		}
 	}
 
 	console.log("[POLL SYSTEM] Potential Poll reponse flag. Details: \n"+

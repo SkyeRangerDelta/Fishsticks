@@ -46,7 +46,6 @@ exports.run = (fishsticks, msg, cmd) => {
             }
         });
 
-        console.log("Received a vouch command from " + msg.author.username + " for " + userToVouch.username);
         syslog("Received a vouch command from " + msg.author.username + " for " + userToVouch.username, 2);
 
         var vouchesFile = JSON.parse(fs.readFileSync('./Modules/Vouches/fs_vouches.json', 'utf8'));
@@ -65,9 +64,9 @@ exports.run = (fishsticks, msg, cmd) => {
 
                         vouchesFile.vouches[i].vouches++;
                         vouchesFile.vouches[i].userIDs.push(msg.author.id);
-                        msg.reply("You've vouched for " + userToVouch.username + "! Granting them Recognized!");
+                        msg.reply("You've vouched for " + userToVouch.username + "! Granting them Recognized!").then(sent => sent.delete(10000));
+                        msg.channel.send(userToVouch.username + " has been granted Recognized.");
                         msg.guild.fetchMember(userToVouch).then(vouchPerson => vouchPerson.addRole(recognized));
-                        console.log("[VOUCH SYS] Granted Recognized to " + userToVouch.tag + " due to receiving 2 vouches.");
                         syslog("[VOUCH SYS] Granted Recognized to " + userToVouch.tag + " due to receiving 2 vouches.", 2);
                         vouchedFor = true;
                     }
@@ -87,8 +86,7 @@ exports.run = (fishsticks, msg, cmd) => {
             }
         }
         catch (err) {
-            console.log("SOMETHING IS ON FIRE.\n" + err);
-            syslog("[VOUCH SYS] Granted Recognized to " + userToVouch.tag + " due to receiving 2 vouches.", 3);
+            syslog("[VOUCH SYS] SOMETHING IS ON FIRE. WHY IS THIS ON FIRE? THIS IS *NEVER ON FIRE*.", 3);
         }
 
         fs.writeFileSync('./Modules/Vouches/fs_vouches.json', JSON.stringify(vouchesFile));

@@ -2,6 +2,12 @@ const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
 const chs = require('../../Modules/fs_ids.json');
 
+const syslogFunc = require('../../Modules/Functions/syslog.js');
+
+function syslog(message, level) {
+    syslogFunc.run(fishsticks, message, level);
+}
+
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
@@ -30,37 +36,37 @@ exports.run = (fishsticks, msg, cmd) => {
     console.log("[TEMP-CHA] Rename Command Received. Attempt to change channel " + userChannel + " name to " + newName);
 
     function accept() {
-        console.log("[TEMP-CHA] Accepted, changing name...");
+        syslog("[TEMP-CHA] Accepted, changing name...", 2);
 
-        userChannel.setName(newName).then(newChannel => console.log("[TEMP-CHA] Channel name changed to " + newChannel + " successfully."));
+        userChannel.setName(newName).then(newChannel => syslog("[TEMP-CHA] Channel name changed to " + newChannel + " successfully.", 2));
 
         msg.reply("Channel name changed to " + newName + " successfully!").then(sent => sent.delete(10000));
     }
 
     function check() {
         if (fishsticks.engmode == true) { //CHECK ENGINEERING MODE
-            console.log("[TEMP-CHA] Channel name change attempted with ENGM enabled!");
+            syslog("[TEMP-CHA] Channel name change attempted with ENGM enabled!", 3);
     
             if (msg.member.roles.find('name', 'Staff')) { //CHECK STAFF OVERRIDE DURING ENGINEERING MODE
-                console.log("[TEMP-CHA] Staff Override Received. Checking channel validity...");
+                syslog("[TEMP-CHA] Staff Override Received. Checking channel validity...", 2);
         
                 msg.reply("Staff override recognized, changing channel name...").then(sent => sent.delete(10000));
                 accept();
             }
             else { //REJECT IF NOT STAFF
-                console.log("[TEMP-CHA] Non-staff attempt. Ignoring request.");
+                syslog("[TEMP-CHA] Non-staff attempt. Ignoring request.", 1);
                 msg.reply("Engineering Mode is enabled! Have someone disable it first!").then(sent => sent.delete(10000));
             }
         }
         else { //IF ENGM NOT ENABLED
             if (msg.member.roles.find('name', 'Staff')) { //CHECK STAFF
-                console.log("[TEMP-CHA] Staff Override Received. Checking channel validity...")
+                syslog("[TEMP-CHA] Staff Override Received. Checking channel validity...", 2)
     
                 msg.reply("Staff override recognized, changing channel name...").then(sent => sent.delete(10000));
                 accept(); //ACCEPT
             }
             else if ((msg.member.roles.find('name', 'CC Member')) || (msg.member.roles.find('name', 'ACC Member'))) {
-                console.log("[TEMP-CHA] Non-staff command recieved. Checking channel validity...")
+                syslog("[TEMP-CHA] Non-staff command recieved. Checking channel validity...", 2)
                 
                 msg.reply("Acknowledged. Attempting channel name change...");
                 accept();
