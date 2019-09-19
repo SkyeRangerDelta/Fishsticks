@@ -4,7 +4,7 @@
 const syslog = require('./syslog.js');
 const query = require('./db/query.js');
 
-exports.run = async (fishsticks, subroutine, msg) => {
+exports.run = async (fishsticks, subroutine) => {
     syslog.run(fishsticks, "[DB-SYS] Submitting subroutine check...");
 
     let response = await query.run(fishsticks, `SELECT * FROM fs_subroutines WHERE name = '${subroutine}'`);

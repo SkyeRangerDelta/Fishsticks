@@ -10,7 +10,7 @@ exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
     function syslog(message, level) {
-		syslogFunc.run(message, level);
+		syslogFunc.run(fishsticks, message, level);
 	}
 
 
@@ -54,7 +54,6 @@ exports.run = (fishsticks, msg, cmd) => {
             }
         }
         catch (roleFindErr) {
-            console.log("I couldn't find the role of a member trying to post a poll!\n\n" + roleFindErr);
             syslog("I couldn't find the role of a member trying to post a poll!\n\n" + roleFindErr, 3);
         }
     
@@ -114,8 +113,8 @@ exports.run = (fishsticks, msg, cmd) => {
                 }
             }
         } catch (error) {
-            console.log("[POLL SYS] Something has gone wrong while creating a poll.\n\n" + error);
-            syslog("[POLL SYS] Something has gone wrong while creating a poll.\n\n" + error, 3);
+            msg.reply("I've just caught a glitch in sector 5 of the neural net. I don't know what you did - but you probably should stop.").then(sent => sent.delete(10000));
+            return syslog("[POLL-SYS] An unknown error has been caught somewhere in response construction.", 3);
         }
     
         let pollQuestion = new Discord.RichEmbed();
@@ -127,7 +126,6 @@ exports.run = (fishsticks, msg, cmd) => {
             .then(function (post) {
                 for (var iter = 0; iter < opCount; iter++) {
                     post.react(reactType(iter));
-                    console.log("Adding reaction: " + reactType(iter));
                     syslog("Adding reaction: " + reactType(iter), 1);
                 }
     
@@ -135,15 +133,14 @@ exports.run = (fishsticks, msg, cmd) => {
                 let newPoll = {"pollID": post.id, "options": opCount, "responders": []};
                 pollsFile.polls.push(newPoll);
                 fs.writeFileSync('./Modules/PollingSystem/polls.json', JSON.stringify(pollsFile));
-    
-                console.log("[POLL SYS] A new poll has been posted and saved to the bot.");
+
                 syslog("[POLL SYS] A new poll has been posted and saved to the bot.", 2);
                 msg.reply("Poll saved successfully.").then(sent => sent.delete(10000));
             });
         }
         catch (postErr) {
-            console.log("[POLL SYS] An error occured when trying to post the poll. \n\n" + postErr);
             syslog("[POLL SYS] An error occured when trying to post the poll. \n\n" + postErr, 3);
+            return msg.reply("Poll posting failed...did you change something you shouldn't have?");
         }
     }
 

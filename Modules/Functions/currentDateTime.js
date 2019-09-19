@@ -3,7 +3,7 @@ const syslog = require('./syslog.js');
 
 exports.run = (fishsticks) => {
     let dateObj = new Date();
-    let date = dateObj.getMonth() + "/" + dateObj.getDate() + "/" + dateObj.getFullYear() + " @ ";
+    let date = (dateObj.getMonth() + 1) + "/" + dateObj.getDate() + "/" + dateObj.getFullYear() + " @ ";
     let hour = dateObj.getHours();
     let minute = dateObj.getMinutes();
     let meridian = "AM";

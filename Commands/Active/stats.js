@@ -1,46 +1,39 @@
 //----PING STATS----
 const Discord = require('discord.js');
-const fs = require('fs');
 const cfg = require('../../Modules/Core/corecfg.json');
+const query = require('../../Modules/Functions/db/query.js');
 
-let rolesJSON = JSON.parse(fs.readFileSync("./Modules/GameRoles/gameRoles.json", 'utf8'));
-
-exports.run = (fishsticks, msg, cmd) => {
+exports.run = async (fishsticks, msg, cmd) => {
     msg.delete();
 
-    console.log("[GAME-ROLE] Statistics Report");
+    msg.reply("Have some text that doesn't explain why this command doesn't do what it's supposed to do. (Oh, and it's not even permanent.").then(sent => sent.delete(15000));
 
-    let ping = cmd[0].replace(/[\\<>@#&!]/g, "");
-    let role = msg.guild.roles.get(ping);
-    let roleName = role.name;
+    let statsReportPanel = new Discord.RichEmbed();
+        statsReportPanel.setColor(cfg.fscolor);
+        statsReportPanel.setTitle("o0o - Gameroles Subroutine Report - o0o");
+        statsReportPanel.setDescription("The game roles subroutine (Logged as [GAME-ROLES]) is a *very* large subsystem, currently the largest subroutine that runs" +
+            " in Fishsticks. The following information is a comprehensive report of all roles and divisions associated with the routine.\n\nNote that 'role' and 'divisions' in" +
+            " this context are only in reference to the user created roles and their subsequent divisions. Actual server roles are not associated with this routine.");
+        statsReportPanel.setFooter("This menu will disappear in 1 minute. Menu was summoned by " + msg.author.username);
 
-    console.log("Command:\n\tID: " + ping + "\n\tRole Name: " + roleName);
+    //Gather roles information
+    //DIVISIONS
+    let divCount = 0;
+    let divRoleCount = 0;
 
-    for (role in rolesJSON.roles) {
-        if (rolesJSON.roles[role].game == roleName.toLowerCase()) {
-            genReport(rolesJSON.roles[role]);
-        }
-    }
+    let divList = await query.run(fishsticks, `SELECT * FROM fs_gr_Divisions`);
 
-    function genReport(roleObj) {
-        console.log("Requesting stats for " + roleName);
-        console.log("Last Ping Date: " + roleObj.lastPing + "\nOfficial State: " + convertBool(roleObj.official) + "\nKnown Pings: " + roleObj.pings);
+    divCount = divList.length;
 
-        let reportEmbed = new Discord.RichEmbed();
-            reportEmbed.setTitle("o0o - Role Statistics Report - o0o");
-            reportEmbed.setColor(cfg.fscolor);
-            reportEmbed.setDescription("Reports are an embed that reviews the information on a role or division.");
-            reportEmbed.setFooter("Report summoned by " + msg.author.username + ". Auto-delete in 30 seconds.");
-            reportEmbed.addField(roleName + " Info", "**Official?**: " + convertBool(roleObj.official) + "\n**Pings**: " + roleObj.pings + "\n**Last Known Ping**: " + roleObj.lastPing);
+    //ROLES
+    let roleCount = 0;
+    let officialRoles = 0;
+    let unofficialRoles = 0;
 
-        return msg.channel.send({embed: reportEmbed}).then(sent => sent.delete(30000));
-    }
+    let roleList = await query.run(fishsticks, `SELECT * FROM fs_gr_Roles`);
 
-    function convertBool(state) {
-        if (state) {
-            return "Yes";
-        } else {
-            return "No";
-        }
-    }
+    roleCount = roleList.length;
+
+    //COMPOUND
+    let memberCount = 0;
 }

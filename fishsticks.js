@@ -194,7 +194,7 @@ function syslog(message, level) {
 //FISHSTICKS COMMAND SYSTEMS
 //----------------------------------
 
-let svuArr = ["shut up", "hush", "go away", "stop", "shoosh", "be quiet", "dummy"];
+let svuArr = ["shut up", "hush", "go away", "stop", "shoosh", "be quiet", "dummy", "sucks"];
 
 //MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
@@ -249,19 +249,6 @@ fishsticks.on('message', async msg => {
 			console.log(colors.red("[ALPHA LEVEL] Incoming Command: " + msg))
 			syslog("[ALPHA LEVEL] Incoming Command " + msg, 4);
 			return msg.channel.send("Greetings. Attempting to process command...");
-
-			/*
-			const cmd = msg.content.trim().split(/ +/g);
-			const cmdID = cmd[0].toLowerCase();
-
-			if (cmdID == "subroutine") {
-				let cmdFile = require(`./Commands/Active/${cmdID}.js`);
-				cmdFile.run(fishsticks, msg, cmd);
-			}
-			else {
-				msg.channel.send("I'm sorry Dave, I can't do that.");
-			}
-			*/
 		} else {
 			if (msg.content == "I accept the rules of the den.") {
 				return fishsticks.CCGuild.member(msg.author).addRole(fishsticks.CCGuild.roles.find("name", "Debater")).then(done => {
@@ -279,8 +266,7 @@ fishsticks.on('message', async msg => {
 		try {
 			if (fishsticks.subroutines.get("nlinkscn")) {
 				if (msg.member.roles.size === 1) {
-					if (msg.content.includes(".com") || msg.content.includes(".net") || msg.content.includes(".org")) {
-						console.log("[N. LINK SCREEN] Newcomer Link Intercepted.");
+					if (msg.content.includes(".com") || msg.content.includes(".net") || msg.content.includes(".org") || msg.content.includes(".tv")) {
 						syslog("[N. LINK SCREEN] Newcomer Link Intercepted." + msg, 2);
 						msg.delete();
 						msg.reply("As a newcomer to this server, your permissions to post links are revoked. You may post links once you are granted the Recognized role.").then(sent => sent.delete(20000));
@@ -288,7 +274,6 @@ fishsticks.on('message', async msg => {
 				}
 			}
 		} catch (newcomerLinkErr) {
-			console.log("[N. LINK SCREEN] [ERROR] Something went wrong.\n\n" + newcomerLinkErr);
 			syslog("[N. LINK SCREEN] [ERROR] Something went wrong.\n\n" + newcomerLinkErr, 3);
 		}
 
@@ -296,6 +281,11 @@ fishsticks.on('message', async msg => {
 		try {
 			if (fishsticks.subroutines.get("twitch")) {
 				if (((msg.content.includes("streaming now")) || ((msg.content.includes("twitch")) && (msg.content.includes(".tv"))))) {
+
+					if (msg.author.id == fishsticks.user.id) {
+						return;
+					}
+
 					if (msg.member.roles.find("name", "The Nod")) {
 						console.log("[TWITCH-SCREEN] Link granted from user " + msg.author.username);
 						syslog("[TWITCH-SCREEN] Link granted from user " + msg.author.username, 3);
@@ -316,30 +306,25 @@ fishsticks.on('message', async msg => {
 				}
 			}
 		} catch (twitchScreenErr) {
-			console.log("[TWITCH-SCREEN] [ERROR] Something has gone wrong.\n\n" + twitchScreenErr);
 			syslog("[TWITCH-SCREEN] [ERROR] Something has gone wrong.\n\n" + twitchScreenErr, 3);
 		}
 
 		//GAME ROLE CHECK
-		/*
-		if (msg.content.includes('@')) {
-			console.log("[GAME-ROLE] Ping detected, checking for role...");
-			let ping = msg.mentions.roles.first();
+		if (msg.mentions.roles.size != 0) {
 
-			console.log("[GAME-ROLE] Ping: " + ping);
-			console.log("[GAME-ROLE] Ping Name: " + ping.name);
-
-			let rolesJSON = JSON.parse(fs.readFileSync('./Modules/GameRoles/gameRoles.json'));
-			for (roleItem in rolesJSON.roles) {
-				if (rolesJSON.roles[roleItem].game == ping.name) {
-					console.log("[GAME-ROLE] Game role ping detected for " + ping.name + "\nSetting new last ping to: " + currDateTime());
-					rolesJSON.roles[roleItem].lastPing = currDateTime();
-				}
+			if (msg.author.id == fishsticks.user.id) {
+				return;
 			}
 
-			fs.writeFileSync('./Modules/GameRoles/gameRoles.json', JSON.stringify(rolesJSON));
+			let rolesList = await query.run(fishsticks, `SELECT roleDiscordID, pings FROM fs_gr_Roles WHERE official = 1;`);
+
+			for (rolesItem in rolesList) {
+				if (msg.mentions.roles.has(rolesList[rolesItem].roleDiscordID)) {
+					let roleUpdateResponse = await query.run(fishsticks, `UPDATE fs_gr_Roles SET lastPing = '${currDateTime.run(fishsticks)}', 
+						pings = ${rolesList[rolesItem].pings + 1} WHERE roleDiscordID = ${rolesList[rolesItem].roleDiscordID}`);
+				}
+			}
 		}
-		*/
 
 		//PASSIVE COMMANDS
 		//--> Administrative achrules: Shows rules in the #rules channel
@@ -471,8 +456,8 @@ fishsticks.on('message', async msg => {
 			}
 	
 			for (var i = 0; i < svuArr.length; i++) {
-				if (msg.content.toLowerCase().includes(svuArr[i]) && (msg.content.toLowerCase().includes('fishsticks') || msg.content.toLowerCase().includes('fishy'))) {
-					msg.reply("Excuse me!? We are going to have to have a talk about where your standards lie and where they should be. Keep that attitude up and I'll have to take extra measures... (automatic 15 respect point loss).\n\n *Very idea...\nHating fishsticks...*")
+				if (msg.content.toLowerCase().includes(svuArr[i]) && ((msg.content.toLowerCase().includes('fishsticks') || msg.content.toLowerCase().includes('fishy')))) {
+					msg.reply("Excuse me!? We are going to have to have a talk about where your standards lie and where they should be. Keep that attitude up and I'll have to take extra measures... (automatic 15 respect point loss).\n\n *Very idea...\nHating on fishsticks...*")
 				}
 			}
 		} catch (passiveCatchErr) {

@@ -17,7 +17,8 @@ exports.run = async (fishsticks, inquery) => {
             user: dbInfo.db_user,
             password: dbInfo.db_pass,
             port: dbInfo.db_port,
-            database: dbInfo.db_db
+            database: dbInfo.db_db,
+            supportBigNumbers: true
         }).then(async conn => {
             console.log("[DB-SYS] Created Connection");
             connection = conn;

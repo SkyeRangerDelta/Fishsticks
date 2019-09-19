@@ -8,13 +8,10 @@ const fs = require('fs');
 const sysLogFunc = require('../../Modules/Functions/syslog.js');
 const config = require('../../Modules/Core/corecfg.json');
 const cpf = require('../../Modules/Functions/cpf.js');
+const subCheck = require('../../Modules/Functions/subroutineCheck.js');
 
 const dateTime = require('../../Modules/Functions/currentDateTime.js');
 const dbQuery = require('../../Modules/Functions/db/query.js');
-
-let categories = require('../../Modules/GameRoles/categories.json');
-
-let rolesJSON = JSON.parse(fs.readFileSync("./Modules/GameRoles/gameRoles.json", 'utf8'));
 
 exports.run = (fishsticks, msg, cmd) => {
 
@@ -30,7 +27,7 @@ exports.run = (fishsticks, msg, cmd) => {
     }
 
     //Verify routine online
-    if (!(fishsticks.subroutines.get("gamerole"))) {
+    if (!(subCheck.run(fishsticks, 'gamerole'))) {
         syslog("Routine disabled, ignoring.", 3);
         return msg.reply("The game roles subroutine is currently disabled, ask " + fishsticks.ranger + " to turn it back on!");
     }
@@ -50,7 +47,7 @@ exports.run = (fishsticks, msg, cmd) => {
         cmdFunction = cmdRef[1].trim();
     }
     else {
-        return msg.reply("You need to state what your intentions are!").then(sent => sent.delete(10000));
+        return msg.reply("You need to state what your intentions are!\nSee `!info role` for help.").then(sent => sent.delete(10000));
     }
 
     if (cmdRef[2] != null || cmdRef[2] != undefined) {
@@ -79,7 +76,7 @@ exports.run = (fishsticks, msg, cmd) => {
             break;
         default:
         syslog("Incomplete parameters.", 2)
-            return msg.reply("I feel like we were getting somewhere, but I just don't see it. Did you mean one of these?\n`-list`, `-join`, `-vote`, `-create`, `-leave`, `-show`").then(sent => sent.delete(15000));
+        return msg.reply("I feel like we were getting somewhere, but I just don't see it. Did you mean one of these?\n`-list`, `-join`, `-vote`, `-create`, `-leave`, `-show`").then(sent => sent.delete(15000));
     }
 
     //FUNCTIONS
@@ -112,12 +109,15 @@ exports.run = (fishsticks, msg, cmd) => {
         let oRoleCount = 0;
         let uRoleCount = 0;
 
+        let officialRoles = "";
+        let unofficialRoles = "";
+
         for (role in roles) {
             if (roles[role].official == 1) {
-                officialRoles = officialRoles.concat("- " + capitalizeWord(rolesJSON.roles[role].name) + " : " + capitalizeWord(rolesJSON.roles[role].game) + "\n");
+                officialRoles = officialRoles.concat("- " + convertToTitleCase(roles[role].name) + " : " + convertToTitleCase(roles[role].game) + "\n");
                 oRoleCount++;
             } else {
-                unofficialRoles = unofficialRoles.concat("- " + capitalizeWord(rolesJSON.roles[role].name) + " : " + capitalizeWord(rolesJSON.roles[role].game)  + " (Votes: " + rolesJSON.roles[role].votes + ")\n");
+                unofficialRoles = unofficialRoles.concat("- " + convertToTitleCase(roles[role].name) + " : " + convertToTitleCase(roles[role].game)  + " (Votes: " + roles[role].votes + ")\n");
                 uRoleCount++;
             }
         }
@@ -281,7 +281,7 @@ exports.run = (fishsticks, msg, cmd) => {
         //Info Collection
         //Get member ID and Role ID
         syslog("[GAME-ROLE] [VOTE] Collecting Role...", 2);
-        let roleIDQuery = await dbQuery.run(fishsticks, `SELECT roleID FROM fs_gr_Roles WHERE name = '${capitalizeWord(roleName)}';`);
+        let roleIDQuery = await dbQuery.run(fishsticks, `SELECT roleID FROM fs_gr_Roles WHERE name = '${convertToTitleCase(roleName)}';`);
         try {
             roleID = roleIDQuery[0].roleID;
         } catch (collectID) {
@@ -297,10 +297,10 @@ exports.run = (fishsticks, msg, cmd) => {
         //Process vote duplicate/not-necessary logic
 
         // -> Check if official
-        let responseOfficial = await dbQuery.run(fishsticks, `SELECT official FROM fs_gr_Roles WHERE name = '${capitalizeWord(roleName)}'`);
+        let responseOfficial = await dbQuery.run(fishsticks, `SELECT official FROM fs_gr_Roles WHERE name = '${convertToTitleCase(roleName)}'`);
         console.log(responseOfficial[0].official);
         if (responseOfficial[0].official != 0) {
-            return msg.reply(capitalizeWord(roleName) + " is already official!").then(sent => sent.delete(15000));
+            return msg.reply(convertToTitleCase(roleName) + " is already official!").then(sent => sent.delete(15000));
         }
 
         //Check if member already voted for role 
@@ -312,7 +312,7 @@ exports.run = (fishsticks, msg, cmd) => {
         }
 
         // -> Check number of votes
-        let response = await dbQuery.run(fishsticks, `SELECT votes FROM fs_gr_Roles WHERE name = '${capitalizeWord(roleName)}';`);
+        let response = await dbQuery.run(fishsticks, `SELECT votes FROM fs_gr_Roles WHERE name = '${convertToTitleCase(roleName)}';`);
         let numResults = response[0].votes;
         console.log(numResults);
 
@@ -334,10 +334,10 @@ exports.run = (fishsticks, msg, cmd) => {
 
             //Handle response
             if (newNumResults == 5) {
-                msg.reply(capitalizeWord(roleName) + " has 5 votes, officializing!");
+                msg.reply(convertToTitleCase(roleName) + " has 5 votes, officializing!");
                 officialize();
             } else if (newNumResults < 5) {
-                return msg.reply(capitalizeWord(roleName) + " needs " + (5 - newNumResults) + " to be official!").then(sent => sent.delete(20000));
+                return msg.reply(convertToTitleCase(roleName) + " needs " + (5 - newNumResults) + " to be official!").then(sent => sent.delete(20000));
             }
         } else {
             return msg.reply("Seems this role has already achieved 5 votes.").then(sent => sent.delete(15000));
@@ -380,7 +380,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
         //Create SQL to submit to DB
         let uniqueID = createID();
-        sqlStatement = `INSERT INTO fs_gr_Roles (name, game, division, description, official, votes, pings, lastPing, numMembers, created) VALUES ('${convertToTitleCase(roleName)}', '${roleGame}', '${roleDivi}', '${roleDesc}', 0, 1, 0, '${roleDate}', 1, '${roleDate}');`;
+        sqlStatement = `INSERT INTO fs_gr_Roles (name, game, division, description, roleDiscordID, official, votes, pings, lastPing, numMembers, created) VALUES ('${convertToTitleCase(roleName)}', '${roleGame}', '${roleDivi}', '${roleDesc}', 0, 0, 1, 0, '${roleDate}', 1, '${roleDate}');`;
 
         //Submit the SQL and log results
         let response = await dbQuery.run(fishsticks, sqlStatement);
@@ -389,7 +389,7 @@ exports.run = (fishsticks, msg, cmd) => {
         }
 
         syslog("[GAME-ROLE] [CREATE] Collecting Role...", 2);
-        let roleIDQuery = await dbQuery.run(fishsticks, `SELECT roleID FROM fs_gr_Roles WHERE name = '${capitalizeWord(roleName)}';`);
+        let roleIDQuery = await dbQuery.run(fishsticks, `SELECT roleID FROM fs_gr_Roles WHERE name = '${convertToTitleCase(roleName)}';`);
         roleID = roleIDQuery[0].roleID;
         console.log("Collected: " + roleID);
 
@@ -400,6 +400,13 @@ exports.run = (fishsticks, msg, cmd) => {
     async function showRole() {
         syslog("Attempting show role...", 2);
 
+        //Handle Division Report
+        if (cmdRef[2].trim() == "division") {
+            syslog("Incoming division report...", 1);
+
+            return await handleDivisionReport();
+        }
+
         if (cmdRef[2] == null || cmdRef[2] == undefined) {
             return msg.reply("Nah, not how it works. If you wanna see something, you gotta tell me what it is.").then(sent => sent.delete(15000));
         }
@@ -408,19 +415,20 @@ exports.run = (fishsticks, msg, cmd) => {
         let roleResponse = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE name = "${convertToTitleCase(cmdRef[2])}";`);
 
         if (roleResponse.length != 1) {
+            //Possibly not a role, might be a division check
             return msg.reply("It seems I couldn't find that role in my databanks. Did you do a typo?").then(sent => sent.delete(10000));
         }
 
         //Create memberlist
-        let memberList;
-        let memberListResponse = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_gr_MemberRoles WHERE roleID = ${roleResponse[0].roleID}`);
+        let memberList = "";
+        let memberListResponse = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_gr_MemberRoles WHERE roleID = ${roleResponse[0].roleID};`);
 
         if (memberListResponse.length > 10) {
             memberList = "There's too many to list! There's " + memberListResponse.length + " members in here!";
         } else {
             for (memberObjA in memberListResponse) {
-                let memberUsername = await dbQuery.run(fishsticks, `SELECT memberNickname FROM fs_members WHERE memberID = ${memberListResponse[memberObjA]}`);
-                memberList = memberList.concat(`- ${memberUsername[0].memberUsername}\n`);
+                let memberUsername = await dbQuery.run(fishsticks, `SELECT memberNickname FROM fs_members WHERE memberID = ${memberListResponse[memberObjA].memberID};`);
+                memberList = memberList.concat(`- ${memberUsername[0].memberNickname}\n`);
             }
         }
 
@@ -448,17 +456,19 @@ exports.run = (fishsticks, msg, cmd) => {
 
         let roleCount = fishsticks.CCGuild.roles.size;
         let role = convertToTitleCase(cmdRef[2]);
-        let newRole;
 
         fishsticks.CCGuild.createRole({
             name: role,
             color: '#9e876e',
             mentionable: true,
             position: roleCount
-        }, "Fishsticks' [GAME-ROLE] Subroutine has created a new role based on the votes of 5 different members.").then(createdRole => newRole = createdRole);
+        }, "Fishsticks' [GAME-ROLE] Subroutine has created a new role based on the votes of 5 different members.");
+
+        let newRole = fishsticks.guild.find("name", role);
+        let newRoleID = newRole.id;
 
         //Change role row to official
-        let response = await dbQuery.run(fishsticks, `ALTER TABLE fs_gr_Roles SET official = 1 WHERE name = '${role}';`);
+        let response = await dbQuery.run(fishsticks, `UPDATE fs_gr_Roles SET official = 1, roleDisord = ${newRoleID} WHERE name = '${role}';`);
 
         //ASSIGN ROLE TO VOTERS
         //--------------------------------------------------------
@@ -495,6 +505,70 @@ exports.run = (fishsticks, msg, cmd) => {
             membersToAssignRole[memberObj].addRole(newlyCreatedRole);
             msg.channel.send(`${membersToAssignRole[memberObj]} - you've been auto-assigned ${role} because you voted for it!`).then(sent => sent.delete(10000));
         }
+    }
+
+    async function handleDivisionReport() {
+        if (cmdRef[3].trim() == null || cmdRef[3].trim() == undefined) {
+            return msg.reply("Empty space, so much empty space. Fill it with a division name next time.").then(sent => sent.delete(10000));
+        }
+
+        let divName = cmdRef[3].trim();
+        let capDivName = convertToTitleCase(divName);
+        let cats = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Divisions`);
+        let found = false;
+        let divisionInfo;
+
+        for (cat in cats) {
+            if (cats[cat].name == capDivName) {
+                found = true;
+                divisionInfo = cats[cat];
+                break;
+            }
+        }
+
+        if (found) {
+            //Generate report for division found
+            let divRoles = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE division = "${capDivName}"`);
+            let roleList = "";
+            let lastEntry = 1;
+
+            syslog("Division role listing includes " + divRoles.length + " roles.", 2);
+
+            for (roleItem in divRoles) {
+                if (roleItem % 5 == 0 && roleItem != 0) {
+                    roleList = roleList.concat(`- ${divRoles[roleItem].name} : ${divRoles[roleItem].game} (Members: ${divRoles[roleItem].numMembers})`);
+                    postDivReport(roleList, lastEntry++, divisionInfo);
+                    roleList = "";
+                } else {
+                    roleList = roleList.concat(`- ${divRoles[roleItem].name} : ${divRoles[roleItem].game} (Members: ${divRoles[roleItem].numMembers})`);
+                }
+            }
+
+            postDivReport(roleList, lastEntry++, divisionInfo);
+            roleList="";
+            return;
+        } else {
+            return msg.reply("I couldn't find that division...huh. All neural net sectors look good...did you do a typo?").then(sent => sent.delete(10000));
+        }
+    }
+
+    //Paging function for multiple roles per division
+    function postDivReport(divList, lastIndex, divisionInfo) {
+        syslog("Posting division list " + lastIndex);
+        let divReportPanel = new Discord.RichEmbed();
+            divReportPanel.setTitle(`o0o - Division Report: ${divisionInfo.name} [${lastIndex}]`);
+            divReportPanel.setColor(config.fscolor);
+            divReportPanel.setFooter("This menu will disappear in 30 seconds. Report was summoned by " + msg.author.username);
+
+        if (lastIndex == 1) {
+            divReportPanel.setDescription(`${divisionInfo.description}`);
+            divReportPanel.addField("Role List", divList, false);
+        } else {
+            divReportPanel.setDescription("Role List, continued.");
+            divReportPanel.addField("ROle List", divList, false);
+        }
+
+        msg.channel.send({embed: divReportPanel}).then(sent => sent.delete(30000));
     }
 
     async function compareCats() {

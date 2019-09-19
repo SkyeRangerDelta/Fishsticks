@@ -33,11 +33,15 @@ exports.run = (fishsticks, msg, cmd) => {
                     try {
                         milTime = parseInt(cmd[0], 10);
                     } catch (processTimeErr) {
-                        msg.reply("[ECHO-CMD] Hmmm, looks like I fried a circuit processing that time parameter. Try again?");
+                        msg.reply("[ECHO-CMD] Hmmm, I'm seeing a electrical surge in sector 9 of my neural net. I think time is supposed to be a number.");
                     }
 
                     if (typeof milTime != 'number' || isNaN(milTime)) {
                         return msg.reply(`Hol' up, I can't wait '${cmd[0]}' minutes. That's gonna need to be a number.`).then(sent => sent.delete(15000));
+                    }
+
+                    if (milTime < 0) {
+                        milTime = milTime * -1;
                     }
 
                     var waitTime = milTime * 60;
@@ -51,7 +55,7 @@ exports.run = (fishsticks, msg, cmd) => {
                     setTimeout(echoFunc, cmdTime, "here " + relayMSg);
                 }
                 else {
-                    msg.reply("Engineering Mode is enabled. Command restricted.");
+                    msg.reply("Engineering Mode is enabled. I can't let you do that.");
                 }
             }
             else { //Not in ENGM
@@ -61,11 +65,15 @@ exports.run = (fishsticks, msg, cmd) => {
                 try {
                     milTime = parseInt(cmd[0], 10);
                 } catch (processTimeErr) {
-                    msg.reply("[ECHO-CMD] Hmmm, looks like I fried a circuit processing that time parameter. Try again?");
+                    msg.reply("[ECHO-CMD] Hmmm, I'm seeing a electrical surge in sector 9 of my neural net. I think time is supposed to be a number.");
                 }
 
                 if (typeof milTime != 'number' || isNaN(milTime)) {
                     return msg.reply(`Hol' up, I can't wait '${cmd[0]}' minutes. That's gonna need to be a number.`).then(sent => sent.delete(15000));
+                }
+
+                if (milTime < 0) {
+                    milTime = milTime * -1;
                 }
 
                 var waitTime = milTime * 60;

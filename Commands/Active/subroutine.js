@@ -17,30 +17,37 @@ exports.run = (fishsticks, msg, cmd) => {
 
     permsCheck();
 
-    function checkToggle() { //Check the subroutine map
-        if (fishsticks.subroutines.has(systemRoutine)) {
-            if (fishsticks.subroutines.get(systemRoutine)) {
-                return true;
-                //Was enabled
-            }
-            else {
-                return false;
-                //Was disabled
-            }
+    async function checkToggle() { //Check the subroutine map
+
+        let routineResponse;
+
+        try {
+            routineResponse = await query.run(fishsticks, `SELECT state FROM fs_subroutines WHERE name = '${systemRoutine}';`);
+        } catch (dbError) {
+            syslog.run(fishsticks, "[*SUBR-CON*] Subroutine not found. Command negated.");
+            return msg.reply("That's not a subroutine! Perhaps you should check the [wiki page](https://wiki.pldyn.net/fishsticks/subroutines).");
         }
-        else {
-            syslog(fishsticks, "[*SUBR-CON*] Couldn't find specified subroutine.", 3);
-            return msg.reply("What subroutine is that?");
+
+        //Analyze reponse
+        if (routineResponse[0].state == 0) {
+            syslog.run(fishsticks, "[*SUBR-CON*] Primary Check finished, state was false.", 2);
+            return false;
+        } else if (routineResponse[0].state == 1) {
+            syslog.run(fishsticks, "[*SUBR-CON*] Primary Check finished, state was true.", 2);
+            return true;
+        } else {
+            return msg.reply("Is FSO down? Somethings funky with the database!" + fishsticks.ranger);
         }
     }
 
     async function result() { //Actually toggle subroutine
         if (toggle == "enable") {
-            if (checkToggle() == true) {
+            if ( await checkToggle() == true) {
                 syslog.run(fishsticks, "[*SUBR-CON*] Received Subroutine Control Toggle Request.\n[*SUBR-CON*] Toggle/System Subroutine: " + toggle + " / " + systemRoutine, 3);
+                syslog.run(fishsticks, "[*SUBR-CON*] Subroutine was already running!", 2);
                 return msg.reply("This subroutine is already running!");
             }
-            else if (checkToggle() == false) {
+            else if (await checkToggle() == false) {
                 let response = await query.run(fishsticks, `UPDATE fs_subroutines SET state = 1 WHERE name = '${systemRoutine}';`);
 
 
@@ -53,12 +60,14 @@ exports.run = (fishsticks, msg, cmd) => {
             }
         }
         else if (toggle == "disable") {
-            if (checkToggle() == true) {
-                fishsticks.subroutines.set(systemRoutine, false);
+            if (await checkToggle() == true) {
+                let response = await query.run(fishsticks, `UPDATE fs_subroutines SET state = 0 WHERE name = '${systemRoutine}';`);
+
+                //fishsticks.subroutines.set(systemRoutine, false);
                 syslog.run(fishsticks, "[*SUBR_CON*] Subroutine: " + systemRoutine + " has been disabled by " + msg.author.tag, 3);
                 return msg.reply("Subroutine " + systemRoutine + " disabled.").then(sent => sent.delete(20000)); 
             }
-            else if (checkToggle() == false) {
+            else if (await checkToggle() == false) {
                 syslog.run(fishsticks, "[*SUBR-CON*] Subroutine was found already disabled.", 3);
                 return msg.reply("This subroutine is already disabled!");
             }
@@ -68,7 +77,7 @@ exports.run = (fishsticks, msg, cmd) => {
         }
         else {
             syslog.run(fishsticks, "[*SUBR-CON*] Improper toggle parameter. Rejected.", 3);
-            return msg.reply("That's not a proper parameter type!").then(sent => sent.delete(10000));
+            return msg.reply("That's not a proper state change! Must be `enable` or `disable`.").then(sent => sent.delete(10000));
         }
     }
 
