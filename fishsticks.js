@@ -116,7 +116,7 @@ fishsticks.on('ready', () => {
 	//CHANNEL DEFINITIONS
 	fsconsoleChannel = fishsticks.channels.get(chs.fsconsole);
 	announceChannel = fishsticks.channels.get(chs.announcements);
-	staffChannel = fishsticks.channels.get(chs.staffChannel);
+	ecChannel = fishsticks.channels.get(chs.ecChannel);
 	hangoutch = fishsticks.channels.get(chs.hangout);
 	crashpad = fishsticks.channels.get(chs.crashpad);
 	moderator = fishsticks.channels.get(chs.moderator);

@@ -6,7 +6,7 @@ const query = require('../../Modules/Functions/db/query.js');
 exports.run = async (fishsticks, msg, cmd) => {
     msg.delete();
 
-    msg.reply("Have some text that doesn't explain why this command doesn't do what it's supposed to do. (Oh, and it's not even permanent.").then(sent => sent.delete(15000));
+    msg.reply("Have some text that doesn't explain why this command doesn't do what it's supposed to do. (Oh, and it's not even permanent.").then(sent => sent.delete(10000));
 
     let statsReportPanel = new Discord.RichEmbed();
         statsReportPanel.setColor(cfg.fscolor);
@@ -16,12 +16,13 @@ exports.run = async (fishsticks, msg, cmd) => {
             " this context are only in reference to the user created roles and their subsequent divisions. Actual server roles are not associated with this routine.");
         statsReportPanel.setFooter("This menu will disappear in 1 minute. Menu was summoned by " + msg.author.username);
 
-    //Gather roles information
+    //Gather information
+    let roleList = await query.run(fishsticks, `SELECT * FROM fs_gr_Roles`);
+    let divList = await query.run(fishsticks, `SELECT * FROM fs_gr_Divisions`);
+
     //DIVISIONS
     let divCount = 0;
     let divRoleCount = 0;
-
-    let divList = await query.run(fishsticks, `SELECT * FROM fs_gr_Divisions`);
 
     divCount = divList.length;
 
@@ -30,10 +31,19 @@ exports.run = async (fishsticks, msg, cmd) => {
     let officialRoles = 0;
     let unofficialRoles = 0;
 
-    let roleList = await query.run(fishsticks, `SELECT * FROM fs_gr_Roles`);
-
     roleCount = roleList.length;
 
     //COMPOUND
     let memberCount = 0;
+
+    let divCompound = {
+        
+    }
+
+    for (role in roleList) {
+        for (div in divList) {
+            if (roleList[role].division == divList[div].name) {
+            }
+        }
+    }
 }
