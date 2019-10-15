@@ -300,7 +300,8 @@ exports.run = (fishsticks, msg, cmd) => {
         let responseOfficial = await dbQuery.run(fishsticks, `SELECT official FROM fs_gr_Roles WHERE name = '${convertToTitleCase(roleName)}'`);
         console.log(responseOfficial[0].official);
         if (responseOfficial[0].official != 0) {
-            return msg.reply(convertToTitleCase(roleName) + " is already official!").then(sent => sent.delete(15000));
+            msg.reply(convertToTitleCase(roleName) + " is already official, adding you to the role instead. (Negate this by running `!role -leave -[roleName]`)").then(sent => sent.delete(15000));
+            return await voteRoleAssign();
         }
 
         //Check if member already voted for role 
@@ -340,7 +341,19 @@ exports.run = (fishsticks, msg, cmd) => {
                 return msg.reply(convertToTitleCase(roleName) + " needs " + (5 - newNumResults) + " to be official!").then(sent => sent.delete(20000));
             }
         } else {
-            return msg.reply("Seems this role has already achieved 5 votes.").then(sent => sent.delete(15000));
+            msg.reply("Seems this role has already achieved 5 votes, adding you to the role instead. (Negate this by running `!role -leave -[roleName]`)").then(sent => sent.delete(15000));
+            return await voteRoleAssign();
+        }
+    }
+
+    //If the role has been officialized, or otherwise reached 5 votes
+    //add the user to the role instead of voting for it.
+    async function voteRoleAssign() {
+        try {
+            let roleToAssign = msg.guild.roles.find("name", roleTitle);
+            
+        } catch (voteAltError) {
+            
         }
     }
 

@@ -37,7 +37,7 @@ exports.run = async (fishsticks, msg, cmd) => {
     let memberCount = 0;
 
     let divCompound = {
-        
+            
     }
 
     for (role in roleList) {

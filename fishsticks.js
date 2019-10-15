@@ -207,6 +207,7 @@ fishsticks.on('message', async msg => {
 		generateRandomQuote(msg);
 	}
 
+	//DEBATER CHECK
 	if (msg.channel.id == chs.discussionden) {
 
 		if (msg.author.id == fishsticks.user.id) return
@@ -692,6 +693,7 @@ fishsticks.on('messageReactionAdd', (postReaction, reactor) => {
 		return;
 	}
 
+	//Check if debater report
 	syslog("[DEBATE-SYS] Checking IDs...", 2);
 	for (id in fishsticks.debaterMsgIDs) {
 		if (postReaction.message.id == fishsticks.debaterMsgIDs[id]) {
