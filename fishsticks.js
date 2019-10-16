@@ -210,10 +210,15 @@ fishsticks.on('message', async msg => {
 	//DEBATER CHECK
 	if (msg.channel.id == chs.discussionden) {
 
+		let messageDeleted;
+
 		if (msg.author.id == fishsticks.user.id) return
 		if (msg.author.fishsticks) return
 
 		if (!msg.member.roles.find("name", "Debater")) {
+
+			messageDeleted = msg.content;
+
 			msg.delete();
 
 			let debaterPanel = new Discord.RichEmbed();
@@ -236,6 +241,9 @@ fishsticks.on('message', async msg => {
 				sent.react("✅");
 				fishsticks.debaterMsgIDs.push(sent.id);
 			});
+
+			msg.author.send("For your convenience (and possibly some potential headache and rage), this was the message you posted"+
+							" to the Discussion Den. \n\n```" + messageDeleted + "```");
 
 			return msg.reply("You need to be a debater to have post permissions here!").then(sent => sent.delete(10000));
 		}
@@ -700,7 +708,8 @@ fishsticks.on('messageReactionAdd', (postReaction, reactor) => {
 			try {
 				roleToAdd = fishsticks.CCGuild.roles.find("name", "Debater");
 				guildMem = fishsticks.CCGuild.fetchMember(reactor).then(debater => debater.addRole(roleToAdd));
-				return postReaction.message.channel.send("Done!");
+				postReaction.message.channel.send("Done!");
+				return fishsticks.debaterMsgIDs.splice(id, 1);
 			} catch (addRoleErr) {
 				postReaction.message.channel.send("Hmmmm, something's not right. Ask SkyeRanger to do this instead. I'm...not alright.");
 				console.log(addRoleErr);

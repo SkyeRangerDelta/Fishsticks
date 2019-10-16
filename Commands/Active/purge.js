@@ -19,23 +19,36 @@ exports.run = async (fishsticks, msg, cmd) => {
         //No user mention found, execute general message deletion
         console.log("[PURGE] No user found, executing general deletion.");
 
-        let count = parseInt(cmd[0]);
-        let targetChannelMsgs = await targetChannel.fetchMessages({limit: 10});
+        let count = parseInt(cmd[0]) + 1;
+        let targetChannelMsgs = await targetChannel.fetchMessages({limit: count});
 
         console.log("[PURGE] Deleting " + count + " target messages...");
 
         targetChannelMsgs.forEach(deleteItems);
 
-        function deleteItems(key, value, map) {
-            let messageItem = value;
-
-            console.log("Target: " + messageItem + ", Key: " + key);
-
-            //messageItem.delete;
-        }
-
     } else {
         //Specific user found, collect messages and remove last of them
         console.log("[PURGE] Target User Found, executing targeted deletion.");
+
+        let count = parseInt(cmd[1]);
+        let targetUser = msg.mentions.users.first;
+        let targetUserID = targetUser.id;
+
+        if (count == 0) {
+            let targetChannelMsgs = await targetChannel.fetchMessages().then(pulledMsgs => {
+                let filteredMsgs = pulledMsgs.filter(m => m.author.id === targetUserID);
+            })
+        }
+
+    }
+
+    async function deleteItems(key, value, map) {
+        let messageItem = value;
+
+        await targetChannel.fetchMessage(messageItem).then(msgColl => {
+            console.log("[PURGE] Target Content: " + msgColl.content)
+            msgColl.delete();
+            console.log("[PURGE] Removed.");
+        })
     }
 }
