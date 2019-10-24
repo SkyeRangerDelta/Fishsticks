@@ -53,9 +53,11 @@ exports.run = async (fishsticks, msg, cmd) => {
 
         msg.channel.send("This may take a moment, standby.").then(t => t.delete(7000));
 
+        //Collect number of SPECIFIC USER's messages and delete those
+
         if (count != 0) {
             console.log("[PURGE] Targeted purge with count: " + count);
-            targetChannelMsgs = await targetChannel.fetchMessages().then(recMsgs => {
+            targetChannelMsgs = await targetChannel.fetchMessages({limit: 1000}).then(recMsgs => {
                 let themMsgs = await recMsgs.filter(t => t.author.id === targetUserID);
                 let themLimitedMsgs = themMsgs.last(count);
                 return themLimitedMsgs.forEach(deleteItems);

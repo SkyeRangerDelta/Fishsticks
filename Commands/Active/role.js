@@ -167,6 +167,14 @@ exports.run = (fishsticks, msg, cmd) => {
     function joinRole() { //Join a role once officialized
         syslog("Attempting role join...", 2);
 
+        // -> Check if official
+        let responseOfficial = await dbQuery.run(fishsticks, `SELECT official FROM fs_gr_Roles WHERE name = '${convertToTitleCase(roleName)}'`);
+        console.log(responseOfficial[0].official);
+        if (responseOfficial[0].official == 0) {
+            msg.reply(convertToTitleCase(roleName) + " is not official yet, voting for the role instead.").then(sent => sent.delete(15000));
+            return await voteRole();
+        }
+
         let testRole = msg.guild.roles.find("name", "Bot");
         let roleToAdd;
 
@@ -350,11 +358,42 @@ exports.run = (fishsticks, msg, cmd) => {
     //add the user to the role instead of voting for it.
     async function voteRoleAssign() {
         try {
+            let testRole = msg.build.roles.find("name", "Bot");
             let roleToAssign = msg.guild.roles.find("name", roleTitle);
+
+            if (typeof roleToAssign != typeof testRole) {
+                throw "Improper role!";
+            }
+
+            //Add role via Discord
+            msg.member.addRole(roleToAssign);
             
+
         } catch (voteAltError) {
-            
+            msg.reply("*Eyeballs " + msg.author.username) + "*. Mmmm, something didn't work there.";
         }
+
+        //Add role via FSO
+        let collectRoleInfo = await dbQuery.run(fishsticks, `SELECT roleID FROM fs_gr_Roles WHERE roleDiscordID = ${roleToAssign.id};`);
+        let collectMemberInfo = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_members WHERE memberDiscordID = ${msg.author.id}`);
+
+        if (collectRoleInfo.size != 1) {
+            return msg.reply("*Birds fly, rain falls, bees buzz; the sun implodes.* There's a duplicate roleID here. I don't know how, but there is. *Cough* " + fishsticks.ranger);
+        } else if (collectMemberInfo.size != 1) {
+            return msg.reply("Whoa wait what!? Nono. Hold on. My records are showing....there's 2 of you!? Fix this...then come back. *Cough* " + fishsticks.ranger);
+        }
+
+        let roleID = collectRoleInfo[0].roleID;
+        let memberID = collectMemberInfo[0].memberID;
+
+        let assignRoleToMemberResponse = await dbQuery.run(fishsticks, `INSERT INTO fs_gr_MemberRoles (memberID, roleID) VALUES (${memberID}, ${roleID});`);
+
+        if (assignRoleToMemberResponse.size != 0) {
+            return msg.channel.send(fishsticks.ranger + " hey go check the FSO db right snappy like. I just had a duplicate response error when assigning " + roleToAssign.name + " to " + msg.author.username);
+        }
+
+        msg.reply(roleToAssign.name + " role assigned!").then(sent => sent.delete(10000));
+
     }
 
     async function createRole() {
@@ -508,7 +547,7 @@ exports.run = (fishsticks, msg, cmd) => {
         //Collect Discord members
         let membersToAssignRole = [];
         for (memberIDItem in responseB) {
-            membersToAssignRole.push(msg.guild.members.get(`${responseB[memberIDItem].memberDiscordID}`));
+            membersToAssignRole.push(await msg.guild.members.get(`${responseB[memberIDItem].memberDiscordID}`));
         }
 
         //Assign Discord role to Voters
