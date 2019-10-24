@@ -55,7 +55,7 @@ exports.run = (fishsticks, msg, cmd) => {
     syslog("Guild ID is: " + fishsticks.guildID, 0);
     syslog("[MATB-MOD] MattyB Mode is currently: " + fishsticks.mattybmode, 0);
 
-    if (subCheck(fishsticks, 'musi')) {
+    if (subCheck.run(fishsticks, 'musi')) {
 
         //ACTIVE FUNCTIONS
         function denied() {

@@ -518,6 +518,7 @@ fishsticks.on('message', async msg => {
 						}
 						catch (err) {
 							console.log(colors.yellow("[ACT-COMM] Failed:\n" + err));
+							console.log(colors.yellow("Stack:\n" + err.stack));
 							syslog("[ACT-COMM] Failed:\n" + err, 3);
 							fishsticks.rejectingCommands = true;
 							
