@@ -164,7 +164,7 @@ exports.run = (fishsticks, msg, cmd) => {
         }
     }
 
-    function joinRole() { //Join a role once officialized
+    async function joinRole() { //Join a role once officialized
         syslog("Attempting role join...", 2);
 
         // -> Check if official
@@ -293,7 +293,13 @@ exports.run = (fishsticks, msg, cmd) => {
         try {
             roleID = roleIDQuery[0].roleID;
         } catch (collectID) {
-            return msg.reply("Hmmm, seems this role doesn't exist anymore.");
+            let roleGameIDQuery = await dbQuery.run(fishsticks, `SELECT roleID FROM fs_gr_Roles WHERE game = '${convertToTitleCase(roleName)}';`);
+            try {
+                //Reroute, try for game name
+                roleID = roleGameIDQuery[0].roleID;
+            } catch (error) {
+                return msg.reply("I searched, I promise, I did - I just couldn't find that role. Check for typos?").then(sent => sent.delete(10000));
+            }
         }
         console.log("Collected: " + roleID);
 
@@ -305,7 +311,7 @@ exports.run = (fishsticks, msg, cmd) => {
         //Process vote duplicate/not-necessary logic
 
         // -> Check if official
-        let responseOfficial = await dbQuery.run(fishsticks, `SELECT official FROM fs_gr_Roles WHERE name = '${convertToTitleCase(roleName)}'`);
+        let responseOfficial = await dbQuery.run(fishsticks, `SELECT official FROM fs_gr_Roles WHERE roleID = '${roleID}'`);
         console.log(responseOfficial[0].official);
         if (responseOfficial[0].official != 0) {
             msg.reply(convertToTitleCase(roleName) + " is already official, adding you to the role instead. (Negate this by running `!role -leave -[roleName]`)").then(sent => sent.delete(15000));
@@ -316,12 +322,12 @@ exports.run = (fishsticks, msg, cmd) => {
         let dupeCheckResponse = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_gr_memberVotes WHERE roleID = ${roleID};`);
         for (person in dupeCheckResponse) {
             if (dupeCheckResponse[person].memberID == memberID) {
-                return msg.reply("Oi, come off it mate; you've already for this role.").then(sent => sent.delete(15000));
+                return msg.reply("Oi, come off it mate; you've already voted for this role.").then(sent => sent.delete(15000));
             }
         }
 
         // -> Check number of votes
-        let response = await dbQuery.run(fishsticks, `SELECT votes FROM fs_gr_Roles WHERE name = '${convertToTitleCase(roleName)}';`);
+        let response = await dbQuery.run(fishsticks, `SELECT votes FROM fs_gr_Roles WHERE roleID = '${roleID}';`);
         let numResults = response[0].votes;
         console.log(numResults);
 
@@ -507,39 +513,57 @@ exports.run = (fishsticks, msg, cmd) => {
         syslog("[GAME-ROLE] Attempting role officialization...", 2);
 
         let roleCount = fishsticks.CCGuild.roles.size;
-        let role = convertToTitleCase(cmdRef[2]);
+        
+        //Make sure we're working with the right role name
+        let properRoleName = "";
+        let properRoleIDEntry = 0;
+        
+        try {
+            let roleCheckA = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE name = "${convertToTitleCase(cmdRef2[2])}";`);
+            properRoleName = roleCheckA[0].name;
+            properRoleIDEntry = roleCheckA[0].roleID;
+        } catch (error) {
+            syslog("Caught a name error, using game name instead.", 3);
+            let roleCheckB = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE game = "${convertToTitleCase(cmdRef2[2])}";`);
+            properRoleName = roleCheckB[0].name;
+            properRoleIDEntry = roleCheckB[0].roleID;
+        }
 
-        fishsticks.CCGuild.createRole({
-            name: role,
+        msg.guild.createRole({
+            name: properRoleName,
             color: '#9e876e',
             mentionable: true,
             position: roleCount
-        }, "Fishsticks' [GAME-ROLE] Subroutine has created a new role based on the votes of 5 different members.");
+        }, "Fishsticks' [GAME-ROLE] Subroutine has created a new role based on the votes of 5 different members.").then(role => {
+            syslog("Created new role " + role.name + ".");
 
-        let newRole = fishsticks.guild.find("name", role);
-        let newRoleID = newRole.id;
+            runAssignments(role, properRoleIDEntry, properRoleName);
+        });
+    }
 
+    async function runAssignments(role,properRoleIDEntry, properRoleName) {
+        syslog("Receieved running arguments; " + properRoleIDEntry + " and " + properRoleName, 2)
         //Change role row to official
-        let response = await dbQuery.run(fishsticks, `UPDATE fs_gr_Roles SET official = 1, roleDisord = ${newRoleID} WHERE name = '${role}';`);
+        syslog("Syncing role to FSO.", 2);
+        let response = await dbQuery.run(fishsticks, `UPDATE fs_gr_Roles SET official = 1, roleDiscordID = ${role.id} WHERE roleID = '${properRoleIDEntry}';`);
+
+        if (response.changedRows != 1) {
+            return msg.reply("Unexpected number of roles were processed. (" + response.size + ").").then(sent => sent.delete(7000));
+        }
 
         //ASSIGN ROLE TO VOTERS
         //--------------------------------------------------------
         console.log("[GAME-ROLE] Collecting role info...");
 
-        //Get role info
-        let responseA = await dbQuery.run(fishsticks, `SELECT roleID FROM fs_gr_Roles WHERE name = '${role}';`);
-        console.log("[GAME-ROLE] Role ID: " + responseA[0]);
-        console.log("[GAME-ROLE] Collecting role voters...");
-
         //Collect Voters
-        let responseB = await dbQuery.run(fishsticks, `SELECT memberID, memberDiscordID FROM fs_members JOIN fs_gr_memberVotes USING (${responseA[0]});`);
+        let responseB = await dbQuery.run(fishsticks, `SELECT * FROM fs_members WHERE memberID IN (SELECT memberID FROM fs_gr_memberVotes WHERE roleID = ${properRoleIDEntry})`);
 
         //Execute SQL to add role to member
         console.log("[GAME-ROLE] Beginning role assignments.");
 
         for (record in responseB) {
-            console.log("[GAME-ROLE] Assigning role " + responseA[0].roleID + " to member " + responseB[record].memberID);
-            await dbQuery.run(fishsticks, `INSERT INTO fs_gr_MemberRoles (memberID, roleID) VALUES (${responseB[record].memberID}, ${responseA[0].roleID};)`);
+            console.log("[GAME-ROLE] Assigning role " + properRoleIDEntry + " to member " + responseB[record].memberID);
+            await dbQuery.run(fishsticks, `INSERT INTO fs_gr_MemberRoles (memberID, roleID) VALUES (${responseB[record].memberID}, ${properRoleIDEntry});`);
         }
 
         console.log("[GAME-ROLE] Assignments complete.");
@@ -551,11 +575,11 @@ exports.run = (fishsticks, msg, cmd) => {
         }
 
         //Assign Discord role to Voters
-        let newlyCreatedRole = msg.guild.roles.find("name", role);
+        let newlyCreatedRole = msg.guild.roles.find("name", properRoleName);
 
         for (memberObj in membersToAssignRole) {
             membersToAssignRole[memberObj].addRole(newlyCreatedRole);
-            msg.channel.send(`${membersToAssignRole[memberObj]} - you've been auto-assigned ${role} because you voted for it!`).then(sent => sent.delete(10000));
+            msg.channel.send(`${membersToAssignRole[memberObj]} - you've been auto-assigned ${properRoleName} because you voted for it!`).then(sent => sent.delete(10000));
         }
     }
 

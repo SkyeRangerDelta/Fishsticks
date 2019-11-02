@@ -23,15 +23,18 @@ exports.run = (fishsticks, msg, cmd) => {
 
     var cmdStr = cmd.splice(0).join(' ');
 
+    if (cmdStr == "" || cmdStr == " ") {
+        cmdStr = "Randomness";
+    }
+
     gif();
 
     async function gif() {
         try {
-            //var res = await got(`http://api.giphy.com/v1/gifs/random?api_key=${apik}&tag=${cmdStr}&rating=g`, {json: true}).catch(console.error);
             var res = await got(`https://api.tenor.com/v1/random?key=${apik}&q=${cmdStr}&locale=en_US&contentfilter=high`, {json: true}).catch(console.error);
 
             if (!res || !res.body || !res.body.results) {
-                syslog("No content found. Res error?", 2);
+                syslog("[GIF-COMM] No content found. Res error?", 2);
                 return msg.reply("I can't find a GIF like that it would seem.").then(sent => sent.delete(15000));
             }
 

@@ -229,9 +229,9 @@ fishsticks.on('message', async msg => {
 					"As you are apart of CC, it is my pleasure to permit you access to this free-fire zone of discussion that we call the Discussion Den."+
 					" *I personally would have liked to call it the Agora, but whatever.* But before I can let you post anything in there, I need you to understand that "+
 					"there are some specifics that you need to agree to. I won't ramble on, but this is the gist of it.\n\n"+
-					"- This is a free-fire zone. If you get butthurt, don't go to Staff. If you can't take the heat, get out of the kitchen.\n"+
+					"- This is a free-fire zone. If you get 'triggered', don't go to Staff. If you can't take the heat, get out of the kitchen.\n"+
 					"- Do not dominate the discussion. There's a difference between a conversation, a debate, and an absolute massacre.\n" +
-					"- Obey staff. I will ban you from this channel if you don't.\n"+
+					"- Obey staff. I will relieve you from this channel if you don't.\n"+
 					"- There are ramifications to permitting this channel; one of them is that you don't ignite flaming political discussions...at least all the time.\n"+
 					"- Following the above, do not troll this channel. This is intended for some of the most serious discussion. **DO NOT TROLL THIS CHANNEL OR I WILL BAN YOU FROM CC.**\n\n"+
 					"Right, I think that's it then. If you agree with these rules, slap that happy emoji down there and I'll give you that noice shiny debater role. Note that this can be removed with like 2 clicks."
@@ -269,23 +269,21 @@ fishsticks.on('message', async msg => {
 		}
 	}
 	else { //NON-ALPHA LEVEL COMMANDS
-
 		
 		//NEWCOMER LINK SCREEN
-		try {
-			if (fishsticks.subroutines.get("nlinkscn")) {
-				if (msg.member.roles.size === 1) {
-					if (msg.content.includes(".com") || msg.content.includes(".net") || msg.content.includes(".org") || msg.content.includes(".tv")) {
-						syslog("[N. LINK SCREEN] Newcomer Link Intercepted." + msg, 2);
-						msg.delete();
-						msg.reply("As a newcomer to this server, your permissions to post links are revoked. You may post links once you are granted the Recognized role.").then(sent => sent.delete(20000));
+		if (msg.channel == crashpad) {
+			if (msg.author.id != fishsticks.user.id) {
+				if (fishsticks.subroutines.get("nlinkscn")) {
+					if (msg.member.roles.size === 1) {
+						if (msg.content.includes(".com") || msg.content.includes(".net") || msg.content.includes(".org") || msg.content.includes(".tv")) {
+							syslog("[N. LINK SCREEN] Newcomer Link Intercepted." + msg, 2);
+							msg.delete();
+							msg.reply("As a newcomer to this server, your permissions to post links are revoked. You may post links once you are granted the Recognized role.").then(sent => sent.delete(20000));
+						}
 					}
 				}
 			}
-		} catch (newcomerLinkErr) {
-			syslog("[N. LINK SCREEN] [ERROR] Something went wrong.\n\n" + newcomerLinkErr, 3);
 		}
-
 		//TWITCH DOMAIN SCREEN
 		try {
 			if (fishsticks.subroutines.get("twitch")) {

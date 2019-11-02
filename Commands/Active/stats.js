@@ -113,7 +113,7 @@ exports.run = async (fishsticks, msg, cmd) => {
         "Member Count: `" + memberCount + "`");
 
     msg.channel.send("Crunch done!").then(sent => sent.delete(5000));
-    msg.channel.send({embed: statsReportPanel});
+    msg.channel.send({embed: statsReportPanel}).then(sent => sent.delete(60000));
 
     //Prep Roles info
     let rolePanelList = ""

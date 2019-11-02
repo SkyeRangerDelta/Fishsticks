@@ -23,6 +23,7 @@ exports.run = async (fishsticks, inquery) => {
             console.log("[DB-SYS] Created Connection");
             connection = conn;
             let response = connection.query(inquery);
+            connection.end();
             return response;
         }).then(result => {
             console.log("[DB-SYS] SQL Response:");
