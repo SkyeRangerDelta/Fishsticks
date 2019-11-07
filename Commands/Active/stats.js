@@ -43,17 +43,20 @@ exports.run = async (fishsticks, msg, cmd) => {
     let latestPingRole = "";
     let latestPingDate = "";
 
-    //Init Compound Div - COunt roles per Division
+    //Init Compound Div - Count roles per Division
     let divCompound = new Map();
 
     log("Initializing divisions compound", 2);
     for (divItem in divList) {
+
         divCompound.set(divList[divItem].name, 0);
+
+        log(`Generated division object ${divItem} of ${divList.size}`);
     }
     log("Divisions compound done!", 2);
     
     //Init Compound Roles - Count pings per Role
-    let roleCompound = new Map();
+    let roleCompound = [];
 
     log("Initializing roles compound", 2);
     for (roleItem in roleList) {
@@ -64,7 +67,9 @@ exports.run = async (fishsticks, msg, cmd) => {
             lastPing: roleList[roleItem].lastPing
         };
 
-        roleCompound.set(roleList[roleItem].name, roleObj);
+        roleCompound.push(roleObj);
+
+        log(`Generated role object ${roleItem} of ${roleList.length}`);
     }
     log("Role compound done!", 2);
 
@@ -115,15 +120,82 @@ exports.run = async (fishsticks, msg, cmd) => {
     msg.channel.send("Crunch done!").then(sent => sent.delete(5000));
     msg.channel.send({embed: statsReportPanel}).then(sent => sent.delete(60000));
 
-    //Prep Roles info
+    //Prep Roles Info
     let rolePanelList = ""
-    let lastIndex = 0;
+    let lastIndex = 1;
 
     for (roleEntry in roleCompound) {
         if (roleEntry % 5 == 0 && roleEntry != 0) {
             rolePanelList = rolePanelList.concat(`- **${roleCompound[roleEntry].name}** (${roleCompound[roleEntry].pings}): ${roleCompound[roleEntry].lastPing}`);
             postPanelReport(rolePanelList);
             rolePanelList = "";
+        } else {
+            rolePanelList = rolePanelList.concat(`- **${roleCompound[roleEntry].name}** (${roleCompound[roleEntry].pings}): ${roleCompound[roleEntry].lastPing}`);
+        }
+    }
+
+    postPanelReport(rolePanelList, lastIndex++);
+    rolePanelList = "";
+
+    function postPanelReport(theList, page) {
+        if (page == 1) {
+            let roleListPanel = new Discord.RichEmbed();
+                roleListPanel.setTitle(`o0o - Game Role Statistics [Page ${page}] - o0o`);
+                roleListPanel.setColor(cfg.fscolor);
+                roleListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
+                roleListPanel.setDescription(`Each game role presented here is represented from an acitivity perspective. Each role lists it's pings and last known ping.`);
+                roleListPanel.addField(`Ping Stats`, theList);
+            
+            msg.channel.send({embed: roleListPanel}).then(sent => sent.delete(30000));
+        } else {
+            let roleListPanel = new Discord.RichEmbed();
+                roleListPanel.setTitle(`o0o - Game Role Statistics [Page ${page}] - o0o`);
+                roleListPanel.setColor(cfg.fscolor);
+                roleListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
+                roleListPanel.setDescription(`Game role stats, continued.`);
+                roleListPanel.addField(`Ping Stats`, theList);
+            
+            msg.channel.send({embed: roleListPanel}).then(sent => sent.delete(30000));
+        }
+    }
+
+    //Prep Divisions Info
+    let divPanelList = ""
+    let lastDivIndex = 1;
+
+    for (divEntry in divCompound) {
+        if (divEntry % 5 == 0 && divEntry != 0) {
+            divPanelList = divPanelList.concat(`- **${divCompound}`);
+            postPanelReport(rolePanelList);
+            rolePanelList = "";
+        } else {
+            rolePanelList = rolePanelList.concat(`- **${roleCompound[roleEntry].name}** (${roleCompound[roleEntry].pings}): ${roleCompound[roleEntry].lastPing}`);
+        }
+    }
+
+    postPanelReport(rolePanelList, lastIndex++);
+    rolePanelList = "";
+    return;
+
+    function postPanelReport(theList, page) {
+        if (page == 1) {
+            let roleListPanel = new Discord.RichEmbed();
+                roleListPanel.setTitle(`o0o - Game Role Statistics [Page ${page}] - o0o`);
+                roleListPanel.setColor(cfg.fscolor);
+                roleListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
+                roleListPanel.setDescription(`Each game role presented here is represented from an acitivity perspective. Each role lists it's pings and last known ping.`);
+                roleListPanel.addField(`Ping Stats`, theList);
+            
+            msg.channel.send({embed: roleListPanel}).then(sent => sent.delete(30000));
+        } else {
+            let roleListPanel = new Discord.RichEmbed();
+                roleListPanel.setTitle(`o0o - Game Role Statistics [Page ${page}] - o0o`);
+                roleListPanel.setColor(cfg.fscolor);
+                roleListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
+                roleListPanel.setDescription(`Game role stats, continued.`);
+                roleListPanel.addField(`Ping Stats`, theList);
+            
+            msg.channel.send({embed: roleListPanel}).then(sent => sent.delete(30000));
         }
     }
 }
