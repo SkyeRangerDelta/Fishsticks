@@ -23,6 +23,8 @@ const pollInit = require('./Modules/PollingSystem/initPolls.js');
 const currDateTime = require('./Modules/Functions/currentDateTime.js');
 const dbTest = require("./Modules/Functions/db/db_Test.js");
 const query = require('./Modules/Functions/db/query.js');
+const fsoVerify = require('./Modules/Functions/FSO/verifyMember.js');
+const fsoOpen = require('./Modules/Functions/FSO/openConnection.js');
 
 const cmdResponses = require('./Modules/SystemResponses/commandErrors.json');
 
@@ -48,6 +50,8 @@ fishsticks.ranger;
 fishsticks.currentPolls = [];
 fishsticks.dbaseConnection;
 fishsticks.debaterMsgIDs = [];
+fishsticks.FSOConnection;
+fishsticks.recalibrating = false;
 
 fishsticks.commandRejects = 0;
 fishsticks.rejectingCommands = false;
@@ -100,9 +104,6 @@ fishsticks.systemLog;
 //USER INITIALIZATIONS
 var ranger;
 
-//DATABASE CONNECTION
-dbTest.run(fishsticks);
-
 //RANDOM MESSAGES
 let regenCountRefresh = Math.random() * (2000 - 25) + 25;
 
@@ -111,7 +112,7 @@ let regenCountRefresh = Math.random() * (2000 - 25) + 25;
 //--------------------------------------
 
 //STARTUP PROCEDURE
-fishsticks.on('ready', () => {
+fishsticks.on('ready', async () => {
 
 	//CHANNEL DEFINITIONS
 	fsconsoleChannel = fishsticks.channels.get(chs.fsconsole);
@@ -140,6 +141,9 @@ fishsticks.on('ready', () => {
 		fishsticks.servStatus = "`Potential Outage`";
 	}
 
+	//FSOConnection Conduit
+	fishsticks.FSOConnection = await fsoOpen.run(fishsticks);
+
 	//SUBROUTINES CHECK
 	subrouts.run(fishsticks);
 
@@ -154,9 +158,6 @@ fishsticks.on('ready', () => {
 	syslog(`[SESSION#] ` + fishsticks.syssession, 0);
 	syslog(`[ENG-MODE] Currently: ` + engmode, 0);
 	syslog(`[*SUBR-CON*] Subroutines initialized and configured`, 1);
-
-	//Checking database state
-	console.log("[DB-TEST] DB State: " + fishsticks.dbaseConnection);
 
 	//Startup Message - Discord
 	if (engmode == true) {
@@ -501,6 +502,14 @@ fishsticks.on('message', async msg => {
 				if (msg.content.charAt(0) == prefix) {
 					if (fishsticks.subroutines.get("active")) {
 						await verifyMember();
+
+						//Check for recalibration
+						if (cmdID.toLowerCase() == "recalibrate") {
+							if (fishsticks.recalibrating) {
+								return msg.reply("A recalibration is already in process! Don't get your undies in a wad.");
+							}
+						}
+
 						console.log(colors.green("[ACT-COMM] Attempting Resolution for command: " + cmdID));
 						syslog("[ACT-COMM] Attempting Resolution for command: " + cmdID, 0);
 						fishsticks.commandAttempts++;
@@ -564,7 +573,7 @@ fishsticks.on('message', async msg => {
 				}
 			} catch (commandHandlerErr) {
 				console.log(colors.red("[COMMAND HANDLER] [HIGH LEVEL] [ERROR] SOMETHING IS WRONG WITH THE HANDLER.\n\n" + commandHandlerErr));
-				syslog("[COMMAND HANDLER] [HIGH LEVEL] [ERROR] SOMETHING IS WRONG WITH THE HANDLER.\n\n" + commandHandlerErr, 4);
+				syslog("[COMMAND HANDLER] [HIGH LEVEL] [ERROR] SOMETHING IS WRONG WITH THE HANDLER.\n\n" + commandHandlerErr + "\n\n" + commandHandlerErr.stack, 4);
 			}
 		}
 	}
@@ -594,20 +603,7 @@ fishsticks.on('message', async msg => {
 	}
 
 	async function verifyMember() {
-
-		syslog("[FS-ONLINE] Verifying member record...");
-
-		let memberStandardNickname = msg.author.tag.substring(0, msg.author.tag.length - 5);
-
-		//Process getting member
-		let memberResponse = await query.run(fishsticks, `SELECT 1 FROM fs_members WHERE memberDiscordID = ${msg.author.id};`);
-		//If member doesn't exist, create the record
-		if (memberResponse[0] == null || memberResponse == undefined) {
-			syslog("[FS-ONLINE] Creating new member record with values...\n\tDiscord ID: " + msg.author.id + "\n\tNickname: " + memberStandardNickname + "\n\tTag: " + msg.author.tag, 2);
-			let memberCreation = await query.run(fishsticks, `INSERT INTO fs_members (memberDiscordID, memberNickname, memberTag, commandsIssued, commandsSucceeded, passivesSucceeded, suggestionsPosted) VALUES (${msg.author.id}, '${memberStandardNickname}', '${msg.author.tag}', 0, 0, 0, 0);`);
-		}
-
-		syslog("[FS-ONLINE] Verification complete.");
+		return fsoVerify.run(fishsticks, msg.member);
 	}
 });
 
@@ -781,10 +777,35 @@ fishsticks.on('messageReactionRemove', (postReaction, reactor) => {
 	fs.writeFileSync('./Modules/PollingSystem/polls.json', JSON.stringify(pollFile));
 });
 
+/* -- EXPERIMENTAL -- #Handle FSO role desyncs#
+//GAME ROLES AUDITOR
+fishsticks.on('guildMemberUpdate', async (oldMember, newMember) => {
+
+	//Check for actual change
+	if (member.roles.length == oldMember.roles.length) {
+		return syslog("No...stop, funky happened - not touching it.", 2);
+	}
+
+	//Read audit logs
+	let retrievedEntries = await fishsticks.CCGuild.fetchAuditLogs({type: 'MEMBER_ROLE_UPDATE'}).entries.first;
+
+	//Check for if FS did it
+	if (retrievedEntries.executor == fishsticks.user) return;
+
+	//Otherwise, carry on
+
+
+	//Get the game roles listing
+	let rolesListing = await query.run(fishsticks, `SELECT roleDiscordID FROM fs_gr_Roles`);
+
+	//Get the role removed from user
+
+});
+*/
+
 try {
 	fishsticks.login(token);
-}
-catch (logErr) {
+} catch (logErr) {
 	console.log(colors.red("[FATAL] There's a problem with the login!"));
 }
 

@@ -44,14 +44,19 @@ exports.run = async (fishsticks, msg, cmd) => {
     let latestPingDate = "";
 
     //Init Compound Div - Count roles per Division
-    let divCompound = new Map();
+    let divCompound = [];
 
     log("Initializing divisions compound", 2);
     for (divItem in divList) {
 
-        divCompound.set(divList[divItem].name, 0);
+        let divObj = {
+            name: divList[divItem].name,
+            roles: 0
+        }
 
-        log(`Generated division object ${divItem} of ${divList.size}`);
+        divCompound.push(divObj);
+
+        log(`Generated division object ${divItem} of ${divList.length}`, 2);
     }
     log("Divisions compound done!", 2);
     
@@ -63,13 +68,14 @@ exports.run = async (fishsticks, msg, cmd) => {
 
         let roleObj = {
             name: roleList[roleItem].name,
+            division: roleList[roleItem].division,
             pings: roleList[roleItem].pings,
             lastPing: roleList[roleItem].lastPing
         };
 
         roleCompound.push(roleObj);
 
-        log(`Generated role object ${roleItem} of ${roleList.length}`);
+        log(`Generated role object ${roleItem} of ${roleList.length}`, 2);
     }
     log("Role compound done!", 2);
 
@@ -100,9 +106,13 @@ exports.run = async (fishsticks, msg, cmd) => {
         }
 
         //Count roles for each division
-        for (div in divList) {
-            if (roleList[role].division == divList[div].name) {
-                divCompound.set(divList[div].name, )
+        for (rol in roleCompound) {
+            for (div in divCompound) {
+                log(`Comparing ${roleCompound[rol].division} to ${divCompound[div].name}`, 1);
+                if (roleCompound[rol].division == divCompound[div].name) {
+                    log("Matched! Associating role.", 1)
+                    divCompound[div].roles = divCompound[div].roles + 1;
+                }
             }
         }
     }
@@ -122,15 +132,15 @@ exports.run = async (fishsticks, msg, cmd) => {
 
     //Prep Roles Info
     let rolePanelList = ""
-    let lastIndex = 1;
+    let lastIndex = 0;
 
     for (roleEntry in roleCompound) {
         if (roleEntry % 5 == 0 && roleEntry != 0) {
-            rolePanelList = rolePanelList.concat(`- **${roleCompound[roleEntry].name}** (${roleCompound[roleEntry].pings}): ${roleCompound[roleEntry].lastPing}`);
-            postPanelReport(rolePanelList);
+            rolePanelList = rolePanelList.concat(`- **${roleCompound[roleEntry].name}** (${roleCompound[roleEntry].pings}): ${roleCompound[roleEntry].lastPing}\n`);
+            postPanelReport(rolePanelList, lastIndex++);
             rolePanelList = "";
         } else {
-            rolePanelList = rolePanelList.concat(`- **${roleCompound[roleEntry].name}** (${roleCompound[roleEntry].pings}): ${roleCompound[roleEntry].lastPing}`);
+            rolePanelList = rolePanelList.concat(`- **${roleCompound[roleEntry].name}** (${roleCompound[roleEntry].pings}): ${roleCompound[roleEntry].lastPing}\n`);
         }
     }
 
@@ -140,7 +150,7 @@ exports.run = async (fishsticks, msg, cmd) => {
     function postPanelReport(theList, page) {
         if (page == 1) {
             let roleListPanel = new Discord.RichEmbed();
-                roleListPanel.setTitle(`o0o - Game Role Statistics [Page ${page}] - o0o`);
+                roleListPanel.setTitle(`o0o - Game Roles Subroutine Report [Roles Page ${page}] - o0o`);
                 roleListPanel.setColor(cfg.fscolor);
                 roleListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
                 roleListPanel.setDescription(`Each game role presented here is represented from an acitivity perspective. Each role lists it's pings and last known ping.`);
@@ -149,7 +159,7 @@ exports.run = async (fishsticks, msg, cmd) => {
             msg.channel.send({embed: roleListPanel}).then(sent => sent.delete(30000));
         } else {
             let roleListPanel = new Discord.RichEmbed();
-                roleListPanel.setTitle(`o0o - Game Role Statistics [Page ${page}] - o0o`);
+                roleListPanel.setTitle(`o0o - Game Roles Subroutine Report [Roles Page ${page}] - o0o`);
                 roleListPanel.setColor(cfg.fscolor);
                 roleListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
                 roleListPanel.setDescription(`Game role stats, continued.`);
@@ -161,41 +171,41 @@ exports.run = async (fishsticks, msg, cmd) => {
 
     //Prep Divisions Info
     let divPanelList = ""
-    let lastDivIndex = 1;
+    let lastDivIndex = 0;
 
     for (divEntry in divCompound) {
         if (divEntry % 5 == 0 && divEntry != 0) {
-            divPanelList = divPanelList.concat(`- **${divCompound}`);
-            postPanelReport(rolePanelList);
-            rolePanelList = "";
+            divPanelList = divPanelList.concat(`- **${divCompound[divEntry].name}**: ${divCompound[divEntry].roles}\n`);
+            postDivPanelReport(divPanelList, lastDivIndex++);
+            divPanelList = "";
         } else {
-            rolePanelList = rolePanelList.concat(`- **${roleCompound[roleEntry].name}** (${roleCompound[roleEntry].pings}): ${roleCompound[roleEntry].lastPing}`);
+            divPanelList = divPanelList.concat(`- **${divCompound[divEntry].name}**: ${divCompound[divEntry].roles}\n`);
         }
     }
 
-    postPanelReport(rolePanelList, lastIndex++);
-    rolePanelList = "";
+    postDivPanelReport(divPanelList, lastDivIndex++);
+    divPanelList = "";
     return;
 
-    function postPanelReport(theList, page) {
-        if (page == 1) {
-            let roleListPanel = new Discord.RichEmbed();
-                roleListPanel.setTitle(`o0o - Game Role Statistics [Page ${page}] - o0o`);
-                roleListPanel.setColor(cfg.fscolor);
-                roleListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
-                roleListPanel.setDescription(`Each game role presented here is represented from an acitivity perspective. Each role lists it's pings and last known ping.`);
-                roleListPanel.addField(`Ping Stats`, theList);
+    function postDivPanelReport(theDivList, altPage) {
+        if (altPage == 1) {
+            let divListPanel = new Discord.RichEmbed();
+                divListPanel.setTitle(`o0o - Game Roles Subroutine Report [Divisions Page ${altPage}] - o0o`);
+                divListPanel.setColor(cfg.fscolor);
+                divListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
+                divListPanel.setDescription(`Each game role division is shown here with the number of roles associated with it.`);
+                divListPanel.addField(`Division Stats`, theDivList);
             
-            msg.channel.send({embed: roleListPanel}).then(sent => sent.delete(30000));
+            msg.channel.send({embed: divListPanel}).then(sent => sent.delete(30000));
         } else {
-            let roleListPanel = new Discord.RichEmbed();
-                roleListPanel.setTitle(`o0o - Game Role Statistics [Page ${page}] - o0o`);
-                roleListPanel.setColor(cfg.fscolor);
-                roleListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
-                roleListPanel.setDescription(`Game role stats, continued.`);
-                roleListPanel.addField(`Ping Stats`, theList);
+            let divListPanel = new Discord.RichEmbed();
+                divListPanel.setTitle(`o0o - Game Role Subroutine Report [Divisions Page ${altPage}] - o0o`);
+                divListPanel.setColor(cfg.fscolor);
+                divListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
+                divListPanel.setDescription(`Game role stats, continued.`);
+                divListPanel.addField(`Division Stats`, theDivList);
             
-            msg.channel.send({embed: roleListPanel}).then(sent => sent.delete(30000));
+            msg.channel.send({embed: divListPanel}).then(sent => sent.delete(30000));
         }
     }
 }

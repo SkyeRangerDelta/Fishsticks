@@ -65,12 +65,15 @@ exports.run = async (fishsticks, msg, cmd) => {
 	let oRoleCount = 0;
 	let uRoleCount = 0;
 
+	let officialRoles = "";
+	let unofficialRoles = "";
+
 	for (role in roles) {
 		if (roles[role].official == 1) {
-			officialRoles = officialRoles.concat("- " + capitalizeWord(rolesJSON.roles[role].name) + " : " + capitalizeWord(rolesJSON.roles[role].game) + "\n");
+			officialRoles = officialRoles.concat("- " + convertToTitleCase(roles[role].name) + " : " + convertToTitleCase(roles[role].game) + "\n");
 			oRoleCount++;
 		} else {
-			unofficialRoles = unofficialRoles.concat("- " + capitalizeWord(rolesJSON.roles[role].name) + " : " + capitalizeWord(rolesJSON.roles[role].game)  + " (Votes: " + rolesJSON.roles[role].votes + ")\n");
+			unofficialRoles = unofficialRoles.concat("- " + convertToTitleCase(roles[role].name) + " : " + convertToTitleCase(roles[role].game)  + " (Votes: " + roles[role].votes + ")\n");
 			uRoleCount++;
 		}
 	}
@@ -114,5 +117,35 @@ exports.run = async (fishsticks, msg, cmd) => {
 
             msg.channel.send({embed: catListEmbed}).then(sent => sent.delete(30000));
         }
-    }
+	}
+	
+	function convertToTitleCase(title) {
+		title = title.toLowerCase();
+	
+		console.log("[Convert to Title] Title: " + title);
+		
+		let breakup = title.split('');
+		let newTitle = [];
+		let bumpNext = false;
+	
+		for (letter in breakup) {
+			if (letter == 0) {
+				newTitle.push(breakup[letter].toUpperCase());
+			} else if (breakup[letter] == ' ') {
+				newTitle.push(' ');
+				bumpNext = true;
+			} else {
+				if (bumpNext) {
+					newTitle.push(breakup[letter].toUpperCase());
+					bumpNext = false;
+				} else {
+					newTitle.push(breakup[letter]);
+				}
+			}
+		}
+	
+		let reprocessedTitle = newTitle.join('');
+		console.log("[Convert to Title] Reprocessed: " + reprocessedTitle);
+		return reprocessedTitle;
+	}
 }

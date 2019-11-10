@@ -1,36 +1,19 @@
 //----EDIT----
 const db = require('promise-mysql');
 
-const dbInfo = require("../db/db.json");
 const logger = require("../syslog.js");
+const fsoOpen = require('../FSO/openConnection.js');
 
 exports.run = async (fishsticks, inquery) => {
-    logger.run(fishsticks, "[DB-SYS] Attempting stable connection...", 3);
-    logger.run(fishsticks, "[DB-SYS] Executing the SQL query...", 3);
+    logger.run(fishsticks, "[DB-QRY] Verifying connection.", 3);
 
-    function submitQuery() {
-
-        let connection;
-
-        return db.createConnection({
-            host: dbInfo.db_host,
-            user: dbInfo.db_user,
-            password: dbInfo.db_pass,
-            port: dbInfo.db_port,
-            database: dbInfo.db_db,
-            supportBigNumbers: true
-        }).then(async conn => {
-            console.log("[DB-SYS] Created Connection");
-            connection = conn;
-            let response = connection.query(inquery);
-            connection.end();
-            return response;
-        }).then(result => {
-            console.log("[DB-SYS] SQL Response:");
-            console.log(result);
-            return result;
-        });
+    if (!fishsticks.FSOConnection || fishsticks.FSOConnection == undefined) {
+        logger.run(fishsticks, "[DB-QRY] None found, opening new conduit.", 3);
+        fishsticks.FSOConnection = await fsoOpen.run(fishsticks);
     }
 
-    return await submitQuery();
+    logger.run(fishsticks, "[DB-QRY] Executing query.", 3);
+    let response = await fishsticks.FSOConnection.query(inquery);
+
+    return response;
 }
