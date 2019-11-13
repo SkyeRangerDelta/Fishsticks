@@ -3,6 +3,7 @@ const config = require('../../Modules/Core/corecfg.json');
 const chs = require('../../Modules/fs_ids.json');
 const syst = require('../../Modules/fs_systems.json');
 const subCheck = require('../../Modules/Functions/subroutineCheck.js');
+const embeds = require('../embeds/main.json');
 
 const log = require('../../Modules/Functions/syslog.js');
 
@@ -22,8 +23,21 @@ exports.run = (fishsticks, msg, cmd) => {
 		catch (err) {
 			systemLog.send("**[SOMETHING IS WRONG]** I tried to send a message via a command, but something has gone askew. (Origin: Core Script)\n\nDetailing:\n" + err);
 		}
-	}
+    }
+    
+    //HALT - COMMAND DISABLED UNTIL REPAIRED
 
+    syslog("Command attempted - halted due to defective state.", 3);
+
+    let defective = new Discord.RichEmbed();
+        defective.setTitle("o0o - Command Defective - o0o");
+        defective.setColor(config.fscolor);
+        defective.setDescription(embeds.commands.defective);
+        defective.addField("Reason:", "Command is not finished. Library modules, API syncs, and Fishsticks' interaction are not agreeing with each other.", true);
+
+    return msg.reply({embed: defective}).then(sent => sent.delete(15000));
+
+    /*
     //MUSIC SYSTEM VARIABLES
     const memberVC = msg.member.voiceChannel;
     
@@ -527,4 +541,5 @@ exports.run = (fishsticks, msg, cmd) => {
     else {
         msg.reply("The `[MUSI-SYS]` subroutine has been disabled. Find " + fishsticks.ranger + " and get him to turn it back on!");
     }
+    */
 }

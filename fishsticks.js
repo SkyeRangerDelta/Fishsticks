@@ -51,7 +51,6 @@ fishsticks.currentPolls = [];
 fishsticks.dbaseConnection;
 fishsticks.debaterMsgIDs = [];
 fishsticks.FSOConnection;
-fishsticks.recalibrating = false;
 
 fishsticks.commandRejects = 0;
 fishsticks.rejectingCommands = false;
@@ -75,7 +74,7 @@ fishsticks.subroutines = new Map([
 	["online", true],
 	["tempch", true],
 	["twitch", true],
-	["musi", true],
+	["musi", false],
 	["echo", true],
 	["matb", false],
 	["engm", false],
@@ -160,16 +159,28 @@ fishsticks.on('ready', async () => {
 	syslog(`[*SUBR-CON*] Subroutines initialized and configured`, 1);
 
 	//Startup Message - Discord
-	if (engmode == true) {
-		fishsticks.user.setActivity('ENGM Enabled! | !help');
+	if (engmode) {
+		fishsticks.user.setPresence({
+			game: {
+				name: `ENGM Enabled! | !help`,
+				type: 'WATCHING'
+			},
+			status: 'idle'
+		});
 	} else {
-		fishsticks.user.setActivity("!help | V" + fishsticks.version);
+		fishsticks.user.setPresence({
+			game: {
+				name: `!help | V${fishsticks.version}`,
+				type: 'WATCHING'
+			},
+			status: 'online'
+		});
 	}
 
 	var startupseq = new Discord.RichEmbed();
 		startupseq.setTitle("o0o - FISHSTICKS STARTUP - o0o")
 		startupseq.setColor(fscolor);
-		startupseq.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
+		startupseq.setThumbnail("https://pldyn.net/wp-content/uploads/2018/07/ccLogoMain.png")
 		startupseq.setDescription(
 			"Dipping in flour...\n" +
 			"Baking at 400°...\n" +
@@ -194,8 +205,6 @@ function syslog(message, level) {
 //----------------------------------
 //FISHSTICKS COMMAND SYSTEMS
 //----------------------------------
-
-let svuArr = ["shut up", "hush", "go away", "stop", "shoosh", "be quiet", "dummy", "sucks"];
 
 //MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
@@ -463,11 +472,30 @@ fishsticks.on('message', async msg => {
 				}
 			}
 	
-			for (var i = 0; i < svuArr.length; i++) {
-				if (msg.content.toLowerCase().includes(svuArr[i]) && ((msg.content.toLowerCase().includes('fishsticks') || msg.content.toLowerCase().includes('fishy')))) {
-					msg.reply("Excuse me!? We are going to have to have a talk about where your standards lie and where they should be. Keep that attitude up and I'll have to take extra measures... (automatic 15 respect point loss).\n\n *Very idea...\nHating on fishsticks...*")
+			//SVU - Insult Check
+			let svuArr = ["shut up", "hush", "go away", "stop", "shoosh", "be quiet", "dummy", "sucks", "murder", "shush", "dummy"];
+			let lowerMsg = msg.content.toLowerCase();
+
+			if (lowerMsg.includes("fishsticks") || lowerMsg.includes("fishstick")) {
+
+				if (msg.author.bot)  return;
+				if (msg.author.id == fishsticks.user.id) return;
+
+				for (word in svuArr) {
+					if (lowerMsg.includes(svuArr[word])) {
+						return msg.reply(`Excuse me!? ***${svuArr[word]}***? We're going to have to have a talk about where your standards lie and where they should be. Keep that attitude up and I'll have to take extra measures... (automatic 15 respect point loss).\n\n *Very idea...\nHating on fishsticks...*`)
+					}
+				}
+
+				if (lowerMsg.includes("let's tango") || lowerMsg.includes("lets tango")) {
+					return msg.reply("That's going to be very depressing for the audience. It's mainly because I don't know how to tango, but I mean, it might be you, but I think it's probably me.");
+				}
+
+				if (lowerMsg.includes("not my friend")) {
+					return msg.reply("Aight, fine. If that's how you wanna be about it, then great. Whatever. Your loss.");
 				}
 			}
+
 		} catch (passiveCatchErr) {
 			console.log("[ERROR] Something has gone askew in the processing of a passive command.\n\n" + passiveCatchErr);
 			syslog("[ERROR] Something has gone askew in the processing of a passive command.\n\n" + passiveCatchErr, 3);
@@ -502,13 +530,6 @@ fishsticks.on('message', async msg => {
 				if (msg.content.charAt(0) == prefix) {
 					if (fishsticks.subroutines.get("active")) {
 						await verifyMember();
-
-						//Check for recalibration
-						if (cmdID.toLowerCase() == "recalibrate") {
-							if (fishsticks.recalibrating) {
-								return msg.reply("A recalibration is already in process! Don't get your undies in a wad.");
-							}
-						}
 
 						console.log(colors.green("[ACT-COMM] Attempting Resolution for command: " + cmdID));
 						syslog("[ACT-COMM] Attempting Resolution for command: " + cmdID, 0);

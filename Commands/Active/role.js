@@ -76,7 +76,7 @@ exports.run = (fishsticks, msg, cmd) => {
             break;
         default:
         syslog("Incomplete parameters.", 2)
-        return msg.reply("I feel like we were getting somewhere, but I just don't see it. Did you mean one of these?\n`-list`, `-join`, `-vote`, `-create`, `-leave`, `-show`").then(sent => sent.delete(15000));
+        return msg.reply("I feel like we were getting somewhere, but I just don't see it. Did you mean one of these?\n`-list`, `-join`, `-vote`, `-create`, `-leave`, `-show`\n\n*There's a chance that if you're seeing this, whatever you're trying to do is impossible: ie, removing a role you don't have.*").then(sent => sent.delete(15000));
     }
 
     //FUNCTIONS
@@ -167,8 +167,13 @@ exports.run = (fishsticks, msg, cmd) => {
     async function joinRole() { //Join a role once officialized
         syslog("Attempting role join...", 2);
 
-        // -> Check if official
         let responseOfficial = await dbQuery.run(fishsticks, `SELECT official FROM fs_gr_Roles WHERE name = '${convertToTitleCase(roleName)}'`);
+
+        if (responseOfficial.length != 1) {
+            responseOfficial = await dbQuery.run(fishsticks, `SELECT official FROM fs_gr_Roles WHERE game = '${convertToTitleCase(roleName)}'`);
+        }
+
+        // -> Check if official
         console.log(responseOfficial[0].official);
         if (responseOfficial[0].official == 0) {
             msg.reply(convertToTitleCase(roleName) + " is not official yet, voting for the role instead.").then(sent => sent.delete(15000));
@@ -469,18 +474,32 @@ exports.run = (fishsticks, msg, cmd) => {
 
         //Collect role from FSO
         let roleResponse = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE name = "${convertToTitleCase(cmdRef[2])}";`);
+        let roleResponseB = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE game = "${convertToTitleCase(cmdRef[2])}";`);
+        let altResponse = false;
 
         if (roleResponse.length != 1) {
-            //Possibly not a role, might be a division check
-            return msg.reply("It seems I couldn't find that role in my databanks. Did you do a typo?").then(sent => sent.delete(10000));
+            //Possibly not a role, might be a game check
+            altResponse = true;
+        }
+
+        if (roleResponseB.length != 1) {
+            return msg.reply("Mmm, it seems I couldn't find that role in my databanks. Did you do a typo?").then(sent => sent.delete(10000));
         }
 
         //Create memberlist
         let memberList = "";
-        let memberListResponse = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_gr_MemberRoles WHERE roleID = ${roleResponse[0].roleID};`);
+        let memberListResponse;
+
+        if (altResponse) {
+            memberListResponse = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_gr_MemberRoles WHERE roleID = ${roleResponseB[0].roleID};`);
+        } else {
+            memberListResponse = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_gr_MemberRoles WHERE roleID = ${roleResponse[0].roleID};`);
+        }
 
         if (memberListResponse.length > 10) {
             memberList = "There's too many to list! There's " + memberListResponse.length + " members in here!";
+        } else if (memberListResponse.length == 0) {
+            memberList = "*Looks pretty empty here.* ¯|_(ツ)_/¯";
         } else {
             for (memberObjA in memberListResponse) {
                 let memberUsername = await dbQuery.run(fishsticks, `SELECT memberNickname FROM fs_members WHERE memberID = ${memberListResponse[memberObjA].memberID};`);
@@ -488,11 +507,19 @@ exports.run = (fishsticks, msg, cmd) => {
             }
         }
 
-        if (memberList == undefined) {
-            memberList = "*Looks pretty empty here.* ¯|_(ツ)_/¯";
-        }
-
         let roleDetail = new Discord.RichEmbed();
+
+        if (altResponse) {
+            roleDetail.setTitle("o0o - " + roleResponseB[0].name + " - o0o");
+            roleDetail.setColor(config.fscolor);
+            roleDetail.setFooter("This menu will disappear in 30 seconds. Report was summoned by " + msg.author.username);
+            roleDetail.setDescription(roleResponseB[0].description);
+            roleDetail.addField("Official?", convertBool(roleResponseB[0].official), true);
+            roleDetail.addField("Division", convertToTitleCase(roleResponseB[0].division), true);
+            roleDetail.addField("Members", memberList, false);
+            roleDetail.setThumbnail(grabImage(roleResponseB[0].division));
+
+        } else {
             roleDetail.setTitle("o0o - " + roleResponse[0].name + " - o0o");
             roleDetail.setColor(config.fscolor);
             roleDetail.setFooter("This menu will disappear in 30 seconds. Report was summoned by " + msg.author.username);
@@ -501,7 +528,7 @@ exports.run = (fishsticks, msg, cmd) => {
             roleDetail.addField("Division", convertToTitleCase(roleResponse[0].division), true);
             roleDetail.addField("Members", memberList, false);
             roleDetail.setThumbnail(grabImage(roleResponse[0].division));
-
+        }
         msg.channel.send({embed: roleDetail}).then(sent => sent.delete(30000));
     }
 
