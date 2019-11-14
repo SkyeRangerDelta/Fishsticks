@@ -448,6 +448,32 @@ fishsticks.on('message', async msg => {
 					msg.delete();
 					msg.channel.send({files: ["./images/plaid.gif"]});
 				}
+
+				if (line == "where am i") {
+					msg.channel.send("¯|_(ツ)_/¯", {files: ["./images/confused.gif"]});
+				}
+
+				if (line == "so it begins") {
+					msg.delete();
+					msg.channel.send({files: ["./images/soitbegins.gif"]});
+				}
+
+				if (line.includes('a') && line.includes('h')) {
+					let noTrigger = true;
+					line = line.trim();
+					for (let t = 0; t < line.length; t++) {
+						if (line[t] != 'a') {
+							if (line[t] != 'h') {
+								noTrigger = false;
+								break;
+							}
+						}
+					}
+
+					if (noTrigger) {
+						msg.channel.send({files: ["./images/screaming.gif"]});
+					}
+				}
 		
 				if (line == "hello there") {
 		
