@@ -285,7 +285,7 @@ fishsticks.on('message', async msg => {
 			if (msg.author.id != fishsticks.user.id) {
 				if (fishsticks.subroutines.get("nlinkscn")) {
 					if (msg.member.roles.size === 1) {
-						if (msg.content.includes(".com") || msg.content.includes(".net") || msg.content.includes(".org") || msg.content.includes(".tv")) {
+						if (msg.content.includes(".com") || msg.content.includes(".net") || msg.content.includes(".org") || msg.content.includes(".tv") || msg.content.includes(".gg")) {
 							syslog("[N. LINK SCREEN] Newcomer Link Intercepted." + msg, 2);
 							msg.delete();
 							msg.reply("As a newcomer to this server, your permissions to post links are revoked. You may post links once you are granted the Recognized role.").then(sent => sent.delete(20000));
