@@ -1,27 +1,26 @@
 const colors = require('colors');
 const query = require("./db/query.js");
 
-exports.run = (fishsticks) => {
+exports.run = async (fishsticks) => {
 
     //SUBROUTINES CHECK
-    let currSubroutinesResponse = query.run(fishsticks, "SELECT * FROM fs_subroutines");
+    console.log("Initiating system self diagnostic...");
+
+    let currSubroutinesResponse = await query.run(fishsticks, "SELECT * FROM fs_subroutines;");
 
 
-
-    /*
-    console.log(colors.red("Initiating system self diagnostic..."));
     let on = 0;
     let off = 0;
-    let systems = (fishsticks.subroutines.size - 2);
+    let systems = (currSubroutinesResponse.length - 2);
     let eff;
 
-    for (let routine of fishsticks.subroutines.keys()) {
-        if (fishsticks.subroutines.get(routine)) {
-            console.log(colors.magenta("Subroutine " + routine + ": Online"));
+    for (routine in currSubroutinesResponse) {
+        if (currSubroutinesResponse[routine].state == 1) {
+            console.log("Subroutine " + currSubroutinesResponse[routine].name + ": Online");
             on++;
         }
         else {
-            console.log(colors.magenta("Subroutine " + routine + ": Offline"));
+            console.log("Subroutine " + currSubroutinesResponse[routine].name + ": Offline");
             off++;
         }
     }
@@ -37,6 +36,7 @@ exports.run = (fishsticks) => {
         fishsticks.eff = eff;
     }
 
+    fishsticks.eff = Math.round(fishsticks.eff);
+
     console.log(colors.yellow("Fishsticks is operating at " + fishsticks.eff + "% efficiency."));
-    */
 }

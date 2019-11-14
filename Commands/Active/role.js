@@ -474,26 +474,22 @@ exports.run = (fishsticks, msg, cmd) => {
 
         //Collect role from FSO
         let roleResponse = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE name = "${convertToTitleCase(cmdRef[2])}";`);
-        let roleResponseB = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE game = "${convertToTitleCase(cmdRef[2])}";`);
         let altResponse = false;
 
         if (roleResponse.length != 1) {
             //Possibly not a role, might be a game check
             altResponse = true;
-        }
-
-        if (roleResponseB.length != 1) {
-            return msg.reply("Mmm, it seems I couldn't find that role in my databanks. Did you do a typo?").then(sent => sent.delete(10000));
+            roleResponse = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE game = "${convertToTitleCase(cmdRef[2])}";`);
         }
 
         //Create memberlist
         let memberList = "";
         let memberListResponse;
 
-        if (altResponse) {
-            memberListResponse = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_gr_MemberRoles WHERE roleID = ${roleResponseB[0].roleID};`);
-        } else {
+        try {
             memberListResponse = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_gr_MemberRoles WHERE roleID = ${roleResponse[0].roleID};`);
+        } catch (error) {
+            return msg.reply("**SECTOR 5 BREACH**: Initializing system defense mechanisms.\n\nJust kidding, you did a typo somewhere. All is well.").then(sent => sent.delete(10000));
         }
 
         if (memberListResponse.length > 10) {
@@ -509,26 +505,15 @@ exports.run = (fishsticks, msg, cmd) => {
 
         let roleDetail = new Discord.RichEmbed();
 
-        if (altResponse) {
-            roleDetail.setTitle("o0o - " + roleResponseB[0].name + " - o0o");
-            roleDetail.setColor(config.fscolor);
-            roleDetail.setFooter("This menu will disappear in 30 seconds. Report was summoned by " + msg.author.username);
-            roleDetail.setDescription(roleResponseB[0].description);
-            roleDetail.addField("Official?", convertBool(roleResponseB[0].official), true);
-            roleDetail.addField("Division", convertToTitleCase(roleResponseB[0].division), true);
-            roleDetail.addField("Members", memberList, false);
-            roleDetail.setThumbnail(grabImage(roleResponseB[0].division));
+        roleDetail.setTitle("o0o - " + roleResponse[0].name + " - o0o");
+        roleDetail.setColor(config.fscolor);
+        roleDetail.setFooter("This menu will disappear in 30 seconds. Report was summoned by " + msg.author.username);
+        roleDetail.setDescription(roleResponse[0].description);
+        roleDetail.addField("Official?", convertBool(roleResponse[0].official), true);
+        roleDetail.addField("Division", convertToTitleCase(roleResponse[0].division), true);
+        roleDetail.addField("Members", memberList, false);
+        roleDetail.setThumbnail(grabImage(roleResponse[0].division));
 
-        } else {
-            roleDetail.setTitle("o0o - " + roleResponse[0].name + " - o0o");
-            roleDetail.setColor(config.fscolor);
-            roleDetail.setFooter("This menu will disappear in 30 seconds. Report was summoned by " + msg.author.username);
-            roleDetail.setDescription(roleResponse[0].description);
-            roleDetail.addField("Official?", convertBool(roleResponse[0].official), true);
-            roleDetail.addField("Division", convertToTitleCase(roleResponse[0].division), true);
-            roleDetail.addField("Members", memberList, false);
-            roleDetail.setThumbnail(grabImage(roleResponse[0].division));
-        }
         msg.channel.send({embed: roleDetail}).then(sent => sent.delete(30000));
     }
 

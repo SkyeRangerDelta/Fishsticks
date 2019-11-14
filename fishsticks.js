@@ -144,7 +144,7 @@ fishsticks.on('ready', async () => {
 	fishsticks.FSOConnection = await fsoOpen.run(fishsticks);
 
 	//SUBROUTINES CHECK
-	subrouts.run(fishsticks);
+	await subrouts.run(fishsticks);
 
 	//LOGGER INITIALZE
 	function syslog(message, level) {

@@ -6,17 +6,16 @@ const ses = require('../../Modules/fs_ids.json');
 const fssys = require('fs');
 
 const subroutines = require('../../Modules/Functions/subRoutines.js');
-const dbTest = require('../../Modules/Functions/db/db_Test.js');
 
 const actDir = './Commands/Active';
 const pasDir = './Commands/Passive/';
 const botDir = './';
 
-exports.run = (fishsticks, msg, cmd) => {
+exports.run = async (fishsticks, msg, cmd) => {
 	msg.delete();
 
-	subroutines.run(fishsticks);
-	dbTest.run(fishsticks);
+	console.log("Requesting subroutines state.");
+	await subroutines.run(fishsticks);
 
 	let engmode = fishsticks.engmode;
 
@@ -30,6 +29,8 @@ exports.run = (fishsticks, msg, cmd) => {
 	else {
 		fishsticks.servStatus = "Potential Outage";
 	}
+
+	console.log("Building report.");
 
 	fssys.readdir(actDir, (err, files) => {
 		if (err) throw err;
@@ -53,7 +54,12 @@ exports.run = (fishsticks, msg, cmd) => {
 					}
 				}
 
+				msg.reply("*Word of Warning: This command uses a library that is under FSO migration development. Efficiency ratings are likely wrong or downright not working.*")
+					.then(sent => sent.delete(10000));
+
 				if (engmode == true) {
+					console.log("ENGM is on.");
+
 					var statusENG = new Discord.RichEmbed();
 					statusENG.setTitle("o0o - FISHSTICKS STATUS REPORT - o0o");
 					statusENG.setColor(config.fscolor);
@@ -89,6 +95,8 @@ exports.run = (fishsticks, msg, cmd) => {
 					msg.channel.send({embed: statusENG}).then(sent => sent.delete(45000));
 				}
 				else {
+					console.log("ENGM is off.");
+					
 					var status = new Discord.RichEmbed();
 					status.setTitle("o0o - FISHSTICKS STATUS REPORT - o0o");
 					status.setColor(config.fscolor);
