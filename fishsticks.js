@@ -449,13 +449,17 @@ fishsticks.on('message', async msg => {
 					msg.channel.send({files: ["./images/plaid.gif"]});
 				}
 
-				if (line == "where am i") {
+				if (line == "where am i" || line == "whereami") {
 					msg.channel.send("¯|_(ツ)_/¯", {files: ["./images/confused.gif"]});
 				}
 
 				if (line == "so it begins") {
 					msg.delete();
 					msg.channel.send({files: ["./images/soitbegins.gif"]});
+				}
+
+				if (line == "scan drive c") {
+					msg.channel.send({files: ["./images/alotofdamage.gif"]});
 				}
 
 				if (line.includes('a') && line.includes('h')) {
