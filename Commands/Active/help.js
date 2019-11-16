@@ -12,6 +12,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			help1.setDescription(
 				"Hi there, looking for a command to use? See below:\n" + 
 				"===============================================\n" +
+				"`!account [create/delete] [username] [password] [confirmPassword]`: Creates a Fishsticks Online account." + 
 				"`!bible <book num> [book] [chapter] [starting verse] [ending verse]`: Shows a selected range of verses! `*UNDER CONSTRUCTION*`\n"+
 				"`!channels`: Displays description for all the channels!\n"+
 				"`!codex [commandID]`: Displays a report of a command and it's syntax/parameters.\n"+

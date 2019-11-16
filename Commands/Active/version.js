@@ -23,7 +23,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			version.addField("Current Status: ", fetchStatus());
 			version.addField("Fishsticks' GitHub Repository: ", "[Official Fishsticks Repo](https://github.com/SkyeRangerDelta/Fishsticks)");
 			version.addField("Complete Fishsticks Guide: ", "[KBase Article](https://forums.ccgaming.com/kb/viewarticle?a=3)");
-			version.addField("Note", "`This message will delete itself in 30 seconds.`")
+			version.setFooter(`Panel was summoned by ${msg.author.username}. This message will delete itself in 30 seconds.`);
 
     msg.channel.send({embed: version}).then(sent => sent.delete(30000));
 }

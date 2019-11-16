@@ -12,6 +12,7 @@ exports.run = (fishsticks, msg, cmd) => {
     try {
         let codexCommand = require(`../../Commands/Active/Codex/${entry}.js`);
         codexCommand.run(fishsticks, msg, entry);
+        msg.channel.send(`You may also wish to see the full documentation of this command: https://wiki.pldyn.net/fishsticks/command-listing#${entry}`).then(sent => sent.delete(15000));
         console.log(colors.blue("[CODEX] Success"));
         fishsticks.commandSuccess++;
     } catch (codexErr) {

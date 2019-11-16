@@ -31,7 +31,7 @@ exports.run = (fishsticks, toLog, logLevel) => {
             break;
         default:
             systemLog.send(
-                "```diff\n[SYSTEM LOGGER ROUTINE]\nSomething broke in here somewhere. Perhaps an invalid logging level?"
+                "```diff\n[SYSTEM LOGGER ROUTINE]\nSomething broke in here somewhere. Perhaps an invalid logging level?```"
             )
         }
 }

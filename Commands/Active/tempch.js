@@ -4,7 +4,13 @@ const fs = require('fs');
 const engm = require('../../Modules/fishsticks_engm.json');
 const chs = require('../../Modules/fs_ids.json');
 
+const syslogFunc = require('../../Modules/Functions/syslog.js');
+
 var tempChannels = [];
+
+function syslog(message, level) {
+    syslogFunc.run(fishsticks, "[TEMP-CHA] " + message, level);
+}
 
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
@@ -16,7 +22,7 @@ exports.run = (fishsticks, msg, cmd) => {
         if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', 'Recognized')) {
             if (engmode == true) {
                 if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', 'Bot')) {
-                    console.log("[TEMP-CHA] ENGM Override Executed: Permission granted to " + msg.author.tag + ".");
+                    syslog("ENGM Override Executed: Permission granted to " + msg.author.tag + ".", 2);
 
                     msg.channel.send("ENGM Override Recognized. Granting permissions to " + msg.author.tag + ".");
 
@@ -42,24 +48,24 @@ exports.run = (fishsticks, msg, cmd) => {
                     else if (userVC === channelCloner) {
                         channelClonerClone.clone(tname)
                         .then(clone => {
-                        console.log("[TEMP-CHA] Channel created called: " + tname + " by: " + msg.author.tag);
+                        syslog("Channel created called: " + tname + " by: " + msg.author.tag, 3);
         
                         tchID = clone.id;
                         fishsticks.tempChannels.push(tchID);
         
-                        console.log("[TEMP-CHA] Channel " + tname + " has ID: " + tchID);
-                        console.log("[TEMP-CHA] Temp Channels now include " + fishsticks.tempChannels.length + " channels of IDs: ");
+                        syslog("Channel " + tname + " has ID: " + tchID, 2);
+                        syslog("Temp Channels now include " + fishsticks.tempChannels.length + " channels of IDs: ", 2);
         
                         msg.reply("Channel created!").then(sent => sent.delete(15000));
         
                         for (x = 0; x < fishsticks.tempChannels.length; x++) {
-                            console.log(fishsticks.tempChannels[x]);
+                            syslog(fishsticks.tempChannels[x], 1);
                         }
         
                         clone.setParent(tempChannelCategory);
         
                         if (maxUsers > 1) {
-                            clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))
+                            clone.setUserLimit(maxUsers).then(clone => syslog("Channel '" + tname + "' set max users to " + maxUsers, 1))
                             msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete(15000));
                         }
                         else if (maxUsers = null) {
@@ -80,7 +86,7 @@ exports.run = (fishsticks, msg, cmd) => {
                 var maxUsers = parseInt(cmd[0]);
                 var tname = msg.author.username + "'s Channel";
 
-                console.log(maxUsers);
+                syslog(maxUsers, 1);
 
                 if (isNaN(maxUsers)) {
                     maxUsers = 0;
@@ -104,24 +110,24 @@ exports.run = (fishsticks, msg, cmd) => {
                 else if (userVC === channelCloner) {
                     channelClonerClone.clone(tname)
                     .then(clone => {
-                    console.log("[TEMP-CHA] Channel created called: " + tname + " by: " + msg.author.tag);
+                    syslog("Channel created called: " + tname + " by: " + msg.author.tag), 2;
 
                     tchID = clone.id;
                     fishsticks.tempChannels.push(tchID);
 
-                    console.log("[TEMP-CHA] Channel " + tname + " has ID: " + tchID);
-                    console.log("[TEMP-CHA] Temp Channels now include " + fishsticks.tempChannels.length + " channels of IDs: ");
+                    syslog("Channel " + tname + " has ID: " + tchID, 2);
+                    syslog("Temp Channels now include " + fishsticks.tempChannels.length + " channels of IDs: ", 2);
 
                     msg.reply("Channel created!").then(sent => sent.delete(15000));
 
                     for (x = 0; x < fishsticks.tempChannels.length; x++) {
-                        console.log(fishsticks.tempChannels[x]);
+                        syslog(fishsticks.tempChannels[x], 1);
                     }
 
                     clone.setParent(tempChannelCategory);
 
                     if (maxUsers > 1) {
-                        clone.setUserLimit(maxUsers).then(clone => console.log("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers))
+                        clone.setUserLimit(maxUsers).then(clone => syslog("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers, 1))
                         msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete(15000));
                     }
                     else if (maxUsers = null) {

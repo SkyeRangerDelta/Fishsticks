@@ -55,4 +55,5 @@ Modules/GameRoles/gameRoles.json
 .vs/slnx.sqlite
 .vs/VSWorkspaceState.json
 .vs/*
+Modules/Core/db.json
 Modules/Functions/db/db.json

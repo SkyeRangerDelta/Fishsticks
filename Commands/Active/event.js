@@ -44,7 +44,7 @@ exports.run = (fishsticks, msg, cmd) => {
     if (refCmd[1] != null || refCmd[1] != undefined) {
         eventType = refCmd[1].trim();
     } else {
-        return msg.reply("You need to specify an event type! (Quick or Detailed?)").then(sent => sent.delete(15000));
+        return msg.reply("You need to specify an event type! (Quick (`q`, `quick`) or Detailed (`d`, `detail`, `detailed`)?)").then(sent => sent.delete(15000));
     }
 
     if (refCmd[2] != null || refCmd[2] != undefined) {

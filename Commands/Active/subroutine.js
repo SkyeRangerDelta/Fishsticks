@@ -1,19 +1,11 @@
 const subroutesFunc = require('../../Modules/Functions/subRoutines.js');
 const conColor = require('colors');
-const log = require('../../Modules/Functions/log.js');
+const syslog = require('../../Modules/Functions/syslog.js');
+const subroutinesCheck = require('../../Modules/Functions/subroutineCheck.js');
+const query = require('../../Modules/Functions/db/query.js');
 
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
-
-    //LOGGER
-    function syslog(message, level) {
-		try {
-			log.run(fishsticks, message, level);
-		}
-		catch (err) {
-			systemLog.send("**[SOMETHING IS WRONG]** I tried to send a message via a command, but something has gone askew. (Origin: Core Script)\n\nDetailing:\n" + err);
-		}
-	}
 
     let toggle = cmd[0].toLowerCase();
     let systemRoutine = cmd[1];
@@ -21,40 +13,46 @@ exports.run = (fishsticks, msg, cmd) => {
     let reject = ["Oooh, trying to play with fire are we?", "No no no, I can't let you do that.", "I'm sorry Dave, I can't do that.", "Stop that."];
     let rejectNum = (Math.random() * reject.length);
 
-    console.log(conColor.red("[*SUBR-CON*] Received Subroutine Control Toggle Request.\n[*SUBR-CON*] Toggle/System Subroutine: " + toggle + " / " + systemRoutine));
-    syslog("[*SUBR-CON*] Received Subroutine Control Toggle Request.\n[*SUBR-CON*] Toggle/System Subroutine: " + toggle + " / " + systemRoutine, 3);
+    syslog.run(fishsticks, "[*SUBR-CON*] Received Subroutine Control Toggle Request.\n[*SUBR-CON*] Toggle/System Subroutine: " + toggle + " / " + systemRoutine, 3);
 
     permsCheck();
 
-    function checkToggle() { //Check the subroutine map
-        if (fishsticks.subroutines.has(systemRoutine)) {
-            if (fishsticks.subroutines.get(systemRoutine)) {
-                return true;
-                //Was enabled
-            }
-            else {
-                return false;
-                //Was disabled
-            }
+    async function checkToggle() { //Check the subroutine map
+
+        let routineResponse;
+
+        try {
+            routineResponse = await query.run(fishsticks, `SELECT state FROM fs_subroutines WHERE name = '${systemRoutine}';`);
+        } catch (dbError) {
+            syslog.run(fishsticks, "[*SUBR-CON*] Subroutine not found. Command negated.");
+            return msg.reply("That's not a subroutine! Perhaps you should check the [wiki page](https://wiki.pldyn.net/fishsticks/subroutines).");
         }
-        else {
-            console.log(conColor.red("[*SUBR-CON*] Couldn't find specified subroutine."));
-            syslog("[*SUBR-CON*] Couldn't find specified subroutine.", 3);
-            return msg.reply("What subroutine is that?");
+
+        //Analyze reponse
+        if (routineResponse[0].state == 0) {
+            syslog.run(fishsticks, "[*SUBR-CON*] Primary Check finished, state was false.", 2);
+            return false;
+        } else if (routineResponse[0].state == 1) {
+            syslog.run(fishsticks, "[*SUBR-CON*] Primary Check finished, state was true.", 2);
+            return true;
+        } else {
+            return msg.reply("Is FSO down? Somethings funky with the database!" + fishsticks.ranger);
         }
     }
 
-    function result() { //Actually toggle subroutine
+    async function result() { //Actually toggle subroutine
         if (toggle == "enable") {
-            if (checkToggle() == true) {
-                console.log(conColor.red("[*SUBR-CON*] Subroutine was found already running."));
-                syslog("[*SUBR-CON*] Received Subroutine Control Toggle Request.\n[*SUBR-CON*] Toggle/System Subroutine: " + toggle + " / " + systemRoutine, 3);
+            if ( await checkToggle() == true) {
+                syslog.run(fishsticks, "[*SUBR-CON*] Received Subroutine Control Toggle Request.\n[*SUBR-CON*] Toggle/System Subroutine: " + toggle + " / " + systemRoutine, 3);
+                syslog.run(fishsticks, "[*SUBR-CON*] Subroutine was already running!", 2);
                 return msg.reply("This subroutine is already running!");
             }
-            else if (checkToggle() == false) {
-                fishsticks.subroutines.set(systemRoutine, true);
-                console.log(conColor.red("[*SUBR_CON*] Subroutine: " + systemRoutine + " has been enabled by " + msg.author.tag));
-                syslog("[*SUBR_CON*] Subroutine: " + systemRoutine + " has been enabled by " + msg.author.tag, 3);
+            else if (await checkToggle() == false) {
+                let response = await query.run(fishsticks, `UPDATE fs_subroutines SET state = 1 WHERE name = '${systemRoutine}';`);
+
+
+                //fishsticks.subroutines.set(systemRoutine, true);
+                syslog.run(fishsticks, "[*SUBR_CON*] Subroutine: " + systemRoutine + " has been enabled by " + msg.author.tag, 3);
                 return msg.reply("Subroutine " + systemRoutine + " enabled.").then(sent => sent.delete(20000));
             }
             else {
@@ -62,15 +60,15 @@ exports.run = (fishsticks, msg, cmd) => {
             }
         }
         else if (toggle == "disable") {
-            if (checkToggle() == true) {
-                fishsticks.subroutines.set(systemRoutine, false);
-                console.log(conColor.red("[*SUBR_CON*] Subroutine: " + systemRoutine + " has been disabled by " + msg.author.tag));
-                syslog("[*SUBR_CON*] Subroutine: " + systemRoutine + " has been disabled by " + msg.author.tag, 3);
+            if (await checkToggle() == true) {
+                let response = await query.run(fishsticks, `UPDATE fs_subroutines SET state = 0 WHERE name = '${systemRoutine}';`);
+
+                //fishsticks.subroutines.set(systemRoutine, false);
+                syslog.run(fishsticks, "[*SUBR_CON*] Subroutine: " + systemRoutine + " has been disabled by " + msg.author.tag, 3);
                 return msg.reply("Subroutine " + systemRoutine + " disabled.").then(sent => sent.delete(20000)); 
             }
-            else if (checkToggle() == false) {
-                console.log(conColor.red("[*SUBR-CON*] Subroutine was found already disabled."));
-                syslog("[*SUBR-CON*] Subroutine was found already disabled.", 3);
+            else if (await checkToggle() == false) {
+                syslog.run(fishsticks, "[*SUBR-CON*] Subroutine was found already disabled.", 3);
                 return msg.reply("This subroutine is already disabled!");
             }
             else {
@@ -78,9 +76,8 @@ exports.run = (fishsticks, msg, cmd) => {
             }
         }
         else {
-            console.log(conColor.red("[*SUBR-CON*] Improper toggle parameter. Rejected."));
-            syslog("[*SUBR-CON*] Improper toggle parameter. Rejected.", 3);
-            return msg.reply("That's not a proper parameter type!").then(sent => sent.delete(10000));
+            syslog.run(fishsticks, "[*SUBR-CON*] Improper toggle parameter. Rejected.", 3);
+            return msg.reply("That's not a proper state change! Must be `enable` or `disable`.").then(sent => sent.delete(10000));
         }
     }
 
@@ -113,8 +110,7 @@ exports.run = (fishsticks, msg, cmd) => {
                             errors: ['time']
                         });
                     } catch (error) {
-                        console.log(conColor.red("[*SUBR-CON*] " + msg.author.username + " timed out in confirming a subroutine change."));
-                        syslog("[*SUBR-CON*] " + msg.author.username + " timed out in confirming a subroutine change.", 3);
+                        syslog.run(fishsticks, "[*SUBR-CON*] " + msg.author.username + " timed out in confirming a subroutine change.", 3);
                         msg.reply("You didn't confirm the change, negating request.").then(sent => sent.delete(15000));
                     }
 

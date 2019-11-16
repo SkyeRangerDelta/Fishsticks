@@ -2,8 +2,10 @@ const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
 const chs = require('../../Modules/fs_ids.json');
 const syst = require('../../Modules/fs_systems.json');
+const subCheck = require('../../Modules/Functions/subroutineCheck.js');
+const embeds = require('../embeds/main.json');
 
-const log = require('../../Modules/Functions/log.js');
+const log = require('../../Modules/Functions/syslog.js');
 
 const ytdl = require('ytdl-core');
 const YouTube = require('simple-youtube-api');
@@ -16,13 +18,26 @@ exports.run = (fishsticks, msg, cmd) => {
     //LOGGER
     function syslog(message, level) {
 		try {
-			log.run(fishsticks, message, level);
+			log.run(fishsticks, "[MUSI-SYS] " + message, level);
 		}
 		catch (err) {
 			systemLog.send("**[SOMETHING IS WRONG]** I tried to send a message via a command, but something has gone askew. (Origin: Core Script)\n\nDetailing:\n" + err);
 		}
-	}
+    }
+    
+    //HALT - COMMAND DISABLED UNTIL REPAIRED
 
+    syslog("Command attempted - halted due to defective state.", 3);
+
+    let defective = new Discord.RichEmbed();
+        defective.setTitle("o0o - Command Defective - o0o");
+        defective.setColor(config.fscolor);
+        defective.setDescription(embeds.commands.defective);
+        defective.addField("Reason:", "Command is not finished. Library modules, API syncs, and Fishsticks' interaction are not agreeing with each other.", true);
+
+    return msg.reply({embed: defective}).then(sent => sent.delete(15000));
+
+    /*
     //MUSIC SYSTEM VARIABLES
     const memberVC = msg.member.voiceChannel;
     
@@ -50,31 +65,25 @@ exports.run = (fishsticks, msg, cmd) => {
     let engmode = fishsticks.engmode;
     let mattybmode = fishsticks.subroutines.get("matb");
 
-    console.log("[MUSI-SYS] Play command recognized from user " + msg.author.tag + ".");
-    syslog("[MUSI-SYS] Play command recognized from user " + msg.author.tag + ".", 0);
-    console.log("[MUSI-SYS] Guild ID is: " + fishsticks.guildID);
-    syslog("[MUSI-SYS] Guild ID is: " + fishsticks.guildID, 0);
-    console.log("[MATB-MOD] MattyB Mode is currently: " + fishsticks.mattybmode);
+    syslog("Play command recognized from user " + msg.author.tag, 0);
+    syslog("Guild ID is: " + fishsticks.guildID, 0);
     syslog("[MATB-MOD] MattyB Mode is currently: " + fishsticks.mattybmode, 0);
 
-    if (fishsticks.subroutines.get("musi")) {
+    if (subCheck.run(fishsticks, 'musi')) {
 
         //ACTIVE FUNCTIONS
         function denied() {
-            console.log("[MUSI-SYS] Play command rejected.");
-            syslog("[MUSI-SYS] Play command rejected.", 0);
+            syslog("Play command rejected.", 0);
 
             msg.reply("Request denied. You have to join a tempch channel first!\n\n*If this request was made from a temporary channel, Fishsticks has been restarted at some point and you need to recreate your channel for the music player to work.*").then(sent => sent.delete(30000));
             return;
         }
 
         async function accept() {
-            console.log("[MUSI-SYS] Play command granted.");
-            syslog("[MUSI-SYS] Play command granted.", 0);
+            syslog("Play command granted.", 0);
 
             if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
-                console.log("[MUSI-SYS] Playlist Detected.");
-                syslog("[MUSI-SYS] Playlist Detected.", 0);
+                syslog("Playlist Detected.", 0);
 
                 const playlist = await yt.getPlaylist(url);
 
@@ -95,17 +104,15 @@ exports.run = (fishsticks, msg, cmd) => {
                 logger.send({embed: playlistInfoPanel});
             }
             else {
-                console.log("[MUSI-SYS] No playlist detected, attempting to collect video data.")
-                syslog("[MUSI-SYS] No playlist detected, attempting to collect video data.", 0);
+                syslog("No playlist detected, attempting to collect video data.", 0);
                 try {
                     video = await yt.getVideo(url);
                 }
                 catch (error) {
                     try {
                         videos = await yt.searchVideos(searchString);
-        
-                        console.log("[MUSI-SYS] Videos")
-                        syslog("[MUSI-SYS] Videos", 0);
+
+                        syslog("Videos", 0);
                         for (var t = 0; t < videos.length; t++) {
                             result = await yt.getVideoByID(videos[t].id);
                             console.log(t + ": " + result.title);
@@ -135,9 +142,8 @@ exports.run = (fishsticks, msg, cmd) => {
                                 errors: ['time']
                             });
                         } catch (error) {
-                            console.log("[MUSI-SYS] YouTube Search failed because user didnt select a response.");
-                            syslog("[MUSI-SYS] YouTube Search failed because user didnt select a response.", 1);
-                            msg.reply("You didn't select a video!").then(sent => sent.delete(30000));
+                            syslog("YouTube Search failed because user didnt select a response.", 1);
+                            msg.reply("You didn't select a video! (Type 1-5 after the search results appear to select one)").then(sent => sent.delete(30000));
                             return;
                         }
                         var videoIndex = parseInt(response.first().content);
@@ -146,12 +152,10 @@ exports.run = (fishsticks, msg, cmd) => {
                     }
                     catch (error) {
                         msg.reply("I couldn't find any videos for that.");
-                        console.log("[MUSI-SYS] Data Collection Error - Level 2: \n" + error);
-                        syslog("[MUSI-SYS] Data Collection Error - Level 2: \n" + error, 2);
+                        syslog("Data Collection Error - Level 2: \n" + error, 2);
                     }
-        
-                    console.log("[MUSI-SYS] Data Collection Error - Level 1: \n" + error);
-                    syslog("[MUSI-SYS] Data Collection Error - Level 1: \n" + error, 2);
+
+                    syslog("Data Collection Error - Level 1: \n" + error, 2);
                 }
 
                 return handleStuff(video, msg, memberVC);
@@ -165,8 +169,7 @@ exports.run = (fishsticks, msg, cmd) => {
             fishsticks.playlist = fishsticks.queue.get(msg.guild.id);
 
             try {
-                console.log("[MUSI-SYS] Attempting to gather song info...");
-                syslog("[MUSI-SYS] Attempting to gather song info...", 0);
+                syslog("Attempting to gather song info...", 0);
 
                 if (video.duration.hours == 0) {
                     vhours = ``;
@@ -194,19 +197,11 @@ exports.run = (fishsticks, msg, cmd) => {
                 }
 
                 if (!song) {
-                    console.log("[MUSI-SYS] No Song Info Found");
-                    syslog("[MUSI-SYS] No Song Info Found", 0);
-                    msg.reply("Something went wrong...");
-                    return;
+                    syslog("No Song Info Found", 0);
+                    return msg.reply("An internal logic error in sector 14a of the neural net has prevented me from playing that song. Try again with a different video?");
                 }
 
-                console.log('[MUSI-SYS] Logging Song Info:\n'+
-                    '->Title: ' + song.title + '\n'+
-                    '->Author: ' + song.author + '\n' +
-                    '->ID: ' + song.id + '\n' +
-                    '->Length: ' + song.length + "\n" +
-                    '->URL: ' + song.url);
-                syslog('[MUSI-SYS] Logging Song Info:\n'+
+                syslog('Logging Song Info:\n'+
                 '->Title: ' + song.title + '\n'+
                 '->Author: ' + song.author + '\n' +
                 '->ID: ' + song.id + '\n' +
@@ -219,11 +214,9 @@ exports.run = (fishsticks, msg, cmd) => {
                 playerSongTitle = playerSongTitle.toLowerCase();
             }
             catch (error) {
-                console.log("[MUSI-SYS] Failed to collect song information.");
-                syslog("[MUSI-SYS] Failed to collect song information.", 0);
-                msg.reply("I couldn't gather the song information, this is a crash prevention system. Try another song?");
-                syslog('[MUSI-SYS] Error: \n' + error, 0);
-                return console.log('[MUSI-SYS] Error: \n' + error);
+                syslog("Failed to collect all of the song information.", 0);
+                msg.reply("An internal logic error in sector 14b of the neural net has prevented me from getting all the song information. Try another song?");
+                return syslog('Error: \n' + error, 0);
             }
 
             if (mattybmode == true) {
@@ -242,7 +235,6 @@ exports.run = (fishsticks, msg, cmd) => {
 
                 for (var p = 0; p < mattybentries.length; p++) { //NAME CHECK IN TITLE
                     if ((song.title.toLowerCase().includes(mattybentries[p]))) {
-                        console.log("[MATB-MOD] Name caught.");
                         syslog("[MATB-MOD] Name caught.", 1);
 
                         if ((song.title.toLowerCase().includes(mattybentries[p])) && fishsticks.playrejects == 0) {
@@ -305,7 +297,6 @@ exports.run = (fishsticks, msg, cmd) => {
 
                 for (var k = 0; k < mattybsongs.length; k++) { //SONG CHECK IN TITLE
                     if ((song.title.toLowerCase().includes(mattybsongs[k])) || song.title.toLowerCase().includes(mattybsongs[k])) {
-                        console.log("[MATB-MOD] Song title caught.");
                         syslog("[MATB-MOD] Song title caught.", 1);
 
                         if ((song.title.toLowerCase().includes(mattybsongs[k])) && fishsticks.playrejects == 0) {
@@ -323,7 +314,6 @@ exports.run = (fishsticks, msg, cmd) => {
 
                 for (var y = 0; y < mattybentries.length; y++) { //NAME CHECK IN DESCRIPTION
                     if ((song.description.toLowerCase().includes(mattybentries[y]) || song.description.toLowerCase().includes(mattybentries[y]))) {
-                        console.log("[MATB-MOD] Description caught.");
                         syslog("[MATB-MOD] Description caught.", 1);
 
                         if ((song.description.toLowerCase().includes(mattybentries[y])) && fishsticks.playrejects == 0) {
@@ -341,7 +331,6 @@ exports.run = (fishsticks, msg, cmd) => {
 
                 for (var f = 0; f < mattybentries.length; f++) { //NAME CHECK IN AUTHOR
                     if ((song.author.toLowerCase().includes(mattybentries[f]))) {
-                        console.log("[MATB-MOD] Name caught in author.");
                         syslog("[MATB-MOD] MattyB Mode is currently: " + fishsticks.mattybmode, 0);
 
                         if ((song.author.toLowerCase().includes(mattybentries[f])) && fishsticks.playrejects == 0) {
@@ -359,13 +348,11 @@ exports.run = (fishsticks, msg, cmd) => {
             }
 
             if (video == null) {
-                console.log("[TEMP-CHA] Caught an error at invalid song data.");
                 syslog("[TEMP-CHA] Caught an error at invalid song data.", 2);
                 msg.reply("I couldn't get the video from YouTube, try a different video persnaps?");
                 return;
             }
             else if (song == null) {
-                console.log("[TEMP-CHA] Caught an error at invalid song.");
                 syslog("[TEMP-CHA] Caught an error at invalid song.", 2);
                 msg.reply("I can't play that for some reason. Most likely it's got a copyright on it. Try a different video!");
                 return;
@@ -391,9 +378,8 @@ exports.run = (fishsticks, msg, cmd) => {
         
                         queueConstruct.connection = connection;
                         play(msg.guild, queueConstruct.songs[0]);
-            
-                        console.log("[MUSI-SYS] Attached to channel and playing song. Setting music playing to true.");
-                        syslog("[MUSI-SYS] Attached to channel and playing song. Setting music playing to true.", 0);
+
+                        syslog("Attached to channel and playing song. Setting music playing to true.", 0);
                         fishsticks.musicPlaying = true;
 
                         if (!playlist) {
@@ -411,7 +397,6 @@ exports.run = (fishsticks, msg, cmd) => {
                         fishsticks.playrejects = 0;
                     }
                     catch (error) {
-                        console.error(`[MUSI-SYS] Connection to channel refused: ${error}`);
                         syslog(`[MUSI-SYS] Connection to channel refused: ${error}`, 1);
         
                         fishsticks.queue.delete(msg.guild.id);
@@ -447,26 +432,22 @@ exports.run = (fishsticks, msg, cmd) => {
             fishsticks.serverQueue = fishsticks.queue.get(guild.id);
 
             if (!song) {
-                console.log("[MUSI-SYS] No songs detected in queue/player > terminating player.");
-                syslog("[MUSI-SYS] No songs detected in queue/player > terminating player.", 0);
+                syslog("No songs detected in queue/player > terminating player.", 0);
                 fishsticks.serverQueue.vCh.leave();
                 fishsticks.queue.delete(guild.id);
-                console.log("[MUSI-SYS] Setting music playing to false.");
-                syslog("[MUSI-SYS] Setting music playing to false.", 0);
+                syslog("Setting music playing to false.", 0);
                 fishsticks.musicPlaying = false;
                 return;
             }
 
             var dispatch = fishsticks.serverQueue.connection.playStream(ytdl(song.url, {quality: '251'}))
                 .on('end', () => {
-                    console.log("[MUSI-SYS] Song ended.");
-                    syslog("[MUSI-SYS] Song ended.", 0);
+                    syslog("Song ended.", 0);
                     fishsticks.serverQueue.songs.shift();
                     play(guild, fishsticks.serverQueue.songs[0]);
                 })
                 .on('error', error => {
-                    console.error("[MUSI-SYS] Error Report: " + error);
-                    syslog("[MUSI-SYS] Error Report: " + error, 1);
+                    syslog("Error Report: " + error, 1);
                 });
             
             dispatch.setVolumeLogarithmic(fishsticks.serverQueue.volume / 5);
@@ -484,11 +465,9 @@ exports.run = (fishsticks, msg, cmd) => {
         }
 
         //COMMAND CONDITIONS (CHECKS BEFORE EXECUTING FUNCTIONS)
-        console.log("[MUSI-SYS] Checking User Permissions...");
-        syslog("[MUSI-SYS] Checking User Permissions...", 1);
+        syslog("Checking User Permissions...", 1);
         if (msg.guild.id == fishsticks.guildID) { //Check for if in-guild.
-            console.log("[MUSI-SYS] User is in CC.");
-            syslog("[MUSI-SYS] User is in CC.", 1);
+            syslog("User is in CC.", 1);
 
             //Permissions check
             if (msg.member.roles.find("name", "Staff")) { //STAFF
@@ -531,16 +510,14 @@ exports.run = (fishsticks, msg, cmd) => {
             }
             else { //NOT STAFF OR MEMBER
                 msg.reply("You're not permitted to run this thing! Check with staff if you think you should have permissions for this.");
-                console.log("[MUSI-SYS] User did not have permissions to run PLAY.");
-                syslog("[MUSI-SYS] User did not have permissions to run PLAY.", 1);
+                syslog("User did not have permissions to run PLAY.", 1);
                 return;
             }
         }
         else { //If from different guild
             //Checking if player is connected to issuing channel
 
-            console.log("[MUSI-SYS] User is from a different guild; checking authorization...");
-            syslog("[MUSI-SYS] User is from a different guild; checking authorization...", 0);
+            syslog("User is from a different guild; checking authorization...", 0);
             if (msg.member.roles.find("name", "FS Authorized")) { //User has FS Authorized Role?
                 if (fishsticks.musicPlaying) {
                     if (msg.member.voiceChannel != fishsticks.vc) {
@@ -564,4 +541,5 @@ exports.run = (fishsticks, msg, cmd) => {
     else {
         msg.reply("The `[MUSI-SYS]` subroutine has been disabled. Find " + fishsticks.ranger + " and get him to turn it back on!");
     }
+    */
 }

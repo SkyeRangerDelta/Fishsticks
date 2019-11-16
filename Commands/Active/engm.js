@@ -31,11 +31,22 @@ exports.run = (fishsticks, msg, cmd) => {
         syslog("[ENG-MODE] Toggled to " + engmode + " by " + msg.author.tag, 4);
         msg.reply("Fishsticks Engineering Mode has been toggled " + engmode + ".").then(sent => sent.delete(5000));
 
-        if (engmode == true) {
-            fishsticks.user.setActivity("ENGM Enabled! | !help");
-        }
-        else {
-            fishsticks.user.setActivity("!help | V" + sys.fsversion);
+        if (engmode) {
+            fishsticks.user.setPresence({
+                game: {
+                    name: `ENGM Enabled! | !help`,
+                    type: 'WATCHING'
+                },
+                status: 'idle'
+            });
+        } else {
+            fishsticks.user.setPresence({
+                game: {
+                    name: `!help | V${fishsticks.version}`,
+                    type: 'WATCHING'
+                },
+                status: 'online'
+            });
         }
 
         engmFile.engmode = engmode;

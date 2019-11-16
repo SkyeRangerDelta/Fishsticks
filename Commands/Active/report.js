@@ -14,7 +14,7 @@ exports.run = (fishsticks, msg, cmd) => {
         var techRole = msg.guild.roles.find('name', 'Tech Support');
         var staffRole = msg.guild.roles.find('name', 'Staff');
 
-        var staffChannel = fishsticks.channels.get(chs.staffChannel);
+        var ecChannel = fishsticks.channels.get(chs.ecChannel);
 
         console.log("[SERV-REP] Report attempted by " + msg.author.tag + "...");
         console.log("\tType: " + type + "\n\tTarget: " + target + "\n\tReason: " + reason);
@@ -53,17 +53,17 @@ exports.run = (fishsticks, msg, cmd) => {
         if (type == "server" || type == "Server") {
             msg.reply("Report filed!").then(sent => sent.delete(15000));
 
-            staffChannel.send({embed: serverReport});
+            ecChannel.send({embed: serverReport});
         }
         else if (type == "conduct" || type == "Conduct") {
             msg.reply("Report filed!").then(sent => sent.delete(15000));
 
-            staffChannel.send({embed: conductReport});
+            ecChannel.send({embed: conductReport});
         }
         else if (type == "discord" || type == "Discord") {
             msg.reply("Report filed!").then(sent => sent.delete(15000));
 
-            staffChannel.send({embed: discordReport});
+            ecChannel.send({embed: discordReport});
         }
         else {
             msg.reply("The report failed to file because you did something wrong parameter wise. Consider reviewing `!info report` and then trying again.").then(sent => sent.delete(15000));

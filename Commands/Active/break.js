@@ -1,20 +1,9 @@
 const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
-
-const log = require('../../Modules/Functions/log.js');
+const syslog = require('../../Modules/Functions/syslog.js');
 
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
-
-    //LOGGER
-    function syslog(message, level) {
-		try {
-			log.run(fishsticks, message, level);
-		}
-		catch (err) {
-			systemLog.send("**[SOMETHING IS WRONG]** I tried to send a message via a command, but something has gone askew. (Origin: Core Script)\n\nDetailing:\n" + err);
-		}
-	}
 
     msg.reply("[ALPHA LEVEL COMMAND]\nRequest user confirmation - please enter your username.").then(sent => sent.delete(10000));
 
@@ -33,8 +22,7 @@ exports.run = (fishsticks, msg, cmd) => {
             });
         }
         catch (error) {
-            console.log("[BREAK-COMMAND] Timer ran out.");
-            syslog("[BREAK-COMMAND] Timer ran out.", 1);
+            syslog(fishsticks, "[BREAK-COMMAND] Timer ran out.", 1);
 
             msg.reply("[`FISHSTICKS **CORE**`] Command Aborted: Confirmation Failure").then(sent => sent.delete(10000));
         }
@@ -59,8 +47,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
     function genCode() {
         let code = Math.random().toString(36).replace('0.', '');
-        console.log("[FISHSTICKS CORE] System shutdown launch code generated.\nValid code available: " + code);
-        syslog("[FISHSTICKS CORE] System shutdown launch code generated.\nValid code available: " + code, 4);
+        syslog(fishsticks, "[FISHSTICKS CORE] System shutdown launch code generated.\nValid code available: " + code, 4);
 
         return code;
     }
