@@ -57,3 +57,4 @@ Modules/GameRoles/gameRoles.json
 .vs/*
 Modules/Core/db.json
 Modules/Functions/db/db.json
+Modules/GoogleCalAPI.json

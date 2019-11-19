@@ -26,6 +26,7 @@
     "ffmpeg-binaries": "^4.0.0",
     "fs": "0.0.1-security",
     "fstream": "^1.0.12",
+    "googleapis": "^39.2.0",
     "got": "^9.6.0",
     "https": "^1.0.0",
     "mysql": "^2.17.1",
