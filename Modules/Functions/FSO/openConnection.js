@@ -21,9 +21,11 @@ exports.run = async (fishsticks) => {
 
     if (testResponse[0].state != 1) {
         console.log("[DB-SYS] Connection failed!");
+        fishsticks.dbaseConnection = "Offline";
     } else {
         console.log("[DB-SYS] Connection good!");
         fishsticks.FSOConnection = FSOConnection;
+        fishsticks.dbaseConnection = "Online";
     }
 
     return FSOConnection;
