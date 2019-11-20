@@ -8,12 +8,12 @@ const syslogFunc = require('../../Modules/Functions/syslog.js');
 
 var tempChannels = [];
 
-function syslog(message, level) {
-    syslogFunc.run(fishsticks, "[TEMP-CHA] " + message, level);
-}
-
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
+
+    function syslog(message, level) {
+        syslogFunc.run(fishsticks, "[TEMP-CHA] " + message, level);
+    }
 
     let engmode = fishsticks.engmode;
 
