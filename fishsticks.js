@@ -51,6 +51,7 @@ fishsticks.currentPolls = [];
 fishsticks.dbaseConnection;
 fishsticks.debaterMsgIDs = [];
 fishsticks.FSOConnection;
+fishsticks.calendarAuthID;
 
 fishsticks.commandRejects = 0;
 fishsticks.rejectingCommands = false;
@@ -892,8 +893,4 @@ function generateRandomQuote(msg) {
 	let msgNumber = Math.floor(Math.random() * randomQuotes.length);
 	console.log("[RDM-QUOTE GEN] Firing off message number " + msgNumber + " to the " + msg.channel.name);
 	msg.channel.send(randomQuotes[msgNumber]);
-}
-
-function calibrateSubroutines() {
-
 }

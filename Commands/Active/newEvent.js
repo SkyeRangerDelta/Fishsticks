@@ -6,21 +6,11 @@ const gapi = require('../../Modules/GoogleCalAPI.json');
 const perms = require('../../Modules/Functions/permissionsCheck.js');
 const syslog = require('../../Modules/Functions/syslog.js');
 const Discord = require('discord.js');
+const convertTime = require('convert-time');
 
-const https = require('https');
-//const google = require('googleapis');
+const {ListEvents, handleCreateEvent, DeleteEvent, handleTokenKey} = require('./Calendar/cal_events.js');
 
-/*
-const googleAuth = new google.auth.OAuth2(
-    gapi.client_id,
-    gapi.client_secret,
-    gapi.redirect_uris
-)
-*/
-
-//google.options({auth: googleAuth});
-
-exports.run = (fishsticks, msg, cmd) => {
+exports.run = async (fishsticks, msg, cmd) => {
     msg.delete()
 
     //Permissions Functions
@@ -55,14 +45,38 @@ exports.run = (fishsticks, msg, cmd) => {
         meridiem: "",
         desc: "",
         url_date: "",
-        url_endDate: ""
+        url_endDate: "",
+        date: null,
+        startTime: null,
+        endTime: null
     }
 
     //Command Breakup
     let cmdAlt = msg.content.split('-'); //Set - as delimiter
     log("Parameters Collected: " + cmdAlt, 2); //Log the parameters
 
-    event.host = msg.author.username; //Set message euther has host
+    let selector = cmdAlt[1].toLowerCase().trim();
+    console.log("Selector " + selector);
+
+    if (selector == "list") {
+        log("List", 2);
+        let events = await ListEvents(msg);
+        return msg.channel.send(events);
+    }
+    if (selector == "delete") {
+        log("Delete", 2);
+        let deleteMsg = await DeleteEvent(cmdAlt[2], msg);
+        return msg.channel.send(deleteMsg);
+    }
+    if (selector == "token") {
+        log("Token", 2);
+        const tokenKey = cmdAlt[2];
+        let authMsg = await handleTokenKey(tokenKey, msg);
+        return msg.channel.send("Authed Response: " + authMsg);
+    }
+
+    log("Create", 2);
+    event.host = msg.author.username; //Set message author as host
 
     //CHECK FUNCTIONS
     //Deploy log message to notify that checks are in progress
@@ -187,6 +201,14 @@ exports.run = (fishsticks, msg, cmd) => {
     event.url_date = `${event.month}/${event.day}/${event.year} ${event.time_HR}:${event.time_M}${event.meridiem}`;
     event.url_endDate = `${event.month}/${event.day}/${event.year} ${event.time_HR+1}:${event.time_M}${event.meridiem}`;
 
+    console.log(event.url_date);
+    console.log(`${event.year}-${event.month-1}-${event.day}-${convertTime(event.time_HR + event.meridiem, 'HH')}-${event.time_M}-0`);
+
+    event.startTime = new Date(event.year, event.month - 1, event.day, convertTime(event.time_HR + event.meridiem, 'HH'), event.time_M, 0);
+    event.endTime = new Date(event.year, event.month - 1, event.day, convertTime((event.time_HR + 1) + event.meridiem, 'HH'), event.time_M, 0)
+
+    log("Setting times:\n\tStart: " + event.startTime + "\n\tEnd: " + event.endTime, 2);
+
     //Build description
     event.desc = cmdAlt[3].trim();
 
@@ -199,39 +221,11 @@ exports.run = (fishsticks, msg, cmd) => {
     
     msg.channel.send({embed: eventPanel});
 
-    /*
-    //HTTPS SENDS
-    async function processAuth(authScopes) {
-        return new Promise((resolve, reject) => {
-            const authURL = googleAuth.generateAuthUrl({
-                access_type: 'offline',
-                scope: authScopes.join(' ')
-            });
-
-            const server = https.createServer(async (req, res) => {
-                try {
-                    if (req.url.indexOf('/oauth2callback') > -1) {
-                        const qs = new url.URL(req.url, 'http://localhost:3000')
-                            .searchParams;
-                        res.end('Auth successfull!');
-                        log("Auth validated.", 3);
-                        server.destroy();
-
-                        const {tokens} = await googleAuth.getToken(qs.get('code'));
-                        googleAuth.credentials = tokens;
-                        resolve(googleAuth);
-                    }
-                } catch (authReqErr) {
-                    reject(authReqErr);
-                }
-            });
-        });
+    try {
+        var eventLink = await handleCreateEvent(event, msg);
+    } catch (error) {
+        var eventLink = error;
     }
 
-    async function runEvent() {
-        const res = await calendar.events.insert
-    }
-
-    */
-    
+    msg.channel.send(eventLink);
 }
