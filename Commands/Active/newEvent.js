@@ -192,9 +192,6 @@ exports.run = async (fishsticks, msg, cmd) => {
     } else if (event.time_HR24 < hr) {
         return msg.reply("[Hour] No dates in the past!")
         .then(sent => sent.delete(10000))
-    } else if (event.time_M < min) {
-        return msg.reply("[Minute] No dates in the past!")
-        .then(sent => sent.delete(10000))
     }
 
     //Build payload date

@@ -76,7 +76,7 @@ function listEvents(auth) {
     const calendar = google.calendar({version: 'v3', auth});
     return new Promise((done, failed) => {
         calendar.events.list({
-            calendarID,
+            calendarId: calendarID,
             timeMin: (new Date()).toISOString(),
             maxResults: 10,
             singleEvents: true,
@@ -85,7 +85,7 @@ function listEvents(auth) {
             if (err) failed("[EVENT] API No go: " + err)
             const events = res.data.items;
 
-            if (events.lenth) {
+            if (events.length) {
                 let eventString = 'Slated Events: \n';
                 events.map((event, i) => {
                     const start = event.start.dateTime || event.start.date;
@@ -122,7 +122,7 @@ function deleteEvent(auth, id) {
 
     return new Promise((done, failed) => {
         calendar.events.delete({
-            calendarID,
+            calendarId: calendarID,
             eventId: id
         }, function(err) {
             if (err) {
