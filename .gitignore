@@ -58,3 +58,5 @@ Modules/GameRoles/gameRoles.json
 Modules/Core/db.json
 Modules/Functions/db/db.json
 Modules/GoogleCalAPI.json
+Commands/Active/auth/googleAuthToken.json
+Modules/Calendar/config.json
