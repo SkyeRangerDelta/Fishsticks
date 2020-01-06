@@ -167,10 +167,13 @@ exports.run = (fishsticks, msg, cmd) => {
     async function joinRole() { //Join a role once officialized
         syslog("Attempting role join...", 2);
 
-        let responseOfficial = await dbQuery.run(fishsticks, `SELECT official FROM fs_gr_Roles WHERE name = '${convertToTitleCase(roleName)}'`);
+        let usedName = true;
+
+        let responseOfficial = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE name = '${convertToTitleCase(roleName)}'`);
 
         if (responseOfficial.length != 1) {
-            responseOfficial = await dbQuery.run(fishsticks, `SELECT official FROM fs_gr_Roles WHERE game = '${convertToTitleCase(roleName)}'`);
+            usedName = false;
+            responseOfficial = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE game = '${convertToTitleCase(roleName)}'`);
         }
 
         // -> Check if official
@@ -204,12 +207,31 @@ exports.run = (fishsticks, msg, cmd) => {
                 syslog("Reprocessed role name to " + roleTitle, 2);
 
                 roleToAdd = msg.guild.roles.find("name", roleTitle);
+
+                if (roleToAdd == null) {
+                    throw "roleToAdd was empty.";
+                }
+
                 msg.member.addRole(roleToAdd);
 
                 syslog("Success.", 2);
             } catch (addOnNameErr) {
                 console.log("[GAME ROLES] Smacked an addOnName:\n" + addOnNameErr);
                 syslog("Failed. Attempting to add role via game.", 2);
+
+                //Poll FSO for proper info
+                if (usedName == false) { //FSO ping pulled using game title
+                    roleToAdd = msg.guild.roles.find("name", responseOfficial[0].name);
+                    
+                    try {
+                        await msg.member.addRole(roleToAdd);
+                    } catch (error) {
+                        return msg.reply("Do you smell the shrooms? If you do, perhaps you shouldn't be messing with these commands.\nI couldn't find the role to add.")
+                        .then(sent => sent.delete(10000));
+                    }
+
+                    syslog("Success.", 2);
+                }
             }
         }
 
@@ -226,45 +248,41 @@ exports.run = (fishsticks, msg, cmd) => {
     }
 
     async function leaveRole() { //Leave a role once officialized
+        //!role -leave -roleName / roleGame
         syslog("Attempting role leave...", 2);
+        syslog("Polling FSO...", 2);
 
-        let roleToAdd;
-        let nameTrigger = false;
+        //Poll FSO
+        let fsoPoll = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE name = '${convertToTitleCase(roleName)}';`);
+        let nameUsed = true;
 
-        let theRole = msg.guild.roles.get(cmd[1].replace(/[\\<>@#&!]/g, ""));
-
-        try {
-            await msg.member.removeRole(theRole).then(done => syslog("Removed role from " + msg.author.username, 3));
-        } catch (WrongErr) {
-            console.log("[GAME-ROLES] Leave role first pass failed...");
+        if (fsoPoll.length != 1) {
+            fsoPoll = await dbQuery.run(fishsticks, `SELECT * FROM fs_gr_Roles WHERE game = '${convertToTitleCase(roleName)}';`);
+            nameUsed = false;
         }
 
-        try {
-            roleToAdd = msg.guild.roles.find("name", roleName.charAt(0).toUpperCase() + roleName.slice(1));
-            await msg.member.removeRole(roleToAdd).catch(error => {
-                console.log("[GAME-ROLES] Role Leave Error!");
-                msg.reply("Was that an actual role?").then(sent => sent.delete(15000));
-                return cpf.run(fishsticks, msg);
-            });
-            nameTrigger = true;
-        } catch (GameRoleAddErr) {
-            return msg.reply("It would seem I couldn't find the role " + roleName.charAt(0).toUpperCase() + roleName.slice(1) + " did you spell it right?").then(sent => sent.delete(15000));
+        if (fsoPoll == null) {
+            return msg.reply("I think my filing cabinet might be empty. I couldn't find that record.");
         }
 
-        let roleIDQuery;
+        let roleToLeave;
+        let roleIDQuery = fsoPoll[0].roleID;
+
+        try {
+            roleToLeave = msg.guild.roles.find("name", fsoPoll[0].name);
+
+            if (roleToLeave == null) {
+                throw "roleToLeave was empty.";
+            }
+
+            msg.member.removeRole(roleToLeave);
+        } catch (error) {
+            msg.reply("Aborted. I couldn't find the role to remove! You sure you typed it all right?").then(sent => sent.delete(10000));
+        }
 
         //Remove in FSO
-        if (nameTrigger) {
-            syslog("Looking for ID via name...", 2);
-            roleIDQuery = await dbQuery.run(fishsticks, `SELECT roleID FROM fs_gr_Roles WHERE name = "${roleToAdd.name}"`)
-        } else {
-            syslog("Failed. Looking for ID via Discord ID...", 2);
-            roleIDQuery = await dbQuery.run(fishsticks, `SELECT roleID FROM fs_gr_Roles WHERE roleDiscordID = "${theRole.id}";`);
-        }
-
-
         syslog("Deleting role record.", 3);
-        let roleRemovalResponse = await dbQuery.run(fishsticks, `DELETE FROM fs_gr_MemberRoles WHERE memberID = (SELECT memberID FROM fs_members WHERE memberDiscordID = ${msg.author.id}) AND roleID = ${roleIDQuery[0].roleID};`);
+        let roleRemovalResponse = await dbQuery.run(fishsticks, `DELETE FROM fs_gr_MemberRoles WHERE memberID = (SELECT memberID FROM fs_members WHERE memberDiscordID = ${msg.author.id}) AND roleID = ${roleIDQuery}`);
 
         if (roleRemovalResponse.affectedRows == 1) {
             msg.reply("Role removed!");

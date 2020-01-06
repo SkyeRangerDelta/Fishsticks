@@ -2,7 +2,7 @@
 
 const chs = require('../../Modules/fs_ids.json');
 
-exports.run = (fishsticks, msg, cmd) => {
+exports.run = async (fishsticks, msg, cmd) => {
     msg.delete();
 
     if (cmd.length != 3) {
@@ -21,6 +21,6 @@ exports.run = (fishsticks, msg, cmd) => {
 
     newName = "AFK (" + cmd.join(' ') + ")";
 
-    let AFKChannel = fishsticks.channels.get(chs.afkChannel);
+    let AFKChannel = await fishsticks.channels.get(chs.afkChannel);
     AFKChannel.setName(newName, "The AFK command was used!").then(t => msg.reply("Done!").then(sent => sent.delete(5000)));
 }
