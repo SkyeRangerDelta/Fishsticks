@@ -43,8 +43,13 @@ exports.run = async (fishsticks, msg, cmd) => {
     //Add game watcher if possible.
     let gameWatcher = await msg.guild.roles.get(chs.gameWatcher);
     if (cmdRef2[1] == "gamewatcher" || cmdRef2[1] == "game watcher") {
-        await msg.member.addRole(gameWatcher);
-        return msg.reply("Role assigned!").then(sent => sent.delete(10000));
+        if (msg.member.roles.get(chs.gameWatcher)) {
+            await msg.member.removeRole(gameWatcher);
+            return msg.reply("Role removed!").then(sent => sent.delete(10000));
+        } else {
+            await msg.member.addRole(gameWatcher);
+            return msg.reply("Role assigned!").then(sent => sent.delete(10000));
+        }
     }
 
     let cmdFunction;
