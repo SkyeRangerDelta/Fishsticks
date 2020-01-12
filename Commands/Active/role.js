@@ -12,8 +12,9 @@ const subCheck = require('../../Modules/Functions/subroutineCheck.js');
 
 const dateTime = require('../../Modules/Functions/currentDateTime.js');
 const dbQuery = require('../../Modules/Functions/db/query.js');
+const chs = require('../../Modules/fs_ids.json');
 
-exports.run = (fishsticks, msg, cmd) => {
+exports.run = async (fishsticks, msg, cmd) => {
 
     msg.delete();
 
@@ -38,6 +39,12 @@ exports.run = (fishsticks, msg, cmd) => {
     cmdRef = msg.content.toLowerCase().split("-");
     cmdRef2 = msg.content.split("-");
     console.log("CommandRef: " + cmdRef)
+
+    //Add game watcher if possible.
+    let gameWatcher = msg.guild.roles.get(chs.gameWatcher);
+    if (cmdRef2[1] == "gamewatcher" || cmdRef2[1] == "game watcher") {
+        return await msg.member.addRole(gameWatcher);
+    }
 
     let cmdFunction;
     let roleName;

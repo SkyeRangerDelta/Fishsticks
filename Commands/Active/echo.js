@@ -84,7 +84,7 @@ exports.run = (fishsticks, msg, cmd) => {
                 syslog.run(fishsticks, "[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg, 1);
                 msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete(10000));
 
-                setTimeout(echoFunc, cmdTime, "@here " + relayMSg);
+                setTimeout(echoFunc, cmdTime, "@everyone " + relayMSg);
             }
         }
         else {
