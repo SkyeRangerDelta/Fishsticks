@@ -25,6 +25,7 @@ const dbTest = require("./Modules/Functions/db/db_Test.js");
 const query = require('./Modules/Functions/db/query.js');
 const fsoVerify = require('./Modules/Functions/FSO/verifyMember.js');
 const fsoOpen = require('./Modules/Functions/FSO/openConnection.js');
+const editMessages = require('./Modules/VariableMessages/messages.json');
 
 const cmdResponses = require('./Modules/SystemResponses/commandErrors.json');
 
@@ -51,6 +52,7 @@ fishsticks.currentPolls = [];
 fishsticks.dbaseConnection;
 fishsticks.debaterMsgIDs = [];
 fishsticks.FSOConnection;
+fishsticks.motdMessages = [];
 
 fishsticks.commandRejects = 0;
 fishsticks.rejectingCommands = false;
@@ -105,6 +107,8 @@ var ranger;
 
 //RANDOM MESSAGES
 let regenCountRefresh = Math.random() * (2000 - 25) + 25;
+regenCountRefresh = Math.round(regenCountRefresh);
+console.log("[RNDM QUOTE GEN] Message tick count set to " + regenCountRefresh);
 
 //--------------------------------------
 //............MAIN SCRIPT...............
@@ -462,6 +466,10 @@ fishsticks.on('message', async msg => {
 					msg.channel.send({files: ["./images/alotofdamage.gif"]});
 				}
 
+				if (line.includes("always watching")) {
+					msg.channel.send({files:["./images/alwaysWatching.gif"]});
+				}
+
 				if (line.includes('a') && line.includes('h')) {
 					let noTrigger = true;
 					line = line.trim();
@@ -477,6 +485,10 @@ fishsticks.on('message', async msg => {
 					if (noTrigger) {
 						msg.channel.send({files: ["./images/screaming.gif"]});
 					}
+				}
+
+				if (line == "why") {
+					msg.channel.send({files: ["./images/why.gif"]});
 				}
 		
 				if (line == "hello there") {
@@ -747,6 +759,10 @@ fishsticks.on('messageReactionAdd', (postReaction, reactor) => {
 		return;
 	}
 
+	if (postReaction.emoji == '✅' || postReaction.emoji == '❌') {
+		motdCheck();
+	}
+
 	//Check if debater report
 	syslog("[DEBATE-SYS] Checking IDs...", 2);
 	for (id in fishsticks.debaterMsgIDs) {
@@ -763,6 +779,31 @@ fishsticks.on('messageReactionAdd', (postReaction, reactor) => {
 		}
 	}
 
+	//Check motd command
+	function motdCheck() {
+		for (motdID in fishsticks.motdMessages) {
+			if (postReaction.message.id == fishsticks.motdMessages[motdID]) {
+				fishsticks.motdMessages.pop();
+				
+				if (postReaction.emoji == '✅') {
+					postReaction.message.channel.send("Excellent, saving into stored MOTD.");
+				
+					let motdToSave = postReaction.message.content;
+
+					let motdJson = {
+						"motd": motdToSave
+					};
+
+					fs.writeFileSync('./Modules/VariableMessages/messages.json', JSON.stringify(motdJson))
+
+				} else {
+					postReaction.message.channel.send("Aw, well crap. Ok, that entry has been deleted. Run the command again to start over.").then(sent => sent.delete(10000));
+				}
+			}
+		}
+	}
+
+	//Check polls
 	console.log("[POLL SYSTEM] Potential Poll reponse flag. Details: \n"+
 		"\tMessage ID: " + postReaction.message.id);
 	syslog("[POLL SYSTEM] Potential Poll reponse flag. Details: \n"+
