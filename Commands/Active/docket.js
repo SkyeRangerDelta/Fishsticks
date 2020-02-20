@@ -18,22 +18,21 @@ exports.run = async (fishsticks, msg, cmd) => {
 
     console.log(cmdRef);
 
+    if (cmdRef[1] == undefined) {
+        return await loadDocketItems(msg);
+    }
+
     switch (cmdRef[1].trim()) {
         case "add":
-            docketAdd(cmdRef2);
+            docketAdd(cmdRef2, msg);
+            break;
+        case "clear":
+            docketClear(msg);
             break;
         default:
             console.log("Loading the docket...");
 
-        let docketList = await loadDocketItems();
-
-            let docketEmbed = new Discord.RichEmbed();
-                docketEmbed.setTitle("o0o - Meeting Docket - o0o");
-                docketEmbed.setColor(fsconfig.fscolor);
-                docketEmbed.setFooter("List will delete in 1 minute. List summoned by " + msg.author.username + ".");
-                docketEmbed.setDescription(docketList);
-
-            return msg.channel.send({embed: docketEmbed}).then(sent => sent.delete(60000));
+            return await loadDocketItems(msg);
     }
 }
 
@@ -50,32 +49,47 @@ function saveJSON(jsonObj) {
     fs.writeFileSync("./Modules/VariableMessages/docket.json", JSON.stringify(jsonObj));
 }
 
-function docketAdd(content) {
-    console.add("[DOCKET] Adding to the docket");
+function docketAdd(content, msg) {
+    console.log("[DOCKET] Adding to the docket");
 
-    let subject = content.slice(1).join(' ');
-    docketJson.docketItems.push(subject);
+    let handleDate = `**${msg.author.username}**: ${msg.createdAt.getMonth()}/${msg.createdAt.getDate()}/${msg.createdAt.getFullYear()} @ ${msg.createdAt.getHours()}:${msg.createdAt.getMinutes()}`;
+    let subject = content.slice(2).join(' ');
+
+    let docketObj = {
+        "inline": false,
+        "name": handleDate,
+        "value": subject
+    }
+
+    docketJson.docketItems.push(docketObj);
 
     saveJSON(docketJson);
 
     return msg.reply("Added to the docket!").then(sent => sent.delete(10000));
 }
 
-function loadDocketItems() {
+function loadDocketItems(msg) {
     let descMsg = "";
 
     if (docketJson.docketItems.length == 0 || docketJson.docketItems == null) {
-        return "No items on the docket.";
+        return msg.channel.send("**No items on the docket.**\n*Add one using `!docket -add`.*").then(sent => sent.delete(10000));
     }
 
     for (item in docketJson.docketItems) {
         descMsg = descMsg.concat("- " + docketJson.docketItems[item] + "\n");
     }
 
-    return descMsg;
+    let docketEmbed = new Discord.RichEmbed();
+        docketEmbed.setTitle("o0o - Meeting Docket - o0o");
+        docketEmbed.setColor(fsconfig.fscolor);
+        docketEmbed.setFooter("List will delete in 1 minute. List summoned by " + msg.author.username + ".");
+        docketEmbed.setDescription("Meeting items for discussion:");
+        docketEmbed.fields = docketJson.docketItems;
+
+    return msg.channel.send({embed: docketEmbed}).then(sent => sent.delete(60000));
 }
 
-function docketClear() {
+function docketClear(msg) {
     console.log("[DOCKET] Clearing docket");
 
     let jsonContent = {
