@@ -117,24 +117,22 @@ async function buildPayload(paramObj, msg) {
 
     console.log("Dispatching payload:\n" + dispatchURL);
     
-    try {
-        await https.get(dispatchURL, options, (res) => {
-            res.on("data", content => {
-                
-                let received = JSON.parse(content);
-                console.log(received.passages);
-    
-                let verseEmbed = new Discord.RichEmbed();
-                    verseEmbed.setTitle(`o0o - Bible (ESV) - o0o`);
-                    verseEmbed.setColor(config.fscolor);
-                    verseEmbed.setDescription(received.passages);
-    
-                msg.channel.send({embed: verseEmbed});
-            })
-        });
-    } catch (error) {
-        if (typeof error == typeof RangeError) {
-            msg.reply("The passage is too big! Try breaking it up.").then(sent => sent.delete(10000));
-        }
-    }
+    await https.get(dispatchURL, options, (res) => {
+        res.on("data", content => {
+            
+            let received = JSON.parse(content);
+            console.log(received.passages);
+
+            if (received.passages.length > 2048) {
+                return msg.reply("The passage is too large! Try breaking it into smaller verses.").then(sent => sent.delete(10000));
+            }
+
+            let verseEmbed = new Discord.RichEmbed();
+                verseEmbed.setTitle(`o0o - Bible (ESV) - o0o`);
+                verseEmbed.setColor(config.fscolor);
+                verseEmbed.setDescription(received.passages);
+
+            msg.channel.send({embed: verseEmbed});
+        })
+    });
 }

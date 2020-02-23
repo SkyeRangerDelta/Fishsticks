@@ -1,6 +1,4 @@
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
-
     let pick = Math.random() * 3;
     pick = Math.round(pick);
 

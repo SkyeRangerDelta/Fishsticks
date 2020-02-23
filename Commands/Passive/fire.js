@@ -4,8 +4,6 @@ const coresys = require('../../Modules/Core/coresys.json');
 const log = require('../../Modules/Functions/log.js');
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
-
     //LOGGER INITIALZE
 	function syslog(message, level) {
 		try {

@@ -405,38 +405,31 @@ fishsticks.on('message', async msg => {
 				}
 
 				if (line == "i have the high ground") {
-					msg.delete();
 					msg.channel.send({files: ["./images/highGround.gif"]});
 				}
 
 				if (line == "fly you fools") {
-					msg.delete();
 					msg.channel.send("GANDALF!", {files: ["./images/flyFools.gif"]});
 				}
 
 				if (line == "the meaning of life" || line == "the meaning of the universe" || line == "the meaning of life, the universe, and everything" || line == "the meaning of everything") {
-					msg.delete();
 					msg.channel.send("Yes, yes, it's quite simple really...", {files: ["./images/42.gif"]});
 				}
 
 				if (line == "holy hand grenade" || line == "hand grenade") {
-					msg.delete();
 					msg.channel.send("**A reading from the Book of Armaments, Chapter 4, Verses 16 through 20:**\n\n" +
 					"Then did he raise on high the Holy Hand Grenade of Antioch, saying, 'Bless this, O Lord, that with it thou mayst blow thine enemies to tiny bits, in thy mercy.' And the people did rejoice and did feast upon the lambs and toads and tree-sloths and fruit-bats and orangutans and breakfast cereals ... Now did the Lord say, 'First thou pullest the Holy Pin. Then thou must count to three. Three shall be the number of the counting and the number of the counting shall be three. Four shalt thou not count, neither shalt thou count two, excepting that thou then proceedeth to three. Five is right out. Once the number three, being the number of the counting, be reached, then lobbest thou the Holy Hand Grenade in the direction of thine foe, who, being naughty in my sight, shall snuff it'\nhttps://media.giphy.com/media/ffyetb56Iux2M/giphy.gif");
 				}
 
 				if (line == "flesh wound" || line == "just a flesh wound") {
-					msg.delete();
 					msg.channel.send("Nah it's not, your arms off!", {files: ["./images/fleshWound.gif"]});
 				}
 
 				if (line == "dark helmet") {
-					msg.delete();
 					msg.channel.send("Hehe.", {files: ["./images/helmet.gif"]});
 				}
 
 				if (line == "ludicrous speed") {
-					msg.delete();
 					msg.channel.send("Ludicrous Speed, GO!", {files: ["./images/ludicrous.gif"]});
 				}
 
@@ -449,7 +442,6 @@ fishsticks.on('message', async msg => {
 				}
 
 				if (line == "plaid") {
-					msg.delete();
 					msg.channel.send({files: ["./images/plaid.gif"]});
 				}
 
@@ -458,7 +450,6 @@ fishsticks.on('message', async msg => {
 				}
 
 				if (line == "so it begins") {
-					msg.delete();
 					msg.channel.send({files: ["./images/soitbegins.gif"]});
 				}
 
@@ -470,21 +461,26 @@ fishsticks.on('message', async msg => {
 					msg.channel.send({files:["./images/alwaysWatching.gif"]});
 				}
 
-				if (line.includes('a') && line.includes('h')) {
-					let noTrigger = true;
-					line = line.trim();
-					for (let t = 0; t < line.length; t++) {
-						if (line[t] != 'a') {
-							if (line[t] != 'h') {
-								noTrigger = false;
-								break;
-							}
-						}
-					}
+				//Ah Scream thing
+				let aCount = 0;
+				let hCount = 0;
+				let screamValid = true;
 
-					if (noTrigger) {
-						msg.channel.send({files: ["./images/screaming.gif"]});
+				for (let t = 0; t < line.length; t++) {
+
+					if (line.charAt(t) == 'a' || line.charAt(t) == 'h') {
+						if (line.charAt(t) == 'h') {
+							hCount++;
+						} else {
+							aCount++;
+						}
+					} else {
+						screamValid = false;
 					}
+				}
+
+				if (aCount >= 4 && hCount >= 2 && screamValid) {
+					msg.channel.send({files: ["./images/screaming.gif"]});
 				}
 
 				if (line == "why") {
@@ -535,6 +531,10 @@ fishsticks.on('message', async msg => {
 
 				if (lowerMsg.includes("not my friend")) {
 					return msg.reply("Aight, fine. If that's how you wanna be about it, then great. Whatever. Your loss.");
+				}
+
+				if (lowerMsg.includes("is awesome")) {
+					return msg.reply("I know.", {files: ["./images/awesome.gif"]});
 				}
 			}
 
