@@ -5,5 +5,5 @@ exports.run = (fishsticks, msg, cmd) => {
 
     if (msg.content.length > 2) return;
 
-    msg.channel.send("Hello!")    
+    msg.channel.send("Hello!")
 }

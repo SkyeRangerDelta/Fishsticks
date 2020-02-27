@@ -119,11 +119,9 @@ async function buildPayload(paramObj, msg) {
     
     await https.get(dispatchURL, options, (res) => {
         res.on("data", content => {
-            
-            let received = JSON.parse(content);
-            console.log(received.passages);
 
-            if (received.passages.length > 2048) {
+            let received = JSON.parse(content);
+            if (received.passages[0].length > 2048) {
                 return msg.reply("The passage is too large! Try breaking it into smaller verses.").then(sent => sent.delete(10000));
             }
 

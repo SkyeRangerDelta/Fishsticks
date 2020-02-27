@@ -53,6 +53,7 @@ fishsticks.dbaseConnection;
 fishsticks.debaterMsgIDs = [];
 fishsticks.FSOConnection;
 fishsticks.motdMessages = [];
+fishsticks.gwDMMessages = [];
 
 fishsticks.commandRejects = 0;
 fishsticks.rejectingCommands = false;
@@ -101,6 +102,7 @@ var crashpad;
 fishsticks.systemLog;
 
 //ROLE INITIALIZATIONS
+let gameWatcher;
 
 //USER INITIALIZATIONS
 var ranger;
@@ -131,6 +133,9 @@ fishsticks.on('ready', async () => {
 
 	//GUILD DEFINITIONS
 	fishsticks.CCGuild = fishsticks.guilds.get(fishsticks.guildID);
+
+	//ROLE DEFINITIONS
+	gameWatcher = fishsticks.CCGuild.roles.get(chs.gameWatcher);
 
 	//USER DEFINITIONS
 	ranger = fishsticks.users.get(chs.ranger);
@@ -467,7 +472,6 @@ fishsticks.on('message', async msg => {
 				let screamValid = true;
 
 				for (let t = 0; t < line.length; t++) {
-
 					if (line.charAt(t) == 'a' || line.charAt(t) == 'h') {
 						if (line.charAt(t) == 'h') {
 							hCount++;
@@ -761,6 +765,7 @@ fishsticks.on('messageReactionAdd', (postReaction, reactor) => {
 
 	if (postReaction.emoji == '✅' || postReaction.emoji == '❌') {
 		motdCheck();
+		gwCheck();
 	}
 
 	//Check if debater report
@@ -798,6 +803,25 @@ fishsticks.on('messageReactionAdd', (postReaction, reactor) => {
 
 				} else {
 					postReaction.message.channel.send("Aw, well crap. Ok, that entry has been deleted. Run the command again to start over.").then(sent => sent.delete(10000));
+				}
+			}
+		}
+	}
+
+	//Check GW DM
+	function gwCheck() {
+		for (gwID in fishsticks.gwDMMessages) {
+			if (postReaction.message.id == fishsticks.gwDMMessages[gwID]) {
+				fishsticks.gwDMMessages.pop();
+
+				if (postReaction.emoji == '✅') {
+					reactor.send("Excellent! I'll go ahead and add the game watcher role to you.");
+
+					try {
+						let thePerson = fishsticks.CCGuild.fetchMember(reactor).then(theDMperson => theDMperson.addRole(gameWatcher));
+					} catch (gwAddErr) {
+						reactor.send("Mmmm, something went wrong. I don't know yet, but I'd ask you to ping/DM SkyeRanger so he can get you all sorted out.");
+					}
 				}
 			}
 		}

@@ -1,11 +1,9 @@
-const Discord = require('discord.js');
-const config = require('../../Modules/Core/corecfg.json');
-const coresys = require('../../Modules/Core/coresys.json');
+const ids = require('../../Modules/fs_ids.json');
 const fs = require('fs');
 
 const log = require('../../Modules/Functions/log.js');
 
-exports.run = (fishsticks, msg, cmd) => {
+exports.run = async (fishsticks, msg, cmd) => {
 	msg.delete();
 
     //LOGGER INITIALZE
@@ -31,7 +29,7 @@ exports.run = (fishsticks, msg, cmd) => {
         return msg.reply("The vouch subroutine is currently disabled. Get a staff member to turn it on!");
     }
 
-    function runCmd() {
+    async function runCmd() {
         //COMMAND
         let recognized = msg.guild.roles.find('name', 'Recognized');
         let vouchee = msg.author.id;
@@ -66,7 +64,17 @@ exports.run = (fishsticks, msg, cmd) => {
                         vouchesFile.vouches[i].userIDs.push(msg.author.id);
                         msg.reply("You've vouched for " + userToVouch.username + "! Granting them Recognized!").then(sent => sent.delete(10000));
                         msg.channel.send(userToVouch.username + " has been granted Recognized.");
-                        msg.guild.fetchMember(userToVouch).then(vouchPerson => vouchPerson.addRole(recognized));
+                        msg.guild.fetchMember(userToVouch).then(vouchPerson => {
+                            vouchPerson.addRole(recognized);
+
+                            //Send member a game watcher request
+                            vouchPerson.send("Now that you're a recognized member of our Discord, I'd like to point out that we have a multiude of game-specific channels in here."+
+                            " Some of them are hidden (text chats) but the voice chats are always open. You can see **all** of these text chats (and get a better idea of what all we"+
+                            " play by joining the game watcher role (which you can remove any time if you don't want it). I can assign this to you now if you'd like. Just click the check below if so.").then(gwDM => {
+                                gwDM.react('✅');
+                                fishsticks.gwDMMessages.push(gwDM.id);
+                            });
+                        });
                         syslog("[VOUCH SYS] Granted Recognized to " + userToVouch.tag + " due to receiving 2 vouches.", 2);
                         vouchedFor = true;
                     }

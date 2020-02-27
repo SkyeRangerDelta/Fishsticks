@@ -90,6 +90,16 @@ function loadDocketItems(msg) {
 }
 
 function docketClear(msg) {
+
+    //Check perms
+    let permissions = {
+        "perms": ["Staff", "Bot"]
+    }
+    let done = await permsCheck.run(fishsticks, msg.member, permissions);
+    if (!done) {
+        msg.reply("Only staff can clear the docket!").then(sent => sent.delete(10000));
+    }
+
     console.log("[DOCKET] Clearing docket");
 
     let jsonContent = {
