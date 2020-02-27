@@ -2,6 +2,7 @@
 
 const Discord = require('discord.js');
 const fs = require('fs');
+const permsCheck = require('../../Modules/Functions/permissionsCheck.js');
 
 const fsconfig = require('../../Modules/Core/corecfg.json');
 
@@ -27,7 +28,7 @@ exports.run = async (fishsticks, msg, cmd) => {
             docketAdd(cmdRef2, msg);
             break;
         case "clear":
-            docketClear(msg);
+            docketClear(fishsticks, msg);
             break;
         default:
             console.log("Loading the docket...");
@@ -89,7 +90,7 @@ function loadDocketItems(msg) {
     return msg.channel.send({embed: docketEmbed}).then(sent => sent.delete(60000));
 }
 
-function docketClear(msg) {
+async function docketClear(fishsticks, msg) {
 
     //Check perms
     let permissions = {
