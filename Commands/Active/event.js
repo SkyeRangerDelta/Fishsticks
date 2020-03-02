@@ -7,6 +7,8 @@ const https = require('https');
 exports.run = (fishsticks, msg, cmd) => {
     msg.delete();
 
+    return msg.reply("Command Disabled until further notice.");
+
     if (msg.channel != fishsticks.consoleChannel) {
         return msg.reply("Event commands must be sent in the " + fishsticks.consoleChannel + " channel!").then(sent => sent.delete(15000));
     }
