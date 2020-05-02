@@ -51,13 +51,7 @@ exports.run = (fishsticks, msg, cmd) => {
 			musichelp.setTitle("o0o - MUSIC PLAYER COMMANDS - o0o");
 			musichelp.setColor(config.fscolor);
 			musichelp.setDescription(
-				"**Remember, the music player is members only: ((A)CC Members) and up.\n\n"+
-				"`!play [youtubeLink] OR [youtubeSearchTerm]`: Launches Fishsticks' music player or adds a song to the queue. If search for a term, will present a menu that the user can select a song from.\n"+
-				"`!stop`: Halts playback and disconnects Fishsticks.\n"+
-				"`!skip`: Skips playback to the next song in the queue. (Staff only)\n"+
-				"`!playing`: Shows what is currently playing.\n"+
-				"`!queue`: Shows the queue of songs.\n"+
-				"`!volume <value>`: Shows the current volume of the player. If issued with a value, will change the volume. (1-5 : Inclusive and defaults to 2)"
+				"*Music player commands are temporarily disabled until further notice.*"
 			);
 
 		var help4 = new Discord.RichEmbed();
@@ -70,11 +64,11 @@ exports.run = (fishsticks, msg, cmd) => {
 				"`!userinfo @user`: Generates a detailed report on a user."
 			);
         
-		msg.channel.send({embed: help1}).then(sent => sent.delete(45000));
-		msg.channel.send({embed: help2}).then(sent => sent.delete(44000));
-		msg.channel.send({embed: help3}).then(sent => sent.delete(43000));
-		msg.channel.send({embed: musichelp}).then(sent => sent.delete(42000));
-		msg.channel.send({embed: help4}).then(sent => sent.delete(41000));
+		msg.channel.send({embed: help1}).then(sent => sent.delete(64000));
+		msg.channel.send({embed: help2}).then(sent => sent.delete(63000));
+		msg.channel.send({embed: help3}).then(sent => sent.delete(62000));
+		msg.channel.send({embed: musichelp}).then(sent => sent.delete(61000));
+		msg.channel.send({embed: help4}).then(sent => sent.delete(60000));
     }
     else {
         var helpeng = new Discord.RichEmbed();

@@ -37,6 +37,7 @@
     "npm": "^6.9.0",
     "npm-install-all": "^1.1.21",
     "opusscript": "0.0.7",
+    "oxford-dictionary-api": "^1.0.1",
     "promise-mysql": "^4.1.1",
     "roll": "^1.2.0",
     "simple-youtube-api": "^5.2.1",

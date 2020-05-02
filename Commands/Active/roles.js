@@ -56,7 +56,7 @@ exports.run = async (fishsticks, msg, cmd) => {
 				"**Council Member**: These are members of our all powerful Council that govern this land."
 			);
 
-			return msg.channel.send({embed: ccRolesPanel}).then(sent => sent.delete(30000));
+			return msg.channel.send({embed: ccRolesPanel}).then(sent => sent.delete(45000));
 	}
 
 	syslog("Attempting role list...", 2);
@@ -94,7 +94,7 @@ exports.run = async (fishsticks, msg, cmd) => {
 		listEmbed.addField("Offical Roles", "__These roles are currently in effect.__\n" + officialRoles, false);
 		listEmbed.addField("Unofficial Roles", "__These roles need to be voted on before they are created.\n__" + unofficialRoles, false);
 
-	return msg.channel.send({embed: listEmbed}).then(sent => sent.delete(30000));
+	return msg.channel.send({embed: listEmbed}).then(sent => sent.delete(75000));
 
     //Subfunction - post embed (List)
     function postList(catsList, lastEntry) {
@@ -106,7 +106,7 @@ exports.run = async (fishsticks, msg, cmd) => {
                 catListEmbed.setDescription("All game roles in CC fall under at least one division. When you create a role, you have to specify one of these following divisions.");
                 catListEmbed.addField("Divisions", catsList);
 
-            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete(30000));
+            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete(45000));
         } else {
             let catListEmbed = new Discord.RichEmbed();
                 catListEmbed.setTitle(`o0o - Game Divisions Listing [Page ${lastEntry}] - o0o`);
@@ -115,7 +115,7 @@ exports.run = async (fishsticks, msg, cmd) => {
                 catListEmbed.setDescription("Divisions, continued.");
                 catListEmbed.addField("Divisions", catsList);
 
-            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete(30000));
+            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete(45000));
         }
 	}
 	

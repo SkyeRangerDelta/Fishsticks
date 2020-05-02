@@ -20,6 +20,7 @@ exports.run = async (fishsticks, msg, cmd) => {
 	logger.run(fishsticks, `Processing suggestion:\n\tAuthor: ${msg.author.username}\n\tTitle: ${cmdRefAlt[1].trim()}\n\tBody: ${cmdRefAlt[2].trim()}`, 2);
 
     hookURL = hookURL.concat(`?sender=${msg.author.username}&suggTitle=${cmdRefAlt[1].trim()}&suggBody=${cmdRefAlt[2].trim()}`);
+    hookURL = encodeURI(hookURL);
 
     try {
         //Attempt suggestion send

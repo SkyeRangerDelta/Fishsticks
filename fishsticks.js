@@ -54,6 +54,7 @@ fishsticks.debaterMsgIDs = [];
 fishsticks.FSOConnection;
 fishsticks.motdMessages = [];
 fishsticks.gwDMMessages = [];
+fishsticks.baconTarget = null;
 
 fishsticks.commandRejects = 0;
 fishsticks.rejectingCommands = false;
@@ -266,6 +267,12 @@ fishsticks.on('message', async msg => {
 
 			return msg.reply("You need to be a debater to have post permissions here!").then(sent => sent.delete(10000));
 		}
+	}
+
+	//BaconMode
+	if (msg.author == fishsticks.baconTarget) {
+		console.log("[BAC-MODE] Checking the bacon...");
+		msg.react('🥓');
 	}
 
 	if (msg.channel instanceof Discord.DMChannel) { //ALPHA LEVEL COMMANDS
