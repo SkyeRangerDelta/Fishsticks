@@ -2,9 +2,9 @@ const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
-    var channels = new Discord.RichEmbed();
+    var channels = new Discord.MessageEmbed();
 		channels.setTitle("o0o - CC DISCORD CHANNELS - o0o");
 		channels.setColor(config.fscolor);
 		channels.setDescription(
@@ -59,5 +59,5 @@ exports.run = (fishsticks, msg, cmd) => {
 			"**AFK**: Avidly Frenetic Koalas.\n\n",
 			false);
 
-    msg.channel.send({embed: channels}).then(sent => sent.delete(90000));
+    msg.channel.send({embed: channels}).then(sent => sent.delete({timeout: 90000}));
 }

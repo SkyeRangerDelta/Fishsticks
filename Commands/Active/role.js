@@ -16,10 +16,12 @@ const chs = require('../../Modules/fs_ids.json');
 
 exports.run = async (fishsticks, msg, cmd) => {
 
-    msg.delete();
+    msg.delete({timeout: 0});
+
+    return msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({timeout: 10000}));
 
     if (!msg.member.roles.find("name", "Recognized")) {
-        return msg.reply("You need to be at least Recognized in order to use this!").then(sent => sent.delete(10000));
+        return msg.reply("You need to be at least Recognized in order to use this!").then(sent => sent.delete({timeout: 10000}));
     }
 
     //System logger
@@ -41,14 +43,14 @@ exports.run = async (fishsticks, msg, cmd) => {
     console.log("CommandRef: " + cmdRef)
 
     //Add game watcher if possible.
-    let gameWatcher = await msg.guild.roles.get(chs.gameWatcher);
+    let gameWatcher = await msg.guild.roles.cache.get(chs.gameWatcher);
     if (cmdRef2[1] == "gamewatcher" || cmdRef2[1] == "game watcher") {
-        if (msg.member.roles.get(chs.gameWatcher)) {
+        if (msg.member.roles.cache.get(chs.gameWatcher)) {
             await msg.member.removeRole(gameWatcher);
-            return msg.reply("Role removed!").then(sent => sent.delete(10000));
+            return msg.reply("Role removed!").then(sent => sent.delete({timeout: 10000}));
         } else {
             await msg.member.addRole(gameWatcher);
-            return msg.reply("Role assigned!").then(sent => sent.delete(10000));
+            return msg.reply("Role assigned!").then(sent => sent.delete({timeout: 10000}));
         }
     }
 
@@ -60,7 +62,7 @@ exports.run = async (fishsticks, msg, cmd) => {
         cmdFunction = cmdRef[1].trim();
     }
     else {
-        return msg.reply("You need to state what your intentions are!\nSee `!info role` for help.").then(sent => sent.delete(10000));
+        return msg.reply("You need to state what your intentions are!\nSee `!info role` for help.").then(sent => sent.delete({timeout: 10000}));
     }
 
     if (cmdRef[2] != null || cmdRef[2] != undefined) {
@@ -89,7 +91,7 @@ exports.run = async (fishsticks, msg, cmd) => {
             break;
         default:
         syslog("Incomplete parameters.", 2)
-        return msg.reply("I feel like we were getting somewhere, but I just don't see it. Did you mean one of these?\n`-list`, `-join`, `-vote`, `-create`, `-leave`, `-show`\n\n*There's a chance that if you're seeing this, whatever you're trying to do is impossible: ie, removing a role you don't have.*").then(sent => sent.delete(15000));
+        return msg.reply("I feel like we were getting somewhere, but I just don't see it. Did you mean one of these?\n`-list`, `-join`, `-vote`, `-create`, `-leave`, `-show`\n\n*There's a chance that if you're seeing this, whatever you're trying to do is impossible: ie, removing a role you don't have.*").then(sent => sent.delete({timeout: 15000}));
     }
 
     //FUNCTIONS
@@ -143,7 +145,7 @@ exports.run = async (fishsticks, msg, cmd) => {
             unofficialRoles = "Really? Nothing here? Crazy...";
         }
 
-        let listEmbed = new Discord.RichEmbed();
+        let listEmbed = new Discord.MessageEmbed();
             listEmbed.setTitle("o0o - Game Roles Listing - o0o");
             listEmbed.setColor(config.fscolor);
             listEmbed.setFooter("List will delete itself in 30 seconds. List was summoned by " + msg.author.username);
@@ -151,29 +153,29 @@ exports.run = async (fishsticks, msg, cmd) => {
             listEmbed.addField("Offical Roles", "__These roles are currently in effect.__\n" + officialRoles, false);
             listEmbed.addField("Unofficial Roles", "__These roles need to be voted on before they are created.\n__" + unofficialRoles, false);
 
-        return msg.channel.send({embed: listEmbed}).then(sent => sent.delete(75000));
+        return msg.channel.send({embed: listEmbed}).then(sent => sent.delete({timeout: 75000}));
     }
 
     //Subfunction - post embed (List)
     function postList(catsList, lastEntry) {
         if (lastEntry == 1) {
-            let catListEmbed = new Discord.RichEmbed();
+            let catListEmbed = new Discord.MessageEmbed();
                 catListEmbed.setTitle(`o0o - Game Divisions Listing [Page ${lastEntry}] - o0o`);
                 catListEmbed.setColor(config.fscolor);
                 catListEmbed.setFooter("List will delete itself in 30 seconds. List was summoned by " + msg.author.username);
                 catListEmbed.setDescription("All game roles in CC fall under at least one division. When you create a role, you have to specify one of these following divisions.");
                 catListEmbed.addField("Divisions", catsList);
 
-            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete(45000));
+            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete({timeout: 45000}));
         } else {
-            let catListEmbed = new Discord.RichEmbed();
+            let catListEmbed = new Discord.MessageEmbed();
                 catListEmbed.setTitle(`o0o - Game Divisions Listing [Page ${lastEntry}] - o0o`);
                 catListEmbed.setColor(config.fscolor);
                 catListEmbed.setFooter("List will delete itself in 30 seconds. List was summoned by " + msg.author.username);
                 catListEmbed.setDescription("Divisions, continued.");
                 catListEmbed.addField("Divisions", catsList);
 
-            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete(45000));
+            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete({timeout: 45000}));
         }
     }
 
@@ -192,7 +194,7 @@ exports.run = async (fishsticks, msg, cmd) => {
         // -> Check if official
         console.log(responseOfficial[0].official);
         if (responseOfficial[0].official == 0) {
-            msg.reply(convertToTitleCase(roleName) + " is not official yet, voting for the role instead.").then(sent => sent.delete(15000));
+            msg.reply(convertToTitleCase(roleName) + " is not official yet, voting for the role instead.").then(sent => sent.delete({timeout: 15000}));
             return await voteRole();
         }
 
@@ -211,7 +213,7 @@ exports.run = async (fishsticks, msg, cmd) => {
             msg.member.addRole(roleToAdd);
 
             syslog("Success.", 2);
-            return msg.reply("Role assigned!").then(sent => sent.delete(10000));
+            return msg.reply("Role assigned!").then(sent => sent.delete({timeout: 10000}));
         } catch (addOnMentionErr) {
             try { //Attempt to add role based on name
                 console.log("[GAME ROLES] Smacked an addOnMention:\n" + addOnMentionErr);
@@ -240,7 +242,7 @@ exports.run = async (fishsticks, msg, cmd) => {
                         await msg.member.addRole(roleToAdd);
                     } catch (error) {
                         return msg.reply("Do you smell the shrooms? If you do, perhaps you shouldn't be messing with these commands.\nI couldn't find the role to add.")
-                        .then(sent => sent.delete(10000));
+                        .then(sent => sent.delete({timeout: 10000}));
                     }
 
                     syslog("Success.", 2);
@@ -253,9 +255,9 @@ exports.run = async (fishsticks, msg, cmd) => {
         let roleAddtion = await dbQuery.run(fishsticks, `INSERT INTO fs_gr_MemberRoles (memberID, roleID) VALUES ((SELECT memberID FROM fs_members WHERE memberDiscordID = ${msg.author.id}), (SELECT roleID FROM fs_gr_Roles WHERE roleDiscordID = ${roleToAdd.id}));`);
 
         if (roleAddtion.affectedRows == 1) {
-            msg.reply("Role joined!").then(sent => sent.delete(10000));
+            msg.reply("Role joined!").then(sent => sent.delete({timeout: 10000}));
         } else {
-            msg.reply("When the end of days comes, the clouds will part and down from the heavens a great hand will appear wielding a cheese grater. And with it will be heard a mighty voice, 'This is the end.'*. Ok, maybe it won't end that way, but hopefully doing what you just did, isn't the the summoning ritual.").then(sent => sent.delete(10000));
+            msg.reply("When the end of days comes, the clouds will part and down from the heavens a great hand will appear wielding a cheese grater. And with it will be heard a mighty voice, 'This is the end.'*. Ok, maybe it won't end that way, but hopefully doing what you just did, isn't the the summoning ritual.").then(sent => sent.delete({timeout: 10000}));
         }
 
     }
@@ -290,7 +292,7 @@ exports.run = async (fishsticks, msg, cmd) => {
 
             msg.member.removeRole(roleToLeave);
         } catch (error) {
-            msg.reply("Aborted. I couldn't find the role to remove! You sure you typed it all right?").then(sent => sent.delete(10000));
+            msg.reply("Aborted. I couldn't find the role to remove! You sure you typed it all right?").then(sent => sent.delete({timeout: 10000}));
         }
 
         //Remove in FSO
@@ -332,7 +334,7 @@ exports.run = async (fishsticks, msg, cmd) => {
                 //Reroute, try for game name
                 roleID = roleGameIDQuery[0].roleID;
             } catch (error) {
-                return msg.reply("I searched, I promise, I did - I just couldn't find that role. Check for typos?").then(sent => sent.delete(10000));
+                return msg.reply("I searched, I promise, I did - I just couldn't find that role. Check for typos?").then(sent => sent.delete({timeout: 10000}));
             }
         }
         console.log("Collected: " + roleID);
@@ -348,7 +350,7 @@ exports.run = async (fishsticks, msg, cmd) => {
         let responseOfficial = await dbQuery.run(fishsticks, `SELECT official FROM fs_gr_Roles WHERE roleID = '${roleID}'`);
         console.log(responseOfficial[0].official);
         if (responseOfficial[0].official != 0) {
-            msg.reply(convertToTitleCase(roleName) + " is already official, adding you to the role instead. (Negate this by running `!role -leave -[roleName]`)").then(sent => sent.delete(15000));
+            msg.reply(convertToTitleCase(roleName) + " is already official, adding you to the role instead. (Negate this by running `!role -leave -[roleName]`)").then(sent => sent.delete({timeout: 10000}));
             return await voteRoleAssign();
         }
 
@@ -356,7 +358,7 @@ exports.run = async (fishsticks, msg, cmd) => {
         let dupeCheckResponse = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_gr_memberVotes WHERE roleID = ${roleID};`);
         for (person in dupeCheckResponse) {
             if (dupeCheckResponse[person].memberID == memberID) {
-                return msg.reply("Oi, come off it mate; you've already voted for this role.").then(sent => sent.delete(15000));
+                return msg.reply("Oi, come off it mate; you've already voted for this role.").then(sent => sent.delete({timeout: 15000}));
             }
         }
 
@@ -386,10 +388,10 @@ exports.run = async (fishsticks, msg, cmd) => {
                 msg.reply(convertToTitleCase(roleName) + " has 5 votes, officializing!");
                 officialize();
             } else if (newNumResults < 5) {
-                return msg.reply(convertToTitleCase(roleName) + " needs " + (5 - newNumResults) + " to be official!").then(sent => sent.delete(20000));
+                return msg.reply(convertToTitleCase(roleName) + " needs " + (5 - newNumResults) + " to be official!").then(sent => sent.delete({timeout: 20000}));
             }
         } else {
-            msg.reply("Seems this role has already achieved 5 votes, adding you to the role instead. (Negate this by running `!role -leave -[roleName]`)").then(sent => sent.delete(15000));
+            msg.reply("Seems this role has already achieved 5 votes, adding you to the role instead. (Negate this by running `!role -leave -[roleName]`)").then(sent => sent.delete({timeout: 15000}));
             return await voteRoleAssign();
         }
     }
@@ -432,7 +434,7 @@ exports.run = async (fishsticks, msg, cmd) => {
             return msg.channel.send(fishsticks.ranger + " hey go check the FSO db right snappy like. I just had a duplicate response error when assigning " + roleToAssign.name + " to " + msg.author.username);
         }
 
-        msg.reply(roleToAssign.name + " role assigned!").then(sent => sent.delete(10000));
+        msg.reply(roleToAssign.name + " role assigned!").then(sent => sent.delete({timeout: 10000}));
 
     }
 
@@ -456,7 +458,7 @@ exports.run = async (fishsticks, msg, cmd) => {
             roleDivi = await compareCats();
 
             if (roleDivi == -1) {
-                return msg.reply("You need to specify a proper division to list the role in! Check !role -list -divisions").then(sent => sent.delete(15000));
+                return msg.reply("You need to specify a proper division to list the role in! Check !role -list -divisions").then(sent => sent.delete({timeout: 15000}));
             }
         }
 
@@ -477,7 +479,7 @@ exports.run = async (fishsticks, msg, cmd) => {
         //Submit the SQL and log results
         let response = await dbQuery.run(fishsticks, sqlStatement);
         if (response.affectedRows == 1) {
-            msg.reply("Role created!").then(sent => sent.delete(15000));
+            msg.reply("Role created!").then(sent => sent.delete({timeout: 15000}));
         }
 
         syslog("[GAME-ROLE] [CREATE] Collecting Role...", 2);
@@ -500,7 +502,7 @@ exports.run = async (fishsticks, msg, cmd) => {
         }
 
         if (cmdRef[2] == null || cmdRef[2] == undefined) {
-            return msg.reply("Nah, not how it works. If you wanna see something, you gotta tell me what it is.").then(sent => sent.delete(15000));
+            return msg.reply("Nah, not how it works. If you wanna see something, you gotta tell me what it is.").then(sent => sent.delete({timeout: 15000}));
         }
 
         //Collect role from FSO
@@ -520,7 +522,7 @@ exports.run = async (fishsticks, msg, cmd) => {
         try {
             memberListResponse = await dbQuery.run(fishsticks, `SELECT memberID FROM fs_gr_MemberRoles WHERE roleID = ${roleResponse[0].roleID};`);
         } catch (error) {
-            return msg.reply("**SECTOR 5 BREACH**: Initializing system defense mechanisms.\n\nJust kidding, you did a typo somewhere. All is well.").then(sent => sent.delete(10000));
+            return msg.reply("**SECTOR 5 BREACH**: Initializing system defense mechanisms.\n\nJust kidding, you did a typo somewhere. All is well.").then(sent => sent.delete({timeout: 10000}));
         }
 
         if (memberListResponse.length > 10) {
@@ -534,7 +536,7 @@ exports.run = async (fishsticks, msg, cmd) => {
             }
         }
 
-        let roleDetail = new Discord.RichEmbed();
+        let roleDetail = new Discord.MessageEmbed();
 
         roleDetail.setTitle("o0o - " + roleResponse[0].name + " - o0o");
         roleDetail.setColor(config.fscolor);
@@ -545,7 +547,7 @@ exports.run = async (fishsticks, msg, cmd) => {
         roleDetail.addField("Members", memberList, false);
         roleDetail.setThumbnail(grabImage(roleResponse[0].division));
 
-        msg.channel.send({embed: roleDetail}).then(sent => sent.delete(30000));
+        msg.channel.send({embed: roleDetail}).then(sent => sent.delete({timeout: 30000}));
     }
 
     async function officialize() {
@@ -589,7 +591,7 @@ exports.run = async (fishsticks, msg, cmd) => {
         let response = await dbQuery.run(fishsticks, `UPDATE fs_gr_Roles SET official = 1, roleDiscordID = ${role.id} WHERE roleID = '${properRoleIDEntry}';`);
 
         if (response.changedRows != 1) {
-            return msg.reply("Unexpected number of roles were processed. (" + response.size + ").").then(sent => sent.delete(7000));
+            return msg.reply("Unexpected number of roles were processed. (" + response.size + ").").then(sent => sent.delete({timeout: 7000}));
         }
 
         //ASSIGN ROLE TO VOTERS
@@ -620,13 +622,13 @@ exports.run = async (fishsticks, msg, cmd) => {
 
         for (memberObj in membersToAssignRole) {
             membersToAssignRole[memberObj].addRole(newlyCreatedRole);
-            msg.channel.send(`${membersToAssignRole[memberObj]} - you've been auto-assigned ${properRoleName} because you voted for it!`).then(sent => sent.delete(10000));
+            msg.channel.send(`${membersToAssignRole[memberObj]} - you've been auto-assigned ${properRoleName} because you voted for it!`).then(sent => sent.delete({timeout: 10000}));
         }
     }
 
     async function handleDivisionReport() {
         if (cmdRef[3].trim() == null || cmdRef[3].trim() == undefined) {
-            return msg.reply("Empty space, so much empty space. Fill it with a division name next time.").then(sent => sent.delete(10000));
+            return msg.reply("Empty space, so much empty space. Fill it with a division name next time.").then(sent => sent.delete({timeout: 10000}));
         }
 
         let divName = cmdRef[3].trim();
@@ -665,14 +667,14 @@ exports.run = async (fishsticks, msg, cmd) => {
             roleList="";
             return;
         } else {
-            return msg.reply("I couldn't find that division...huh. All neural net sectors look good...did you do a typo?").then(sent => sent.delete(10000));
+            return msg.reply("I couldn't find that division...huh. All neural net sectors look good...did you do a typo?").then(sent => sent.delete({timeout: 10000}));
         }
     }
 
     //Paging function for multiple roles per division
     function postDivReport(divList, lastIndex, divisionInfo) {
         syslog("Posting division list " + lastIndex);
-        let divReportPanel = new Discord.RichEmbed();
+        let divReportPanel = new Discord.MessageEmbed();
             divReportPanel.setTitle(`o0o - Division Report: ${divisionInfo.name} [${lastIndex}]`);
             divReportPanel.setColor(config.fscolor);
             divReportPanel.setFooter("This menu will disappear in 30 seconds. Report was summoned by " + msg.author.username);
@@ -685,7 +687,7 @@ exports.run = async (fishsticks, msg, cmd) => {
             divReportPanel.addField("ROle List", divList, false);
         }
 
-        msg.channel.send({embed: divReportPanel}).then(sent => sent.delete(30000));
+        msg.channel.send({embed: divReportPanel}).then(sent => sent.delete({timeout: 30000}));
     }
 
     async function compareCats() {

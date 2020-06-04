@@ -15,7 +15,9 @@ let permissions = {
 
 exports.run = async (fishsticks, msg, cmd) => {
 
-    msg.delete();
+    msg.delete({timeout: 0});
+
+    return msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({timeout: 10000}));
 
     if (await permsCheck.run(fishsticks, msg.member, permissions)) { //Check Permissions
         if (await subCheck.run(fishsticks, 'sqlsys', msg) && await subCheck.run(fishsticks, 'acctsys', msg)) { //Check SQL Subroutine State
@@ -36,7 +38,7 @@ exports.run = async (fishsticks, msg, cmd) => {
                 }
 
                 if (passA !== passB) {
-                    return msg.reply("Your passwords need to match!").then(sent => sent.delete(15000));
+                    return msg.reply("Your passwords need to match!").then(sent => sent.delete({timeout: 15000}));
                 }
 
                 //Check to make sure this user doesn't already have an account
@@ -44,7 +46,7 @@ exports.run = async (fishsticks, msg, cmd) => {
                 let duplicateResponse = await query.run(fishsticks, duplicateCheckString);
 
                 if (duplicateResponse[0] == msg.author.id) {
-                    return msg.reply("Looks like you've already got an account! If you've forgotten your information, let " + fishsticks.ranger + " know so he can help you!").then(sent => sent.delete(15000));
+                    return msg.reply("Looks like you've already got an account! If you've forgotten your information, let " + fishsticks.ranger + " know so he can help you!").then(sent => sent.delete({timeout: 15000}));
                 }
 
                 //Passwords match, create SQL query
@@ -53,10 +55,10 @@ exports.run = async (fishsticks, msg, cmd) => {
 
                 //Check response
                 if (response.affectedRows == 1) {
-                    msg.reply("Account created, check your DMs!").then(sent => sent.delete(15000));
+                    msg.reply("Account created, check your DMs!").then(sent => sent.delete({timeout: 15000}));
 
                     //Create account info panel and send
-                    let accountCreated = new Discord.RichEmbed();
+                    let accountCreated = new Discord.MessageEmbed();
                         accountCreated.setTitle("Fishsticks Account Opening");
                         accountCreated.setColor(config.fsemercolor);
                         accountCreated.setDescription(
@@ -73,7 +75,7 @@ exports.run = async (fishsticks, msg, cmd) => {
                         accountCreated.addField("Dashboard", "To view your dashboard,\n[Click Here](https://fishsticks.pldyn.net/)\n\nOr visit https://fishsticks.pldyn.net/");
                         accountCreated.setFooter("Account Opening Info - " + msg.author.username + " <-> This message will delete itself in 5m.");
 
-                    msg.author.send({embed: accountCreated}).then(sent => sent.delete(300000));
+                    msg.author.send({embed: accountCreated}).then(sent => sent.delete({timeout: 30000}));
                 }
 
             } else if (cmdFunction == "delete") {
@@ -83,14 +85,14 @@ exports.run = async (fishsticks, msg, cmd) => {
                 if (response[0].password == cmd[1]) {
                     let responseB = await query.run(fishsticks, `DELETE FROM siteAccounts WHERE discordID = ${msg.author.id}`);
                     if (responseB.affectedRows == 1) {
-                        return msg.reply("Account purged!").then(sent => sent.delete(15000));
+                        return msg.reply("Account purged!").then(sent => sent.delete({timeout: 15000}));
                     }
                 } else {
-                    return msg.reply("Doesn't look like that password matches up with the account info.").then(sent => sent.delete(15000));
+                    return msg.reply("Doesn't look like that password matches up with the account info.").then(sent => sent.delete({timeout: 15000}));
                 }
 
             } else {
-                msg.reply("*Cough*, did you mean `create` or `delete`?").then(sent => sent.delete(15000));
+                msg.reply("*Cough*, did you mean `create` or `delete`?").then(sent => sent.delete({timeout: 15000}));
             }
         }
     }

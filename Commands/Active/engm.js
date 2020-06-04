@@ -7,7 +7,7 @@ const log = require('../../Modules/Functions/log.js');
 let engmode;
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     //LOGGER
     function syslog(message, level) {
@@ -29,7 +29,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
         console.log("[ENG-MODE] Toggled to " + engmode + " by " + msg.author.tag);
         syslog("[ENG-MODE] Toggled to " + engmode + " by " + msg.author.tag, 4);
-        msg.reply("Fishsticks Engineering Mode has been toggled " + engmode + ".").then(sent => sent.delete(5000));
+        msg.reply("Fishsticks Engineering Mode has been toggled " + engmode + ".").then(sent => sent.delete({timeout: 5000}));
 
         if (engmode) {
             fishsticks.user.setPresence({
@@ -53,6 +53,6 @@ exports.run = (fishsticks, msg, cmd) => {
         fs.writeFileSync('./Modules/fishsticks_engm.json', JSON.stringify(engmFile));
     }
     else {
-        msg.reply("How dare you challenge me with your primitive powers...begone!").then(sent => sent.delete(5000));
+        msg.reply("How dare you challenge me with your primitive powers...begone!").then(sent => sent.delete({timeout: 5000}));
     }
 }

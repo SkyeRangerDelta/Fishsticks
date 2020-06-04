@@ -1,7 +1,7 @@
 //----BaconMode----
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
     
     //Collect target
     let target = msg.mentions.users.first();
@@ -9,7 +9,7 @@ exports.run = (fishsticks, msg, cmd) => {
     //Validate
     if (!target || target == null || target == undefined) {
         console.log("[BAC-MODE] Target found to be null.");
-        msg.reply("Clearing the bacon target.").then(sent => sent.delete(10000));
+        msg.reply("Clearing the bacon target.").then(sent => sent.delete({timeout: 10000}));
         return fishsticks.baconTarget = null;
     }
 
@@ -20,6 +20,6 @@ exports.run = (fishsticks, msg, cmd) => {
         throw "Bacon mode couldn't engage!"
     }
 
-    msg.reply("Bacon mode engaged!").then(sent => sent.delete(10000));
+    msg.reply("Bacon mode engaged!").then(sent => sent.delete({timeout: 10000}));
 
 }

@@ -27,6 +27,15 @@ const fsoVerify = require('./Modules/Functions/FSO/verifyMember.js');
 const fsoOpen = require('./Modules/Functions/FSO/openConnection.js');
 const editMessages = require('./Modules/VariableMessages/messages.json');
 
+const {
+	simpleStats,
+	fullStats
+} = require('./Modules/Functions/serverStats');
+
+const {
+	rewriteDateTime
+} = require('./Modules/Functions/dateTimeAgain');
+
 const cmdResponses = require('./Modules/SystemResponses/commandErrors.json');
 
 const token = systems.token;
@@ -55,6 +64,8 @@ fishsticks.FSOConnection;
 fishsticks.motdMessages = [];
 fishsticks.gwDMMessages = [];
 fishsticks.baconTarget = null;
+fishsticks.startTime = new Date();
+fishsticks.startTimeNow = Date.now();
 
 fishsticks.commandRejects = 0;
 fishsticks.rejectingCommands = false;
@@ -120,26 +131,26 @@ console.log("[RNDM QUOTE GEN] Message tick count set to " + regenCountRefresh);
 //STARTUP PROCEDURE
 fishsticks.on('ready', async () => {
 
+	//GUILD DEFINITIONS
+	fishsticks.CCGuild = fishsticks.guilds.cache.get(fishsticks.guildID);
+
 	//CHANNEL DEFINITIONS
-	fsconsoleChannel = fishsticks.channels.get(chs.fsconsole);
-	announceChannel = fishsticks.channels.get(chs.announcements);
-	ecChannel = fishsticks.channels.get(chs.ecChannel);
-	hangoutch = fishsticks.channels.get(chs.hangout);
-	crashpad = fishsticks.channels.get(chs.crashpad);
-	moderator = fishsticks.channels.get(chs.moderator);
+	fsconsoleChannel = fishsticks.channels.cache.get(chs.fsconsole);
+	announceChannel = fishsticks.channels.cache.get(chs.announcements);
+	ecChannel = fishsticks.channels.cache.get(chs.ecChannel);
+	hangoutch = fishsticks.channels.cache.get(chs.hangout);
+	crashpad = fishsticks.channels.cache.get(chs.crashpad);
+	moderator = fishsticks.channels.cache.get(chs.moderator);
 
 	fishsticks.consoleChannel = fsconsoleChannel;
-	fishsticks.systemLog = fishsticks.channels.get(chs.systemLog);
+	fishsticks.systemLog = fishsticks.channels.cache.get(chs.systemLog);
 	let systemLog = fishsticks.systemLog;
 
-	//GUILD DEFINITIONS
-	fishsticks.CCGuild = fishsticks.guilds.get(fishsticks.guildID);
-
 	//ROLE DEFINITIONS
-	gameWatcher = fishsticks.CCGuild.roles.get(chs.gameWatcher);
+	gameWatcher = fishsticks.CCGuild.roles.cache.get(chs.gameWatcher);
 
 	//USER DEFINITIONS
-	ranger = fishsticks.users.get(chs.ranger);
+	ranger = fishsticks.users.cache.get(chs.ranger);
 	fishsticks.ranger = ranger;
 
 	//SERVER STATUS
@@ -187,19 +198,20 @@ fishsticks.on('ready', async () => {
 		});
 	}
 
-	var startupseq = new Discord.RichEmbed();
+	var startupseq = new Discord.MessageEmbed();
 		startupseq.setTitle("o0o - FISHSTICKS STARTUP - o0o")
 		startupseq.setColor(fscolor);
 		startupseq.setThumbnail("https://pldyn.net/wp-content/uploads/2018/07/ccLogoMain.png")
 		startupseq.setDescription(
 			"Dipping in flour...\n" +
 			"Baking at 400°...\n" +
-			"Fishsticks V" + fishsticks.version + " is ready to go!")
+			"Fishsticks V" + fishsticks.version + " is ready to go!");
+		startupseq.setFooter(`Start up initiated at ${rewriteDateTime(fishsticks.startTime)}`);
 
-	fsconsoleChannel.send({embed: startupseq}).catch(console.error).then(sent => sent.delete(30000));
-
-
-
+	fsconsoleChannel.send({embed: startupseq}).catch(console.error);
+	
+	let statsStartupEmbed = await fullStats(fishsticks);
+	fsconsoleChannel.send({embed: statsStartupEmbed});
 });
 
 //LOGGER CONTROLLER (Log levels 0-4)
@@ -239,9 +251,9 @@ fishsticks.on('message', async msg => {
 
 			messageDeleted = msg.content;
 
-			msg.delete();
+			msg.delete({timeout: 0});
 
-			let debaterPanel = new Discord.RichEmbed();
+			let debaterPanel = new Discord.MessageEmbed();
 				debaterPanel.setTitle("o0o - Discussion Den Rules - o0o");
 				debaterPanel.setColor(config.fscolor);
 				debaterPanel.setFooter("This message has been sent to you because you've tried posting in the Discussion Den without having the Debater role.");
@@ -265,7 +277,7 @@ fishsticks.on('message', async msg => {
 			msg.author.send("For your convenience (and possibly some potential headache and rage), this was the message you posted"+
 							" to the Discussion Den. \n\n```" + messageDeleted + "```");
 
-			return msg.reply("You need to be a debater to have post permissions here!").then(sent => sent.delete(10000));
+			return msg.reply("You need to be a debater to have post permissions here!").then(sent => sent.delete({timeout: 10000}));
 		}
 	}
 
@@ -287,10 +299,10 @@ fishsticks.on('message', async msg => {
 		} else {
 			if (msg.content == "I accept the rules of the den.") {
 				return fishsticks.CCGuild.member(msg.author).addRole(fishsticks.CCGuild.roles.find("name", "Debater")).then(done => {
-					msg.channel.send("Debater role added!").then(sent => sent.delete(10000));
+					msg.channel.send("Debater role added!").then(sent => sent.delete({timeout: 10000}));
 				});
 			} else {
-				return msg.channel.send("Only commands please. :D").then(sent => sent.delete(10000));
+				return msg.channel.send("Only commands please. :D").then(sent => sent.delete({timeout: 10000}));
 			}
 		}
 	}
@@ -303,8 +315,8 @@ fishsticks.on('message', async msg => {
 					if (msg.member.roles.size === 1) {
 						if (msg.content.includes(".com") || msg.content.includes(".net") || msg.content.includes(".org") || msg.content.includes(".tv") || msg.content.includes(".gg")) {
 							syslog("[N. LINK SCREEN] Newcomer Link Intercepted." + msg, 2);
-							msg.delete();
-							msg.reply("As a newcomer to this server, your permissions to post links are revoked. You may post links once you are granted the Recognized role.").then(sent => sent.delete(20000));
+							msg.delete({timeout: 0});
+							msg.reply("As a newcomer to this server, your permissions to post links are revoked. You may post links once you are granted the Recognized role.").then(sent => sent.delete({timeout: 20000}));
 						}
 					}
 				}
@@ -322,19 +334,19 @@ fishsticks.on('message', async msg => {
 					if (msg.member.roles.find("name", "The Nod")) {
 						console.log("[TWITCH-SCREEN] Link granted from user " + msg.author.username);
 						syslog("[TWITCH-SCREEN] Link granted from user " + msg.author.username, 3);
-						msg.reply("Post clearance granted, you have *The Nod*.").then(sent => sent.delete(10000));
+						msg.reply("Post clearance granted, you have *The Nod*.").then(sent => sent.delete({timeout: 10000}));
 					}
 					else if (msg.member.roles.find("name", "Staff")) {
 						console.log("[TWITCH-SCREEN] Link granted from staff user " + msg.author.username);
 						syslog("[TWITCH-SCREEN] Link granted from staff user " + msg.author.username, 3);
-						msg.reply("Post clearance overridden by Staff. I'd look into getting *The Nod*.").then(sent => sent.delete(10000));
+						msg.reply("Post clearance overridden by Staff. I'd look into getting *The Nod*.").then(sent => sent.delete({timeout: 10000}));
 					}
 					else {
-						msg.delete();
+						msg.delete({timeout: 0});
 						console.log("[TWITCH-SCREEN] Link busted from user " + msg.author.username);
 						syslog("[TWITCH-SCREEN] Link busted from user " + msg.author.username, 3);
 			
-						msg.reply("Post unauthorized and cleared. You need *The Nod* before posting Twitch links! See `!rules`.").then(sent => sent.delete(20000));
+						msg.reply("Post unauthorized and cleared. You need *The Nod* before posting Twitch links! See `!rules`.").then(sent => sent.delete({timeout: 20000}));
 					}
 				}
 			}
@@ -363,9 +375,9 @@ fishsticks.on('message', async msg => {
 		//--> Administrative achrules: Shows rules in the #rules channel
 		try {
 			if ((msg.content == "achrules") && (msg.member.roles.find("name", "Staff"))) {
-				msg.delete();
+				msg.delete({timeout: 0});
 	
-				var achrules = new Discord.RichEmbed();
+				var achrules = new Discord.MessageEmbed();
 					achrules.setTitle("o0o - CCG Discord Rules - o0o");
 					achrules.setColor(config.fsemercolor);
 					achrules.setThumbnail("https://cdn.discordapp.com/attachments/420001817825509377/477289259158601729/CCG_Logo.png");
@@ -570,7 +582,7 @@ fishsticks.on('message', async msg => {
 
 				if (msg.channel == fishsticks.systemLog) {
 					console.log(`A message from ${msg.author.username} was deleted in the system log.`)
-					msg.delete();
+					msg.delete({timeout: 0});
 					return syslog(`A message from ${msg.author.username} was deleted in the system log.`, 0);
 				}
 
@@ -604,9 +616,9 @@ fishsticks.on('message', async msg => {
 							fishsticks.rejectingCommands = true;
 							
 							if (fishsticks.commandRejects < 11) {
-								msg.reply(cmdResponses.commandErrors[fishsticks.commandRejects]).then(sent => sent.delete(15000));
+								msg.reply(cmdResponses.commandErrors[fishsticks.commandRejects]).then(sent => sent.delete({timeout: 15000}));
 							} else {
-								msg.reply("You brought this on yourself! -" + Math.pow(fishsticks.commandRejects, 2) + " points!").then(sent => sent.delete(15000));
+								msg.reply("You brought this on yourself! -" + Math.pow(fishsticks.commandRejects, 2) + " points!").then(sent => sent.delete({timeout: 15000}));
 							}
 
 							fishsticks.commandRejects++;
@@ -721,7 +733,7 @@ fishsticks.on('guildMemberAdd', member => {
 	server = member.guild;
 
 	//DEFINE NEWCOMER MESSAGE
-	var join = new Discord.RichEmbed();
+	var join = new Discord.MessageEmbed();
 		join.setTitle("o0o - Welcome! - o0o")
 		join.setColor(fscolor)
 		join.setThumbnail(member.user.avatarURL)
@@ -734,7 +746,7 @@ fishsticks.on('guildMemberAdd', member => {
 	);
 
 	//SEND USER A PRIVATE MESSAGE CONCERNING GENERAL CCG RULES
-	var newMemberInfoPanel = new Discord.RichEmbed();
+	var newMemberInfoPanel = new Discord.MessageEmbed();
 		newMemberInfoPanel.setTitle("o0o - Welcome! - o0o");
 		newMemberInfoPanel.setColor(config.fscolor);
 		newMemberInfoPanel.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png");
@@ -755,10 +767,10 @@ fishsticks.on('guildMemberAdd', member => {
 			"Please also note that as a Discord user, you also agree to their terms of service. [Review them here](https://discordapp.com/guidelines)."
 		);
 	member.sendMessage({embed: newMemberInfoPanel});
-	
 
 	console.log("+USER: " + member.user.username + " joined the server.");
 	crashpad.send({embed: join});
+	crashpad.send({embed: simpleStats(fishsticks)});
 	syslog("+USER: " + member.user.username + " joined the server.", 1);
 
 });
@@ -809,7 +821,7 @@ fishsticks.on('messageReactionAdd', (postReaction, reactor) => {
 					fs.writeFileSync('./Modules/VariableMessages/messages.json', JSON.stringify(motdJson))
 
 				} else {
-					postReaction.message.channel.send("Aw, well crap. Ok, that entry has been deleted. Run the command again to start over.").then(sent => sent.delete(10000));
+					postReaction.message.channel.send("Aw, well crap. Ok, that entry has been deleted. Run the command again to start over.").then(sent => sent.delete({timeout: 10000}));
 				}
 			}
 		}
@@ -849,8 +861,8 @@ fishsticks.on('messageReactionAdd', (postReaction, reactor) => {
 		if (postReaction.message.id == pollFile.polls[pollItem].pollID) { //If the poll ID is the same as the reacted to message
 			for (reactorID in pollFile.polls[pollItem].responders) { //Sort through poll respondents
 				if (reactor.id == pollFile.polls[pollItem].responders[reactorID]) { //If a responder is found to be already in the list
-					postReaction.remove(fishsticks.users.get(reactor.id)); // Remove duplicate responder
-					return postReaction.message.channel.send("Hey " + reactor + ", don't vote more than once!").then(sent => sent.delete(7000));
+					postReaction.remove(fishsticks.users.cache.get(reactor.id)); // Remove duplicate responder
+					return postReaction.message.channel.send("Hey " + reactor + ", don't vote more than once!").then(sent => sent.delete({timeout: 7000}));
 				}
 			}
 
@@ -889,7 +901,7 @@ fishsticks.on('messageReactionRemove', (postReaction, reactor) => {
 
 					console.log("[POLL SYS] Response removed.");
 					syslog("[POLL SYS] Response removed.", 1);
-					postReaction.message.channel.send(reactor + ", response removed.").then(sent => sent.delete(10000));
+					postReaction.message.channel.send(reactor + ", response removed.").then(sent => sent.delete({timeout: 10000}));
 
 					console.log("[POLL SYS] Current respondents: " + pollFile.polls[pollItem].responders.length);
 				}

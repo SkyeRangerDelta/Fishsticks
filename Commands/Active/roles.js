@@ -5,7 +5,7 @@ const sysLogFunc = require('../../Modules/Functions/syslog.js');
 const dbQuery = require('../../Modules/Functions/db/query.js');
 
 exports.run = async (fishsticks, msg, cmd) => {
-	msg.delete();
+	msg.delete({timeout: 0});
 	
 	//System logger
 	function syslog(message, level) {
@@ -34,7 +34,7 @@ exports.run = async (fishsticks, msg, cmd) => {
 	}
 
 	if (cmd[0] == "cc") {
-		let ccRolesPanel = new Discord.RichEmbed();
+		let ccRolesPanel = new Discord.MessageEmbed();
 			ccRolesPanel.setTitle("o0o - CCG Roles Listing - o0o");
 			ccRolesPanel.setColor(config.fscolor);
 			ccRolesPanel.setFooter(`List summoned by ${msg.author.username}. List will auto-delete in 30 seconds.`);
@@ -56,7 +56,7 @@ exports.run = async (fishsticks, msg, cmd) => {
 				"**Council Member**: These are members of our all powerful Council that govern this land."
 			);
 
-			return msg.channel.send({embed: ccRolesPanel}).then(sent => sent.delete(45000));
+			return msg.channel.send({embed: ccRolesPanel}).then(sent => sent.delete({timeout: 45000}));
 	}
 
 	syslog("Attempting role list...", 2);
@@ -86,7 +86,7 @@ exports.run = async (fishsticks, msg, cmd) => {
 		unofficialRoles = "Really? Nothing here? Crazy...";
 	}
 
-	let listEmbed = new Discord.RichEmbed();
+	let listEmbed = new Discord.MessageEmbed();
 		listEmbed.setTitle("o0o - Game Roles Listing - o0o");
 		listEmbed.setColor(config.fscolor);
 		listEmbed.setFooter("List will delete itself in 30 seconds. List was summoned by " + msg.author.username);
@@ -94,28 +94,28 @@ exports.run = async (fishsticks, msg, cmd) => {
 		listEmbed.addField("Offical Roles", "__These roles are currently in effect.__\n" + officialRoles, false);
 		listEmbed.addField("Unofficial Roles", "__These roles need to be voted on before they are created.\n__" + unofficialRoles, false);
 
-	return msg.channel.send({embed: listEmbed}).then(sent => sent.delete(75000));
+	return msg.channel.send({embed: listEmbed}).then(sent => sent.delete({timeout: 75000}));
 
     //Subfunction - post embed (List)
     function postList(catsList, lastEntry) {
         if (lastEntry == 1) {
-            let catListEmbed = new Discord.RichEmbed();
+            let catListEmbed = new Discord.MessageEmbed();
                 catListEmbed.setTitle(`o0o - Game Divisions Listing [Page ${lastEntry}] - o0o`);
                 catListEmbed.setColor(config.fscolor);
                 catListEmbed.setFooter("List will delete itself in 30 seconds. List was summoned by " + msg.author.username);
                 catListEmbed.setDescription("All game roles in CC fall under at least one division. When you create a role, you have to specify one of these following divisions.");
                 catListEmbed.addField("Divisions", catsList);
 
-            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete(45000));
+            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete({timeout: 45000}));
         } else {
-            let catListEmbed = new Discord.RichEmbed();
+            let catListEmbed = new Discord.MessageEmbed();
                 catListEmbed.setTitle(`o0o - Game Divisions Listing [Page ${lastEntry}] - o0o`);
                 catListEmbed.setColor(config.fscolor);
                 catListEmbed.setFooter("List will delete itself in 30 seconds. List was summoned by " + msg.author.username);
                 catListEmbed.setDescription("Divisions, continued.");
                 catListEmbed.addField("Divisions", catsList);
 
-            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete(45000));
+            msg.channel.send({embed: catListEmbed}).then(sent => sent.delete({timeout: 45000}));
         }
 	}
 	

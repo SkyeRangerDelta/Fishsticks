@@ -2,9 +2,9 @@ const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
-    var links = new Discord.RichEmbed();
+    var links = new Discord.MessageEmbed();
 			links.setTitle("o0o - CC GAMING LINKS - o0o")
 			links.setColor(config.fscolor)
 			links.setDescription(
@@ -21,5 +21,5 @@ exports.run = (fishsticks, msg, cmd) => {
 				"[LCARS Database: Guide to Fishsticks](https://wiki.pldyn.net/en/fishsticks/general-guide)\n\n"+
 				"``This message will delete itself in 30 seconds.``")
 
-    msg.channel.send({embed: links}).then(sent => sent.delete(30000));
+    msg.channel.send({embed: links}).then(sent => sent.delete({timeout: 30000}));
 }

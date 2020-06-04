@@ -2,7 +2,7 @@
 const Discord = require('discord.js');
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     //Command breakup
     let alt = msg.content.split("-");
@@ -18,7 +18,7 @@ exports.run = (fishsticks, msg, cmd) => {
     }
     let dispatchTime = (waitTime * 60) * 1000;
 
-    msg.reply("Roger that, reminding you of whatever that is in " + waitTime + " minutes.").then(sent => sent.delete(10000));
+    msg.reply("Roger that, reminding you of whatever that is in " + waitTime + " minutes.").then(sent => sent.delete({timeout: 10000}));
 
     setTimeout(sendIt, dispatchTime, msgSent);
 

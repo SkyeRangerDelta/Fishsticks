@@ -2,9 +2,9 @@ const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
-    var rules = new Discord.RichEmbed();
+    var rules = new Discord.MessageEmbed();
 			rules.setTitle("o0o - CC DISCORD RULES - o0o")
 			rules.setColor(config.fsemercolor)
 			rules.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
@@ -21,5 +21,5 @@ exports.run = (fishsticks, msg, cmd) => {
                 "`This message will delete itself in 1 minute.`"
 			)
 
-    msg.channel.send({embed: rules}).then(sent => sent.delete(60000));
+    msg.channel.send({embed: rules}).then(sent => sent.delete({timeout: 60000}));
 }

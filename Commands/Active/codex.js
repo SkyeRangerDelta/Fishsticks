@@ -3,20 +3,14 @@ const config = require('../../Modules/Core/corecfg.json');
 const colors = require('colors');
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     let entry = cmd[0];
     console.log(colors.blue("[CODEX] Attempting to find a codex entry " + entry));
-    fishsticks.commandAttempts++;
 
-    try {
-        let codexCommand = require(`../../Commands/Active/Codex/${entry}.js`);
-        codexCommand.run(fishsticks, msg, entry);
-        msg.channel.send(`You may also wish to see the full documentation of this command: https://wiki.pldyn.net/fishsticks/command-listing#${entry}`).then(sent => sent.delete(15000));
-        console.log(colors.blue("[CODEX] Success"));
-        fishsticks.commandSuccess++;
-    } catch (codexErr) {
-        console.log(colors.cyan("[CODEX] Failed:\n" + codexErr));
-        return msg.reply("Hmm, that's not an entry in the codex. (Should it be? Ask Ranger.)").then(sent => sent.delete(20000));
-    }
+    msg.reply(`WORD OF WARNING: This command is under maintenance. The link below will work, but won't link to it's proper section if you have the command ID wrong.`).then(sent => sent.delete({timeout: 10000}));
+    msg.channel.send(`That entry can be found here: https://wiki.pldyn.net/fishsticks/command-listing#${entry}`).then(sent => sent.delete({timeout: 15000}));
+
+    fishsticks.commandAttempts++;
+    fishsticks.commandSuccess++;
 }

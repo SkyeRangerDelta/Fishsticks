@@ -4,16 +4,18 @@ const Discord = require('discord.js');
 const sys = require('../../Modules/Core/corecfg.json');
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
+
+    return msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({timeout: 10000}));
 
     if (!msg.member.roles.find("name", "Staff")) {
-        return msg.reply("This is a staff command only!").then(sent => sent.delete(10000));
+        return msg.reply("This is a staff command only!").then(sent => sent.delete({timeout: 10000}));
     }
 
     let user = msg.mentions.users.first();
 
     if (user == null || user == undefined) {
-        return msg.channel.send("I don't have those records on file...").then(sent => sent.delete(10000));
+        return msg.channel.send("I don't have those records on file...").then(sent => sent.delete({timeout: 10000}));
     }
 
     let uClient = user.client;
@@ -23,7 +25,7 @@ exports.run = (fishsticks, msg, cmd) => {
     let isBot = convertBool(user.bot);
     let lastMsg = user.lastMessage;
 
-    let reportEmbed = new Discord.RichEmbed();
+    let reportEmbed = new Discord.MessageEmbed();
         reportEmbed.setColor(sys.fscolor);
         reportEmbed.setFooter("User Info for " + user.username + " summoned by " + msg.author.username + ". Auto-Delete in 30s.");
         reportEmbed.setTitle("o0o - User Info Report - o0o");
@@ -34,7 +36,7 @@ exports.run = (fishsticks, msg, cmd) => {
         reportEmbed.addField("Ping", uClient.ping, true);
         reportEmbed.addField("Uptime", uClient.uptime + "ms", true);
 
-    msg.channel.send("Here are those files you asked for...", {embed: reportEmbed}).then(sent => sent.delete(30000));
+    msg.channel.send("Here are those files you asked for...", {embed: reportEmbed}).then(sent => sent.delete({timeout: 30000}));
 
     function convertBool(state) {
         if (state) {

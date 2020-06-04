@@ -10,7 +10,7 @@ const query = require('../../Modules/Functions/db/query.js');
 const logger = require('../../Modules/Functions/syslog.js');
 
 exports.run = async (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     var hookURL = systems.fsSuggestionHook;
 

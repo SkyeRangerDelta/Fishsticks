@@ -3,7 +3,7 @@ const config = require('../../Modules/Core/corecfg.json');
 const coresys = require('../../Modules/Core/coresys.json');
 
 exports.run = (fishsticks, msg, cmd) => {
-	msg.delete();
+	msg.delete({timeout: 0});
 	
 	function fetchStatus() {
 		if (fishsticks.subroutines.get("online")) {
@@ -14,7 +14,7 @@ exports.run = (fishsticks, msg, cmd) => {
 		}
 	}
 
-    var version = new Discord.RichEmbed();
+    var version = new Discord.MessageEmbed();
 			version.setTitle("o0o - FISHSTICKS VERSION REPORT - o0o")
 			version.setColor(config.fscolor)
 			version.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
@@ -25,5 +25,5 @@ exports.run = (fishsticks, msg, cmd) => {
 			version.addField("Complete Fishsticks Guide: ", "[KBase Article](https://forums.ccgaming.com/kb/viewarticle?a=3)");
 			version.setFooter(`Panel was summoned by ${msg.author.username}. This message will delete itself in 30 seconds.`);
 
-    msg.channel.send({embed: version}).then(sent => sent.delete(30000));
+    msg.channel.send({embed: version}).then(sent => sent.delete({timeout: 30000}));
 }

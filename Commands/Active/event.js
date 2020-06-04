@@ -5,16 +5,16 @@ const fsSystems = require('../../Modules/fs_systems.json');
 const https = require('https');
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     return msg.reply("Command Disabled until further notice.");
 
     if (msg.channel != fishsticks.consoleChannel) {
-        return msg.reply("Event commands must be sent in the " + fishsticks.consoleChannel + " channel!").then(sent => sent.delete(15000));
+        return msg.reply("Event commands must be sent in the " + fishsticks.consoleChannel + " channel!").then(sent => sent.delete({timeout: 15000}));
     }
 
     if (!(msg.member.roles.find('name', 'Staff'))) {
-        return msg.reply("You must be a staff member to add events!").then(sent => sent.delete(15000));
+        return msg.reply("You must be a staff member to add events!").then(sent => sent.delete({timeout: 15000}));
     } else if (msg.member.roles == null) {
         return;
     }
@@ -46,13 +46,13 @@ exports.run = (fishsticks, msg, cmd) => {
     if (refCmd[1] != null || refCmd[1] != undefined) {
         eventType = refCmd[1].trim();
     } else {
-        return msg.reply("You need to specify an event type! (Quick (`q`, `quick`) or Detailed (`d`, `detail`, `detailed`)?)").then(sent => sent.delete(15000));
+        return msg.reply("You need to specify an event type! (Quick (`q`, `quick`) or Detailed (`d`, `detail`, `detailed`)?)").then(sent => sent.delete({timeout: 15000}));
     }
 
     if (refCmd[2] != null || refCmd[2] != undefined) {
         eventName = refCmd[2].trim();
     } else {
-        return msg.reply("You need to specify an event name!").then(sent => sent.delete(15000));
+        return msg.reply("You need to specify an event name!").then(sent => sent.delete({timeout: 15000}));
     }
 
     if (eventType.toLowerCase() == "q" || eventType.toLowerCase() == "quick") {
@@ -60,7 +60,7 @@ exports.run = (fishsticks, msg, cmd) => {
         if (refCmd[3] != null || refCmd[3] != undefined) {
             eventHost = refCmd[3].trim();
         } else {
-            return msg.reply("You need to specify an event host!").then(sent => sent.delete(15000));
+            return msg.reply("You need to specify an event host!").then(sent => sent.delete({timeout: 15000}));
         }
 
         quickURL = fsSystems.fsCalendarHook.replace("{event}", "FS_CalEventQuick");
@@ -216,7 +216,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
 
         } else {
-            return msg.reply("You need to specify an event start time! (In MO:DD:YYYY:HH:MM:APM format)").then(sent => sent.delete(15000));
+            return msg.reply("You need to specify an event start time! (In MO:DD:YYYY:HH:MM:APM format)").then(sent => sent.delete({timeout: 15000}));
         }
 
     }

@@ -11,7 +11,7 @@ const fsconfig = require('../../Modules/Core/corecfg.json');
 let roll = new rollLib();
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     //Command Breakup
     let cmdArgs = msg.content.toLowerCase().split(' ');
@@ -27,7 +27,7 @@ exports.run = (fishsticks, msg, cmd) => {
     let valid = roll.validate(dieRoll);
 
     if (!valid) {
-        return msg.reply("That doesn't look like a valid roll, hit me again.").then(sent => sent.delete(10000));
+        return msg.reply("That doesn't look like a valid roll, hit me again.").then(sent => sent.delete({timeout: 10000}));
     }
 
     //Handle Roll(s)
@@ -56,7 +56,7 @@ exports.run = (fishsticks, msg, cmd) => {
     }
 
     //Build embed
-    let rollPanel = new Discord.RichEmbed();
+    let rollPanel = new Discord.MessageEmbed();
         rollPanel.setTitle("🎲 Rolling the dice 🎲");
         rollPanel.setColor(fsconfig.fscolor);
         rollPanel.setFooter(`Random dice roller. Queried by ${msg.author.username}`);

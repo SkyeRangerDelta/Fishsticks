@@ -8,7 +8,7 @@ const log = require('../../Modules/Functions/syslog.js');
 const apik = gip.tenorapi;
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     //LOGGER
     function syslog(message, level) {
@@ -35,7 +35,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
             if (!res || !res.body || !res.body.results) {
                 syslog("[GIF-COMM] No content found. Res error?", 2);
-                return msg.reply("I can't find a GIF like that it would seem.").then(sent => sent.delete(15000));
+                return msg.reply("I can't find a GIF like that it would seem.").then(sent => sent.delete({timeout: 15000}));
             }
 
             syslog(`[GIF-COMM] Embed URL: ${res.body.results[0].url}`, 1);
@@ -45,7 +45,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
         } catch (error) {
             console.log("[GIF-COMM] Something went wrong in the gif script.\n" + error)
-            msg.reply("Looks like that didn't have any results...interesting.").then(sent => sent.delete(10000));
+            msg.reply("Looks like that didn't have any results...interesting.").then(sent => sent.delete({timeout: 10000}));
         }
     }
 }

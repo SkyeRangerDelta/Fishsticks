@@ -6,13 +6,16 @@ const ses = require('../../Modules/fs_ids.json');
 const fssys = require('fs');
 
 const subroutines = require('../../Modules/Functions/subRoutines.js');
+const {fullStats} = require('../../Modules/Functions/serverStats');
 
 const actDir = './Commands/Active';
 const pasDir = './Commands/Passive/';
 const botDir = './';
 
 exports.run = async (fishsticks, msg, cmd) => {
-	msg.delete();
+	msg.delete({timeout: 0});
+
+	let fullStatsPanel = await fullStats(fishsticks);
 
 	console.log("Requesting subroutines state.");
 	await subroutines.run(fishsticks);
@@ -55,12 +58,12 @@ exports.run = async (fishsticks, msg, cmd) => {
 				}
 
 				msg.reply("*Word of Warning: This command uses a library that is under FSO migration development. Efficiency ratings are likely wrong or downright not working.*")
-					.then(sent => sent.delete(10000));
+					.then(sent => sent.delete({timeout: 10000}));
 
 				if (engmode == true) {
 					console.log("ENGM is on.");
 
-					var statusENG = new Discord.RichEmbed();
+					var statusENG = new Discord.MessageEmbed();
 					statusENG.setTitle("o0o - FISHSTICKS STATUS REPORT - o0o");
 					statusENG.setColor(config.fscolor);
 					statusENG.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
@@ -89,15 +92,15 @@ exports.run = async (fishsticks, msg, cmd) => {
 					statusENG.addField("__Vouch System__", evalRoutine("vouch"), true);
 					statusENG.addField("__N. Link Screen__", evalRoutine("nlinkscn"), true);
 					statusENG.addField("__Poll System__", evalRoutine("poll"), true);
-					statusENG.addBlankField();
 					statusENG.addField("System Efficiency: ", fishsticks.eff + "%");
 			
-					msg.channel.send({embed: statusENG}).then(sent => sent.delete(45000));
+					msg.channel.send({embed: statusENG}).then(sent => sent.delete({timeout: 45000}));
+					msg.channel.send({embed: fullStatsPanel}).then(sent => sent.delete({timeout: 45000}));
 				}
 				else {
 					console.log("ENGM is off.");
 					
-					var status = new Discord.RichEmbed();
+					var status = new Discord.MessageEmbed();
 					status.setTitle("o0o - FISHSTICKS STATUS REPORT - o0o");
 					status.setColor(config.fscolor);
 					status.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
@@ -127,12 +130,11 @@ exports.run = async (fishsticks, msg, cmd) => {
 					status.addField("__N. Link Screen__", evalRoutine("nlinkscn"), true);
 					status.addField("__Poll System__", evalRoutine("poll"), true);
 					status.addField("__Game Roles__", evalRoutine("gamerole"), true);
-					status.addBlankField();
 					status.addField("__Database Connection__", fishsticks.dbaseConnection, true);
-					status.addBlankField();
 					status.addField("System Efficiency: ", fishsticks.eff + "%");
 			
-					msg.channel.send({embed: status}).then(sent => sent.delete(45000));
+					msg.channel.send({embed: status}).then(sent => sent.delete({timeout: 45000}));
+					msg.channel.send({embed: fullStatsPanel}).then(sent => sent.delete({timeout: 45000}));
 				}
 			});
 		});

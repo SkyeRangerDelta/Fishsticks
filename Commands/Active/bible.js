@@ -6,7 +6,7 @@ const bibApi = apiindex.bibleAPI;
 const https = require('https');
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     //Command breakup
     /*
@@ -39,7 +39,7 @@ exports.run = (fishsticks, msg, cmd) => {
         if (typeof cmdArgs[2] == typeof "blah") {
             params.book = cmdArgs[2]
         } else {
-            return msg.reply("Books titles are names not numbers.").then(sent => sent.delete(10000));
+            return msg.reply("Books titles are names not numbers.").then(sent => sent.delete({timeout: 10000}));
         }
     }
 
@@ -122,10 +122,10 @@ async function buildPayload(paramObj, msg) {
 
             let received = JSON.parse(content);
             if (received.passages[0].length > 2048) {
-                return msg.reply("The passage is too large! Try breaking it into smaller verses.").then(sent => sent.delete(10000));
+                return msg.reply("The passage is too large! Try breaking it into smaller verses.").then(sent => sent.delete({timeout: 10000}));
             }
 
-            let verseEmbed = new Discord.RichEmbed();
+            let verseEmbed = new Discord.MessageEmbed();
                 verseEmbed.setTitle(`o0o - Bible (ESV) - o0o`);
                 verseEmbed.setColor(config.fscolor);
                 verseEmbed.setDescription(received.passages);

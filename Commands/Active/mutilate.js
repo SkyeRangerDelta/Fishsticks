@@ -1,7 +1,7 @@
 //----MUTILATE----
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     let rawInput = cmd.join(' ');
     let msgToMutilate = rawInput.split('');

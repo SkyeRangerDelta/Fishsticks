@@ -9,7 +9,9 @@ const syslogFunc = require('../../Modules/Functions/syslog.js');
 var tempChannels = [];
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
+
+    return msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({timeout: 10000}));
 
     function syslog(message, level) {
         syslogFunc.run(fishsticks, "[TEMP-CHA] " + message, level);
@@ -36,14 +38,14 @@ exports.run = (fishsticks, msg, cmd) => {
         
                     var tempChannelCategory = chs.tempchannelCat;
                     var channelCloner = chs.fs_vcclone;
-                    var channelClonerClone = fishsticks.channels.get(chs.fs_vcclone);
+                    var channelClonerClone = fishsticks.channels.cache.get(chs.fs_vcclone);
                     var tchID;
         
                     var user = msg.member;
                     const userVC = user.voiceChannelID;
         
                     if (userVC == undefined || userVC != channelCloner) {
-                        msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete(15000));
+                        msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete({timeout: 15000}));
                     }
                     else if (userVC === channelCloner) {
                         channelClonerClone.clone(tname)
@@ -56,7 +58,7 @@ exports.run = (fishsticks, msg, cmd) => {
                         syslog("Channel " + tname + " has ID: " + tchID, 2);
                         syslog("Temp Channels now include " + fishsticks.tempChannels.length + " channels of IDs: ", 2);
         
-                        msg.reply("Channel created!").then(sent => sent.delete(15000));
+                        msg.reply("Channel created!").then(sent => sent.delete({timeout: 15000}));
         
                         for (x = 0; x < fishsticks.tempChannels.length; x++) {
                             syslog(fishsticks.tempChannels[x], 1);
@@ -66,7 +68,7 @@ exports.run = (fishsticks, msg, cmd) => {
         
                         if (maxUsers > 1) {
                             clone.setUserLimit(maxUsers).then(clone => syslog("Channel '" + tname + "' set max users to " + maxUsers, 1))
-                            msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete(15000));
+                            msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete({timeout: 15000}));
                         }
                         else if (maxUsers = null) {
         
@@ -98,14 +100,14 @@ exports.run = (fishsticks, msg, cmd) => {
 
                 var tempChannelCategory = chs.tempchannelCat;
                 var channelCloner = chs.fs_vcclone;
-                var channelClonerClone = fishsticks.channels.get(chs.fs_vcclone);
+                var channelClonerClone = fishsticks.channels.cache.get(chs.fs_vcclone);
                 var tchID;
 
                 var user = msg.member;
                 const userVC = user.voiceChannelID;
 
                 if (userVC == undefined || userVC != channelCloner) {
-                    msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete(15000));
+                    msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete({timeout: 15000}));
                 }
                 else if (userVC === channelCloner) {
                     channelClonerClone.clone(tname)
@@ -118,7 +120,7 @@ exports.run = (fishsticks, msg, cmd) => {
                     syslog("Channel " + tname + " has ID: " + tchID, 2);
                     syslog("Temp Channels now include " + fishsticks.tempChannels.length + " channels of IDs: ", 2);
 
-                    msg.reply("Channel created!").then(sent => sent.delete(15000));
+                    msg.reply("Channel created!").then(sent => sent.delete({timeout: 15000}));
 
                     for (x = 0; x < fishsticks.tempChannels.length; x++) {
                         syslog(fishsticks.tempChannels[x], 1);
@@ -128,7 +130,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
                     if (maxUsers > 1) {
                         clone.setUserLimit(maxUsers).then(clone => syslog("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers, 1))
-                        msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete(15000));
+                        msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete({timeout: 15000}));
                     }
                     else if (maxUsers = null) {
 
@@ -147,6 +149,6 @@ exports.run = (fishsticks, msg, cmd) => {
         }
     }
     else {
-        msg.reply("This subroutine is disabled! Ask " + fishsticks.ranger + " or another Staff member to turn it back on!").then(sent => sent.delete(15000));
+        msg.reply("This subroutine is disabled! Ask " + fishsticks.ranger + " or another Staff member to turn it back on!").then(sent => sent.delete({timeout: 15000}));
     }
 }

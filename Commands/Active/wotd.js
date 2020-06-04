@@ -4,7 +4,7 @@ const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     const statement = msg.content.split('-');
 
@@ -40,7 +40,7 @@ exports.run = (fishsticks, msg, cmd) => {
     }
 
     //Create embed object
-    let wotdEmbed = new Discord.RichEmbed();
+    let wotdEmbed = new Discord.MessageEmbed();
         wotdEmbed.setColor(config.fscolor);
         wotdEmbed.setTitle("Word of the Day");
         wotdEmbed.addField(embedData.TITLE, embedData.SCRIPTURE , false);

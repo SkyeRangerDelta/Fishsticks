@@ -9,7 +9,7 @@ const fsconfig = require('../../Modules/Core/corecfg.json');
 let docketJson;
 
 exports.run = async (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
     docketJson = await loadJSON();
 
     //Syntax: !docket -[func] -[parameters]
@@ -53,7 +53,7 @@ function saveJSON(jsonObj) {
 function docketAdd(content, msg) {
     console.log("[DOCKET] Adding to the docket");
 
-    let handleDate = `**${msg.author.username}**: ${msg.createdAt.getMonth()}/${msg.createdAt.getDate()}/${msg.createdAt.getFullYear()} @ ${msg.createdAt.getHours()}:${msg.createdAt.getMinutes()}`;
+    let handleDate = `**${msg.author.username}**: ${msg.createdAt.getMonth() + 1}/${msg.createdAt.getDate()}/${msg.createdAt.getFullYear()} @ ${msg.createdAt.getHours()}:${msg.createdAt.getMinutes()}`;
     let subject = content.slice(2).join(' ');
 
     let docketObj = {
@@ -66,28 +66,28 @@ function docketAdd(content, msg) {
 
     saveJSON(docketJson);
 
-    return msg.reply("Added to the docket!").then(sent => sent.delete(10000));
+    return msg.reply("Added to the docket!").then(sent => sent.delete({timeout: 10000}));
 }
 
 function loadDocketItems(msg) {
     let descMsg = "";
 
     if (docketJson.docketItems.length == 0 || docketJson.docketItems == null) {
-        return msg.channel.send("**No items on the docket.**\n*Add one using `!docket -add`.*").then(sent => sent.delete(10000));
+        return msg.channel.send("**No items on the docket.**\n*Add one using `!docket -add`.*").then(sent => sent.delete({timeout: 10000}));
     }
 
     for (item in docketJson.docketItems) {
         descMsg = descMsg.concat("- " + docketJson.docketItems[item] + "\n");
     }
 
-    let docketEmbed = new Discord.RichEmbed();
+    let docketEmbed = new Discord.MessageEmbed();
         docketEmbed.setTitle("o0o - Meeting Docket - o0o");
         docketEmbed.setColor(fsconfig.fscolor);
         docketEmbed.setFooter("List will delete in 1 minute. List summoned by " + msg.author.username + ".");
         docketEmbed.setDescription("Meeting items for discussion:");
         docketEmbed.fields = docketJson.docketItems;
 
-    return msg.channel.send({embed: docketEmbed}).then(sent => sent.delete(60000));
+    return msg.channel.send({embed: docketEmbed}).then(sent => sent.delete({timeout: 60000}));
 }
 
 async function docketClear(fishsticks, msg) {
@@ -98,7 +98,7 @@ async function docketClear(fishsticks, msg) {
     }
     let done = await permsCheck.run(fishsticks, msg.member, permissions);
     if (!done) {
-        msg.reply("Only staff can clear the docket!").then(sent => sent.delete(10000));
+        msg.reply("Only staff can clear the docket!").then(sent => sent.delete({timeout: 10000}));
     }
 
     console.log("[DOCKET] Clearing docket");
@@ -109,5 +109,5 @@ async function docketClear(fishsticks, msg) {
 
     saveJSON(jsonContent);
 
-    return msg.reply("Docket cleared!").then(sent => sent.delete(10000));
+    return msg.reply("Docket cleared!").then(sent => sent.delete({timeout: 10000}));
 }

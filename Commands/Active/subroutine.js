@@ -5,7 +5,7 @@ const subroutinesCheck = require('../../Modules/Functions/subroutineCheck.js');
 const query = require('../../Modules/Functions/db/query.js');
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     let toggle = cmd[0].toLowerCase();
     let systemRoutine = cmd[1];
@@ -53,7 +53,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
                 //fishsticks.subroutines.set(systemRoutine, true);
                 syslog.run(fishsticks, "[*SUBR_CON*] Subroutine: " + systemRoutine + " has been enabled by " + msg.author.tag, 3);
-                return msg.reply("Subroutine " + systemRoutine + " enabled.").then(sent => sent.delete(20000));
+                return msg.reply("Subroutine " + systemRoutine + " enabled.").then(sent => sent.delete({timeout: 20000}));
             }
             else {
                 return;
@@ -65,7 +65,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
                 //fishsticks.subroutines.set(systemRoutine, false);
                 syslog.run(fishsticks, "[*SUBR_CON*] Subroutine: " + systemRoutine + " has been disabled by " + msg.author.tag, 3);
-                return msg.reply("Subroutine " + systemRoutine + " disabled.").then(sent => sent.delete(20000)); 
+                return msg.reply("Subroutine " + systemRoutine + " disabled.").then(sent => sent.delete({timeout: 20000})); 
             }
             else if (await checkToggle() == false) {
                 syslog.run(fishsticks, "[*SUBR-CON*] Subroutine was found already disabled.", 3);
@@ -77,7 +77,7 @@ exports.run = (fishsticks, msg, cmd) => {
         }
         else {
             syslog.run(fishsticks, "[*SUBR-CON*] Improper toggle parameter. Rejected.", 3);
-            return msg.reply("That's not a proper state change! Must be `enable` or `disable`.").then(sent => sent.delete(10000));
+            return msg.reply("That's not a proper state change! Must be `enable` or `disable`.").then(sent => sent.delete({timeout: 10000}));
         }
     }
 
@@ -85,7 +85,7 @@ exports.run = (fishsticks, msg, cmd) => {
         if (msg.member.roles.find("name", "Staff")) {
             if (cmd[2] == "active") {
                 if (msg.author.id == fishsticks.ranger.id) {
-                    msg.reply("ALPHA LEVEL COMMAND: Subroutine clearance allowed.").then(sent => sent.delete(15000));
+                    msg.reply("ALPHA LEVEL COMMAND: Subroutine clearance allowed.").then(sent => sent.delete({timeout: 15000}));
                     result();
                 }
                 else {
@@ -98,7 +98,7 @@ exports.run = (fishsticks, msg, cmd) => {
                     result();
                 }
                 else {
-                    msg.reply("I'd be very careful with what you're toying with.").then(sent => sent.delete(15000));
+                    msg.reply("I'd be very careful with what you're toying with.").then(sent => sent.delete({timeout: 15000}));
                     msg.channel.send("To confirm the change, type exactly this: `confirm change`.");
 
                     var confirm;
@@ -111,14 +111,14 @@ exports.run = (fishsticks, msg, cmd) => {
                         });
                     } catch (error) {
                         syslog.run(fishsticks, "[*SUBR-CON*] " + msg.author.username + " timed out in confirming a subroutine change.", 3);
-                        msg.reply("You didn't confirm the change, negating request.").then(sent => sent.delete(15000));
+                        msg.reply("You didn't confirm the change, negating request.").then(sent => sent.delete({timeout: 15000}));
                     }
 
                     if (confirm) {
                        return result();
                     }
                     else {
-                        msg.reply("Subroutine change negated.").then(sent => sent.delete(15000));
+                        msg.reply("Subroutine change negated.").then(sent => sent.delete({timeout: 15000}));
                     }
                 }
             }

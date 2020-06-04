@@ -4,7 +4,7 @@ const fs = require('fs');
 const log = require('../../Modules/Functions/log.js');
 
 exports.run = async (fishsticks, msg, cmd) => {
-	msg.delete();
+	msg.delete({timeout: 0});
 
     //LOGGER INITIALZE
 	function syslog(message, level) {
@@ -22,7 +22,7 @@ exports.run = async (fishsticks, msg, cmd) => {
             runCmd();
         }
         else {
-            return msg.reply("You're not trusted enough to vouch for someone!").then(sent => sent.delete(15000));
+            return msg.reply("You're not trusted enough to vouch for someone!").then(sent => sent.delete({timeout: 15000}));
         }
     }
     else {
@@ -34,12 +34,12 @@ exports.run = async (fishsticks, msg, cmd) => {
         let recognized = msg.guild.roles.find('name', 'Recognized');
         let vouchee = msg.author.id;
         let userID = cmd[0].replace(/[\\<>@#&!]/g, "");
-        let userToVouch = fishsticks.users.get(userID);
+        let userToVouch = fishsticks.users.cache.get(userID);
         let vouchedFor = false;
 
         msg.guild.fetchMember(userToVouch).then(mem => {
             if (mem.roles.find("name", "Recognized")) {
-                msg.reply("Why are you vouching for someone who is already Recognized? Don't be dumb. :facepalm:").then(sent => sent.delete(20000));
+                msg.reply("Why are you vouching for someone who is already Recognized? Don't be dumb. :facepalm:").then(sent => sent.delete({timeout: 20000}));
                 return;
             }
         });
@@ -56,13 +56,13 @@ exports.run = async (fishsticks, msg, cmd) => {
 
                         for (t in vouchesFile.vouches[i].userIDs) { //If the voucher has already vouched for the vouchee
                             if (vouchesFile.vouches[i].userIDs[t] == msg.author.id) {
-                                return msg.reply("You can't vouch for the same person twice! Get outta here...").then(sent => sent.delete(15000));
+                                return msg.reply("You can't vouch for the same person twice! Get outta here...").then(sent => sent.delete({timeout: 15000}));
                             }
                         }
 
                         vouchesFile.vouches[i].vouches++;
                         vouchesFile.vouches[i].userIDs.push(msg.author.id);
-                        msg.reply("You've vouched for " + userToVouch.username + "! Granting them Recognized!").then(sent => sent.delete(10000));
+                        msg.reply("You've vouched for " + userToVouch.username + "! Granting them Recognized!").then(sent => sent.delete({timeout: 10000}));
                         msg.channel.send(userToVouch.username + " has been granted Recognized.");
                         msg.guild.fetchMember(userToVouch).then(vouchPerson => {
                             vouchPerson.addRole(recognized);

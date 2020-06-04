@@ -13,7 +13,7 @@ const YouTube = require('simple-youtube-api');
 const yt = new YouTube(syst.googleYT_API);
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     //LOGGER
     function syslog(message, level) {
@@ -29,7 +29,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
     syslog("Command attempted - halted due to defective state.", 3);
 
-    let defective = new Discord.RichEmbed();
+    let defective = new Discord.MessageEmbed();
         defective.setTitle("o0o - Command Defective - o0o");
         defective.setColor(config.fscolor);
         defective.setDescription(embeds.commands.defective);
@@ -43,11 +43,11 @@ exports.run = (fishsticks, msg, cmd) => {
     
     fishsticks.playlist = fishsticks.queue.get(msg.guild.id);
 
-    var hangoutVC = fishsticks.channels.get(chs.hangoutVC);
-    let artGallery = fishsticks.channels.get(chs.artGallery);
-    var channelSpawner = fishsticks.channels.get(chs.fs_vcclone);
-    var ranger = fishsticks.users.get("107203929447616512");
-    var logger = fishsticks.channels.get(chs.musiclog);
+    var hangoutVC = fishsticks.channels.cache.get(chs.hangoutVC);
+    let artGallery = fishsticks.channels.cache.get(chs.artGallery);
+    var channelSpawner = fishsticks.channels.cache.get(chs.fs_vcclone);
+    var ranger = fishsticks.users.cache.get("107203929447616512");
+    var logger = fishsticks.channels.cache.get(chs.musiclog);
 
     const url = cmd[0] ? cmd[0].replace(/<(.+)>/g, '$1') : '';
     var searchString = cmd.slice(0).join(' ');
@@ -94,7 +94,7 @@ exports.run = (fishsticks, msg, cmd) => {
                     await handleStuff(video2, msg, memberVC, true);
                 }
 
-                var playlistInfoPanel = new Discord.RichEmbed();
+                var playlistInfoPanel = new Discord.MessageEmbed();
                     playlistInfoPanel.setTitle("o0o - Playlist Added - o0o");
                     playlistInfoPanel.setColor(config.fscolor);
                     playlistInfoPanel.setDescription(
@@ -123,7 +123,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
                         let searchIndex = 0;
         
-                        var searchResult = new Discord.RichEmbed();
+                        var searchResult = new Discord.MessageEmbed();
                             searchResult.setTitle("o0o - Player Search Result - o0o");
                             searchResult.setColor(config.fscolor);
                             searchResult.setDescription(
@@ -383,7 +383,7 @@ exports.run = (fishsticks, msg, cmd) => {
                         fishsticks.musicPlaying = true;
 
                         if (!playlist) {
-                            var videoInfoPanel = new Discord.RichEmbed();
+                            var videoInfoPanel = new Discord.MessageEmbed();
                                 videoInfoPanel.setTitle("o0o - New Song Added - o0o");
                                 videoInfoPanel.setColor(config.fscolor);
                                 videoInfoPanel.setDescription(
@@ -410,7 +410,7 @@ exports.run = (fishsticks, msg, cmd) => {
                         return;
                     }
                     else {
-                        var videoInfoPanel = new Discord.RichEmbed();
+                        var videoInfoPanel = new Discord.MessageEmbed();
                             videoInfoPanel.setTitle("o0o - New Song Added - o0o");
                             videoInfoPanel.setColor(config.fscolor);
                             videoInfoPanel.setDescription(
@@ -452,7 +452,7 @@ exports.run = (fishsticks, msg, cmd) => {
             
             dispatch.setVolumeLogarithmic(fishsticks.serverQueue.volume / 5);
 
-            var nowPlayingPanel = new Discord.RichEmbed();
+            var nowPlayingPanel = new Discord.MessageEmbed();
                 nowPlayingPanel.setTitle("o0o - Now Playing - o0o");
                 nowPlayingPanel.setColor(config.fscolor);
                 nowPlayingPanel.setDescription(

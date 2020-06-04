@@ -2,11 +2,11 @@ const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     if (fishsticks.engmode == false) {
 
-        var help1 = new Discord.RichEmbed();
+        var help1 = new Discord.MessageEmbed();
 			help1.setTitle("o0o - FISHSTICKS HELP - o0o");
 			help1.setColor(config.fscolor);
 			help1.setDescription(
@@ -27,7 +27,7 @@ exports.run = (fishsticks, msg, cmd) => {
 				"`!status`: Displays current running information for Fishsticks."
 			);
 		
-		var help2 = new Discord.RichEmbed();
+		var help2 = new Discord.MessageEmbed();
 			help2.setTitle("o0o - DIVISION COMMANDS - o0o");
 			help2.setColor(config.fscolor);
 			help2.setDescription(
@@ -36,7 +36,7 @@ exports.run = (fishsticks, msg, cmd) => {
 				"`!role`: Allows use of game role/division based functions."
 			);
 
-		var help3 = new Discord.RichEmbed();
+		var help3 = new Discord.MessageEmbed();
 			help3.setTitle("o0o - CC MEMBER COMMANDS - o0o");
 			help3.setColor(config.fscolor);
 			help3.setDescription(
@@ -47,14 +47,14 @@ exports.run = (fishsticks, msg, cmd) => {
 				"`!vouch [@user]`: Adds a vouch for a newcomer to become recognized. Each person requires at least two vouches to be granted Recognized."
 			);
 		
-		var musichelp = new Discord.RichEmbed();
+		var musichelp = new Discord.MessageEmbed();
 			musichelp.setTitle("o0o - MUSIC PLAYER COMMANDS - o0o");
 			musichelp.setColor(config.fscolor);
 			musichelp.setDescription(
 				"*Music player commands are temporarily disabled until further notice.*"
 			);
 
-		var help4 = new Discord.RichEmbed();
+		var help4 = new Discord.MessageEmbed();
 			help4.setTitle("o0o - ADMINISTRATIVE COMMANDS - o0o");
 			help4.setColor(config.fscolor);
 			help4.setDescription(
@@ -64,14 +64,14 @@ exports.run = (fishsticks, msg, cmd) => {
 				"`!userinfo @user`: Generates a detailed report on a user."
 			);
         
-		msg.channel.send({embed: help1}).then(sent => sent.delete(64000));
-		msg.channel.send({embed: help2}).then(sent => sent.delete(63000));
-		msg.channel.send({embed: help3}).then(sent => sent.delete(62000));
-		msg.channel.send({embed: musichelp}).then(sent => sent.delete(61000));
-		msg.channel.send({embed: help4}).then(sent => sent.delete(60000));
+		msg.channel.send({embed: help1}).then(sent => sent.delete({timeout: 64000}));
+		msg.channel.send({embed: help2}).then(sent => sent.delete({timeout: 63000}));
+		msg.channel.send({embed: help3}).then(sent => sent.delete({timeout: 62000}));
+		msg.channel.send({embed: musichelp}).then(sent => sent.delete({timeout: 61000}));
+		msg.channel.send({embed: help4}).then(sent => sent.delete({timeout: 60000}));
     }
     else {
-        var helpeng = new Discord.RichEmbed();
+        var helpeng = new Discord.MessageEmbed();
 		helpeng.setTitle("o0o - FISHSTICKS HELP (ENGM) - o0o")
 		helpeng.setColor(config.fscolor)
 		helpeng.setDescription(
@@ -107,6 +107,6 @@ exports.run = (fishsticks, msg, cmd) => {
 			"``This menu will delete itself in 45 seconds.``"
 		)
 
-        msg.channel.send({embed: helpeng}).then(sent => sent.delete(45000));
+        msg.channel.send({embed: helpeng}).then(sent => sent.delete({timeout: 45000}));
     }
 }

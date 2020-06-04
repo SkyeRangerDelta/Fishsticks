@@ -21,7 +21,7 @@ exports.run = (title, color, syntaxBuilder, description) => {
         exceptText = exceptText + "\n->" + syntaxBuilder.exceptions[except];
     }
 
-    var embed = new Discord.RichEmbed();
+    var embed = new Discord.MessageEmbed();
         embed.setTitle("o0o - CODEX [" + title + "] - o0o");
         embed.setColor(color);
         embed.setDescription(embedDescriptor + "\n\n__**Parameters**__" + paramText);

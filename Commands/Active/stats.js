@@ -5,15 +5,15 @@ const query = require('../../Modules/Functions/db/query.js');
 const syslog = require('../../Modules/Functions/syslog.js');
 
 exports.run = async (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
-    msg.reply("Hold tight while I crunch them tasty numbers.").then(sent => sent.delete(10000));
+    msg.reply("Hold tight while I crunch them tasty numbers.").then(sent => sent.delete({timeout: 10000}));
 
     function log(message, level) {
         syslog.run(fishsticks, "[GR-STATS] " + message, level);
     }
 
-    let statsReportPanel = new Discord.RichEmbed();
+    let statsReportPanel = new Discord.MessageEmbed();
         statsReportPanel.setColor(cfg.fscolor);
         statsReportPanel.setTitle("o0o - Gameroles Subroutine Report - o0o");
         statsReportPanel.setDescription("The game roles subroutine (Logged as [GAME-ROLES]) is a *very* large subsystem, currently the largest subroutine that runs" +
@@ -127,8 +127,8 @@ exports.run = async (fishsticks, msg, cmd) => {
         "Most recent role ping date: `" + latestPingDate + "`\n"+
         "Member Count: `" + memberCount + "`");
 
-    msg.channel.send("Crunch done!").then(sent => sent.delete(5000));
-    msg.channel.send({embed: statsReportPanel}).then(sent => sent.delete(60000));
+    msg.channel.send("Crunch done!").then(sent => sent.delete({timeout: 5000}));
+    msg.channel.send({embed: statsReportPanel}).then(sent => sent.delete({timeout: 60000}));
 
     //Prep Roles Info
     let rolePanelList = ""
@@ -149,23 +149,23 @@ exports.run = async (fishsticks, msg, cmd) => {
 
     function postPanelReport(theList, page) {
         if (page == 1) {
-            let roleListPanel = new Discord.RichEmbed();
+            let roleListPanel = new Discord.MessageEmbed();
                 roleListPanel.setTitle(`o0o - Game Roles Subroutine Report [Roles Page ${page}] - o0o`);
                 roleListPanel.setColor(cfg.fscolor);
                 roleListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
                 roleListPanel.setDescription(`Each game role presented here is represented from an acitivity perspective. Each role lists it's pings and last known ping.`);
                 roleListPanel.addField(`Ping Stats`, theList);
             
-            msg.channel.send({embed: roleListPanel}).then(sent => sent.delete(30000));
+            msg.channel.send({embed: roleListPanel}).then(sent => sent.delete({timeout: 30000}));
         } else {
-            let roleListPanel = new Discord.RichEmbed();
+            let roleListPanel = new Discord.MessageEmbed();
                 roleListPanel.setTitle(`o0o - Game Roles Subroutine Report [Roles Page ${page}] - o0o`);
                 roleListPanel.setColor(cfg.fscolor);
                 roleListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
                 roleListPanel.setDescription(`Game role stats, continued.`);
                 roleListPanel.addField(`Ping Stats`, theList);
             
-            msg.channel.send({embed: roleListPanel}).then(sent => sent.delete(30000));
+            msg.channel.send({embed: roleListPanel}).then(sent => sent.delete({timeout: 30000}));
         }
     }
 
@@ -189,23 +189,23 @@ exports.run = async (fishsticks, msg, cmd) => {
 
     function postDivPanelReport(theDivList, altPage) {
         if (altPage == 1) {
-            let divListPanel = new Discord.RichEmbed();
+            let divListPanel = new Discord.MessageEmbed();
                 divListPanel.setTitle(`o0o - Game Roles Subroutine Report [Divisions Page ${altPage}] - o0o`);
                 divListPanel.setColor(cfg.fscolor);
                 divListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
                 divListPanel.setDescription(`Each game role division is shown here with the number of roles associated with it.`);
                 divListPanel.addField(`Division Stats`, theDivList);
             
-            msg.channel.send({embed: divListPanel}).then(sent => sent.delete(30000));
+            msg.channel.send({embed: divListPanel}).then(sent => sent.delete({timeout: 30000}));
         } else {
-            let divListPanel = new Discord.RichEmbed();
+            let divListPanel = new Discord.MessageEmbed();
                 divListPanel.setTitle(`o0o - Game Role Subroutine Report [Divisions Page ${altPage}] - o0o`);
                 divListPanel.setColor(cfg.fscolor);
                 divListPanel.setFooter(`List will delete itself in 30 seconds. List was summoned by ${msg.author.username}`);
                 divListPanel.setDescription(`Game role stats, continued.`);
                 divListPanel.addField(`Division Stats`, theDivList);
             
-            msg.channel.send({embed: divListPanel}).then(sent => sent.delete(30000));
+            msg.channel.send({embed: divListPanel}).then(sent => sent.delete({timeout: 30000}));
         }
     }
 }

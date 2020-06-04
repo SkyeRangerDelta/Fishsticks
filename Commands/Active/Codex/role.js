@@ -3,7 +3,7 @@ const config = require('../../../Modules/Core/corecfg.json');
 
 exports.run = (fishsticks, msg, entry) => {
     
-    let roleCodex = new Discord.RichEmbed();
+    let roleCodex = new Discord.MessageEmbed();
         roleCodex.setColor(config.fscolor);
         roleCodex.setTitle("o0o - CODEX [ROLE] - o0o");
         roleCodex.setFooter("Codex entry summoned by " + msg.author.username + ". Auto-delete in 30s.");
@@ -21,5 +21,5 @@ exports.run = (fishsticks, msg, entry) => {
         roleCodex.addField("Command Description", "The role command opens the ability to create and manipulate game roles. Created game roles start out as unofficial and must obtain 5 votes from different uses to become official. Becoming official adds it as a pingable (@role) group that users can join.");
         roleCodex.addField("Exceptions", "-> None");
 
-    msg.channel.send({embed: roleCodex}).then(sent => sent.delete(30000));
+    msg.channel.send({embed: roleCodex}).then(sent => sent.delete({timeout: 30000}));
 }

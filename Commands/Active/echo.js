@@ -11,9 +11,11 @@ let permissions = {
 };
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
-    const announcements = fishsticks.channels.get(chs.announcements);
+    return msg.reply('Command deactivated until V18 fixes. **You will need to make the announcement yourself. Skye knows this is an absolute mess, but V18 will fix it.**').then(sent => sent.delete({timeout: 15000}));
+
+    const announcements = fishsticks.channels.cache.get(chs.announcements);
 
     function echoFunc(statement) {
         announcements.send(statement);
@@ -25,7 +27,7 @@ exports.run = (fishsticks, msg, cmd) => {
                 if (msg.member.roles.find('name', 'Bot')) {
                     syslog.run(fishsticks, "[ECHO-CMD] ENGM Override Executed: Permission granted to " + msg.author.tag, 1);
     
-                    msg.reply("ENGM Override Recognized. Granting permissions to " + msg.author.tag + ".").then(sent => sent.delete(10000));
+                    msg.reply("ENGM Override Recognized. Granting permissions to " + msg.author.tag + ".").then(sent => sent.delete({timeout: 10000}));
     
                     var milTime;
 
@@ -37,7 +39,7 @@ exports.run = (fishsticks, msg, cmd) => {
                     }
 
                     if (typeof milTime != 'number' || isNaN(milTime)) {
-                        return msg.reply(`Hol' up, I can't wait '${cmd[0]}' minutes. That's gonna need to be a number.`).then(sent => sent.delete(15000));
+                        return msg.reply(`Hol' up, I can't wait '${cmd[0]}' minutes. That's gonna need to be a number.`).then(sent => sent.delete({timeout: 15000}));
                     }
 
                     if (milTime < 0) {
@@ -50,7 +52,7 @@ exports.run = (fishsticks, msg, cmd) => {
                     var relayMSg = cmd.splice(1).join(' ');
 
                     syslog.run(fishsticks, "[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg, 1);
-                    msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete(10000));
+                    msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete({timeout: 10000}));
 
                     setTimeout(echoFunc, cmdTime, "here " + relayMSg);
                 }
@@ -69,7 +71,7 @@ exports.run = (fishsticks, msg, cmd) => {
                 }
 
                 if (typeof milTime != 'number' || isNaN(milTime)) {
-                    return msg.reply(`Hol' up, I can't wait '${cmd[0]}' minutes. That's gonna need to be a number.`).then(sent => sent.delete(15000));
+                    return msg.reply(`Hol' up, I can't wait '${cmd[0]}' minutes. That's gonna need to be a number.`).then(sent => sent.delete({timeout: 15000}));
                 }
 
                 if (milTime < 0) {
@@ -82,7 +84,7 @@ exports.run = (fishsticks, msg, cmd) => {
                 var relayMSg = cmd.splice(1).join(' ');
 
                 syslog.run(fishsticks, "[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg, 1);
-                msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete(10000));
+                msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete({timeout: 10000}));
 
                 setTimeout(echoFunc, cmdTime, "@everyone " + relayMSg);
             }
@@ -92,6 +94,6 @@ exports.run = (fishsticks, msg, cmd) => {
         }
     }
     else {
-        msg.reply("The `echo` subroutine is offline. Find " + fishsticks.ranger + " and get him to turn it back on!").then(sent => sent.delete(15000));
+        msg.reply("The `echo` subroutine is offline. Find " + fishsticks.ranger + " and get him to turn it back on!").then(sent => sent.delete({timeout: 15000}));
     }
 }

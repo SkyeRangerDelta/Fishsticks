@@ -9,7 +9,7 @@ const Dictionary = require('oxford-dictionary-api');
 const Discord = require('discord.js');
 
 exports.run = async (fishticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
 
     //Command Breakup
     let word = cmd[0];
@@ -19,7 +19,7 @@ exports.run = async (fishticks, msg, cmd) => {
     dict.find(word, function(error, data) {
         if (error) {
             console.log(error);
-            return msg.reply("Looks like we've got an error here. TO THE LOG!").then(sent => sent.delete(10000));
+            return msg.reply("Looks like we've got an error here. TO THE LOG!").then(sent => sent.delete({timeout: 10000}));
         }
 
         console.log(data);

@@ -7,7 +7,7 @@ let messagesJson;
 const fs = require(`fs`);
 
 exports.run = async (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
     loadJSON();
 
     //Check perms
@@ -34,7 +34,7 @@ exports.run = async (fishsticks, msg, cmd) => {
                 await motd(fishsticks, msg, cmd, cmdAlt);
             break;
         default:
-            return msg.reply("Give it to me straight here, I don't know what " + cmdFunc() + " is.").then(sent => sent.delete(10000));
+            return msg.reply("Give it to me straight here, I don't know what " + cmdFunc() + " is.").then(sent => sent.delete({timeout: 10000}));
     }
 }
 
@@ -54,7 +54,7 @@ async function motd(fishsticks, msg, cmd, cmdAlt) {
         let motd = messagesJson.motd;
         console.log("[EDIT] Loaded MOTD.\n\nIf error:");
         console.log(error);
-        return msg.channel.send("Loading current MOTD. Copy this, edit it, and then post it back here using `-confirm` after `-motd`. You may use keywords (check codex or command listing) to ping people or insert statements.\n\n```" + motd + "```\n\n*Deletes in 45 seconds.*").then(sent => sent.delete(45000));
+        return msg.channel.send("Loading current MOTD. Copy this, edit it, and then post it back here using `-confirm` after `-motd`. You may use keywords (check codex or command listing) to ping people or insert statements.\n\n```" + motd + "```\n\n*Deletes in 45 seconds.*").then(sent => sent.delete({timeout: 45000}));
     }
 
     if (confirming) {
@@ -63,7 +63,7 @@ async function motd(fishsticks, msg, cmd, cmdAlt) {
 
         messagesJson.motd = finalMOTD;
 
-        msg.reply("Cool, does this look good? (Click a reaction).").then(sent => sent.delete(15000));
+        msg.reply("Cool, does this look good? (Click a reaction).").then(sent => sent.delete({timeout: 15000}));
         return msg.channel.send(finalMOTD).then(async sent => {
             await sent.react('✅');
             await sent.react('❌');

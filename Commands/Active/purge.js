@@ -3,6 +3,9 @@
 const permissionsCheck = require('../../Modules/Functions/permissionsCheck.js');
 
 exports.run = async (fishsticks, msg, cmd) => {
+    msg.delete({timeout: 0});
+
+    return msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({timeout: 10000}));
 
     //Permissions check
     let perms = {"perms": ["Staff", "Moderator", "Bot"]}
@@ -18,7 +21,7 @@ exports.run = async (fishsticks, msg, cmd) => {
     let targetChannelMsgs = await targetChannel.fetchMessages({limit: count});
 
     if (count > 5) {
-        msg.reply("Sit tight, this might take a minute.").then(sent => sent.delete(7000));
+        msg.reply("Sit tight, this might take a minute.").then(sent => sent.delete({timeout: 7000}));
     }
 
     console.log("[PURGE] Deleting " + count + " target messages...");
@@ -30,7 +33,7 @@ exports.run = async (fishsticks, msg, cmd) => {
 
         await targetChannel.fetchMessage(messageItem).then(msgColl => {
             console.log("[PURGE] Target Content: " + msgColl.content)
-            msgColl.delete();
+            msgColl.delete({timeout: 0});
             console.log("[PURGE] Removed.");
         })
     }

@@ -6,7 +6,7 @@ const fs = require('fs');
 
 exports.run = (fishsticks, msg, cmd) => {
 
-    msg.delete();
+    msg.delete({timeout: 0});
 
     console.log("[GRAB] Quotes file found: " + fs.existsSync(`../../Modules/Quotes/Quotes.json`))
 
@@ -25,6 +25,6 @@ exports.run = (fishsticks, msg, cmd) => {
 
         return msg.reply("Grabbed!").then(sent => sent.delete(10000));
     } else { //If it doesn't...
-        return msg.reply("I couldn't write to the quotes file! DID YOU DELETE IT!?").then(sent => sent.delete(10000)); //Freak out
+        return msg.reply("I couldn't write to the quotes file! DID YOU DELETE IT!?").then(sent => sent.delete({timeout: 10000})); //Freak out
     }
 }

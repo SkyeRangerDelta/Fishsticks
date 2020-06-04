@@ -7,18 +7,20 @@ const syslogFunc = require('../../Modules/Functions/syslog.js');
 var pollsFile = JSON.parse(fs.readFileSync('./Modules/PollingSystem/polls.json', 'utf8'));
 
 exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+    msg.delete({timeout: 0});
+
+    return msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({timeout: 10000}));
 
     function syslog(message, level) {
 		syslogFunc.run(fishsticks, message, level);
 	}
 
 
-    if (msg.member.roles.find("name", "CC Member") || msg.member.roles.find("name", "ACC Member")) {
+    if (msg.member.roles.cache.find("name", "CC Member") || msg.member.roles.find("name", "ACC Member")) {
         execute();
     }
     else {
-        msg.reply("You don't have permission to post polls!").then(sent => sent.delete(10000));
+        msg.reply("You don't have permission to post polls!").then(sent => sent.delete({timeout: 10000}));
     }
 
 
@@ -113,11 +115,11 @@ exports.run = (fishsticks, msg, cmd) => {
                 }
             }
         } catch (error) {
-            msg.reply("I've just caught a glitch in sector 5 of the neural net. I don't know what you did - but you probably should stop.").then(sent => sent.delete(10000));
+            msg.reply("I've just caught a glitch in sector 5 of the neural net. I don't know what you did - but you probably should stop.").then(sent => sent.delete({timeout: 10000}));
             return syslog("[POLL-SYS] An unknown error has been caught somewhere in response construction.", 3);
         }
     
-        let pollQuestion = new Discord.RichEmbed();
+        let pollQuestion = new Discord.MessageEmbed();
             pollQuestion.setTitle("[POLL!] " + question);
             pollQuestion.setColor(config.fsemercolor);
             pollQuestion.setDescription(desc);
@@ -135,7 +137,7 @@ exports.run = (fishsticks, msg, cmd) => {
                 fs.writeFileSync('./Modules/PollingSystem/polls.json', JSON.stringify(pollsFile));
 
                 syslog("[POLL SYS] A new poll has been posted and saved to the bot.", 2);
-                msg.reply("Poll saved successfully.").then(sent => sent.delete(10000));
+                msg.reply("Poll saved successfully.").then(sent => sent.delete({timeout: 10000}));
             });
         }
         catch (postErr) {

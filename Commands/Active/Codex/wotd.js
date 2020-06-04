@@ -18,5 +18,5 @@ exports.run = (fishsticks, msg, entry) => {
         ]
     };
 
-    msg.channel.send({embed: commandEmbedBuilder.run("WOTD", config.fscolor, syntaxBuilder, "Word of the Day creates an embed in a format similar to Clarence's daily posts on the forums and posts it into the channel where the command was issued.").setAuthor(msg.author.username, msg.author.avatarURL)}).then(sent => sent.delete(20000));
+    msg.channel.send({embed: commandEmbedBuilder.run("WOTD", config.fscolor, syntaxBuilder, "Word of the Day creates an embed in a format similar to Clarence's daily posts on the forums and posts it into the channel where the command was issued.").setAuthor(msg.author.username, msg.author.avatarURL)}).then(sent => sent.delete({timeout: 20000}));
 }
