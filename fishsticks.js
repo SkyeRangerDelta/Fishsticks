@@ -26,6 +26,7 @@ const query = require('./Modules/Functions/db/query.js');
 const fsoVerify = require('./Modules/Functions/FSO/verifyMember.js');
 const fsoOpen = require('./Modules/Functions/FSO/openConnection.js');
 const editMessages = require('./Modules/VariableMessages/messages.json');
+const messageStats = require('./Modules/messageStats.json');
 
 const cmdResponses = require('./Modules/SystemResponses/commandErrors.json');
 
@@ -218,6 +219,10 @@ function syslog(message, level) {
 //MESSAGE AND EVENT SYSTEMS
 fishsticks.on('message', async msg => {
 
+	//Current date
+	let systemDate = new Date();
+	let currentDate = `${systemDate.getMonth()}/${systemDate.getDay()}/${systemDate.getFullYear()}`;
+
 	//Random message generator
 	regenCountRefresh--;
 	if (regenCountRefresh == 0) {
@@ -225,6 +230,32 @@ fishsticks.on('message', async msg => {
 		console.log("[RDMNUMGEN] A new random context quote interval has been generated - " + regenCountRefresh);
 		generateRandomQuote(msg);
 	}
+
+	//Message statistic watcher
+	let msgAuthID = msg.author.id;
+	if (!messageStats[currentDate]) {
+		if (msg.author.bot) return;
+
+		messageStats[currentDate] = {
+			totalMessages: 1,
+			avgMessagesToday: 1,
+			sends: {}
+		};
+		messageStats[currentDate].sends[msgAuthID] = 1
+	} else if (!messageStats[currentDate].sends[msgAuthID]) {
+		if (msg.author.bot) return;
+
+		messageStats[currentDate].totalMessages++;
+		messageStats[currentDate].sends[msgAuthID] = 1;
+	} else {
+		if (msg.author.bot) return;
+
+		messageStats[currentDate].totalMessages++;
+		messageStats[currentDate].sends[msgAuthID]++;
+		messageStats[currentDate].avgMessagesToday = Math.floor((messageStats[currentDate].totalMessages) / (Object.keys(messageStats[currentDate].sends).length)) + 1;
+	}
+
+	fs.writeFileSync('./Modules/messageStats.json', JSON.stringify(messageStats));
 
 	//DEBATER CHECK
 	if (msg.channel.id == chs.discussionden) {
