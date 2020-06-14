@@ -221,7 +221,7 @@ fishsticks.on('message', async msg => {
 
 	//Current date
 	let systemDate = new Date();
-	let currentDate = `${systemDate.getMonth()}/${systemDate.getDay()}/${systemDate.getFullYear()}`;
+	let currentDate = `${systemDate.getMonth()}/${systemDate.getDate()}/${systemDate.getFullYear()}`;
 
 	//Random message generator
 	regenCountRefresh--;

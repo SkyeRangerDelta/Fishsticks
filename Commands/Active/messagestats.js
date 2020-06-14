@@ -10,7 +10,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
     //Current date
 	let systemDate = new Date();
-    let currentDate = `${systemDate.getMonth()}/${systemDate.getDay()}/${systemDate.getFullYear()}`;
+    let currentDate = `${systemDate.getMonth()}/${systemDate.getDate()}/${systemDate.getFullYear()}`;
     
     //Prior counts
     let countTotals = "";
