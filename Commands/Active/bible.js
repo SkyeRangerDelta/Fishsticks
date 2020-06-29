@@ -1,12 +1,26 @@
-const Discord = require('discord.js');
-const apiindex = require('../../Modules/fs_systems.json');
-const config = require('../../Modules/Core/corecfg.json');
-const embeds = require('../embeds/main.json');
-const bibApi = apiindex.bibleAPI;
-const https = require('https');
+// ---- Bible ----
+//=================
+//Takes specific input and prints out
+//the respective passage
 
-exports.run = (fishsticks, msg, cmd) => {
-    msg.delete({timeout: 0});
+//Imports
+const https = require('https');
+const { log } = require('../../Modules/Utility/Utils_Log');
+const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+
+const { apiindex } = require('../../Modules/fs_systems.json');
+const { primary } = require('../../Modules/Core/Core_config.json');
+
+const bibApi = apiindex.bibleAPI;
+
+//Exports
+module.exports = {
+	run,
+	help
+};
+
+async function run(fishsticks, cmd) {
+    cmd.cmd.msg.delete({ timeout: 0 });
 
     //Command breakup
     /*
@@ -16,121 +30,140 @@ exports.run = (fishsticks, msg, cmd) => {
         !bible Genesis 1
     */
 
-    let params = {
+    const params = {
         bookNum: null,
-        book: "John",
+        book: 'John',
         chapter: 3,
         verse: 16,
         endverse: null,
         contCount: 1,
         bookFirst: false
-    }
+    };
 
-    // ["!bible", "2", "Samuel", "1:1"]
-    // q="John+3:16"
+    // ['!bible', '2', 'Samuel', '1:1']
+    // q='John+3:16'
 
-    let cmdArgs = msg.content.toLowerCase().split(" ");
+    const cmdArgs = cmd.msg.content.toLowerCase().split(' ');
     params.bookNum = parseInt(cmdArgs[1]); //Set default book number
-    
-    if (params.bookNum== null || isNaN(params.bookNum)) { //If no book number
+
+    if (params.bookNum == null || isNaN(params.bookNum)) { //If no book number
         params.book = cmdArgs[1];
         params.bookFirst = true;
-    } else { //Get book
-        if (typeof cmdArgs[2] == typeof "blah") {
-            params.book = cmdArgs[2]
-        } else {
-            return msg.reply("Books titles are names not numbers.").then(sent => sent.delete({timeout: 10000}));
+	}
+	else { //Get book
+		log('info', '[BIBLE] Pulling book info');
+
+        if (typeof cmdArgs[2] == typeof 'blah') {
+			params.book = cmdArgs[2];
+		}
+		else {
+			return cmd.msg.reply('Books titles are names not numbers.').then(sent => sent.delete({ timeout: 10000 }));
         }
     }
 
-    //Handle chapter and verse build
+	//Handle chapter and verse build
+	let verseBreak;
+
     if (params.bookFirst) { //If not 1 Samuel
-        let chapterBreak = cmdArgs[2].split(':');
-        let verseBreak;
-        params.chapter = chapterBreak[0];
-        
+        const chapterBreak = cmdArgs[2].split(':');
+		params.chapter = chapterBreak[0];
+
         if (params.chapter.includes('-')) { //Check for verse range
             verseBreak = chapterBreak[1].split('-');
             params.verse = verseBreak[0];
             params.endverse = verseBreak[1];
-        } else {
+		}
+		else {
             params.verse = chapterBreak[1];
         }
-    } else {
-        let chapterBreak2 = cmdArgs[3].split(':');
+	}
+	else {
+        const chapterBreak2 = cmdArgs[3].split(':');
         params.chapter = chapterBreak2[0];
 
         if (params.chapter.includes('-')) {
             verseBreak = chapterBreak2[1].split('-')[0];
             params.verse = verseBreak[0];
             params.endverse = verseBreak[1];
-        } else {
+		}
+		else {
             params.verse = chapterBreak2[1];
         }
     }
 
-    buildPayload(params, msg);
+    buildPayload(params, cmd.msg);
 }
 
 //Construct a payload to be shipped off
 async function buildPayload(paramObj, msg) {
 
-    console.log("Attempting to build a payload request with the following information:\nParams:");
+    console.log('Attempting to build a payload request with the following information:\nParams:');
     console.log(paramObj);
 
-    let API_URL = 'https://api.esv.org/v3/passage/text/';
-    let dispatchURL;
+    const API_URL = 'https://api.esv.org/v3/passage/text/';
 
     let args;
 
     if (paramObj.bookFirst) {
+		log('info', '[BIBLE] Book found first');
+
         if (paramObj.endverse == null) {
             args = {
                 'q': `${paramObj.book}+${paramObj.chapter}:${paramObj.verse}`
-            }
-        } else {
+            };
+		}
+		else {
             args = {
                 'q': `${paramObj.book}+${paramObj.chapter}:${paramObj.verse}-${paramObj.endverse}`
-            }
+            };
         }
-    } else {
+	}
+	else {
+		log('info', '[BIBLE] Book not found first');
+
         if (paramObj.endverse == null) {
             args = {
                 'q': `${paramObj.bookNum}+${paramObj.book}+${paramObj.chapter}:${paramObj.verse}`
-            }
-        } else {
+            };
+		}
+		else {
             args = {
                 'q': `${paramObj.bookNum}+${paramObj.book}+${paramObj.chapter}:${paramObj.verse}-${paramObj.endverse}`
-            }
+            };
         }
     }
 
-    dispatchURL = API_URL + `?q=${args.q}`;
+    const dispatchURL = API_URL + `?q=${args.q}`;
 
-    let options = {
+    const options = {
         headers: {
            'Authorization': `Token ${bibApi}`,
            'Connection': 'keep-alive',
            'Content-Type': 'application/json'
         }
-    }
+    };
 
-    console.log("Dispatching payload:\n" + dispatchURL);
-    
+    console.log('Dispatching payload:\n' + dispatchURL);
+
     await https.get(dispatchURL, options, (res) => {
-        res.on("data", content => {
+        res.on('data', content => {
 
-            let received = JSON.parse(content);
+            const received = JSON.parse(content);
             if (received.passages[0].length > 2048) {
-                return msg.reply("The passage is too large! Try breaking it into smaller verses.").then(sent => sent.delete({timeout: 10000}));
+                return msg.reply('The passage is too large! Try breaking it into smaller verses.').then(sent => sent.delete({ timeout: 10000 }));
             }
 
-            let verseEmbed = new Discord.MessageEmbed();
-                verseEmbed.setTitle(`o0o - Bible (ESV) - o0o`);
-                verseEmbed.setColor(config.fscolor);
-                verseEmbed.setDescription(received.passages);
+            const verseEmbed = {
+				title: 'o0o - Bible (ESV) - o0o',
+				color: primary,
+				description: received.passages
+			};
 
-            msg.channel.send({embed: verseEmbed});
-        })
+            msg.channel.send({ embed: embedBuilder(verseEmbed) });
+        });
     });
+}
+
+function help() {
+	return 'Prints out a Bible passage';
 }

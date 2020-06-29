@@ -1,62 +1,9 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
-# compiled output
-/dist
-/tmp
-.LICENSE.txt
-
-# Fishsticks Systems
-./Modules/fs_systems.json
-Modules/fs_systems.json
-
-# dependencies & random data stuff
+#General
 /node_modules
 
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+#Core
+/Modules/Core/Core_ids.json
+/Modules/Core/Core_config.json
 
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-# misc
-/.sass-cache
-/connect.lock
-/coverage/*
-/libpeerconnection.log
-npm-debug.log
-testem.log
-/typings
-
-# e2e
-/e2e/*.js
-/e2e/*.map
-
-#System Files
-.DS_Store
-Thumbs.db
-Modules/fs_systems.json
-fishsticks_vars.json
-Modules/fs_ids.json
-Modules/Vouches/fs_vouches.json
-Modules/PollingSystem/polls.json
-Modules/GameRoles/gameRoles.json
-.vs/Fishsticks/v15/.suo
-.vs/ProjectSettings.json
-.vs/slnx.sqlite
-.vs/VSWorkspaceState.json
-.vs/*
-Modules/Core/db.json
-Modules/Functions/db/db.json
-Modules/GoogleCalAPI.json
-Commands/Active/auth/googleAuthToken.json
-Modules/Calendar/config.json
+#FSO
+/Modules/FSO/FSO_assets.json

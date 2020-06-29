@@ -1,38 +1,43 @@
 //----DICE----
 
-//LIBRARIES
+//Imports
 const rollLib = require('roll');
-const Discord = require('discord.js');
+const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 
-//CONFIGS
-const fsconfig = require('../../Modules/Core/corecfg.json');
+const { primary } = require('../../Modules/Core/Core_config.json');
 
-//GLOBALS
-let roll = new rollLib();
+const roll = new rollLib();
 
-exports.run = (fishsticks, msg, cmd) => {
-    msg.delete({timeout: 0});
+//Exports
+module.exports = {
+	run,
+	help
+};
+
+//Functions
+function run(fishsticks, cmd) {
+    cmd.msg.delete({ timeout: 0 });
 
     //Command Breakup
-    let cmdArgs = msg.content.toLowerCase().split(' ');
-    let dieRoll = cmdArgs[1];
-    let diceRolled = cmdArgs[1].split('+');
+    const cmdArgs = cmd.msg.content.toLowerCase().split(' ');
+    const dieRoll = cmdArgs[1];
+    const diceRolled = cmdArgs[1].split('+');
 
     //Check for encounter generator
-    if (cmd[0].toLowerCase() == "encounter") {
-        return msg.channel.send("Encounter type: " + genEncounter());
+    if (cmd[0].toLowerCase() == 'encounter') {
+        return cmd.msg.channel.send('Encounter type: ' + genEncounter());
     }
 
     //Validate
-    let valid = roll.validate(dieRoll);
+    const valid = roll.validate(dieRoll);
 
     if (!valid) {
-        return msg.reply("That doesn't look like a valid roll, hit me again.").then(sent => sent.delete({timeout: 10000}));
+        return cmd.msg.reply('That doesnt look like a valid roll, hit me again.').then(sent => sent.delete({ timeout: 10000 }));
     }
 
     //Handle Roll(s)
-    let rollResult = roll.roll(dieRoll);
-    let diceRolls = "", dieCalcs = "";
+    const rollResult = roll.roll(dieRoll);
+    let diceRolls = '', dieCalcs = '';
 
     console.log(rollResult);
 
@@ -40,10 +45,10 @@ exports.run = (fishsticks, msg, cmd) => {
         dieCalcs = dieCalcs.concat(`${rollResult.calculations[t]}\n`);
     }
 
-    for (dieRollResult in rollResult.rolled) {
-        let rollNumbers = "";
-        
-        for (dieRollResult2 in rollResult.rolled[dieRollResult]) {
+    for (const dieRollResult in rollResult.rolled) {
+        let rollNumbers = '';
+
+        for (const dieRollResult2 in rollResult.rolled[dieRollResult]) {
 
             rollNumbers = rollNumbers.concat(`${rollResult.rolled[dieRollResult][dieRollResult2]}, `);
         }
@@ -56,23 +61,42 @@ exports.run = (fishsticks, msg, cmd) => {
     }
 
     //Build embed
-    let rollPanel = new Discord.MessageEmbed();
-        rollPanel.setTitle("🎲 Rolling the dice 🎲");
-        rollPanel.setColor(fsconfig.fscolor);
-        rollPanel.setFooter(`Random dice roller. Queried by ${msg.author.username}`);
-        rollPanel.setDescription(`**Total**: ${rollResult.result}`);
-        rollPanel.addField("Dice Rolls:", diceRolls, true);
-        rollPanel.addField("Encounter Type:", genEncounter(), true);
-        rollPanel.addField("Calculations:", dieCalcs, true);
+	const rollPanel = {
+		title: '🎲 Rolling the dice 🎲',
+		description: `**Total**: ${rollResult.result}`,
+		footer: `Random dice roller. Queried by ${cmd.msg.author.username}`,
+		color: primary,
+		fields: [
+			{
+				title: 'Dice Rolls',
+				description: diceRolls,
+				inline: true
+			},
+			{
+				title: 'Encounter Type',
+				description: genEncounter(),
+				inline: true
+			},
+			{
+				title: 'Calculations',
+				description: dieCalcs,
+				inline: true
+			}
+		]
+	};
 
-    msg.channel.send({embed: rollPanel});
+    cmd.msg.channel.send({ embed: embedBuilder(rollPanel) });
 }
 
 function genEncounter() {
     //Calculate Yes-No-Maybe Factor
-    let factor = Math.floor(Math.random() * (6 - 0)) + 0;
-    let encounterTypes = ["Yes", "Yes, but", "Yes, and", "Maybe", "No", "No, but", "No, and"];
-    let factorResult = encounterTypes[factor];
+    const factor = Math.floor(Math.random() * (6 - 0)) + 0;
+    const encounterTypes = ['Yes', 'Yes, but', 'Yes, and', 'Maybe', 'No', 'No, but', 'No, and'];
+    const factorResult = encounterTypes[factor];
 
     return factorResult;
+}
+
+function help() {
+	return 'Performs dice calculations.';
 }

@@ -1,6 +1,0 @@
-{
-    "commands": {
-        "incomplete": "🏗️ This command is under development 🏗️\n\nIt will be rolled oout as soon as possible. Until then, please seek the Fishsticks development blog or forum post for release references. (See `!links`)",
-        "defective": "🛠️ This command is defective 🛠️\n\nRepairs are in progress; be sure to keep up to date by following the development blog posts (see `!links`). Apologies are issued on a per-case basis. Please understand. "
-    }
-}

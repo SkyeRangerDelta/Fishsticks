@@ -1,21 +1,26 @@
-const syslog = require("../../Modules/Functions/syslog.js");
+// ---- Creative ----
 
-exports.run = (fishsticks, msg, cmd) => {
-    msg.delete({timeout: 0});
+//Imports
+const { creative } = require('../../Modules/Core/Core_ids.json');
 
-    return msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({timeout: 10000}));
+//Exports
+module.exports = {
+	run,
+	help
+};
 
-    let creative = msg.guild.roles.cache.find('name', 'Creative');
-    if (msg.member.roles.cache.find('name', 'Creative')) {
-        msg.member.removeRole(creative);
-        msg.reply("Creative Role Removed.").then(sent => sent.delete({timeout: 10000}));
+//Functions
+async function run(fishsticks, cmd) {
+	const creativeRole = fishsticks.CCG.roles.cache.get(creative);
 
-        syslog(fishsticks, "[ROLE-ASN] Creative removed from " + msg.author.tag, 1);
-    }
-    else {
-        msg.member.addRole(creative);
-        msg.reply("Creative Role Assigned.").then(sent => sent.delete({timeout: 10000}));
+	if (cmd.msg.member.roles.cache.some(role => role.name == 'Creative')) {
+		cmd.msg.member.roles.remove(creativeRole, 'Toggled by command.');
+	}
+	else {
+		cmd.msg.member.roles.add(creativeRole, 'Toggled by command.');
+	}
+}
 
-        syslog(fishsticks, "[ROLE-ASN] Creative assigned to " + msg.author.tag, 1);
-    }
+function help() {
+	return 'Toggles the assignment of the Creative role.';
 }
