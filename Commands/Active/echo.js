@@ -1,99 +1,39 @@
-const Discord = require('discord.js');
-const config = require('../../Modules/Core/corecfg.json');
-const chs = require('../../Modules/fs_ids.json');
-const syslog = require('../../Modules/Functions/syslog.js');
-const permsCheck = require("../../Modules/Functions/permissionsCheck.js");
-const subroutineCheck = require('../../Modules/Functions/subroutineCheck.js');
+// ---- Echo ----
+//Posts an everyone ping on a delayed timer
 
-//State command required permissions
-let permissions = {
-    "perms": ["Staff", "Bot", "Event Coordinator"]
+const { hasPerms } = require('../../Modules/Utility/Utils_User');
+const { announcements } = require('../../Modules/Core/Core_ids.json');
+
+let annChannel;
+
+//Exports
+module.exports = {
+    run,
+    help
 };
 
-exports.run = (fishsticks, msg, cmd) => {
-    msg.delete({timeout: 0});
+function run(fishsticks, cmd) {
+    cmd.msg.delete({ timeout: 0 });
 
-    return msg.reply('Command deactivated until V18 fixes. **You will need to make the announcement yourself. Skye knows this is an absolute mess, but V18 will fix it.**').then(sent => sent.delete({timeout: 15000}));
+    annChannel = fishsticks.channels.cache.get(announcements);
 
-    const announcements = fishsticks.channels.cache.get(chs.announcements);
-
-    function echoFunc(statement) {
-        announcements.send(statement);
+    if (!hasPerms(cmd.msg.author, ['Event Coordinator', 'Staff'])) {
+        return cmd.msg.reply('Hey, hey there; not so fast. You need permissions to run that command.');
     }
 
-    if (subroutineCheck.run(fishsticks, "echo", msg)) { //Make sure subroutine is running
-        if (permsCheck.run(fishsticks, msg.member, permissions)) { //Check Perms
-            if (fishsticks.engmode == true) {
-                if (msg.member.roles.find('name', 'Bot')) {
-                    syslog.run(fishsticks, "[ECHO-CMD] ENGM Override Executed: Permission granted to " + msg.author.tag, 1);
-    
-                    msg.reply("ENGM Override Recognized. Granting permissions to " + msg.author.tag + ".").then(sent => sent.delete({timeout: 10000}));
-    
-                    var milTime;
-
-                    //Sanitize time parameter
-                    try {
-                        milTime = parseInt(cmd[0], 10);
-                    } catch (processTimeErr) {
-                        msg.reply("[ECHO-CMD] Hmmm, I'm seeing a electrical surge in sector 9 of my neural net. I think time is supposed to be a number.");
-                    }
-
-                    if (typeof milTime != 'number' || isNaN(milTime)) {
-                        return msg.reply(`Hol' up, I can't wait '${cmd[0]}' minutes. That's gonna need to be a number.`).then(sent => sent.delete({timeout: 15000}));
-                    }
-
-                    if (milTime < 0) {
-                        milTime = milTime * -1;
-                    }
-
-                    var waitTime = milTime * 60;
-                    var cmdTime = waitTime * 1000;
-    
-                    var relayMSg = cmd.splice(1).join(' ');
-
-                    syslog.run(fishsticks, "[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg, 1);
-                    msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete({timeout: 10000}));
-
-                    setTimeout(echoFunc, cmdTime, "here " + relayMSg);
-                }
-                else {
-                    msg.reply("Engineering Mode is enabled. I can't let you do that.");
-                }
-            }
-            else { //Not in ENGM
-                var milTime;
-
-                //Sanitize time parameter
-                try {
-                    milTime = parseInt(cmd[0], 10);
-                } catch (processTimeErr) {
-                    msg.reply("[ECHO-CMD] Hmmm, I'm seeing a electrical surge in sector 9 of my neural net. I think time is supposed to be a number.");
-                }
-
-                if (typeof milTime != 'number' || isNaN(milTime)) {
-                    return msg.reply(`Hol' up, I can't wait '${cmd[0]}' minutes. That's gonna need to be a number.`).then(sent => sent.delete({timeout: 15000}));
-                }
-
-                if (milTime < 0) {
-                    milTime = milTime * -1;
-                }
-
-                var waitTime = milTime * 60;
-                var cmdTime = waitTime * 1000;
-    
-                var relayMSg = cmd.splice(1).join(' ');
-
-                syslog.run(fishsticks, "[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg, 1);
-                msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete({timeout: 10000}));
-
-                setTimeout(echoFunc, cmdTime, "@everyone " + relayMSg);
-            }
-        }
-        else {
-            msg.reply("Permissions check failed. Command restricted.");
-        }
+    if ((typeof cmd[0] != typeof 0) || isNaN(cmd[0])) {
+        setTimeout(dispatchMsg, 0, '@everyone ' + cmd[0]);
     }
     else {
-        msg.reply("The `echo` subroutine is offline. Find " + fishsticks.ranger + " and get him to turn it back on!").then(sent => sent.delete({timeout: 15000}));
+        const waitTime = (cmd[0] * 60) * 1000;
+        setTimeout(dispatchMsg, waitTime, '@everyone ' + cmd[1]);
     }
+}
+
+function help() {
+    return 'Posts a delayed announcement.';
+}
+
+function dispatchMsg(msg) {
+    annChannel.send(msg);
 }

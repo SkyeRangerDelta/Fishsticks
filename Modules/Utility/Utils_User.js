@@ -20,6 +20,8 @@ function hasPerms(member, perms) {
 			return true;
 		}
 	}
+
+	return false;
 }
 
 //Validate

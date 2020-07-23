@@ -21,6 +21,7 @@
     "colors": "^1.4.0",
     "count-files": "^2.6.2",
     "discord.js": "^12.2.0",
+    "eslint": "^7.3.1",
     "extend": "^3.0.2",
     "ffmpeg": "0.0.4",
     "ffmpeg-binaries": "^4.0.0",

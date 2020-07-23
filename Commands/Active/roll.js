@@ -2,6 +2,15 @@
 //Does same thing as Dice
 const dice = require('./dice');
 
-exports.run = (fishsticks, msg, cmd) => {
-    dice.run(fishsticks, msg, cmd);
+module.exports = {
+    run,
+    help
+};
+
+function run(fishsticks, cmd) {
+    dice.run(fishsticks, cmd);
+}
+
+function help() {
+    return 'Rolls the dice. Accepts conditional syntax.';
 }
