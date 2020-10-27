@@ -606,7 +606,7 @@ fishsticks.on('message', async msg => {
 				//ACTIVE COMMANDS
 				if (msg.content.charAt(0) == prefix) {
 					if (fishsticks.subroutines.get("active")) {
-						await verifyMember();
+						//await verifyMember();
 
 						console.log(colors.green("[ACT-COMM] Attempting Resolution for command: " + cmdID));
 						syslog("[ACT-COMM] Attempting Resolution for command: " + cmdID, 0);
