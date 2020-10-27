@@ -18,7 +18,7 @@ exports.run = async (fishsticks, msg, cmd) => {
 
     //PERMISSIONS CHECK
     if (fishsticks.subroutines.get("vouch")) {
-        if (msg.member.roles.find("name", "CC Member") || msg.member.roles.find("name", "ACC Member")) {
+        if (msg.member.roles.has(ids.ccmember) || msg.member.roles.has(ids.accmember)) {
             runCmd();
         }
         else {

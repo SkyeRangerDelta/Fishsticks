@@ -19,7 +19,7 @@ exports.run = (fishsticks, msg, cmd) => {
 
     if (fishsticks.subroutines.get("tempch")) {
 
-        if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', 'Recognized')) {
+        if (msg.member.roles.has(chs.staff) || msg.member.roles.has(chs.recognized)) {
             if (engmode == true) {
                 if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', 'Bot')) {
                     syslog("ENGM Override Executed: Permission granted to " + msg.author.tag + ".", 2);

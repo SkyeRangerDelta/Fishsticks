@@ -22,7 +22,7 @@ exports.run = (fishsticks, msg, cmd) => {
     if (subroutineCheck.run(fishsticks, "echo", msg)) { //Make sure subroutine is running
         if (permsCheck.run(fishsticks, msg.member, permissions)) { //Check Perms
             if (fishsticks.engmode == true) {
-                if (msg.member.roles.find('name', 'Bot')) {
+                if (msg.member.roles.has(chs.bot)) {
                     syslog.run(fishsticks, "[ECHO-CMD] ENGM Override Executed: Permission granted to " + msg.author.tag, 1);
     
                     msg.reply("ENGM Override Recognized. Granting permissions to " + msg.author.tag + ".").then(sent => sent.delete(10000));

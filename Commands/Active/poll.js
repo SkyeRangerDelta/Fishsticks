@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const config = require('../../Modules/Core/corecfg.json');
 const emojiList = require('../../Modules/Collections/emojis.js');
+const ids = require('../../Modules/fs_ids.json');
 const fs = require('fs');
 const syslogFunc = require('../../Modules/Functions/syslog.js');
 
@@ -14,7 +15,7 @@ exports.run = (fishsticks, msg, cmd) => {
 	}
 
 
-    if (msg.member.roles.find("name", "CC Member") || msg.member.roles.find("name", "ACC Member")) {
+    if (msg.member.roles.has(ids.ccmember) || msg.member.roles.has(ids.accmember)) {
         execute();
     }
     else {
