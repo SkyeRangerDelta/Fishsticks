@@ -16,7 +16,8 @@ module.exports = {
 //Functions
 function hasPerms(member, perms) {
 	for (const perm in perms) {
-		if (perms[perm] == member.roles.cache.some(role => role.name === perm)) {
+		if (member.roles.cache.some(role => role.name === perms[perm])) {
+			log('info', '[PERMS] User permission check passed.');
 			return true;
 		}
 	}

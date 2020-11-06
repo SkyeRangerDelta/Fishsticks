@@ -8,10 +8,8 @@ const https = require('https');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 
-const { apiindex } = require('../../Modules/fs_systems.json');
+const { bibleAPI } = require('../../Modules/Core/Core_keys.json');
 const { primary } = require('../../Modules/Core/Core_config.json');
-
-const bibApi = apiindex.bibleAPI;
 
 //Exports
 module.exports = {
@@ -20,7 +18,7 @@ module.exports = {
 };
 
 async function run(fishsticks, cmd) {
-    cmd.cmd.msg.delete({ timeout: 0 });
+    cmd.msg.delete({ timeout: 0 });
 
     //Command breakup
     /*
@@ -44,10 +42,10 @@ async function run(fishsticks, cmd) {
     // q='John+3:16'
 
     const cmdArgs = cmd.msg.content.toLowerCase().split(' ');
-    params.bookNum = parseInt(cmdArgs[1]); //Set default book number
+    params.bookNum = parseInt(cmdArgs[1].substring(1, 2)); //Set default book number
 
     if (params.bookNum == null || isNaN(params.bookNum)) { //If no book number
-        params.book = cmdArgs[1];
+        params.book = cmdArgs[1].substring(1, cmdArgs[1].length);
         params.bookFirst = true;
 	}
 	else { //Get book
@@ -137,7 +135,7 @@ async function buildPayload(paramObj, msg) {
 
     const options = {
         headers: {
-           'Authorization': `Token ${bibApi}`,
+           'Authorization': `Token ${bibleAPI}`,
            'Connection': 'keep-alive',
            'Content-Type': 'application/json'
         }
@@ -145,7 +143,7 @@ async function buildPayload(paramObj, msg) {
 
     console.log('Dispatching payload:\n' + dispatchURL);
 
-    await https.get(dispatchURL, options, (res) => {
+    https.get(dispatchURL, options, async (res) => {
         res.on('data', content => {
 
             const received = JSON.parse(content);

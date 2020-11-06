@@ -22,6 +22,7 @@ const Discord = require('discord.js');
 const { startUp } = require('./Modules/Core/Core_Ready');
 const { log } = require('./Modules/Utility/Utils_Log');
 const { processMessage } = require('./Modules/Core/Core_Message');
+const { validateReaction } = require('./Modules/Utility/Utils_Aux');
 
 //Configs
 const { token } = require('./Modules/Core/Core_config.json');
@@ -39,15 +40,19 @@ Fishsticks.FSO_STATE = null;
 Fishsticks.session;
 Fishsticks.lastSystemStart;
 Fishsticks.CCG;
-Fishsticks.ranger;
+Fishsticks.RANGER;
+Fishsticks.appMsgIDs = [];
+Fishsticks.debMsgIDs = [];
+Fishsticks.TESTMODE = false;
+Fishsticks.NODEARGS = [];
 
 //=============================================
 //				   EVENTS
 //=============================================
 
 //Online and Ready
-Fishsticks.on('ready', async () => {
-	startUp(Fishsticks);
+Fishsticks.once('ready', async () => {
+	await startUp(Fishsticks);
 });
 
 //Error
@@ -86,6 +91,8 @@ Fishsticks.on('guildMemberRemove', prevMember => {
 //Receive Message Reaction
 Fishsticks.on('messageReactionAdd', (addedReaction, reactor) => {
 	log('info', `[CLIENT] ${addedReaction.emoji} : ${reactor.username}`);
+
+	validateReaction(Fishsticks, addedReaction, reactor);
 });
 
 //Remove Message Reaction

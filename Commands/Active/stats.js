@@ -1,10 +1,15 @@
 //----PING STATS----
 const Discord = require('discord.js');
-const cfg = require('../../Modules/Core/corecfg.json');
+const cfg = require('../../Modules/Core/Core_config.json');
 const query = require('../../Modules/Functions/db/query.js');
 const syslog = require('../../Modules/Functions/syslog.js');
 
-exports.run = async (fishsticks, msg, cmd) => {
+module.exports = {
+    run,
+    help
+};
+
+async function run(fishsticks, cmd) {
     msg.delete({timeout: 0});
 
     msg.reply("Hold tight while I crunch them tasty numbers.").then(sent => sent.delete({timeout: 10000}));
@@ -208,4 +213,8 @@ exports.run = async (fishsticks, msg, cmd) => {
             msg.channel.send({embed: divListPanel}).then(sent => sent.delete({timeout: 30000}));
         }
     }
+}
+
+function help() {
+    return 'Prints an exhaustive list of game roles statistics.';
 }

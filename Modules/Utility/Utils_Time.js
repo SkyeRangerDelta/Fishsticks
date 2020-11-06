@@ -26,7 +26,13 @@ function systemTime(date) {
 }
 
 function systemTimestamp(date) {
-	return systemDate(date) + ' - ' + systemTime(date);
+	if (!date) {
+		const tempDate = new Date();
+		return systemDate(tempDate) + ' - ' + systemTime(tempDate);
+	}
+	else {
+		return systemDate(date) + ' - ' + systemTime(date);
+	}
 }
 
 function convertMs(ms) {

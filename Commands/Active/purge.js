@@ -2,7 +2,12 @@
 
 const permissionsCheck = require('../../Modules/Functions/permissionsCheck.js');
 
-exports.run = async (fishsticks, msg, cmd) => {
+module.exports = {
+    run,
+    help
+}
+
+async function run(fishsticks, cmd) {
     msg.delete({timeout: 0});
 
     return msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({timeout: 10000}));
@@ -37,4 +42,8 @@ exports.run = async (fishsticks, msg, cmd) => {
             console.log("[PURGE] Removed.");
         })
     }
+}
+
+function help() {
+    return 'Administrative command allowing bulk message deletion.';
 }

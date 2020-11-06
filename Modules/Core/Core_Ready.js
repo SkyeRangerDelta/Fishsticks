@@ -8,7 +8,7 @@ const { embedBuilder } = require('../Utility/Utils_EmbedBuilder');
 
 const { guild_CCG, fs_console, ranger } = require('./Core_ids.json');
 const { version } = require('../../package.json');
-const { primary } = require('./Core_config.json').colors;
+const { primary, emergency } = require('./Core_config.json').colors;
 
 //Exports
 module.exports = {
@@ -17,6 +17,19 @@ module.exports = {
 
 //Functions
 async function startUp(Fishsticks) {
+
+	//Test launch args
+	if (process.argv.length > 2) {
+		log('warn', '[FISHSTICKS] Fs was launched with at least one command line argument.');
+
+		for (const arg in process.argv) {
+			if (process.argv[arg] == '-test') {
+				Fishsticks.TESTMODE = true;
+			}
+
+			Fishsticks.NODEARGS.push(process.argv[arg]);
+		}
+	}
 
 	//Variables
 	const timestamp = new Date();
@@ -61,34 +74,58 @@ async function startUp(Fishsticks) {
 	//Init Objs
 	const ch_fs_console = Fishsticks.channels.cache.get(fs_console);
 
-	Fishsticks.CCG = Fishsticks.guilds.cache.get(guild_CCG);
-	Fishsticks.ranger = Fishsticks.CCG.members.fetch(ranger);
+	Fishsticks.CCG = await Fishsticks.guilds.fetch(guild_CCG);
+	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch(ranger);
 
 
 	//Dispatch Startup Message
-	const startupMessage = {
-		title: 'o0o - Fishsticks Startup - o0o',
-		description: 'Dipping in flour...\nBaking at 400°...\nFishticks ' + version + ' is ready to go!',
-		color: primary,
-		footer: 'Sequence initiated at ' + systemTimestamp(timestamp),
-		fields: [
-			{
-				title: 'Last startup time',
-				description: statusPreUpdate.StartupTime,
-				inline: true
-			},
-			{
-				title: 'Time since last startup',
-				description: convertMsFull(statusPreUpdate.StartupUTC - timeNow),
-				inline: true
-			}
-		]
-	};
+	if (Fishsticks.TESTMODE) {
+		log('warn', '[FISHSTICKS] Fs has been booted into Test mode!');
 
-	ch_fs_console.send({ embed: embedBuilder(startupMessage) });
+		const startupMessage = {
+			title: 'Test Mode Boot',
+			description: version + ' feels undercooked. Test mode time.',
+			color: emergency,
+			footer: 'Sequence initiated at ' + systemTimestamp(timestamp),
+			fields: [
+				{
+					title: 'Last startup time',
+					description: statusPreUpdate.StartupTime,
+					inline: true
+				}
+			]
+		};
 
-	//Set Status
-	Fishsticks.user.setPresence({ activity: { name: 'for !help | ' + version, type: 'WATCHING' }, status: 'online' });
+		ch_fs_console.send({ embed: embedBuilder(startupMessage) });
+
+		//Set Status
+		Fishsticks.user.setPresence({ activity: { name: version + ' | TEST MODE', type: 'PLAYING' }, status: 'online' });
+	}
+	else {
+		const startupMessage = {
+			title: 'o0o - Fishsticks Startup - o0o',
+			description: 'Dipping in flour...\nBaking at 400°...\nFishticks ' + version + ' is ready to go!',
+			color: primary,
+			footer: 'Sequence initiated at ' + systemTimestamp(timestamp),
+			fields: [
+				{
+					title: 'Last startup time',
+					description: statusPreUpdate.StartupTime,
+					inline: true
+				},
+				{
+					title: 'Time since last startup',
+					description: convertMsFull(statusPreUpdate.StartupUTC - timeNow),
+					inline: true
+				}
+			]
+		};
+
+		ch_fs_console.send({ embed: embedBuilder(startupMessage) });
+
+		//Set Status
+		Fishsticks.user.setPresence({ activity: { name: 'for !help | ' + version, type: 'WATCHING' }, status: 'online' });
+	}
 
 	//Startup Complete
 	log('proc', '[CLIENT] Fishsticks is ready to run.\n-------------------------------------------------------');

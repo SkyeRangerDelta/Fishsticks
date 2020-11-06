@@ -1,111 +1,101 @@
+//----POLL----
+//Create and manage polls
+
+//Imports
 const Discord = require('discord.js');
-const config = require('../../Modules/Core/corecfg.json');
-const emojiList = require('../../Modules/Collections/emojis.js');
-const fs = require('fs');
-const syslogFunc = require('../../Modules/Functions/syslog.js');
+const config = require('../../Modules/Core/Core_config.json');
+const { log } = require('../../Modules/Utility/Utils_Log');
+const { hasPerms } = require('../../Modules/Utility/Utils_User');
+const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 
-var pollsFile = JSON.parse(fs.readFileSync('./Modules/PollingSystem/polls.json', 'utf8'));
+//Variables
+const responseEmojis = ["1⃣", "2⃣", "3⃣", "4⃣", "5⃣", "6⃣", "7⃣", "8⃣", "9⃣", "🔟"];
 
-exports.run = (fishsticks, msg, cmd) => {
-    msg.delete({timeout: 0});
+//Exports
+module.exports = {
+    run,
+    help
+};
 
-    return msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({timeout: 10000}));
+//Functions
+async function run(fishsticks, cmd) {
+    cmd.msg.delete({timeout: 0});
 
-    function syslog(message, level) {
-		syslogFunc.run(fishsticks, message, level);
-	}
-
-
-    if (msg.member.roles.cache.find("name", "CC Member") || msg.member.roles.find("name", "ACC Member")) {
-        execute();
-    }
-    else {
-        msg.reply("You don't have permission to post polls!").then(sent => sent.delete({timeout: 10000}));
+    if (!hasPerms(cmd.msg.member, ['CC Member', 'ACC Member'])) {
+        return cmd.msg.reply('Only members can post polls!').then(sent => sent.delete({ timeout: 10000 }));
     }
 
+    let cmdPoll = cmd.content;
 
-    function execute() {
-        let cmdPoll = msg.content.split("-");
+    let question = cmdPoll[0];
 
-        let question = cmdPoll[1];
-        let opA = cmdPoll[2];
-        let opB = cmdPoll[3];
-        let opC = cmdPoll[4];
-        let opD = cmdPoll[5];
-        let opE = cmdPoll[6];
-        let opF = cmdPoll[7];
-        let opG = cmdPoll[8];
-        let opH = cmdPoll[9];
-        let opI = cmdPoll[10];
-    
-        let memberType = "CC Member";
-        let opCount = 0;
-    
-        try {
-            if (msg.member.roles.find("name", "Council Member")) {
-                memberType = "Council Member";
-            }
-            else if (msg.member.roles.find("name", "Council Advisor")) {
-                memberType = "Council Advisor";
-            }
-            else if (msg.member.roles.find("name", "Staff")) {
-                memberType = "Staff Member";
-            }
-            else if (msg.member.roles.find("name", "Moderator")) {
-                memberType = "Moderator";
-            }
+    let memberType = "CC Member";
+    let opCount = 0;
+
+    try {
+        if (hasPerms(cmd.msg.member, ["Council Member"])) {
+            memberType = "Council Member";
         }
-        catch (roleFindErr) {
-            syslog("I couldn't find the role of a member trying to post a poll!\n\n" + roleFindErr, 3);
+        else if (hasPerms(cmd.msg.member, ["Council Advisor"])) {
+            memberType = "Council Advisor";
         }
-    
-        let desc = "A poll has been posted by a " + memberType + ". To answer the poll, please click one **ONE** of the emoji reactions below this message that corresponds with your answer. Do not vote twice.\n\n";
-    
-        try {
-            if (opA == null) {
-                return msg.reply("You need to have at least two poll responses!");
+        else if (hasPerms(cmd.msg.member, ["Staff Member"])) {
+            memberType = "Staff Member";
+        }
+        else if (hasPerms(cmd.msg.member, ["Moderator"])) {
+            memberType = "Moderator";
+        }
+    }
+    catch (roleFindErr) {
+        log('warn', `[POLL-SYS] I couldn't find the role of a member trying to post a poll!\n\n` + roleFindErr);
+    }
+
+    let desc = "A poll has been posted by a " + memberType + ". To answer the poll, please click one **ONE** of the emoji reactions below this message that corresponds with your answer. Do not vote twice.\n\n";
+
+    try {
+        if (cmdPoll[1] == null) {
+            return cmd.msg.reply("You need to have at least two poll responses!");
+        }
+        else if (cmdPoll[1] != null) {
+
+            desc = desc + responseEmojis[0] + " " + cmdPoll[1] + "\n";
+            opCount++;
+
+            if (cmdPoll[2] == null) {
+                return cmd.msg.reply("You need to have at least two poll responses!");
             }
-            else if (opA != null) {
-    
-                desc = desc + emojiList["1"] + " " + opA + "\n";
+            else if (cmdPoll[2] != null) {
+
+                desc = desc + responseEmojis[1] + " " + cmdPoll[2] + "\n";
                 opCount++;
-    
-                if (opB == null) {
-                    return msg.reply("You need to have at least two poll responses!");
-                }
-                else if (opB != null) {
-    
-                    desc = desc + emojiList["2"] + " " + opB + "\n";
+
+                if (cmdPoll[3] != null) {
+                    desc = desc + responseEmojis[2] + " " + cmdPoll[3] + "\n";
                     opCount++;
-    
-                    if (opC != null) {
-                        desc = desc + emojiList["3"] + " " + opC + "\n";
+
+                    if (cmdPoll[4] != null) {
+                        desc = desc + responseEmojis[3] + " " + cmdPoll[4] + "\n";
                         opCount++;
-    
-                        if (opD != null) {
-                            desc = desc + emojiList["4"] + " " + opD + "\n";
+
+                        if (cmdPoll[5] != null) {
+                            desc = desc + responseEmojis[4] + " " + cmdPoll[5] + "\n";
                             opCount++;
-    
-                            if (opE != null) {
-                                desc = desc + emojiList["5"] + " " + opE + "\n";
+
+                            if (cmdPoll[6] != null) {
+                                desc = desc + responseEmojis[5] + " " + cmdPoll[6] + "\n";
                                 opCount++;
-    
-                                if (opF != null) {
-                                    desc = desc + emojiList["6"] + " " + opF + "\n";
+
+                                if (cmdPoll[7] != null) {
+                                    desc = desc + responseEmojis[6] + " " + cmdPoll[7] + "\n";
                                     opCount++;
-    
-                                    if (opG != null) {
-                                        desc = desc + emojiList["7"] + " " + opG + "\n";
+
+                                    if (cmdPoll[8] != null) {
+                                        desc = desc + responseEmojis[7] + " " + cmdPoll[8] + "\n";
                                         opCount++;
-    
-                                        if (opH != null) {
-                                            desc = desc + emojiList["8"] + " " + opH + "\n";
+
+                                        if (cmdPoll[9] != null) {
+                                            desc = desc + responseEmojis[8] + " " + cmdPoll[9] + "\n";
                                             opCount++;
-    
-                                            if (opI != null) {
-                                                desc = desc + emojiList["9"] + " " + opI + "\n";
-                                                opCount++;
-                                            }
                                         }
                                     }
                                 }
@@ -114,74 +104,54 @@ exports.run = (fishsticks, msg, cmd) => {
                     }
                 }
             }
-        } catch (error) {
-            msg.reply("I've just caught a glitch in sector 5 of the neural net. I don't know what you did - but you probably should stop.").then(sent => sent.delete({timeout: 10000}));
-            return syslog("[POLL-SYS] An unknown error has been caught somewhere in response construction.", 3);
         }
-    
-        let pollQuestion = new Discord.MessageEmbed();
-            pollQuestion.setTitle("[POLL!] " + question);
-            pollQuestion.setColor(config.fsemercolor);
-            pollQuestion.setDescription(desc);
-    
-        try {msg.channel.send({embed: pollQuestion})
-            .then(function (post) {
-                for (var iter = 0; iter < opCount; iter++) {
-                    post.react(reactType(iter));
-                    syslog("Adding reaction: " + reactType(iter), 1);
-                }
-    
-                fishsticks.currentPolls.push(post.id);
-                let newPoll = {"pollID": post.id, "options": opCount, "responders": []};
-                pollsFile.polls.push(newPoll);
-                fs.writeFileSync('./Modules/PollingSystem/polls.json', JSON.stringify(pollsFile));
-
-                syslog("[POLL SYS] A new poll has been posted and saved to the bot.", 2);
-                msg.reply("Poll saved successfully.").then(sent => sent.delete({timeout: 10000}));
-            });
-        }
-        catch (postErr) {
-            syslog("[POLL SYS] An error occured when trying to post the poll. \n\n" + postErr, 3);
-            return msg.reply("Poll posting failed...did you change something you shouldn't have?");
-        }
+    } catch (error) {
+        cmd.msg.reply("I've just caught a glitch in sector 5 of the neural net. I don't know what you did - but you probably should stop.\n" + error).then(sent => sent.delete({timeout: 10000}));
+        return log('warn', '[POLL-SYS] An unknown error has been caught somewhere in response construction.\n' + error);
     }
 
-    function reactType(count) {
-        switch (count) {
-            case 0:
-                return emojiList["1"];
-                break;
-            case 1:
-                return emojiList["2"];
-                break;
-            case 2:
-                return emojiList["3"];
-                break;
-            case 3:
-                return emojiList["4"];
-                break;
-            case 4:
-                return emojiList["5"];
-                break;
-            case 5:
-                return emojiList["6"];
-                break;
-            case 6:
-                return emojiList["7"];
-                break;
-            case 7:
-                return emojiList["8"];
-                break;
-            case 8:
-                return emojiList["9"];
-                break;
-            case 9:
-                return emojiList["10"];
-                break;
-            default:
-                return emojiList.a;
-                break;
+    let pollQuestion = new Discord.MessageEmbed();
+        pollQuestion.setTitle("[POLL!] " + question);
+        pollQuestion.setColor(config.colors.primary);
+        pollQuestion.setDescription(desc);
+
+    try {
+        const pollToSend = await cmd.msg.channel.send({embed: pollQuestion});
+
+        for (let t = 0; t < opCount; t++) {
+            try {
+                await pollToSend.react(responseEmojis[t]);
+                log('info', '[POLL-SYS] Adding reaction: ' + responseEmojis[t]);
+            } catch (error) {
+                log('err', '[POLL-SYS] Some funk has occurred.\n' + error);
+            }
+        }
+
+        let newPoll = {
+            id: pollToSend.id,
+            numOptions: opCount,
+            respondents: []
+        };
+
+        log('info', '[POLL-SYS] Attempting to create new poll with this object:');
+        console.log(newPoll);
+
+        let FSORes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Polls', 'insert', newPoll);
+
+        if (FSORes.inserted == 1) {
+            log('proc', '[POLL-SYS] A new poll has been posted and saved to FSO.');
+            cmd.msg.reply("Poll saved successfully.").then(sent => sent.delete({timeout: 10000}));
+        } else {
+            log('err', '[POLL-SYS] FSO poll insertion failed.');
+            throw 'Unknown insertion error.';
         }
     }
+    catch (postErr) {
+        log('err', '[POLL SYS] An error occured when trying to post the poll. \n\n' + postErr);
+        return cmd.msg.reply("Poll posting failed...did you change something you shouldn't have?");
+    }
+}
 
+function help() {
+    return 'Allows you to post polls.';
 }

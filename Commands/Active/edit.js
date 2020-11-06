@@ -1,12 +1,19 @@
 //----EDIT----
+//Permits edits of predefined messages without update
 
-const permsCheck = require('../../Modules/Functions/permissionsCheck.js');
+//Imports
+const { hasPerms } = require('../../Modules/Utility/Utils_User.js');
 
 let messagesJson;
 
 const fs = require(`fs`);
 
-exports.run = async (fishsticks, msg, cmd) => {
+module.exports = {
+    run,
+    help
+};
+
+async function run(fishsticks, cmd) {
     msg.delete({timeout: 0});
     loadJSON();
 
@@ -14,9 +21,9 @@ exports.run = async (fishsticks, msg, cmd) => {
     let permissions = {
         "perms": ["Staff", "Bot"]
     }
-    let done = await permsCheck.run(fishsticks, msg.member, permissions);
-    if (!done) {
-        throw "Permissions check failed!";
+
+    if (!hasPerms(cmd.msg.member, permissions)) {
+        throw 'Permissions check failed!';
     }
 
     //Command Breakup
@@ -82,4 +89,8 @@ function loadJSON() {
     } catch (loadMsgsErr) {
         return msg.reply("Error in neural sector 9. Failed to load a core file. Offloading dump report and notifying " + fishsticks.ranger);
     }
+}
+
+function help() {
+    return 'Allows editing of Fs default responses and messages.';
 }

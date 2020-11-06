@@ -2,7 +2,12 @@
 const syslog = require('./../../Modules/Functions/syslog.js');
 const fs = require('fs');
 
-exports.run = async (fishsticks, msg, cmd) => {
+module.exports = {
+    run,
+    help
+};
+
+async function run(fishsticks, cmd) {
 
     msg.delete({timeout: 0});
 
@@ -54,4 +59,8 @@ exports.run = async (fishsticks, msg, cmd) => {
         syslog.run(fishsticks, "[SUMMON] Failed!\n" + summonErr, 3); //Log result if failure
         return msg.reply("*You failed to summon that, perhaps you have no mana?*").then(sent => sent.delete({timeout: 10000})); //Friendly response on failure
     }
+}
+
+function help() {
+    return 'Summons cards!';
 }

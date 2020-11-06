@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const config = require('../../Modules/Core/corecfg.json');
+const config = require('../../Modules/Core/Core_config.json');
 const coresys = require('../../Modules/Core/coresys.json');
 const log = require('../../Modules/Functions/log.js');
 

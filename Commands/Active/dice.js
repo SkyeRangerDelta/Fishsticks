@@ -1,4 +1,5 @@
 //----DICE----
+//Compute complex dice calculations!
 
 //Imports
 const rollLib = require('roll');
@@ -19,12 +20,11 @@ function run(fishsticks, cmd) {
     cmd.msg.delete({ timeout: 0 });
 
     //Command Breakup
-    const cmdArgs = cmd.msg.content.toLowerCase().split(' ');
-    const dieRoll = cmdArgs[1];
-    const diceRolled = cmdArgs[1].split('+');
+    const dieRoll = cmd.content[0];
+    const diceRolled = cmd.content[0].split('+');
 
     //Check for encounter generator
-    if (cmd[0].toLowerCase() == 'encounter') {
+    if (cmd.content[0].toLowerCase() == 'encounter') {
         return cmd.msg.channel.send('Encounter type: ' + genEncounter());
     }
 

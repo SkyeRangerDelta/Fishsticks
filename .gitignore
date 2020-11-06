@@ -4,7 +4,8 @@
 #Core
 /Modules/Core/Core_ids.json
 /Modules/Core/Core_config.json
-Modules/fs_systems.json
+/Modules/Core/Core_keys.json
+Modules/Core/Core_keys.json
 
 #FSO
 /Modules/FSO/FSO_assets.json

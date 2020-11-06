@@ -1,7 +1,7 @@
 //---SUGGEST---
 
 const Discord = require('discord.js');
-const systems = require('../../Modules/fs_systems.json');
+const systems = require('../../Modules/Core/Core_keys.json');
 const ids = require('../../Modules/fs_ids.json');
 const https = require('https');
 
@@ -9,7 +9,12 @@ const query = require('../../Modules/Functions/db/query.js');
 
 const logger = require('../../Modules/Functions/syslog.js');
 
-exports.run = async (fishsticks, msg, cmd) => {
+module.exports = {
+    run,
+    help
+};
+
+async function run(fishsticks, cmd) {
     msg.delete({timeout: 0});
 
     var hookURL = systems.fsSuggestionHook;
@@ -50,4 +55,8 @@ exports.run = async (fishsticks, msg, cmd) => {
         console.log("\nStack:\n");
         console.log(eventSendErr.stack);
     }
+}
+
+function help() {
+    return 'Posts a GitHub issue to the Fishsticks repository.';
 }

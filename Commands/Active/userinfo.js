@@ -1,9 +1,14 @@
 //----USER INFO----
 
 const Discord = require('discord.js');
-const sys = require('../../Modules/Core/corecfg.json');
+const sys = require('../../Modules/Core/Core_config.json');
 
-exports.run = (fishsticks, msg, cmd) => {
+module.exports = {
+    run,
+    help
+};
+
+function run(fishsticks, cmd) {
     msg.delete({timeout: 0});
 
     return msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({timeout: 10000}));
@@ -45,4 +50,8 @@ exports.run = (fishsticks, msg, cmd) => {
             return "No";
         }
     }
+}
+
+function help() {
+    return 'Displays a load of information about a user.';
 }

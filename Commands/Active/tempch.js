@@ -8,7 +8,12 @@ const syslogFunc = require('../../Modules/Functions/syslog.js');
 
 var tempChannels = [];
 
-exports.run = (fishsticks, msg, cmd) => {
+module.exports = {
+    run,
+    help
+};
+
+function run(fishsticks, cmd) {
     msg.delete({timeout: 0});
 
     return msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({timeout: 10000}));
@@ -151,4 +156,8 @@ exports.run = (fishsticks, msg, cmd) => {
     else {
         msg.reply("This subroutine is disabled! Ask " + fishsticks.ranger + " or another Staff member to turn it back on!").then(sent => sent.delete({timeout: 15000}));
     }
+}
+
+function help() {
+    return 'Creates a temporary voice channel';
 }

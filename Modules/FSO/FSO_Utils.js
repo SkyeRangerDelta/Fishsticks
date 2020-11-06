@@ -12,7 +12,6 @@ module.exports = {
 	fso_query
 };
 
-//Functions
 async function fso_connect() {
 	log('info', '[FSO] Pending Connection...');
 
@@ -55,15 +54,30 @@ async function fso_query(connection, table, key, value) {
 	const currentStatus = await Rethink.table('Fs_Status').get(1).run(connection);
 	await Rethink.table('Fs_Status').update({ id: 1, Queries: ++currentStatus.Queries }).run(connection);
 
+	let docs = [];
+
 	switch (key) {
 		case 'select':
 			return await Rethink.table(table).get(value).run(connection);
 		case 'update':
-			return await Rethink.table(table).update(value).run(connection);
+			return await Rethink.table(table).get(value.id).update(value).run(connection);
+		case 'replace':
+			return await Rethink.table(table).get(value.id).replace(value.content).run(connection);
 		case 'insert':
 			return await Rethink.table(table).insert(value).run(connection);
 		case 'filter':
 			return await Rethink.table(table).filter(value).run(connection);
+		case 'table':
+			return await Rethink.table(table).run(connection);
+		case 'tableSmall':
+			await Rethink.table(table).run(connection, function(err, stream) {
+				if (err) throw err;
+				stream.toArray().then(arr => {docs = arr;});
+			});
+
+			return docs;
+		case 'delete':
+			return await Rethink.table(table).get(value).delete().run(connection);
 		default:
 			throw 'Invalid FSO Query!';
 	}

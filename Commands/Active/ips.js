@@ -1,7 +1,12 @@
 const Discord = require('discord.js');
-const config = require('../../Modules/Core/corecfg.json');
+const config = require('../../Modules/Core/Core_config.json');
 
-exports.run = (fishsticks, msg, cmd) => {
+module.exports = {
+	run,
+	help
+};
+
+function run(fishsticks, cmd) {
     msg.delete({timeout: 0});
 
     var ips = new Discord.MessageEmbed();
@@ -15,4 +20,8 @@ exports.run = (fishsticks, msg, cmd) => {
 		"Minecraft (Admin: FutronBob): `Pending Addition`");
 
     msg.channel.send({embed: ips}).then(sent => sent.delete({timeout: 30000}));
+}
+
+function help() {
+	return 'Lists official CC game server IP addresses.';
 }

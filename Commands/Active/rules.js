@@ -1,7 +1,12 @@
 const Discord = require('discord.js');
-const config = require('../../Modules/Core/corecfg.json');
+const config = require('../../Modules/Core/Core_config.json');
 
-exports.run = (fishsticks, msg, cmd) => {
+module.exports = {
+	run,
+	help
+};
+
+function run(fishsticks, cmd) {
     msg.delete({timeout: 0});
 
     var rules = new Discord.MessageEmbed();
@@ -22,4 +27,8 @@ exports.run = (fishsticks, msg, cmd) => {
 			)
 
     msg.channel.send({embed: rules}).then(sent => sent.delete({timeout: 60000}));
+}
+
+function help() {
+	return 'Posts the CC rules.';
 }

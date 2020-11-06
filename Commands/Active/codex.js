@@ -21,7 +21,7 @@ function run(fishsticks, cmd) {
     for (const file in cmdList) {
 		const fileID = cmdList[file].substring(0, cmdList[file].length - 3);
 		if (fileID.toLowerCase() == cmd.content[0]) {
-			const helpEntry = require(`./${fileID}`).help;
+			const helpEntry = require(`./${fileID}`).codex;
 			return cmd.msg.channel.send(helpEntry + '\nThat entry can be found here: https://wiki.pldyn.net/fishsticks/command-listing#${entry}')
 			.then(sent => sent.delete({ timeout: 15000 }));
 		}

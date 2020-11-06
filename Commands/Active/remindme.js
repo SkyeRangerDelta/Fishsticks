@@ -1,7 +1,12 @@
 //----Remind Me----
 const Discord = require('discord.js');
 
-exports.run = (fishsticks, msg, cmd) => {
+module.exports = {
+    run,
+    help
+}
+
+function run (fishsticks, cmd) {
     msg.delete({timeout: 0});
 
     //Command breakup
@@ -25,4 +30,8 @@ exports.run = (fishsticks, msg, cmd) => {
     function sendIt(it) {
         msg.reply("The time is now!\n\n" + it);
     }
+}
+
+function help() {
+    return 'Pings you with a given message after the set amount of time passes.';
 }

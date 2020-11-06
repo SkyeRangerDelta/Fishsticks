@@ -1,6 +1,12 @@
 //----MUTILATE----
 
-exports.run = (fishsticks, msg, cmd) => {
+
+module.exports = {
+    run,
+    help
+};
+
+function run(fishsticks, cmd) {
     msg.delete({timeout: 0});
 
     let rawInput = cmd.join(' ');
@@ -23,4 +29,8 @@ exports.run = (fishsticks, msg, cmd) => {
     
     msg.channel.send(output);
 
+}
+
+function help() {
+    return 'Converts text into tRiGgEr TeXt.';
 }
