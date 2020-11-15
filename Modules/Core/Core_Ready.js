@@ -72,8 +72,7 @@ async function startUp(Fishsticks) {
 	}
 
 	//Init Objs
-	const ch_fs_console = Fishsticks.channels.cache.get(fs_console);
-
+	Fishsticks.CONSOLE = Fishsticks.channels.cache.get(fs_console);
 	Fishsticks.CCG = await Fishsticks.guilds.fetch(guild_CCG);
 	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch(ranger);
 
@@ -96,7 +95,7 @@ async function startUp(Fishsticks) {
 			]
 		};
 
-		ch_fs_console.send({ embed: embedBuilder(startupMessage) });
+		Fishsticks.CONSOLE.send({ embed: embedBuilder(startupMessage) });
 
 		//Set Status
 		Fishsticks.user.setPresence({ activity: { name: version + ' | TEST MODE', type: 'PLAYING' }, status: 'online' });
@@ -121,7 +120,7 @@ async function startUp(Fishsticks) {
 			]
 		};
 
-		ch_fs_console.send({ embed: embedBuilder(startupMessage) });
+		Fishsticks.CONSOLE.send({ embed: embedBuilder(startupMessage) });
 
 		//Set Status
 		Fishsticks.user.setPresence({ activity: { name: 'for !help | ' + version, type: 'WATCHING' }, status: 'online' });

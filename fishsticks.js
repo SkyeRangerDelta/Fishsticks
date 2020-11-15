@@ -26,6 +26,7 @@ const { validateReaction } = require('./Modules/Utility/Utils_Aux');
 
 //Configs
 const { token } = require('./Modules/Core/Core_config.json');
+const { handleNewMember } = require('./Modules/Core/Core_NewMember');
 
 //=============================================
 //				  GLOBALS
@@ -41,6 +42,7 @@ Fishsticks.session;
 Fishsticks.lastSystemStart;
 Fishsticks.CCG;
 Fishsticks.RANGER;
+Fishsticks.CONSOLE;
 Fishsticks.appMsgIDs = [];
 Fishsticks.debMsgIDs = [];
 Fishsticks.TESTMODE = false;
@@ -81,6 +83,7 @@ Fishsticks.on('voiceStateUpdate', (prevMemberState, newMemberState) => {
 //Member Join Server
 Fishsticks.on('guildMemberAdd', newMember => {
 	log('info', `[CLIENT] ${newMember.nickname}`);
+	handleNewMember(Fishsticks, newMember);
 });
 
 //Member Leave Server

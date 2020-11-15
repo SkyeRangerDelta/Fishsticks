@@ -1,27 +1,27 @@
 {
   "name": "fishsticks",
   "version": "1.18.0",
-  "description": "Official CC Discord Bot",
+  "description": "The official CCG Discord bot",
   "main": "fishsticks.js",
   "scripts": {
-    "test": "!hello"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SkyeRangerDelta/Fishsticks.git"
   },
   "author": "SkyeRangerDelta",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/SkyeRangerDelta/Fishsticks/issues"
   },
   "homepage": "https://github.com/SkyeRangerDelta/Fishsticks#readme",
   "dependencies": {
+    "canvas": "^2.6.1",
     "colors": "^1.4.0",
     "discord.js": "^12.4.1",
-    "eslint": "^7.12.1",
-    "fs": "0.0.1-security",
-    "https": "^1.0.0",
+    "eslint": "^7.13.0",
+    "npm": "^7.0.11",
     "oxford-dictionary": "^1.6.0",
     "rethinkdb": "^2.4.2",
     "roll": "^1.2.0"

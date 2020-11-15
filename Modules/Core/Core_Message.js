@@ -68,6 +68,16 @@ async function processMessage(Fishsticks, msg) {
 					sent.reply(generateErrorMsg() + `\nLooks like Im missing some major config somewhere and Im on the edge of losing it.\nPing ${Fishsticks.RANGER}`);
 				});
 			}
+			else if (activeCmdErr.message.includes('Test mode')) {
+				msg.delete({ timeout: 0 }).then(sent => {
+					sent.reply(generateErrorMsg() + `\nThis is a test mode only command. It won't run unless ${Fishsticks.RANGER} is up to no good.`);
+				});
+			}
+			else if (activeCmdErr.message.includes('No permissions')) {
+				msg.delete({ timeout: 0 }).then(sent => {
+					sent.reply(generateErrorMsg() + '\nLooks like you lack to necessary permissions to run this one.');
+				});
+			}
 		}
 	}
 }
