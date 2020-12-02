@@ -1,3 +1,5 @@
-exports.run = (fishsticks, msg, cmd) => {
-    msg.channel.send("FOOTBALL!", {files: ["./images/football.gif"]});
-}
+// ---- Passive: Troll ----
+
+exports.run = (fishsticks, cmd) => {
+    cmd.msg.channel.send('FOOTBALL!', { files: ['./images/football.gif'] });
+};

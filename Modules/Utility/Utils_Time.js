@@ -12,10 +12,12 @@ module.exports = {
 	convertMsFull
 };
 
+//Returns the given date: Wed Jul 28 1993
 function systemDate(date) {
 	return date.toDateString();
 }
 
+//Returns system time: 12:38
 function systemTime(date) {
 	let minutes = date.getMinutes();
 	if (minutes < 10) {
@@ -25,6 +27,7 @@ function systemTime(date) {
 	return date.getHours() + ':' + minutes;
 }
 
+//Returns a timestamp: Wed Jul 28 1993 - 12:38
 function systemTimestamp(date) {
 	if (!date) {
 		const tempDate = new Date();

@@ -23,9 +23,14 @@ async function processMessage(Fishsticks, msg) {
 	const cmdBreakup = msg.content.toLowerCase().substring(1, msg.content.length).split('-');
 	const cmd = {
 		ID: cmdBreakup.shift().trim(),
-		content: cmdBreakup,
+		content: [],
 		msg: msg
 	};
+
+	//Trim content
+	for (const param in cmdBreakup) {
+		cmd.content.push(cmdBreakup[param].trim());
+	}
 
 	//Check BaconMode
 	if (msg.author === Fishsticks.baconTarget) {
@@ -78,6 +83,23 @@ async function processMessage(Fishsticks, msg) {
 					sent.reply(generateErrorMsg() + '\nLooks like you lack to necessary permissions to run this one.');
 				});
 			}
+			else {
+				msg.delete({ timeout: 0 }).then(sent => {
+					sent.reply(generateErrorMsg() + '\n' + activeCmdErr.message);
+				});
+			}
+		}
+	}
+	else {
+		//Passive Command Handler
+
+		const passiveID = msg.content.trim().toLowerCase().split(' ')[0];
+		try {
+			const passiveCmd = require(`../../Commands/Passive/${passiveID}.js`);
+			passiveCmd.run(Fishsticks, cmd);
+		}
+		catch (passiveCmdErr) {
+			log('info', '[PASSIVE-CMD] Attempt failed.');
 		}
 	}
 }

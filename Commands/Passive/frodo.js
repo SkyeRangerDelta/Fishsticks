@@ -1,5 +1,5 @@
-//Frodo
+// ---- Passive: Frodo ----
 
-exports.run = (fishsticks, msg, cmd) => {
-	msg.channel.send({files: ["./images/frodobiggins.gif"]});
-}
+exports.run = (fishsticks, cmd) => {
+	cmd.msg.channel.send({ files: ['./images/frodobiggins.gif'] });
+};

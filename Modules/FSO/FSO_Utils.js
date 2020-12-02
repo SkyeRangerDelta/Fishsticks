@@ -59,6 +59,8 @@ async function fso_query(connection, table, key, value) {
 	switch (key) {
 		case 'select':
 			return await Rethink.table(table).get(value).run(connection);
+		case 'selectAll':
+			return await Rethink.table(table).run(connection);
 		case 'update':
 			return await Rethink.table(table).get(value.id).update(value).run(connection);
 		case 'replace':
@@ -78,6 +80,8 @@ async function fso_query(connection, table, key, value) {
 			return docs;
 		case 'delete':
 			return await Rethink.table(table).get(value).delete().run(connection);
+		case 'deleteAlt':
+			return await Rethink.table(table).filter(value).delete().run(connection);
 		default:
 			throw 'Invalid FSO Query!';
 	}

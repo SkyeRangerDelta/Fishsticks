@@ -1,3 +1,5 @@
-exports.run = (fishsticks, msg, cmd) => {
-    msg.channel.send("I am serious, and don't call me Shirley.", {files: ["./images/shirley.gif"]});
-}
+// ---- Passive: Surely ----
+
+exports.run = (fishsticks, cmd) => {
+    cmd.msg.channel.send('I am serious, and dont call me Shirley.', { files: ['./images/shirley.gif'] });
+};

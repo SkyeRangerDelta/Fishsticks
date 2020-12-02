@@ -5,12 +5,12 @@ const permissionsCheck = require('../../Modules/Functions/permissionsCheck.js');
 module.exports = {
     run,
     help
-}
+};
 
 async function run(fishsticks, cmd) {
-    msg.delete({timeout: 0});
+    cmd.msg.delete({ timeout: 0 });
 
-    return msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({timeout: 10000}));
+    return cmd.msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({ timeout: 10000 }));
 
     //Permissions check
     let perms = {"perms": ["Staff", "Moderator", "Bot"]}
