@@ -8,6 +8,7 @@ const { fso_validate } = require('../Utility/Utils_User');
 const { prefix } = require('../Core/Core_config.json');
 const { fso_query } = require('../FSO/FSO_Utils');
 const { generateErrorMsg } = require('../Utility/Utils_Aux');
+const { processXP } = require('../XP/XP_Core');
 
 //Exports
 module.exports = {
@@ -36,6 +37,9 @@ async function processMessage(Fishsticks, msg) {
 	if (msg.author === Fishsticks.baconTarget) {
 		msg.react('🥓');
 	}
+
+	//Do XP
+	processXP(Fishsticks, cmd);
 
 	//Handle Active Commands
 	if (msg.content.startsWith(prefix)) {

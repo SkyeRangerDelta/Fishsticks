@@ -47,6 +47,7 @@ Fishsticks.appMsgIDs = [];
 Fishsticks.debMsgIDs = [];
 Fishsticks.TESTMODE = false;
 Fishsticks.NODEARGS = [];
+Fishsticks.SUMM_BRODEMODE = false;
 
 //=============================================
 //				   EVENTS
