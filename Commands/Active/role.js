@@ -4,11 +4,13 @@
 //Imports
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { log } = require('../../Modules/Utility/Utils_Log');
-const { systemTimestamp } = require('../../Modules/Utility/Utils_Time');
+const { systemTimestamp, flexTime } = require('../../Modules/Utility/Utils_Time');
+const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 
 const { DuplicatedRoleException } = require('../../Modules/Errors/DuplicatedRoleException');
 const { InvalidParameterException } = require('../../Modules/Errors/InvalidParameterException');
-const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+
+const dateMod = require('date-and-time');
 
 //Exports
 module.exports = {
@@ -29,8 +31,13 @@ async function run(fishsticks, cmd) {
     //Obtain a current set of roles in array for future use
     const queryRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'selectAll');
 
+    //Recalibrate time indexes and perform table maintenance
+    await updateRoles(fishsticks, queryRes);
+
     //Parse the query
-    parseRequest(fishsticks, cmd, queryRes);
+    parseRequest(fishsticks, cmd, queryRes).catch(e => {
+        cmd.msg.reply('*Ok but why.*\n' + e);
+    });
 
     //Possible syntax
     //!role -[func] -[options] -[content]
@@ -47,14 +54,11 @@ async function run(fishsticks, cmd) {
     */
 
 }
-async function parseRequest(fishsticks, cmd, poolRes) {
+async function parseRequest(fishsticks, cmd) {
     //Validate func
     if (!params[0] || params[0] === null) {
         throw 'What am I going to do with you. You need to specify what your intentions are.';
     }
-
-    //Do pool gen
-    currentPool = await poolRes.toArray();
 
     if (params[0] == 'n' || params[0] == 'new') {
         log('info', '[ROLE-SYS] Creating a new role.');
@@ -124,19 +128,27 @@ async function parseRequest(fishsticks, cmd, poolRes) {
 async function newRole(fishsticks, cmd) {
     //Assume !role -new -name -game -description
 
+    const curFlexTime = flexTime();
+    const curMDN = new Date();
+    const roleTimeout = dateMod.addDays(curMDN, 14);
+
     //Create role Obj
     const newRoleObj = {
         name: toTitleCase(params[1]),
         creator: cmd.msg.member.displayName,
         game: toTitleCase(params[2]),
         description: params[3],
-        created: systemTimestamp(),
+        created: curMDN,
+        createdFriendly: curFlexTime,
         activated: null,
+        timeout: roleTimeout,
+        timeoutFriendly: flexTime(roleTimeout),
         pings: 0,
         votes: 1,
         founders: [cmd.msg.author.id],
         members: [],
         active: false,
+        permanent: false,
         activityFactor: 0
     };
 
@@ -181,10 +193,21 @@ async function voteRole(fishsticks, cmd) {
             }
         }
 
+        //Determine new timeout in ms
+        const curMDN = new Date();
+        const timeDiffMS = dateMod.subtract(roleObj.created, curMDN).toMilliseconds();
+        const timeDiff = dateMod.addMilliseconds(roleObj.timeout, timeDiffMS);
+
+        if (isNaN(timeDiff) || !timeDiff) {
+            throw 'Failed to determine timeout difference.';
+        }
+
         const updateObj = {
             id: roleObj.id,
             votes: roleObj.votes + 1,
-            founders: roleObj.founders
+            founders: roleObj.founders,
+            timeout: timeDiff,
+            timeoutFriendly: flexTime(timeDiff)
         };
 
         updateObj.founders.push(cmd.msg.author.id);
@@ -225,6 +248,46 @@ async function roleStats(fishsticks, cmd) {
 //List all roles
 async function listRoles(fishsticks, cmd) {
     cmd.msg.reply('Insert neat things here.').then(sent => sent.delete({ timeout: 10000 }));
+
+    let activeRoleList = '';
+    let inactiveRoleList = '';
+
+    //Iterate roles
+    for(const role in currentPool) {
+        if (currentPool[role].active) {
+            activeRoleList += `**${currentPool[role].name}**: ${currentPool[role].game}\n`;
+        }
+        else if (currentPool[role].permanent) {
+            inactiveRoleList += `**${currentPool[role].name}**: ${currentPool[role].game}\n`;
+        }
+        else {
+            inactiveRoleList += `**${currentPool[role].name}**: ${currentPool[role].game} (*Requires ${5 - currentPool[role].votes} votes* before ${dateMod.format(currentPool[role].timeout, 'MM D YYYY @ HH:mm')})\n`;
+        }
+    }
+
+    if (activeRoleList === '') {
+        activeRoleList = 'Theres nothing in here? Huh.';
+    }
+    if (inactiveRoleList === '') {
+        inactiveRoleList = 'No inactive roles!';
+    }
+
+    const roleListEmbed = {
+        title: 'o0o - Role Listing [Active] - o0o',
+        description: activeRoleList,
+        delete: 45000
+    };
+
+    const inactiveListEmbed = {
+        title: 'o0o - Role Listing [Inactive] - o0o',
+        description: inactiveRoleList,
+        delete: 45000
+    };
+
+    cmd.msg.channel.send({ embed: embedBuilder(roleListEmbed) }).then(sent => {
+        sent.delete({ timeout: 45000 });
+        cmd.msg.channel.send({ embed: embedBuilder(inactiveListEmbed) }).then(sent2 => sent2.delete({ timeout: 450000 }));
+    });
 }
 
 //Print the stats for a single role
@@ -233,8 +296,6 @@ async function aboutRole(fishsticks, cmd) {
 
     const roleObj = await findRole();
     let activeField;
-
-    console.log(roleObj);
 
     if (roleObj.active) {
         activeField = {
@@ -289,7 +350,7 @@ async function aboutRole(fishsticks, cmd) {
             },
             {
                 title: 'Created On',
-                description: roleObj.created,
+                description: roleObj.createdFriendly,
                 inline: true
             },
             {
@@ -301,6 +362,11 @@ async function aboutRole(fishsticks, cmd) {
             {
                 title: 'Actitivity Factor',
                 description: roleObj.activityFactor,
+                inline: true
+            },
+            {
+                title: 'Timeout Date',
+                description: roleObj.timeoutFriendly,
                 inline: true
             },
             {
@@ -330,7 +396,10 @@ async function activateRole(fishsticks, cmd, obj) {
     log('info', '[ROLE-SYS] Preparing to activate role...');
 
     obj.active = true;
+    obj.permanent = true;
     obj.activated = systemTimestamp();
+    obj.timeout = dateMod.addMonths(obj.timeout, 3);
+    obj.timeoutFriendly = flexTime(obj.timeout);
 
     const activateRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'update', obj);
 
@@ -407,6 +476,40 @@ function toTitleCase(toConvert) {
     log('info', '[ROLE-SYS] Converted title to: ' + breakupArr);
 
     return breakupArr;
+}
+
+//Delete a role (SYSTEM ONLY)
+async function delRole(fishsticks, id) {
+    const delRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'delete', id);
+
+    if (delRes.deleted != 1) {
+        log('err', '[ROLE-SYS] Failed to delete role.');
+    }
+    else {
+        log('proc', '[ROLE-SYS] Deleted role with id: ' + id);
+    }
+}
+
+//Mass update and callibrate days
+async function updateRoles(fishsticks, poolRes) {
+    log('warn', '[ROLE-SYS] [MAINT] Conducting role updates and table maintenance');
+    const curMDN = new Date().setHours(0, 0, 0, 0);
+
+    //Do pool gen
+    currentPool = await poolRes.toArray();
+
+    //Iterate over all roles
+    for (const roleObj in currentPool) {
+        log('warn', `[ROLE-SYS] [MAINT] Checking ${currentPool[roleObj].name} (ID: ${currentPool[roleObj].id})`);
+
+        //Remove all inactive roles past timeout date
+        if (!currentPool[roleObj].permanent) {
+            if (curMDN > currentPool[roleObj].timeout) {
+                log('warn', '[ROLE-SYS] Deleting role (inactivity): ' + currentPool[roleObj].name);
+                delRole(fishsticks, currentPool[roleObj].id);
+            }
+        }
+    }
 }
 
 //Help

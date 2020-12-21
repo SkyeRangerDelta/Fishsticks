@@ -1,6 +1,7 @@
 // ---- Time Utility ----
 
 //Imports
+const DATE = require('date-and-time');
 
 //Exports
 
@@ -9,7 +10,8 @@ module.exports = {
 	systemTime,
 	systemTimestamp,
 	convertMs,
-	convertMsFull
+	convertMsFull,
+	flexTime
 };
 
 //Returns the given date: Wed Jul 28 1993
@@ -24,17 +26,26 @@ function systemTime(date) {
 		minutes = '0' + minutes;
 	}
 
-	return date.getHours() + ':' + minutes;
+	return date.getHours() + ':' + minutes + ':' + date.getSeconds();
 }
 
-//Returns a timestamp: Wed Jul 28 1993 - 12:38
+//Returns a timestamp: Wed Jul 28 1993 - 12:38:00
 function systemTimestamp(date) {
+	return flexTime(date);
+}
+
+//Returns a 'date-and-time' date obj
+function flexTime(date) {
+	const now = new Date();
 	if (!date) {
-		const tempDate = new Date();
-		return systemDate(tempDate) + ' - ' + systemTime(tempDate);
+		const newFlex = DATE.format(now, 'ddd MM D YYYY - HH:mm:ss');
+
+		return newFlex;
 	}
 	else {
-		return systemDate(date) + ' - ' + systemTime(date);
+		const newFlex = DATE.format(date, 'ddd MM D YYYY - HH:mm:ss');
+
+		return newFlex;
 	}
 }
 
