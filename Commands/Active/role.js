@@ -175,7 +175,6 @@ async function editRole(fishsticks, cmd) {
 
 //Vote for a role
 async function voteRole(fishsticks, cmd) {
-    cmd.msg.reply('Insert neat things here.').then(sent => sent.delete({ timeout: 10000 }));
 
     const roleObj = findRole();
 
@@ -232,12 +231,37 @@ async function voteRole(fishsticks, cmd) {
 
 //Join a role
 async function joinRole(fishsticks, cmd) {
-    cmd.msg.reply('Insert neat things here.').then(sent => sent.delete({ timeout: 10000 }));
+    //Check active
+    const roleX = findRole();
+    if (roleX.activated == false) {
+        //Vote role override
+        cmd.msg.reply('Role not active, voting for it instead.').then(sent => sent.delete({ timeout: 10000 }));
+        voteRole(fishsticks, cmd);
+    }
+    else {
+        //Get role and add
+        const roleY = cmd.msg.guild.roles.cache.find(role => role.name === `${roleX.name}`);
+        cmd.msg.member.roles.add(roleY).then(function() {
+            cmd.msg.channel.send(`${cmd.msg.member} has joined ${roleY}!`);
+        });
+    }
 }
 
 //Leave a role
 async function leaveRole(fishsticks, cmd) {
-    cmd.msg.reply('Insert neat things here.').then(sent => sent.delete({ timeout: 10000 }));
+    //Check active
+    const roleX = findRole();
+    if (roleX.activated == false) {
+        //Vote role override
+        cmd.msg.reply('No active role to leave!').then(sent => sent.delete({ timeout: 10000 }));
+    }
+    else {
+        //Get role and add
+        const roleY = cmd.msg.guild.roles.cache.find(role => role.name === `${roleX.name}`);
+        cmd.msg.member.roles.remove(roleY).then(function() {
+            cmd.msg.channel.send('Role removed.');
+        });
+    }
 }
 
 //Print the statistics for all roles
@@ -401,6 +425,8 @@ async function activateRole(fishsticks, cmd, obj) {
     obj.timeout = dateMod.addMonths(obj.timeout, 3);
     obj.timeoutFriendly = flexTime(obj.timeout);
 
+    const roleCount = cmd.msg.guild.roles.cache.length;
+
     const activateRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'update', obj);
 
     if (activateRes.replaced != 1) {
@@ -408,9 +434,25 @@ async function activateRole(fishsticks, cmd, obj) {
     }
     else {
         cmd.msg.reply('Activation successful!').then(sent => sent.delete({ timeout: 10000 }));
+
         //Create role
+        const newlyCreatedRole = await cmd.msg.guild.roles.create({
+            data: {
+                name: obj.name,
+                color: '#9e876e',
+                mentionable: true,
+                position: roleCount
+            },
+            reason: '[ROLE-SYS] Game role subroutine has created a new role based on the votes fo 5 different members.'
+        }).then(newRoleObj => {
+            log('proc', `[ROLE-SYS] Created new role ${newRoleObj.name}`);
+        });
 
         //Assign to founders
+        for (const member in obj.founders) {
+            obj.founders[member].roles.add(newlyCreatedRole, '[ROLE-SYS] Role added automatically after having voted for it.');
+            cmd.msg.channel.send(`${obj.founders[member]} - you've been assigned ${obj.name} because you voted for it!`).then(sent => sent.delete({ timeout: 10000 }));
+        }
     }
 }
 
