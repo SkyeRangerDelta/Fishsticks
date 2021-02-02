@@ -22,7 +22,7 @@
     "date-and-time": "^0.14.1",
     "discord.js": "^12.4.1",
     "eslint": "^7.13.0",
-    "npm": "^7.0.11",
+    "npm": "^7.5.0",
     "oxford-dictionary": "^1.6.0",
     "rethinkdb": "^2.4.2",
     "roll": "^1.2.0"

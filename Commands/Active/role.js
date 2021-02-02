@@ -20,6 +20,7 @@ module.exports = {
 
 //Globals
 let currentPool;
+let memberFSO;
 let params = null;
 
 //Functions
@@ -30,6 +31,7 @@ async function run(fishsticks, cmd) {
 
     //Obtain a current set of roles in array for future use
     const queryRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'selectAll');
+    memberFSO = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'select', `${cmd.msg.author.id}`);
 
     //Recalibrate time indexes and perform table maintenance
     await updateRoles(fishsticks, queryRes);
@@ -240,12 +242,31 @@ async function joinRole(fishsticks, cmd) {
     }
     else {
         //Get role and add
-        const roleY = cmd.msg.guild.roles.cache.find(role => role.name === `${roleX.name}`);
+        const roleY = await cmd.msg.guild.roles.cache.find(role => role.name === `${roleX.name}`);
         cmd.msg.member.roles.add(roleY).then(function() {
-            cmd.msg.channel.send(`${cmd.msg.member} has joined ${roleY}!`);
+
+            const memberRolesList = memberFSO.roles; //Get member role listing
+
+            //Update FSO with the new role list
+            const roleUpdate = {
+                id: cmd.msg.author.id,
+                roles: memberRolesList.push(roleY.id)
+            };
+
+            fso_query(fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'update', roleUpdate).then(done => {
+                if (done.replaced == 1) {
+                    cmd.msg.channel.send(`${cmd.msg.member} has joined ${roleY}!`);
+                }
+                else {
+                    cmd.msg.reply('Something is...incorrect. Have someone check your roles.');
+                }
+            });
+        }).catch(err => {
+            cmd.msg.reply('Something went wrong trying to add your role.\n' + err).then(sent => sent.delete({ timeout: 10000 }));
         });
     }
 }
+//
 
 //Leave a role
 async function leaveRole(fishsticks, cmd) {
@@ -256,10 +277,32 @@ async function leaveRole(fishsticks, cmd) {
         cmd.msg.reply('No active role to leave!').then(sent => sent.delete({ timeout: 10000 }));
     }
     else {
-        //Get role and add
-        const roleY = cmd.msg.guild.roles.cache.find(role => role.name === `${roleX.name}`);
+        //Get role and remove
+        const roleY = await cmd.msg.guild.roles.cache.find(role => role.name === `${roleX.name}`);
         cmd.msg.member.roles.remove(roleY).then(function() {
-            cmd.msg.channel.send('Role removed.');
+            const memberRolesList = memberFSO.roles; //Get member role listing
+            const roleIndex = memberRolesList.indexOf(roleY.id); //Determine role position
+
+            if (roleIndex > -1) { //Remove the role in question
+                memberRolesList.splice(roleIndex, 1);
+            }
+
+            //Update FSO with the new role list
+            const roleUpdate = {
+                id: cmd.msg.author.id,
+                roles: memberRolesList
+            };
+
+            fso_query(fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'update', roleUpdate).then(done => {
+                if (done.replaced == 1) {
+                    cmd.msg.channel.send('Role removed.').then(sent => sent.delete({ timeout: 10000 }));
+                }
+                else {
+                    cmd.msg.reply('Something is...incorrect. Have someone check your roles.');
+                }
+            });
+        }).catch(err => {
+            cmd.msg.reply('Something went wrong trying to remove your role.\n' + err).then(sent => sent.delete({ timeout: 10000 }));
         });
     }
 }
@@ -271,7 +314,6 @@ async function roleStats(fishsticks, cmd) {
 
 //List all roles
 async function listRoles(fishsticks, cmd) {
-    cmd.msg.reply('Insert neat things here.').then(sent => sent.delete({ timeout: 10000 }));
 
     let activeRoleList = '';
     let inactiveRoleList = '';
@@ -433,8 +475,6 @@ async function activateRole(fishsticks, cmd, obj) {
         throw 'Activation failed!';
     }
     else {
-        cmd.msg.reply('Activation successful!').then(sent => sent.delete({ timeout: 10000 }));
-
         //Create role
         const newlyCreatedRole = await cmd.msg.guild.roles.create({
             data: {
@@ -446,6 +486,7 @@ async function activateRole(fishsticks, cmd, obj) {
             reason: '[ROLE-SYS] Game role subroutine has created a new role based on the votes fo 5 different members.'
         }).then(newRoleObj => {
             log('proc', `[ROLE-SYS] Created new role ${newRoleObj.name}`);
+            cmd.msg.reply('Activation successful!').then(sent => sent.delete({ timeout: 10000 }));
         });
 
         //Assign to founders

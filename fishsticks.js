@@ -83,13 +83,13 @@ Fishsticks.on('voiceStateUpdate', (prevMemberState, newMemberState) => {
 
 //Member Join Server
 Fishsticks.on('guildMemberAdd', newMember => {
-	log('info', `[CLIENT] ${newMember.nickname}`);
+	log('info', `[CLIENT] ${newMember.nickname} joined the server.`);
 	handleNewMember(Fishsticks, newMember);
 });
 
 //Member Leave Server
 Fishsticks.on('guildMemberRemove', prevMember => {
-	log('info', `[CLIENT] ${prevMember.nickname}`);
+	log('info', `[CLIENT] ${prevMember.nickname} departed the server.`);
 });
 
 //Receive Message Reaction
