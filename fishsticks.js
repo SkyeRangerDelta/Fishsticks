@@ -17,12 +17,13 @@
 //=============================================
 //Libraries
 const Discord = require('discord.js');
+const schedule = require('node-schedule');
 
 //Modules
 const { startUp } = require('./Modules/Core/Core_Ready');
 const { log } = require('./Modules/Utility/Utils_Log');
 const { processMessage } = require('./Modules/Core/Core_Message');
-const { validateReaction } = require('./Modules/Utility/Utils_Aux');
+const { validateReaction, doDailyPost } = require('./Modules/Utility/Utils_Aux');
 
 //Configs
 const { token } = require('./Modules/Core/Core_config.json');
@@ -53,6 +54,8 @@ Fishsticks.SUMM_BRODEMODE = false;
 //				   EVENTS
 //=============================================
 
+//Primary
+
 //Online and Ready
 Fishsticks.once('ready', async () => {
 	await startUp(Fishsticks);
@@ -75,6 +78,8 @@ Fishsticks.on('message', async (msg) => {
 
 	processMessage(Fishsticks, msg);
 });
+
+//Secondary
 
 //Voice Channel Change
 Fishsticks.on('voiceStateUpdate', (prevMemberState, newMemberState) => {
@@ -104,6 +109,12 @@ Fishsticks.on('messageReactionRemove', (removedReaction, reactor) => {
 	log('info', `[CLIENT] ${removedReaction.emoji} : ${reactor.username}`);
 });
 
+//Utility
+
+//Schedule Crons
+schedule.scheduleJob('8 * * *', function() {
+	doDailyPost(Fishsticks);
+});
 
 //==============================================
 // Login

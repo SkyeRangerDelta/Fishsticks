@@ -1,6 +1,6 @@
 //----PURGE----
-
-const permissionsCheck = require('../../Modules/Functions/permissionsCheck.js');
+//-------------
+//Clears a users posts
 
 module.exports = {
     run,

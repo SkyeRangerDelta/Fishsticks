@@ -15,7 +15,9 @@ function embedBuilder(embed) {
 	constructedEmbed.setTitle(embed.title);
 	constructedEmbed.setDescription(embed.description);
 
-	if (!embed.title || !embed.description) throw 'No title and/or no description for Embed Builder!';
+	if (!embed.title || !embed.description) {
+		throw 'No title and/or no description for Embed Builder!';
+	}
 
 	if (!embed.color) {
 		constructedEmbed.setColor(config.colors.primary);

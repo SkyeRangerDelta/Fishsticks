@@ -56,7 +56,8 @@ async function fso_validate(Fishsticks, msg) {
 				spentGoldfish: 0
 			},
 			roles: [],
-			vouches: []
+			vouches: [],
+			vouchedIn: 'Not Yet'
 		};
 
 

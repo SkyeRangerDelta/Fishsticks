@@ -13,12 +13,15 @@ module.exports = {
     help
 };
 
+//Globals
+let recognizedRole;
+
 //Functions
 async function run(fishsticks, cmd) {
     cmd.msg.delete({ timeout: 0 });
 
     //Get role
-    const recognizedRole = await cmd.msg.guild.roles.fetch(recognized);
+    recognizedRole = await cmd.msg.guild.roles.fetch(recognized);
 
     //Interpret vouch
     const vouchee = cmd.msg.mentions.members.first();
@@ -36,7 +39,7 @@ async function run(fishsticks, cmd) {
     else if (hasPerms(cmd.msg.member, ['CC Member', 'ACC Member'])) {
         //Prevent membership vouches
         log('info', `[VOUCH] ${cmd.msg.member.displayName} tried to vouch someone who didn't need it in.`);
-        return cmd.msg.reply(`Why...why? ${vouchee.displayName} doesn't need it.`).then(sent => sent.delete({ timeout: 10000 }));
+        return cmd.msg.reply(`Why...why? ${vouchee.displayName} definately doesn't need it.`).then(sent => sent.delete({ timeout: 10000 }));
     }
 
     if (!vouchee) {
@@ -53,12 +56,56 @@ async function run(fishsticks, cmd) {
         return cmd.msg.reply(`I can't do that until ${vouchee.displayName} has a valid FSO record. Get them to say something in chat.`).then(sent => sent.delete({ timeout: 20000 }));
     }
 
-    //Do FSO validations and checks
+    //Do FSO checks/validation then add
+    const memberVouches = vouchQuery.vouches;
 
-    //If passes; conduct vouch add
+    if (memberVouches.length < 2) {
+        //clear, do vouch
+        addVouch(fishsticks, vouchQuery);
+    }
+    else {
+        //Not clear
+        return cmd.msg.reply('This person has already reached 2 vouches! If they are lacking Recognized despite this, ping Skye.');
+    }
 
-    //If vouched in; add Recognized
+}
 
+async function addVouch(fishsticks, cmd, memberFSORecord) {
+
+    if (memberFSORecord.roles == 0) {
+        //None on record, add new record
+        const recordUpdate = {
+            id: memberFSORecord.id,
+            vouches: [cmd.msg.author.id]
+        };
+
+        const addVouchRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'update', recordUpdate);
+
+        if (addVouchRes.replaced === 1) {
+            return cmd.msg.reply(`${memberFSORecord.username} has been vouched for!`);
+        }
+        else {
+            return cmd.msg.reply('Mmmmmmmm, something is wrong and the vouch may have not been tallied correctly.').then(sent => sent.delete({ timeout: 10000 }));
+        }
+    }
+    else {
+        //1 vouch on record, update and add Recognized
+        const recordUpdate = {
+            id: memberFSORecord.id,
+            vouches: memberFSORecord.vouches.push(cmd.msg.author.id)
+        };
+
+        const addVouchRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'update', recordUpdate);
+        const vouchee = await cmd.msg.guild.members.get(memberFSORecord.id);
+        await vouchee.roles.add(recognizedRole, '[VOUCH] Granted recognized on due to reaching 2 vouches.');
+
+        if (addVouchRes.replaced === 1) {
+            return cmd.msg.reply(`${memberFSORecord.username} has been vouched for and has been granted Recognized!`);
+        }
+        else {
+            return cmd.msg.reply('Mmmmmmmm, something is wrong and the vouch may have not been tallied correctly.').then(sent => sent.delete({ timeout: 10000 }));
+        }
+    }
 }
 
 function help() {

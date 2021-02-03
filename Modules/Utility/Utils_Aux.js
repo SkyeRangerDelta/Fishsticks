@@ -3,11 +3,14 @@
 //Imports
 const errorMsgPool = require('../Library/errorMsgs.json');
 const { startApp } = require('../../Commands/Active/apply');
+const { hangout } = require('../../Modules/Core/Core_ids.json');
+const { buildPoem } = require('../../Commands/Active/poem');
 
 //Exports
 module.exports = {
 	generateErrorMsg,
-	validateReaction
+	validateReaction,
+	doDailyPost
 };
 
 //Functions
@@ -32,4 +35,9 @@ function validateReaction(fishsticks, addedReaction, reactor) {
 			//TODO: Debator app start
 		}
 	}
+}
+
+function doDailyPost(fishsticks) {
+	const hangoutCH = fishsticks.CCG.channels.cache.get(hangout);
+	hangoutCH.send({ embed: buildPoem() });
 }

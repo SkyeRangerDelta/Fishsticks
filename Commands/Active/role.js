@@ -490,9 +490,10 @@ async function activateRole(fishsticks, cmd, obj) {
         });
 
         //Assign to founders
-        for (const member in obj.founders) {
-            obj.founders[member].roles.add(newlyCreatedRole, '[ROLE-SYS] Role added automatically after having voted for it.');
-            cmd.msg.channel.send(`${obj.founders[member]} - you've been assigned ${obj.name} because you voted for it!`).then(sent => sent.delete({ timeout: 10000 }));
+        for (const indexA in obj.founders) {
+            const memberItem = await cmd.msg.guild.members.cache.get(obj.founders[indexA]);
+            await memberItem.roles.add(newlyCreatedRole, '[ROLE-SYS] Role added automatically after having voted for it.');
+            cmd.msg.channel.send(`${memberItem.displayName} - you've been assigned ${obj.name} because you voted for it!`).then(sent => sent.delete({ timeout: 10000 }));
         }
     }
 }
