@@ -136,7 +136,6 @@ async function buildPayload(paramObj, msg) {
     const options = {
         headers: {
            'Authorization': `Token ${bibleAPI}`,
-           'Connection': 'keep-alive',
            'Content-Type': 'application/json'
         }
     };

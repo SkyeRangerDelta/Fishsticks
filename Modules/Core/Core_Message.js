@@ -4,11 +4,12 @@
 
 //Imports
 const { log } = require('../Utility/Utils_Log');
-const { fso_validate } = require('../Utility/Utils_User');
+const { fso_validate, hasPerms } = require('../Utility/Utils_User');
 const { prefix } = require('../Core/Core_config.json');
 const { fso_query } = require('../FSO/FSO_Utils');
-const { generateErrorMsg } = require('../Utility/Utils_Aux');
+const { generateErrorMsg, validateURL } = require('../Utility/Utils_Aux');
 const { processXP } = require('../XP/XP_Core');
+const extractUrls = require('extract-urls');
 
 //Exports
 module.exports = {
@@ -104,6 +105,20 @@ async function processMessage(Fishsticks, msg) {
 		}
 		catch (passiveCmdErr) {
 			log('info', '[PASSIVE-CMD] Attempt failed.');
+		}
+		finally {
+			//Attempt possible unique scans
+
+			//URL Scan Framework
+			if (cmd.msg.content.includes('http://') || cmd.msg.content.includes('https://')) {
+				console.log('URL scanner triggered.');
+				//Link included in message; check poster perms
+				if (!hasPerms(cmd.msg.member, ['Moderator', 'Event Coordinator', 'Council Advisor', 'Council Member'])) {
+					//Not a staff member, check link
+					const urls = extractUrls(cmd.msg.content);
+					validateURL(cmd.msg, urls[0], true);
+				}
+			}
 		}
 	}
 }

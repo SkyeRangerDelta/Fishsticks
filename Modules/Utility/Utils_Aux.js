@@ -2,15 +2,21 @@
 
 //Imports
 const errorMsgPool = require('../Library/errorMsgs.json');
-const { startApp } = require('../../Commands/Active/apply');
 const { hangout } = require('../../Modules/Core/Core_ids.json');
+const { urlscanIO } = require('../Core/Core_keys.json');
+
 const { buildPoem } = require('../../Commands/Active/poem');
+const { startApp } = require('../../Commands/Active/apply');
+const { log } = require('../Utility/Utils_Log');
+
+const urlscan = require('urlscan-api');
 
 //Exports
 module.exports = {
 	generateErrorMsg,
 	validateReaction,
-	doDailyPost
+	doDailyPost,
+	validateURL
 };
 
 //Functions
@@ -40,4 +46,71 @@ function validateReaction(fishsticks, addedReaction, reactor) {
 function doDailyPost(fishsticks) {
 	const hangoutCH = fishsticks.CCG.channels.cache.get(hangout);
 	hangoutCH.send({ embed: buildPoem() });
+}
+
+async function validateURL(msg, urlToScan, inline) {
+	log('info', '[URL-SCAN] Beginning scan on ' + urlToScan);
+	const urlID = await fetchURLScan(urlToScan);
+
+	await msg.react('🕓');
+
+	setTimeout(function() {
+		fetchURLScanResult(msg, urlID, inline);
+	}, 45000);
+
+
+}
+
+//Submit the URL scan; return the UUID
+async function fetchURLScan(urlToScan) {
+
+	const output = await new urlscan().submit(urlscanIO, urlToScan);
+	return output.uuid;
+}
+
+//Use the UUID to retrieve the scan
+function fetchURLScanResult(msg, urlID, inline) {
+
+	log('info', '[URL-SCAN] Attempting to retrieve results of URL scan.');
+
+	new urlscan().result(urlID).then(output => {
+		return processURLReport(msg, output, urlID, inline);
+	});
+}
+
+//Update message accordingly to scan report
+async function processURLReport(msg, report, subRes, inline) {
+	log('info', '[URL-SCAN] Received report status: ' + report.statusCode);
+
+	if (report.statusCode == 404) {
+
+		log('info', '[URL-SCAN] Report not ready; standing by for 15s.');
+
+		if (!inline) {
+			msg.edit('Just a bit longer... (report still pending)');
+		}
+
+		setTimeout(function() {
+			report = fetchURLScanResult(msg, subRes);
+		}, 15000);
+	}
+	else {
+
+		await msg.reactions.removeAll();
+
+		const verdicts = report.verdicts;
+
+		if (verdicts.overall.score == 0) {
+			log('info', '[URL-SCAN] URL scan looks good.');
+			msg.react('✔️');
+		}
+		else if (verdicts.overall.score >= 10 && verdicts.overall.score < 50) {
+			log('info', '[URL-SCAN] URL scan looks questionable.');
+			msg.react('⚠️');
+		}
+		else {
+			log('info', '[URL-SCAN] URL scan reports significant activity.');
+			msg.react('❗');
+		}
+	}
 }
