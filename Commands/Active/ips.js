@@ -1,25 +1,33 @@
-const Discord = require('discord.js');
-const config = require('../../Modules/Core/Core_config.json');
+// ---- IPs ----
+// Displays a list of CC related game server IPs
 
+//Imports
+const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+
+//Exports
 module.exports = {
 	run,
 	help
 };
 
+//Functions
 function run(fishsticks, cmd) {
-    msg.delete({timeout: 0});
+    cmd.msg.delete({ timeout: 0 });
 
-    var ips = new Discord.MessageEmbed();
-		ips.setTitle("o0o - CC 'THE FISH' SERVERS - o0o")
-		ips.setColor(config.fscolor)
-		ips.setDescription(
-			`CCG recognized servers and their IPS.`
-		);
-		ips.addField(`CCG Official Servers`, "ARK: Survival Evolved (Admin: Nils Sargon): `192.99.126.106:41213`\n" +
-		"Terraria (Admin: Winged Scribe): `pldyn.net:41213`\n" +
-		"Minecraft (Admin: FutronBob): `Pending Addition`");
+    const ips = {
+		title: 'o0o - THE FISH SERVERS - o0o',
+		description: 'CCG recognized servers and their IPS.',
+		fields: [
+			{
+				title: 'Official CC Servers',
+				description: 'ARK: Survival Evolved (Admin: Nils Sargon): `158.69.13.88:51226` -Request password -\n' +
+							'Terraria (Admin: Winged Scribe): `tr.pldyn.net:41213` -Request password -\n' +
+							'Minecraft (Admin: SkyeRangerDelta): `ccgmc.pldyn.net` -Requires Whitelisting-'
+			}
+		]
+	};
 
-    msg.channel.send({embed: ips}).then(sent => sent.delete({timeout: 30000}));
+    cmd.msg.channel.send({ embed: embedBuilder(ips) }).then(sent => sent.delete({ timeout: 30000 }));
 }
 
 function help() {

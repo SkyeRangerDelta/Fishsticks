@@ -2,45 +2,80 @@
 //-------------
 //Clears a users posts
 
+//Imports
+const { log } = require('../../Modules/Utility/Utils_Log');
+const { hasPerms } = require('../../Modules/Utility/Utils_User');
+
+//Exports
 module.exports = {
     run,
     help
 };
 
+//Functions
 async function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
-
-    return cmd.msg.reply('Command deactivated until V18 fixes. Ask staff for support.').then(sent => sent.delete({ timeout: 10000 }));
+    await cmd.msg.delete({ timeout: 0 });
 
     //Permissions check
-    let perms = {"perms": ["Staff", "Moderator", "Bot"]}
-    if (!permissionsCheck.run(fishsticks, msg.member, perms)) {
-        return msg.reply("You don't have the authority to purge messages!").then(msg => msg.delete);
+    if (!hasPerms(['Moderator', 'Council Member', 'Council Advisor'])) {
+        return cmd.msg.reply('Your lack of permissions disturbs me.').then(sent => sent.delete({ timeout: 10000 }));
     }
 
-    let targetChannel = msg.channel;
+    //Syntax: !purge <@user> <number>
 
-    console.log("[PURGE] No user found, executing general deletion.");
+    const targetChannel = cmd.msg.channel;
+    let count = 0;
 
-    let count = parseInt(cmd[0]) + 1;
-    let targetChannelMsgs = await targetChannel.fetchMessages({limit: count});
+    if (!cmd.msg.mentions.users.first()) {
+        log('info', '[PURGE] No user detected, initiating general deletion.');
 
-    if (count > 5) {
-        msg.reply("Sit tight, this might take a minute.").then(sent => sent.delete({timeout: 7000}));
+        count = parseInt(cmd[0]);
+        if (!count || isNaN(count)) return cmd.msg.reply('No number specified, might as well just delete the whole channel if you want them all gone.').then(sent => sent.delete({ timeout: 10000 }));
+
+        const targetChannelMsgs = await targetChannel.messages.fetch({ limit: count });
+
+        if (count > 5) {
+            cmd.msg.reply('Sit tight, this might take a minute.').then(sent => sent.delete({ timeout: 7000 }));
+        }
+
+        for (const msgObj in targetChannelMsgs) {
+            await targetChannel.messages.fetch(targetChannelMsgs[msgObj]).then(msgColl => {
+                msgColl.delete({ timeout: 0 });
+            });
+        }
     }
+    else {
+        log('info', '[PURGE] Possible user specified, initiating targeted deletion.');
 
-    console.log("[PURGE] Deleting " + count + " target messages...");
+        const targetMember = await cmd.msg.mentions.members.first();
+        if (!targetMember) return cmd.msg.reply('No valid member found!').then(sent => sent.delete({ timeout: 10000 }));
+        if (hasPerms(targetMember, ['Moderator', 'Event Coordinator', 'Council Advisor', 'Council Member'])) return cmd.msg.reply('Invalid member target!').then(sent => sent.delete({ timeout: 10000 }));
 
-    targetChannelMsgs.forEach(deleteItems);
+        count = parseInt(cmd[1]);
+        if (!count || isNaN(count)) {
+            log('warn', '[PURGE] No count specified, deleting all messages?');
 
-    async function deleteItems(key, value, map) {
-        let messageItem = value;
+            const targetChannelMsgs = await targetChannel.messages.fetch().then(m => m.filter(a => a.author.id === targetMember.id));
 
-        await targetChannel.fetchMessage(messageItem).then(msgColl => {
-            console.log("[PURGE] Target Content: " + msgColl.content)
-            msgColl.delete({timeout: 0});
-            console.log("[PURGE] Removed.");
-        })
+            for (const msgObj in targetChannelMsgs) {
+                await targetChannel.messages.fetch(targetChannelMsgs[msgObj]).then(msgColl => {
+                    msgColl.delete({ timeout: 0 });
+                });
+            }
+        }
+        else {
+            if (count > 5) {
+                cmd.msg.reply('Sit tight, this might take a minute.').then(sent => sent.delete({ timeout: 7000 }));
+            }
+
+            const targetChannelMsgs = await targetChannel.messages.fetch({ limit: count }).then(m => m.filter(a => a.author.id === targetMember.id));
+
+            for (const msgObj in targetChannelMsgs) {
+                await targetChannel.messages.fetch(targetChannelMsgs[msgObj]).then(msgColl => {
+                    msgColl.delete({ timeout: 0 });
+                });
+            }
+        }
     }
 }
 

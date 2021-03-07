@@ -1,9 +1,12 @@
 //----NEW MEMBER HANDLER----
 
 //Imports
-const { createCanvas, registerFont, loadImage } = require('canvas');
 const Discord = require('discord.js');
+
+const { createCanvas, registerFont, loadImage } = require('canvas');
 const { log } = require('../Utility/Utils_Log');
+
+const chs = require('./Core_ids.json');
 
 //Exports
 module.exports = {
@@ -23,12 +26,14 @@ const applyText = (canvas, text) => {
     return ctx.font;
 };
 
+//Process generating a graphic and sending it
 async function handleNewMember(fishsticks, newMember) {
     registerFont('./Fonts/JuliusSansOne-Regular.ttf', { family: 'Julius Sans One' });
     const canvas = createCanvas(700, 250);
     const ctx = canvas.getContext('2d');
 
-    const channel = fishsticks.CONSOLE; //Dispatch channel
+    //Get hangout
+    const dispatchChannel = await fishsticks.channels.cache.get(chs.hangout);
 
     //Do canvas load
     const background = await loadImage('./images/memberWelcomeBanner.jpg');
@@ -74,5 +79,5 @@ async function handleNewMember(fishsticks, newMember) {
 
     //Save and fire off
     const welcomeAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
-    channel.send('Dropping the mic on the haters.', welcomeAttachment);
+    dispatchChannel.send('Dropping the mic on the haters.', welcomeAttachment);
 }

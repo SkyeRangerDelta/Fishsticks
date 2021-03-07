@@ -17,7 +17,7 @@ module.exports = {
 function run(fishsticks, cmd) {
 
 	//Not done
-	return cmd.msg.reply(`This command isn't done just yet. You can still apply for membership via this link: https://bit.ly/CCMemberApp`);
+	return cmd.msg.reply('This command aint done just yet. You can still apply for membership via this link: https://bit.ly/CCMemberApp');
 
 	//Dispatch introduction embed
 	const introPanel = {

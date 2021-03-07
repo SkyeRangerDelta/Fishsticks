@@ -6,6 +6,7 @@ const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { systemTimestamp, flexTime } = require('../../Modules/Utility/Utils_Time');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+const { toTitleCase } = require('../../Modules/Utility/Utils_Aux');
 
 const { DuplicatedRoleException } = require('../../Modules/Errors/DuplicatedRoleException');
 const { InvalidParameterException } = require('../../Modules/Errors/InvalidParameterException');
@@ -15,7 +16,9 @@ const dateMod = require('date-and-time');
 //Exports
 module.exports = {
     run,
-    help
+    help,
+    findRole,
+    listRoles
 };
 
 //Globals
@@ -313,7 +316,11 @@ async function roleStats(fishsticks, cmd) {
 }
 
 //List all roles
-async function listRoles(fishsticks, cmd) {
+async function listRoles(fishsticks, cmd, ext) {
+
+    if (ext) { //External inquery, update role listing
+        await updateRoles(fishsticks, await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'selectAll'));
+    }
 
     let activeRoleList = '';
     let inactiveRoleList = '';
@@ -484,9 +491,17 @@ async function activateRole(fishsticks, cmd, obj) {
                 position: roleCount
             },
             reason: '[ROLE-SYS] Game role subroutine has created a new role based on the votes fo 5 different members.'
-        }).then(newRoleObj => {
+        }).then(async newRoleObj => {
             log('proc', `[ROLE-SYS] Created new role ${newRoleObj.name}`);
             cmd.msg.reply('Activation successful!').then(sent => sent.delete({ timeout: 10000 }));
+
+            const updateData = {
+                id: obj.id,
+                discordID: newRoleObj.id
+            };
+
+            await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'update', updateData);
+
         });
 
         //Assign to founders
@@ -525,41 +540,54 @@ function checkDupes(roleObj, cmd) {
 }
 
 //Find a role
-function findRole() {
-    if (!params[1] || params[1] === null) {
-        throw new InvalidParameterException('No name or game was supplied!');
-    }
+async function findRole(fishsticks, extQuery) {
 
-    const query = toTitleCase(params[1]);
+    if (extQuery != null || extQuery != undefined) {
+        //Incoming query from a different command
+        updateRoles(fishsticks, await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'selectAll'));
 
-    for (const roleItem in currentPool) {
-        if (query == currentPool[roleItem].name) {
-            log('proc', '[ROLE-SYS] Found a role.');
-            return currentPool[roleItem];
+        log('info', '[ROLE-SYS] Fetching role for external command.');
+
+        const query = toTitleCase(extQuery);
+
+        for (const roleItem in currentPool) {
+            if (query == currentPool[roleItem].name) {
+                log('proc', '[ROLE-SYS] Found a role.');
+                if (currentPool[roleItem].active) {
+                    return currentPool[roleItem].discordID;
+                }
+            }
+            else if (query == currentPool[roleItem].game) {
+                log('proc', '[ROLE-SYS] Found a role.');
+                if (currentPool[roleItem].active) {
+                    return currentPool[roleItem].discordID;
+                }
+            }
         }
-        else if (query == currentPool[roleItem].game) {
-            log('proc', '[ROLE-SYS] Found a role.');
-            return currentPool[roleItem];
+
+        return -1;
+    }
+    else {
+        //Internal query
+        if (!params[1] || params[1] === null) {
+            throw new InvalidParameterException('No name or game was supplied!');
         }
+
+        const query = toTitleCase(params[1]);
+
+        for (const roleItem in currentPool) {
+            if (query == currentPool[roleItem].name) {
+                log('proc', '[ROLE-SYS] Found a role.');
+                return currentPool[roleItem];
+            }
+            else if (query == currentPool[roleItem].game) {
+                log('proc', '[ROLE-SYS] Found a role.');
+                return currentPool[roleItem];
+            }
+        }
+
+        return -1;
     }
-
-    return -1;
-}
-
-//Convert to title case
-function toTitleCase(toConvert) {
-    let breakupArr = toConvert.split(' ');
-
-    for (const breakupEle in breakupArr) {
-        const tempLetter = breakupArr[breakupEle].charAt(0).toUpperCase();
-        breakupArr[breakupEle] = tempLetter + breakupArr[breakupEle].substring(1, breakupArr[breakupEle].length);
-    }
-
-    breakupArr = breakupArr.join(' ');
-
-    log('info', '[ROLE-SYS] Converted title to: ' + breakupArr);
-
-    return breakupArr;
 }
 
 //Delete a role (SYSTEM ONLY)

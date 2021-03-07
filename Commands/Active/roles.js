@@ -1,12 +1,18 @@
 //----ROLES----
+// Lists all roles
 
+//Imports
+const { listRoles } = require('./role');
+
+//Exports
 module.exports = {
 	run,
 	help
 };
 
+//Functions
 function run(fishsticks, cmd) {
-	cmd.msg.reply('Hey.');
+	listRoles(fishsticks, cmd);
 }
 
 function help() {

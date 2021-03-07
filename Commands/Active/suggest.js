@@ -1,59 +1,52 @@
-//---SUGGEST---
+// ----SUGGEST----
+// Posts an issue to the Fs GitHub via Webhook
 
-const Discord = require('discord.js');
-const systems = require('../../Modules/Core/Core_keys.json');
-const ids = require('../../Modules/fs_ids.json');
+//Imports
 const https = require('https');
 
-const query = require('../../Modules/Functions/db/query.js');
+const { fsSuggestionHook } = require('../../Modules/Core/Core_keys.json');
+const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 
-const logger = require('../../Modules/Functions/syslog.js');
+const { log } = require('../../Modules/Utility/Utils_Log');
 
+//Exports
 module.exports = {
     run,
     help
 };
 
 async function run(fishsticks, cmd) {
-    msg.delete({timeout: 0});
+    cmd.msg.delete({ timeout: 0 });
 
-    var hookURL = systems.fsSuggestionHook;
-
-    cmdRef = msg.content.toLowerCase().split("-");
-    cmdRefAlt = msg.content.split("-");
-	
-	logger.run(fishsticks, `Processing suggestion:\n\tAuthor: ${msg.author.username}\n\tTitle: ${cmdRefAlt[1].trim()}\n\tBody: ${cmdRefAlt[2].trim()}`, 2);
-
-    hookURL = hookURL.concat(`?sender=${msg.author.username}&suggTitle=${cmdRefAlt[1].trim()}&suggBody=${cmdRefAlt[2].trim()}`);
+    //Syntax: !suggest -title -body
+    let hookURL = fsSuggestionHook.concat(`?sender=${cmd.msg.author.username}&suggTitle=${cmd[0]}&suggBody=${cmd[1]}`);
     hookURL = encodeURI(hookURL);
 
-    try {
-        //Attempt suggestion send
-		console.log("Sending request!");
-        https.get(hookURL, (res) => {
-            console.log("[SGGST-SUBR] Status Code: " + res.statusCode);
+    //Attempt suggestion send
+    log('info', '[SUGGEST] Dispatching a request.');
+    https.get(hookURL, (res) => {
+        log('info', '[SUGGEST] Status: ' + res.statusCode);
+    }).on('error', (eventGetError) => {
+        console.log(eventGetError);
+    });
 
-            res.on("data", (d) => {
-                console.log(d);
-            })
-        }).on('error', (eventGetError) => {
-            console.log(eventGetError);
-        });
+    //FSO Sync Suggestions
+    log('info', '[SUGGEST] Syncing member suggestions');
 
-        //FSO Sync Suggestions
-        console.log("[FS-ONLINE] Syncing suggestions...")
-        let member = await query.run(fishsticks, `SELECT suggestionsPosted FROM fs_members WHERE memberDiscordID = ${msg.author.id}`);
+    const currMemberData = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'select', cmd.msg.author.id);
 
-        console.log(member);
-        console.log(member[0].suggestionsPosted);
+    const updateData = {
+        id: cmd.msg.author.id,
+        suggestionsPosted: currMemberData.suggestionsPosted++
+    };
 
-        let update = await query.run(fishsticks, `UPDATE fs_members SET suggestionsPosted = ${member[0].suggestionsPosted + 1} WHERE memberDiscordID = ${msg.author.id}`);
+    const updatedMember = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'update', updateData);
 
-    } catch (eventSendErr) {
-        msg.reply("SOMETHING FUNKY IS GOING ON. Hey yo " + fishsticks.ranger + " some assistance please.");
-        console.log(eventSendErr);
-        console.log("\nStack:\n");
-        console.log(eventSendErr.stack);
+    if (updatedMember.replaced == 1) {
+        log('proc', '[SUGGEST] Synced.');
+    }
+    else {
+        cmd.msg.reply('Something went wrong. Ask Skye to investigate.');
     }
 }
 

@@ -3,6 +3,7 @@
 
 //Imports
 const { recognized } = require('../../Modules/Core/Core_ids.json');
+const { handleNewMember } = require('../../Modules/Core/Core_NewMember');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
@@ -100,7 +101,8 @@ async function addVouch(fishsticks, cmd, memberFSORecord) {
         await vouchee.roles.add(recognizedRole, '[VOUCH] Granted recognized on due to reaching 2 vouches.');
 
         if (addVouchRes.replaced === 1) {
-            return cmd.msg.reply(`${memberFSORecord.username} has been vouched for and has been granted Recognized!`);
+            cmd.msg.reply(`${memberFSORecord.username} has been vouched for and has been granted Recognized!`);
+            return handleNewMember(fishsticks, vouchee); //Handle member welcome graphic
         }
         else {
             return cmd.msg.reply('Mmmmmmmm, something is wrong and the vouch may have not been tallied correctly.').then(sent => sent.delete({ timeout: 10000 }));

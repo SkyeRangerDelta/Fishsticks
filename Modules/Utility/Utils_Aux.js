@@ -16,7 +16,8 @@ module.exports = {
 	generateErrorMsg,
 	validateReaction,
 	doDailyPost,
-	validateURL
+	validateURL,
+	toTitleCase
 };
 
 //Functions
@@ -48,6 +49,7 @@ function doDailyPost(fishsticks) {
 	hangoutCH.send({ embed: buildPoem() });
 }
 
+//Root func for URL scans
 async function validateURL(msg, urlToScan, inline) {
 	log('info', '[URL-SCAN] Beginning scan on ' + urlToScan);
 	const urlID = await fetchURLScan(urlToScan);
@@ -102,15 +104,51 @@ async function processURLReport(msg, report, subRes, inline) {
 
 		if (verdicts.overall.score == 0) {
 			log('info', '[URL-SCAN] URL scan looks good.');
-			msg.react('✔️');
+
+			if (!inline) {
+				msg.edit(`[✔️] Scan done. Verdict: ${verdicts.overall.score}% malicious. Looks clean.`);
+			}
+			else {
+				msg.react('✔️');
+			}
 		}
 		else if (verdicts.overall.score >= 10 && verdicts.overall.score < 50) {
 			log('info', '[URL-SCAN] URL scan looks questionable.');
-			msg.react('⚠️');
+
+			if (!inline) {
+				msg.edit(`[⚠️] Scan done. Verdict: ${verdicts.overall.score}% malicious. Looks good for the most part but is questionable Proceed with caution.`);
+			}
+			else {
+				msg.react('⚠️');
+				msg.reply('Your post looks like it has a link in it that I have deemed to be of questionable intent. Proceed with caution, a staff member will likely vet this soon.');
+			}
 		}
 		else {
 			log('info', '[URL-SCAN] URL scan reports significant activity.');
-			msg.react('❗');
+
+			if (!inline) {
+				msg.edit(`[❌] Scan done. Verdict: ${verdicts.overall.score}% malicious. Do not follow the link or post it in any of the chats.`);
+			}
+			else {
+				msg.reply('Your post contained a link that I have deemed to be highly malicious and I have removed it as a preventative measure. If this is by mistake, please have a staff member replace the link.');
+				msg.delete({ timeout: 0 });
+			}
 		}
 	}
+}
+
+//Convert to title case
+function toTitleCase(toConvert) {
+    let breakupArr = toConvert.split(' ');
+
+    for (const breakupEle in breakupArr) {
+        const tempLetter = breakupArr[breakupEle].charAt(0).toUpperCase();
+        breakupArr[breakupEle] = tempLetter + breakupArr[breakupEle].substring(1, breakupArr[breakupEle].length);
+    }
+
+    breakupArr = breakupArr.join(' ');
+
+    log('info', '[UTILITY] Converted title to: ' + breakupArr);
+
+    return breakupArr;
 }

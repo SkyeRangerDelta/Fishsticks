@@ -1,35 +1,25 @@
 //----Remind Me----
-const Discord = require('discord.js');
+// Sets a time out for pinging someone with a message
 
+//Exports
 module.exports = {
     run,
     help
-}
+};
 
-function run (fishsticks, cmd) {
-    msg.delete({timeout: 0});
+//Functions
+function run(fishsticks, cmd) {
+    cmd.msg.delete({ timeout: 0 });
 
-    //Command breakup
-    let alt = msg.content.split("-");
+    //Syntax: !remindme -[time] -[message]
 
-    let waitTime = parseInt(alt[1]);
-    let msgSent = alt.splice(2).join(' ');
+    const waitTime = parseInt(cmd[0]);
+    const msgSent = cmd[1];
 
 
-    //Logic
-    if (typeof waitTime != typeof 1 || waitTime == undefined || waitTime == NaN || waitTime == 0) {
-        msg.reply("I'd love to remind you. How about I remind you now.\n\n" + msgSent +
-        "\n\nYou know, because if you want me to wait, you should give me a time (that is also not 0).");
-    }
-    let dispatchTime = (waitTime * 60) * 1000;
-
-    msg.reply("Roger that, reminding you of whatever that is in " + waitTime + " minutes.").then(sent => sent.delete({timeout: 10000}));
-
-    setTimeout(sendIt, dispatchTime, msgSent);
-
-    function sendIt(it) {
-        msg.reply("The time is now!\n\n" + it);
-    }
+    setTimeout(function() {
+        cmd.msg.reply('The time is now!\n' + msgSent);
+    }, waitTime);
 }
 
 function help() {

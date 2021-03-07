@@ -24,10 +24,12 @@ const { startUp } = require('./Modules/Core/Core_Ready');
 const { log } = require('./Modules/Utility/Utils_Log');
 const { processMessage } = require('./Modules/Core/Core_Message');
 const { validateReaction, doDailyPost } = require('./Modules/Utility/Utils_Aux');
+const { handleNewMember } = require('./Modules/Core/Core_NewMember');
+const { handleOldMember } = require('./Modules/Core/Core_OldMember');
 
 //Configs
 const { token } = require('./Modules/Core/Core_config.json');
-const { handleNewMember } = require('./Modules/Core/Core_NewMember');
+const { validateChannel } = require('./Commands/Active/tempch');
 
 //=============================================
 //				  GLOBALS
@@ -83,7 +85,12 @@ Fishsticks.on('message', async (msg) => {
 
 //Voice Channel Change
 Fishsticks.on('voiceStateUpdate', (prevMemberState, newMemberState) => {
-	log('info', `[CLIENT] ${prevMemberState.id} : ${newMemberState.id}`);
+	log('info', `[CLIENT] [VC STATE] ${prevMemberState.channelID} : ${newMemberState.channelID}`);
+
+	//Trigger tempch check
+	if (prevMemberState.channelID != null) {
+		validateChannel(Fishsticks, prevMemberState);
+	}
 });
 
 //Member Join Server
@@ -95,6 +102,7 @@ Fishsticks.on('guildMemberAdd', newMember => {
 //Member Leave Server
 Fishsticks.on('guildMemberRemove', prevMember => {
 	log('info', `[CLIENT] ${prevMember.nickname} departed the server.`);
+	handleOldMember(Fishsticks, prevMember);
 });
 
 //Receive Message Reaction

@@ -5,10 +5,12 @@
 //Imports
 const { log } = require('../Utility/Utils_Log');
 const { fso_validate, hasPerms } = require('../Utility/Utils_User');
-const { prefix } = require('../Core/Core_config.json');
 const { fso_query } = require('../FSO/FSO_Utils');
 const { generateErrorMsg, validateURL } = require('../Utility/Utils_Aux');
 const { processXP } = require('../XP/XP_Core');
+
+const { prefix } = require('../Core/Core_config.json');
+
 const extractUrls = require('extract-urls');
 
 //Exports
@@ -18,6 +20,9 @@ module.exports = {
 
 //Functions
 async function processMessage(Fishsticks, msg) {
+
+	// --- Pre Message Core ---
+
 	//Member validation
 	const memberFSORecord = await fso_validate(Fishsticks, msg);
 
@@ -34,10 +39,14 @@ async function processMessage(Fishsticks, msg) {
 		cmd.content.push(cmdBreakup[param].trim());
 	}
 
+	// --- Aux Functions ---
+
 	//Check BaconMode
 	if (msg.author === Fishsticks.baconTarget) {
 		msg.react('🥓');
 	}
+
+	// --- Message Core ---
 
 	//Do XP
 	processXP(Fishsticks, cmd);
@@ -107,7 +116,7 @@ async function processMessage(Fishsticks, msg) {
 			log('info', '[PASSIVE-CMD] Attempt failed.');
 		}
 		finally {
-			//Attempt possible unique scans
+			//Attempt possible unique messages
 
 			//URL Scan Framework
 			if (cmd.msg.content.includes('http://') || cmd.msg.content.includes('https://')) {
