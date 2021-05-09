@@ -23,7 +23,7 @@ async function startUp(Fishsticks) {
 		log('warn', '[FISHSTICKS] Fs was launched with at least one command line argument.');
 
 		for (const arg in process.argv) {
-			if (process.argv[arg] == '-test') {
+			if (process.argv[arg] === '-test') {
 				Fishsticks.TESTMODE = true;
 			}
 

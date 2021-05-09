@@ -1,6 +1,7 @@
 //----STATUS----
 // Generates a status report on Fs systems
 
+const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 
 //Exports
@@ -19,8 +20,25 @@ async function run(fishsticks, cmd) {
 	//Const build embed
 	const statusReport = {
 		title: 'o0o - Fishsticks Status Report - o0o',
-		description: ''
+		description: 'Fishsticks system state report.',
+		fields: [
+			{
+				title: 'Application',
+				description: fsoStatus.Online
+			},
+			{
+				title: 'Session',
+				description: fsoStatus.Session
+			},
+			{
+				title: 'Startup Time',
+				description: fsoStatus.StartupTime
+			}
+		]
 	};
+
+	//Send embed
+	cmd.msg.channel.send({ embed: embedBuilder(statusReport) });
 }
 
 function help() {
