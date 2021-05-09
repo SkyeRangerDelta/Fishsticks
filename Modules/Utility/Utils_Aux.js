@@ -31,14 +31,14 @@ function validateReaction(fishsticks, addedReaction, reactor) {
 
 	//Check CCG Membership Apps
 	for (const ID in fishsticks.appMsgIDs) {
-		if (addedReaction.message.id == fishsticks.appMsgIDs[ID]) {
+		if (addedReaction.message.id === fishsticks.appMsgIDs[ID]) {
 			startApp(fishsticks, reactor);
 		}
 	}
 
 	//Check for Debator apps
 	for (const ID in fishsticks.debMsgIDs) {
-		if (addedReaction.message.id == fishsticks.debMsgIDs[ID]) {
+		if (addedReaction.message.id === fishsticks.debMsgIDs[ID]) {
 			//TODO: Debator app start
 		}
 	}

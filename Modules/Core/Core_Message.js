@@ -46,10 +46,14 @@ async function processMessage(Fishsticks, msg) {
 		msg.react('🥓');
 	}
 
+	//Determine 'Shiny'
+	//Discord API does not let message to be rendered in any other way
+	//TODO: Canvas?
+
 	// --- Message Core ---
 
 	//Do XP
-	processXP(Fishsticks, cmd);
+	await processXP(Fishsticks, cmd);
 
 	//Handle Active Commands
 	if (msg.content.startsWith(prefix)) {

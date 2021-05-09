@@ -27,6 +27,7 @@ async function run(fishsticks, cmd) {
         !bible 2 Samuel 1:1
         !bible Genesis 1
     */
+    //TODO: Add a means to determine random request
 
     const params = {
         bookNum: null,
@@ -51,7 +52,7 @@ async function run(fishsticks, cmd) {
 	else { //Get book
 		log('info', '[BIBLE] Pulling book info');
 
-        if (typeof cmdArgs[2] == typeof 'blah') {
+        if (typeof cmdArgs[2] === typeof 'blah') {
 			params.book = cmdArgs[2];
 		}
 		else {

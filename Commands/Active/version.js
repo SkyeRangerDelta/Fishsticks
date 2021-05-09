@@ -1,12 +1,17 @@
+// ---- Version ----
+
+//Imports
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const config = require('../../Modules/Core/Core_sys.json');
 const packageVer = require('../../package.json').version;
 
+//Exports
 module.exports = {
 	run,
 	help
 };
 
+//Functions
 function run(fishsticks, cmd) {
 	cmd.msg.delete({ timeout: 0 });
 
@@ -28,10 +33,6 @@ function run(fishsticks, cmd) {
 			{
 				title: 'Fishsticks GitHub Repository',
 				description: '[Official Fishsticks Repo](https://github.com/SkyeRangerDelta/Fishsticks)'
-			},
-			{
-				title: 'Complete Fishsticks Guide',
-				description: '[KBase Article](https://forums.ccgaming.com/kb/viewarticle?a=3)'
 			}
 		]
 	};

@@ -27,12 +27,12 @@ async function run(fishsticks, cmd) {
     //Interpret vouch
     const vouchee = cmd.msg.mentions.members.first();
 
-    if (vouchee == fishsticks) {
+    if (vouchee === fishsticks) {
         //Prevent Fs vouches
         log('info', `[VOUCH] ${cmd.msg.member.displayName} tried to vouch Fishsticks in.`);
         return cmd.msg.reply('*Shakes head* No. This is not how that works.').then(sent => sent.delete({ timeout: 10000 }));
     }
-    else if (vouchee.id == cmd.msg.author.id) {
+    else if (vouchee.id === cmd.msg.author.id) {
         //Prevent self-vouching
         log('info', `[VOUCH] ${cmd.msg.member.displayName} tried to vouch themselves in.`);
         return cmd.msg.reply('*No*. Duh. You cannot vouch for yourself.').then(sent => sent.delete({ timeout: 10000 }));
@@ -62,7 +62,7 @@ async function run(fishsticks, cmd) {
 
     if (memberVouches.length < 2) {
         //clear, do vouch
-        addVouch(fishsticks, vouchQuery);
+        await addVouch(fishsticks, vouchQuery);
     }
     else {
         //Not clear
@@ -73,7 +73,7 @@ async function run(fishsticks, cmd) {
 
 async function addVouch(fishsticks, cmd, memberFSORecord) {
 
-    if (memberFSORecord.roles == 0) {
+    if (memberFSORecord.roles === 0) {
         //None on record, add new record
         const recordUpdate = {
             id: memberFSORecord.id,
