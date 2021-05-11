@@ -2,12 +2,29 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="994ca3f8-ca2e-46d7-b225-e391c1e5d508" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Modules/Errors/fsProcessException.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Modules/Errors/fsoValidationException.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Fishsticks.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Fishsticks.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/role.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/role.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/status.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/status.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_Time.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_Time.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fishsticks.js" beforeDir="false" afterPath="$PROJECT_DIR$/fishsticks.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -23,6 +40,13 @@
   <component name="IdeDocumentHistory">
     <changedPaths>
       <option value="$PROJECT_DIR$/Commands/Active/status.js" />
+      <option value="$PROJECT_DIR$/fishsticks.js" />
+      <option value="$PROJECT_DIR$/Modules/Errors/fsoValidationException.js" />
+      <option value="$PROJECT_DIR$/Commands/Active/role.js" />
+      <option value="$PROJECT_DIR$/Modules/Utility/Utils_Time.js" />
+      <option value="$PROJECT_DIR$/Modules/Errors/fsProcessException.js" />
+      <option value="$PROJECT_DIR$/Modules/Core/Core_Ready.js" />
+      <option value="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1sE1K32TBQCYhku0LF3U4AMIFtc" />
@@ -35,13 +59,15 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="javascript.nodejs.core.library.configured.version" value="15.12.0" />
+    <property name="javascript.nodejs.core.library.typings.version" value="15.0.2" />
     <property name="js.linters.configure.manually.selectedeslint" value="true" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.selected.package.eslint" value="P:\GitHub Repos\Fishsticks\node_modules\eslint" />
     <property name="node.js.selected.package.standard" value="" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager">
@@ -66,6 +92,7 @@
       <workItem from="1620426177600" duration="2321000" />
       <workItem from="1620435221395" duration="89000" />
       <workItem from="1620689383839" duration="1371000" />
+      <workItem from="1620693917183" duration="7914000" />
     </task>
     <servers />
   </component>

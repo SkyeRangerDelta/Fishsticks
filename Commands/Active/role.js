@@ -65,7 +65,7 @@ async function parseRequest(fishsticks, cmd) {
         throw 'What am I going to do with you. You need to specify what your intentions are.';
     }
 
-    if (params[0] == 'n' || params[0] == 'new') {
+    if (params[0] === 'n' || params[0] === 'new') {
         log('info', '[ROLE-SYS] Creating a new role.');
 
         //Validate all required parameters existence
@@ -84,7 +84,7 @@ async function parseRequest(fishsticks, cmd) {
             log('warn', `[ROLE-SYS] ${e.name} : ${e.message}`);
         });
     }
-    else if (params[0] == 'e' || params[0] == 'edit') {
+    else if (params[0] === 'e' || params[0] === 'edit') {
         log('info', '[ROLE-SYS] Editing a role.');
 
         //!role -edit -ID -param -new value
@@ -92,34 +92,34 @@ async function parseRequest(fishsticks, cmd) {
         //Validate all required parameters existence
         editRole(fishsticks, cmd);
     }
-    else if (params[0] == 'v' || params[0] == 'vote') {
+    else if (params[0] === 'v' || params[0] === 'vote') {
         log('info', '[ROLE-SYS] Voting for a role.');
 
         voteRole(fishsticks, cmd).catch(e => {
             log('warn', `[ROLE-SYS] ${e.message}`);
         });
     }
-    else if (params[0] == 'j' || params[0] == 'join') {
+    else if (params[0] === 'j' || params[0] === 'join') {
         log('info', '[ROLE-SYS] Joining a role.');
 
         joinRole(fishsticks, cmd);
     }
-    else if (params[0] == 'l' || params[0] == 'leave') {
+    else if (params[0] === 'l' || params[0] === 'leave') {
         log('info', '[ROLE-SYS] Leaving a role.');
 
         leaveRole(fishsticks, cmd);
     }
-    else if (params[0] == 's' || params[0] == 'stats') {
+    else if (params[0] === 's' || params[0] === 'stats') {
         log('info', '[ROLE-SYS] Getting the statistics for a role.');
 
         roleStats(fishsticks, cmd);
     }
-    else if (params[0] == 'list') {
+    else if (params[0] === 'list') {
         log('info', '[ROLE-SYS] Listing roles.');
 
         listRoles(fishsticks, cmd);
     }
-    else if (params[0] == 'show') {
+    else if (params[0] === 'show') {
         log('info', '[ROLE-SYS] Showing the about for a role.');
 
         aboutRole(fishsticks, cmd);
@@ -159,13 +159,13 @@ async function newRole(fishsticks, cmd) {
 
     //Verify not duplicate
     const dupeCheck = checkDupes(newRoleObj, cmd);
-    if (dupeCheck != 1) {
+    if (dupeCheck !== 1) {
         throw new DuplicatedRoleException(dupeCheck);
     }
 
     //Add role to the listings
     const addRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'insert', newRoleObj);
-    if (addRes.inserted != 1) {
+    if (addRes.inserted !== 1) {
         throw 'Something went wrong adding the role to the listings...';
     }
     else {

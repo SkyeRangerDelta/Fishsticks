@@ -31,6 +31,10 @@ function systemTime(date) {
 
 //Returns a timestamp: Wed Jul 28 1993 - 12:38:00
 function systemTimestamp(date) {
+	if (!date) {
+		this.date = new Date();
+	}
+
 	return flexTime(date);
 }
 

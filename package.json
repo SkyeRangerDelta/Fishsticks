@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/SkyeRangerDelta/Fishsticks#readme",
   "dependencies": {
-    "canvas": "^2.6.1",
+    "canvas": "^2.7.0",
     "colors": "^1.4.0",
     "date-and-time": "^0.14.2",
     "discord.js": "^12.4.1",

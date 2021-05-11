@@ -41,6 +41,7 @@ const Fishsticks = new Discord.Client();
 //Client Variables
 Fishsticks.FSO_CONNECTION = null;
 Fishsticks.FSO_STATE = null;
+Fishsticks.FSO_VALID = null;
 Fishsticks.session;
 Fishsticks.lastSystemStart;
 Fishsticks.CCG;

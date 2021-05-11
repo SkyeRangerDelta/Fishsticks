@@ -1,8 +1,11 @@
 // ---- Boot Routine ----
 
 //Imports
+const { fsProcessException } = require('../Errors/fsProcessException');
+
 const { log } = require('../Utility/Utils_Log');
-const { fso_connect, fso_status, fso_query } = require('../FSO/FSO_Utils');
+
+const { fso_connect, fso_status, fso_query, fso_verify } = require('../FSO/FSO_Utils');
 const { convertMsFull, systemTimestamp } = require('../Utility/Utils_Time');
 const { embedBuilder } = require('../Utility/Utils_EmbedBuilder');
 
@@ -42,7 +45,17 @@ async function startUp(Fishsticks) {
 	//FSO Connection
 	try {
 		Fishsticks.FSO_CONNECTION = await fso_connect();
-		Fishsticks.FSO_STATE = await fso_status(Fishsticks.FSO_CONNECTION);
+
+		//Before FSO syncs begin - conduct a DB validation
+		try {
+			Fishsticks.FSO_VALID = await fso_verify(Fishsticks.FSO_CONNECTION);
+		}
+		catch (e) {
+			throw new fsProcessException('FSO validation could not be completed.\n' + e);
+		}
+		finally {
+			Fishsticks.FSO_STATE = await fso_status(Fishsticks.FSO_CONNECTION);
+		}
 	}
 	catch (error) {
 		log('err', '[FSO] Something has gone wrong in the startup routine.\n' + error);
@@ -64,7 +77,7 @@ async function startUp(Fishsticks) {
 
 	const statusPostUpdate = await fso_query(Fishsticks.FSO_CONNECTION, 'Fs_Status', 'update', statusTableUpdate);
 
-	if (statusPostUpdate.replaced != 1) {
+	if (statusPostUpdate.replaced !== 1) {
 		log('warn', '[FSO] Status table update failed. Record update count was not expected.');
 	}
 	else {
@@ -98,7 +111,10 @@ async function startUp(Fishsticks) {
 		Fishsticks.CONSOLE.send({ embed: embedBuilder(startupMessage) });
 
 		//Set Status
-		Fishsticks.user.setPresence({ activity: { name: version + ' | TEST MODE', type: 'PLAYING' }, status: 'online' });
+		await Fishsticks.user.setPresence({
+			activity: { name: version + ' | TEST MODE', type: 'PLAYING' },
+			status: 'online'
+		});
 	}
 	else {
 		const startupMessage = {
@@ -123,7 +139,10 @@ async function startUp(Fishsticks) {
 		Fishsticks.CONSOLE.send({ embed: embedBuilder(startupMessage) });
 
 		//Set Status
-		Fishsticks.user.setPresence({ activity: { name: 'for !help | ' + version, type: 'WATCHING' }, status: 'online' });
+		await Fishsticks.user.setPresence({
+			activity: { name: 'for !help | ' + version, type: 'WATCHING' },
+			status: 'online'
+		});
 	}
 
 	//Startup Complete

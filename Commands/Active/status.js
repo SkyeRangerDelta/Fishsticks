@@ -38,7 +38,7 @@ async function run(fishsticks, cmd) {
 	};
 
 	//Send embed
-	cmd.msg.channel.send({ embed: embedBuilder(statusReport) });
+	await cmd.msg.channel.send({ embed: embedBuilder(statusReport) });
 }
 
 function help() {
