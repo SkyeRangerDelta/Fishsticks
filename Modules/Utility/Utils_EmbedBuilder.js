@@ -26,14 +26,14 @@ function embedBuilder(embed) {
 		constructedEmbed.setColor(embed.color);
 	}
 
-	if (embed.delete == undefined) {
+	if (embed.delete === undefined) {
 		constructedEmbed.setFooter(embed.footer);
 	}
 	else {
 		constructedEmbed.setFooter(embed.footer + ` Panel will auto-delete in ${embed.delete / 1000} seconds.`);
 	}
 
-	if (embed.thumbnail == undefined && (embed.noThumbnail == false || embed.noThumbnail == undefined)) {
+	if (embed.thumbnail === undefined && (embed.noThumbnail === false || embed.noThumbnail === undefined)) {
 		constructedEmbed.setThumbnail('https://pldyn.net/wp-content/uploads/2020/01/LogoAnimated02.gif');
 	}
 	else if (!embed.noThumbnail) {

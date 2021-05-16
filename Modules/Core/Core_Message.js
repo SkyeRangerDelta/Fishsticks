@@ -6,10 +6,11 @@
 const { log } = require('../Utility/Utils_Log');
 const { fso_validate, hasPerms } = require('../Utility/Utils_User');
 const { fso_query } = require('../FSO/FSO_Utils');
-const { generateErrorMsg, validateURL } = require('../Utility/Utils_Aux');
+const { generateErrorMsg, validateURL, handleDenMsg } = require('../Utility/Utils_Aux');
 const { processXP } = require('../XP/XP_Core');
 
 const { prefix } = require('../Core/Core_config.json');
+const { discDen } = require('../Core/Core_ids.json');
 
 const extractUrls = require('extract-urls');
 
@@ -44,6 +45,11 @@ async function processMessage(Fishsticks, msg) {
 	//Check BaconMode
 	if (msg.author === Fishsticks.baconTarget) {
 		msg.react('🥓');
+	}
+
+	//Check Debater
+	if (msg.channel.id === discDen) {
+		handleDenMsg(msg, Fishsticks);
 	}
 
 	//Determine 'Shiny'

@@ -29,37 +29,37 @@ async function run(fishsticks, cmd) {
 	//!docket
 	//!docket -[func] -<flags> -[point/number]
 
-	if (params[0] == 'a' || params[0] == 'add') {
+	if (params[0] === 'a' || params[0] === 'add') {
 		validateParams('add', params, cmd);
 
 		log('info', '[DOCKET] Adding a point.');
 		addPoint(fishsticks, cmd);
 	}
-	else if (params[0] == 'e' || params[0] == 'edit') {
+	else if (params[0] === 'e' || params[0] === 'edit') {
 		validateParams('edit', params, cmd);
 
 		log('info', '[DOCKET] Editing a point.');
 		editPoint(fishsticks, cmd);
 	}
-	else if (params[0] == 'd' || params[0] == 'delete') {
+	else if (params[0] === 'd' || params[0] === 'delete') {
 		validateParams('delete', params, cmd);
 
 		log('info', '[DOCKET] Deleting a point.');
 		deletePoint(fishsticks, cmd);
 	}
-	else if (params[0] == 's' || params[0] == 'sticky') {
+	else if (params[0] === 's' || params[0] === 'sticky') {
 		validateParams('toggle', params, cmd);
 
 		log('info', '[DOCKET] Setting a point to sticky.');
 		toggleStickyPoint(fishsticks, cmd);
 	}
-	else if (params[0] == 'c' || params[0] == 'closed') {
+	else if (params[0] === 'c' || params[0] === 'closed') {
 		validateParams('toggle', params, cmd);
 
 		log('info', '[DOCKET] Setting a point to closed.');
 		toggleClosedPoint(fishsticks, cmd);
 	}
-	else if (params[0] == 'clear') {
+	else if (params[0] === 'clear') {
 		log('info', '[DOCKET] Clearing the docket.');
 		clearDocket(fishsticks, cmd);
 	}
@@ -85,11 +85,11 @@ async function addPoint(fishsticks, cmd) {
 
 	//Set flags
 	for (const flag in flags) {
-		if (flags[flag] == 's') {
+		if (flags[flag] === 's') {
 			log('info', '[DOCKET] New point is sticky.');
 			newDocketPoint.sticky = true;
 		}
-		else if (flags[flag] == 'c') {
+		else if (flags[flag] === 'c') {
 			log('info', '[DOCKET] New point is closed.');
 			newDocketPoint.closed = true;
 		}
@@ -98,7 +98,7 @@ async function addPoint(fishsticks, cmd) {
 	//Add the point and verify
 	const docketAddResponse = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Docket', 'insert', newDocketPoint);
 
-	if (docketAddResponse.inserted == 1) {
+	if (docketAddResponse.inserted === 1) {
 		cmd.msg.reply('Docket point added!').then(sent => sent.delete({ timeout: 10000 }));
 	}
 	else {
@@ -118,7 +118,7 @@ async function editPoint(fishsticks, cmd) {
 	const editVerifyArr = await editVerify.toArray();
 
 	//Validate
-	if (!editVerify || editVerifyArr.length == 0) {
+	if (!editVerify || editVerifyArr.length === 0) {
 		return cmd.msg.reply('Couldnt find that docket point. Check the listings to make sure its there?').then(sent => sent.delete({ timeout: 10000 }));
 	}
 
@@ -131,7 +131,7 @@ async function editPoint(fishsticks, cmd) {
 	};
 
 	//Validate point ID
-	if (editVerifyArr[0].pointID != pointNum) {
+	if (editVerifyArr[0].pointID !== pointNum) {
 		return cmd.msg.reply('Couldnt find that docket point. Check the listings to make sure its there?').then(sent => sent.delete({ timeout: 10000 }));
 	}
 
@@ -140,7 +140,7 @@ async function editPoint(fishsticks, cmd) {
 	const editDispatch = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Docket', 'update', editedPoint);
 
 	//Check response
-	if (editDispatch.replaced == 1) {
+	if (editDispatch.replaced === 1) {
 		return cmd.msg.reply('Point updated!').then(sent => sent.delete({ timeout: 10000 }));
 	}
 	else {
@@ -158,10 +158,10 @@ async function deletePoint(fishsticks, cmd) {
 	const editVerifyArr = await editVerify.toArray();
 
 	//Validate
-	if (!editVerify || editVerifyArr.length == 0) {
+	if (!editVerify || editVerifyArr.length === 0) {
 		return cmd.msg.reply('Couldnt find that docket point. Check the listings to make sure its there?').then(sent => sent.delete({ timeout: 10000 }));
 	}
-	else if (editVerifyArr[0].pointID != pointNum) {
+	else if (editVerifyArr[0].pointID !== pointNum) {
 		return cmd.msg.reply('Couldnt find that docket point. Check the listings to make sure its there?').then(sent => sent.delete({ timeout: 10000 }));
 	}
 
@@ -169,7 +169,7 @@ async function deletePoint(fishsticks, cmd) {
 	const delDispatch = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Docket', 'delete', editVerifyArr[0].id);
 
 	//Verify
-	if (delDispatch.deleted != 1) {
+	if (delDispatch.deleted !== 1) {
 		throw 'Deletion error!';
 	}
 	else {
@@ -185,10 +185,10 @@ async function toggleStickyPoint(fishsticks, cmd) {
 	const editVerifyArr = await editVerify.toArray();
 
 	//Validate
-	if (!editVerify || editVerifyArr.length == 0) {
+	if (!editVerify || editVerifyArr.length === 0) {
 		return cmd.msg.reply('Couldnt find that docket point. Check the listings to make sure its there?').then(sent => sent.delete({ timeout: 10000 }));
 	}
-	else if (editVerifyArr[0].pointID != pointNum) {
+	else if (editVerifyArr[0].pointID !== pointNum) {
 		return cmd.msg.reply('Couldnt find that docket point. Check the listings to make sure its there?').then(sent => sent.delete({ timeout: 10000 }));
 	}
 
@@ -201,7 +201,7 @@ async function toggleStickyPoint(fishsticks, cmd) {
 	const toggleRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Docket', 'update', newObj);
 
 	//Verify
-	if (toggleRes.replaced != 1) {
+	if (toggleRes.replaced !== 1) {
 		throw 'Update error!';
 	}
 	else {
@@ -216,10 +216,10 @@ async function toggleClosedPoint(fishsticks, cmd) {
 	const editVerifyArr = await editVerify.toArray();
 
 	//Validate
-	if (!editVerify || editVerifyArr.length == 0) {
+	if (!editVerify || editVerifyArr.length === 0) {
 		return cmd.msg.reply('Couldnt find that docket point. Check the listings to make sure its there?').then(sent => sent.delete({ timeout: 10000 }));
 	}
-	else if (editVerifyArr[0].pointID != pointNum) {
+	else if (editVerifyArr[0].pointID !== pointNum) {
 		return cmd.msg.reply('Couldnt find that docket point. Check the listings to make sure its there?').then(sent => sent.delete({ timeout: 10000 }));
 	}
 
@@ -232,7 +232,7 @@ async function toggleClosedPoint(fishsticks, cmd) {
 	const toggleRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Docket', 'update', newObj);
 
 	//Verify
-	if (toggleRes.replaced != 1) {
+	if (toggleRes.replaced !== 1) {
 		throw 'Update error!';
 	}
 	else {
@@ -259,7 +259,7 @@ async function clearDocket(fishsticks, cmd) {
 			log('info', '[DOCKET] Attempting to delete pointID: ' + pointListing[point].pointID);
 			const delRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Docket', 'deleteAlt', { pointID: pointListing[point].pointID });
 
-			if (delRes.deleted != 1) {
+			if (delRes.deleted !== 1) {
 				return cmd.msg.reply('Clearing halted - point deletion attempt failed.');
 			}
 		}
@@ -292,7 +292,7 @@ async function listPoints(fishsticks, cmd) {
 
 	//Process fields
 	//If council
-	if (cmd.msg.channel.id == council) {
+	if (cmd.msg.channel.id === council) {
 		for (const point in pointListing) {
 			listEmbed.fields.push({
 				title: getTitle(pointListing[point]),
@@ -313,7 +313,7 @@ async function listPoints(fishsticks, cmd) {
 		}
 	}
 
-	cmd.msg.channel.send({ embed: embedBuilder(listEmbed) });
+	await cmd.msg.channel.send({embed: embedBuilder(listEmbed)});
 }
 
 function help() {

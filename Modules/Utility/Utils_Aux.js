@@ -4,9 +4,12 @@
 const errorMsgPool = require('../Library/errorMsgs.json');
 const { hangout } = require('../../Modules/Core/Core_ids.json');
 const { urlscanIO } = require('../Core/Core_keys.json');
+const { discussionDenRules } = require('../Library/systemResponses.json');
 
 const { buildPoem } = require('../../Commands/Active/poem');
 const { startApp } = require('../../Commands/Active/apply');
+const { hasPerms } = require('./Utils_User');
+const { embedBuilder } = require('./Utils_EmbedBuilder');
 const { log } = require('../Utility/Utils_Log');
 
 const urlscan = require('urlscan-api');
@@ -17,7 +20,8 @@ module.exports = {
 	validateReaction,
 	doDailyPost,
 	validateURL,
-	toTitleCase
+	toTitleCase,
+	handleDenMsg
 };
 
 //Functions
@@ -84,7 +88,7 @@ function fetchURLScanResult(msg, urlID, inline) {
 async function processURLReport(msg, report, subRes, inline) {
 	log('info', '[URL-SCAN] Received report status: ' + report.statusCode);
 
-	if (report.statusCode == 404) {
+	if (report.statusCode === 404) {
 
 		log('info', '[URL-SCAN] Report not ready; standing by for 15s.');
 
@@ -102,7 +106,7 @@ async function processURLReport(msg, report, subRes, inline) {
 
 		const verdicts = report.verdicts;
 
-		if (verdicts.overall.score == 0) {
+		if (verdicts.overall.score === 0) {
 			log('info', '[URL-SCAN] URL scan looks good.');
 
 			if (!inline) {
@@ -151,4 +155,28 @@ function toTitleCase(toConvert) {
     log('info', '[UTILITY] Converted title to: ' + breakupArr);
 
     return breakupArr;
+}
+
+//Handle Den Permissions
+async function handleDenMsg(msg) {
+	if (!hasPerms(msg.member, ['Debater'])) {
+		const msgDeleted = msg.content;
+		msg.delete({ timeout: 0 });
+
+		const denMsg = {
+			title: 'o0o - Discussion Den Rules - o0o',
+			footer: 'You were sent this message because you posted in the Discussion Den without accepting the rules.',
+			description: discussionDenRules
+		};
+
+		await msg.author.send({ embed: embedBuilder(denMsg) }).then(sent => {
+			sent.react('✅');
+		});
+
+		const conMsg = 'For your convenience; below is the message you attempted to send to the den (posts are deleted):\n```' + msgDeleted + '```';
+
+		await msg.author.send(conMsg);
+
+		return msg.reply('You need to agree to the den rules before posting here! Check your DMs!').then(sent => sent.delete({ timeout: 10000 }));
+	}
 }

@@ -76,7 +76,7 @@ Fishsticks.on('warn', async (fs_warn) => {
 
 //Message
 Fishsticks.on('message', async (msg) => {
-	if (msg.author == Fishsticks.user) return;
+	if (msg.author === Fishsticks.user) return;
 	if (msg.author.bot) return;
 
 	processMessage(Fishsticks, msg);
