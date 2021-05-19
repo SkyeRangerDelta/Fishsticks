@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="994ca3f8-ca2e-46d7-b225-e391c1e5d508" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.Fishsticks.dir/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Fishsticks.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Fishsticks.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/bible.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/bible.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,6 +46,7 @@
       <option value="$PROJECT_DIR$/Modules/Utility/Utils_EmbedBuilder.js" />
       <option value="$PROJECT_DIR$/Modules/Library/systemResponses.json" />
       <option value="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" />
+      <option value="$PROJECT_DIR$/Commands/Active/bible.js" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1sE1K32TBQCYhku0LF3U4AMIFtc" />
@@ -67,7 +70,7 @@
     <property name="node.js.selected.package.eslint" value="P:\GitHub Repos\Fishsticks\node_modules\eslint" />
     <property name="node.js.selected.package.standard" value="" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.JavaScript" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager">
@@ -95,6 +98,7 @@
       <workItem from="1620693917183" duration="8262000" />
       <workItem from="1621119602808" duration="6133000" />
       <workItem from="1621380304986" duration="883000" />
+      <workItem from="1621451359879" duration="6236000" />
     </task>
     <servers />
   </component>
