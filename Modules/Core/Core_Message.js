@@ -11,6 +11,7 @@ const { processXP } = require('../XP/XP_Core');
 
 const { prefix } = require('../Core/Core_config.json');
 const { discDen } = require('../Core/Core_ids.json');
+const { quotes } = require('../../Modules/Library/quotesLib.json');
 
 const extractUrls = require('extract-urls');
 
@@ -60,6 +61,9 @@ async function processMessage(Fishsticks, msg) {
 
 	//Do XP
 	await processXP(Fishsticks, cmd);
+
+	//Do Random Quote
+	await processQuote(Fishsticks, cmd);
 
 	//Handle Active Commands
 	if (msg.content.startsWith(prefix)) {
@@ -130,14 +134,71 @@ async function processMessage(Fishsticks, msg) {
 
 			//URL Scan Framework
 			if (cmd.msg.content.includes('http://') || cmd.msg.content.includes('https://')) {
-				console.log('URL scanner triggered.');
+				log('info', 'URL scanner triggered.');
 				//Link included in message; check poster perms
 				if (!hasPerms(cmd.msg.member, ['Moderator', 'Event Coordinator', 'Council Advisor', 'Council Member'])) {
 					//Not a staff member, check link
 					const urls = extractUrls(cmd.msg.content);
-					validateURL(cmd.msg, urls[0], true);
+					await validateURL(cmd.msg, urls[0], true);
 				}
 			}
 		}
 	}
+}
+
+//Process the random quote logic
+async function processQuote(fishsticks, cmd) {
+	const quoteCheck = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Status', 'select', 1);
+	const tick = quoteCheck.rMsgTick;
+
+	if (!quoteCheck) throw 'Didnt receive an FSO response!';
+
+	if (tick === 0) {
+		log('info', '[R-QUOTE] Tick was on DB check, resetting...');
+		const newTickNum = newTick();
+
+		return await updateQuoteTick(fishsticks, newTickNum);
+	}
+
+	if ((tick - 1) === 0) {
+		const newTickNum = newTick();
+		await generateRandomQuote(cmd);
+
+		await updateQuoteTick(fishsticks, newTickNum);
+	}
+	else {
+		await updateQuoteTick(fishsticks, (tick - 1));
+	}
+}
+
+//Update status
+async function updateQuoteTick(fishsticks, tickNum) {
+	const rMsgStatus = {
+		id: 1,
+		rMsgTick: tickNum
+	};
+
+	const updateRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Status', 'update', rMsgStatus);
+
+	//Validate
+	if (updateRes.replaced !== 1) {
+		log('warn', '[R-QUOTE] Tick update failed.');
+	}
+	else {
+		log('proc', '[R-QUOTE] Tick update done.');
+	}
+}
+
+//Generate the random quote and return
+function generateRandomQuote(cmd) {
+	const quoteIndex = Math.floor(Math.random() * quotes.length);
+	log('proc', `[R-QUOTE] New quote fired. Index ${quoteIndex}.`);
+
+	//Send it
+	cmd.msg.channel.send(quotes[quoteIndex]);
+}
+
+//Generate a new tick count
+function newTick() {
+	return Math.round(Math.random() * (1000 - 25) + 25);
 }

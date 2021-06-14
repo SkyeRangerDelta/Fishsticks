@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="994ca3f8-ca2e-46d7-b225-e391c1e5d508" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Fishsticks.dir/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Commands/Active/quote.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Modules/Library/quotesLib.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Fishsticks.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Fishsticks.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/bible.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/bible.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Message.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Message.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,13 +43,15 @@
       <option value="$PROJECT_DIR$/Modules/Core/Core_Ready.js" />
       <option value="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" />
       <option value="$PROJECT_DIR$/Modules/Core/Core_ids.json" />
-      <option value="$PROJECT_DIR$/Modules/Core/Core_Message.js" />
       <option value="$PROJECT_DIR$/fishsticks.js" />
       <option value="$PROJECT_DIR$/Commands/Active/docket.js" />
       <option value="$PROJECT_DIR$/Modules/Utility/Utils_EmbedBuilder.js" />
       <option value="$PROJECT_DIR$/Modules/Library/systemResponses.json" />
       <option value="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" />
       <option value="$PROJECT_DIR$/Commands/Active/bible.js" />
+      <option value="$PROJECT_DIR$/Modules/Library/quotesLib.json" />
+      <option value="$PROJECT_DIR$/Modules/Core/Core_Message.js" />
+      <option value="$PROJECT_DIR$/Commands/Active/quote.js" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1sE1K32TBQCYhku0LF3U4AMIFtc" />
@@ -99,6 +104,7 @@
       <workItem from="1621119602808" duration="6133000" />
       <workItem from="1621380304986" duration="883000" />
       <workItem from="1621451359879" duration="6236000" />
+      <workItem from="1623695676302" duration="5017000" />
     </task>
     <servers />
   </component>
