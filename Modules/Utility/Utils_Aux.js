@@ -11,6 +11,8 @@ const { startApp } = require('../../Commands/Active/apply');
 const { hasPerms } = require('./Utils_User');
 const { embedBuilder } = require('./Utils_EmbedBuilder');
 const { log } = require('../Utility/Utils_Log');
+const { fso_query } = require('../FSO/FSO_Utils');
+const { processReaction } = require('../../Commands/Active/quote');
 
 const urlscan = require('urlscan-api');
 
@@ -30,20 +32,41 @@ function generateErrorMsg() {
 	return '*' + errorMsgPool[msgNum] + '* ';
 }
 
-function validateReaction(fishsticks, addedReaction, reactor) {
+async function validateReaction(fishsticks, addedReaction, reactor) {
 	//Sort through all known ID checks and find which one is in question
 
 	//Check CCG Membership Apps
 	for (const ID in fishsticks.appMsgIDs) {
 		if (addedReaction.message.id === fishsticks.appMsgIDs[ID]) {
-			startApp(fishsticks, reactor);
+			return startApp(fishsticks, reactor);
 		}
 	}
 
 	//Check for Debator apps
 	for (const ID in fishsticks.debMsgIDs) {
 		if (addedReaction.message.id === fishsticks.debMsgIDs[ID]) {
+			return;
 			//TODO: Debator app start
+		}
+	}
+
+	//Check for Quote Queries
+	const quoteRef = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_QuoteRef', 'selectAll');
+	const quoteIDs = await quoteRef.toArray();
+
+	for (const quoteID in quoteIDs) {
+		if (addedReaction.message.id === quoteIDs[quoteID].id) {
+			if (addedReaction.emoji === '✅') {
+				return processReaction(quoteIDs[quoteID]);
+			}
+			else {
+				//Delete query
+				const delRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_QueryRef', 'delete', quoteIDs[quoteID].id);
+
+				if (delRes.deleted !== 1) {
+					log('warn', '[QUOTE-VALIDATOR] Deleted query didnt process.');
+				}
+			}
 		}
 	}
 }

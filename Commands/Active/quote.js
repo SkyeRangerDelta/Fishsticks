@@ -3,15 +3,26 @@
 
 //Exports
 module.exports = {
-	run
+	run,
+	processReaction
 };
 
 //Imports
-const { quotes } = require('../../Modules/Library/quotesLib.json');
+const fs = require('fs');
+
+const { log } = require('../../Modules/Utility/Utils_Log');
+const { fso_query } = require('../../Modules/FSO/FSO_Utils');
+
+const quotePath = '../../Modules/Library/quotesLib.json';
+
+//Globals
+let quoteLib = null;
 
 //Functions
-function run(fishsticks, cmd) {
+async function run(fishsticks, cmd) {
 	cmd.msg.delete({ timeout: 0 });
+
+	quoteLib = await loadPool();
 
 	//Syntax
 	//!quote -@person	: Grabs last message as quote
@@ -28,8 +39,31 @@ function run(fishsticks, cmd) {
 	}
 	else if (cmd.msg.mentions.users.first()) {
 		//Not deleting, mentions a user
+		const memberToQuote = cmd.msg.mentions.users.first();
+		const msgToQuote = memberToQuote.lastMessage.fetch();
+
+		const quoteMsg = msgToQuote.content;
+
+		cmd.msg.channel.send('Are you sure you want to quote this?\n`' + quoteMsg + '`').then(sent => {
+			sent.react('✅');
+			sent.react('❌');
+
+			fso_query(fishsticks.FSO_CONNECTION, 'Fs_QuoteRef', 'insert', { id: sent.id, quote: quoteMsg });
+		});
 	}
 	else {
 		//Must be a text statement
 	}
+}
+
+function loadPool() {
+	log('info', '[QUOTE] Loading quotes pool...');
+
+	return JSON.parse(fs.readFileSync(quotePath, 'utf-8'));
+}
+
+async function processReaction(data) {
+
+	quoteLib = await loadPool();
+
 }
