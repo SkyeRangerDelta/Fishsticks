@@ -36,23 +36,26 @@ async function run(fishsticks, cmd) {
 	}
 	else if (cmd.msg.reference.channelID === cmd.channel.id) {
 		//Message is referencing
+		const quoteMsgObj = await cmd.msg.channel.messages.fetch(cmd.msg.reference.messageID);
+
+		const quoteMsg = quoteMsgObj.content;
+
+		await confirmQuoteAddition(fishsticks, cmd, quoteMsg);
 	}
 	else if (cmd.msg.mentions.users.first()) {
 		//Not deleting, mentions a user
 		const memberToQuote = cmd.msg.mentions.users.first();
-		const msgToQuote = memberToQuote.lastMessage.fetch();
+		const msgToQuote = await memberToQuote.lastMessage.fetch();
 
 		const quoteMsg = msgToQuote.content;
 
-		cmd.msg.channel.send('Are you sure you want to quote this?\n`' + quoteMsg + '`').then(sent => {
-			sent.react('✅');
-			sent.react('❌');
-
-			fso_query(fishsticks.FSO_CONNECTION, 'Fs_QuoteRef', 'insert', { id: sent.id, quote: quoteMsg });
-		});
+		await confirmQuoteAddition(fishsticks, cmd, quoteMsg);
 	}
 	else {
 		//Must be a text statement
+		const quoteMsg = cmd.content[0];
+
+		await confirmQuoteAddition(fishsticks, cmd, quoteMsg);
 	}
 }
 
@@ -62,8 +65,26 @@ function loadPool() {
 	return JSON.parse(fs.readFileSync(quotePath, 'utf-8'));
 }
 
+function writeQuotes() {
+	return fs.writeFileSync(quotePath, JSON.stringify(quoteLib));
+}
+
 async function processReaction(data) {
 
 	quoteLib = await loadPool();
 
+	quoteLib.push(data.quote);
+
+	await writeQuotes();
+}
+
+async function confirmQuoteAddition(fishsticks, cmd, data) {
+	const quoteMsg = data;
+
+	cmd.msg.channel.send('Are you sure you want to quote this?\n`' + quoteMsg + '`').then(sent => {
+		sent.react('✅');
+		sent.react('❌');
+
+		fso_query(fishsticks.FSO_CONNECTION, 'Fs_QuoteRef', 'insert', { id: sent.id, quote: quoteMsg });
+	});
 }
