@@ -36,7 +36,7 @@ async function handleNewMember(fishsticks, newMember) {
     const dispatchChannel = await fishsticks.channels.cache.get(chs.hangout);
 
     //Do canvas load
-    const background = await loadImage('./images/memberWelcomeBanner.jpg');
+    const background = await loadImage('./Images/Utility/memberWelcomeBanner.jpg');
     log('info', '[NEW-MEM] Background loaded, running canvas edits...');
 
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);

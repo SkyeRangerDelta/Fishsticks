@@ -5,12 +5,12 @@ exports.run = (fishticks, cmd) => {
 
     switch (pick) {
         case 0:
-            cmd.msg.channel.send('Amen!', { files: ['./images/amen.gif'] });
+            cmd.msg.channel.send('Amen!', { files: ['./Images/amen.gif'] });
             break;
         case 1:
-            cmd.msg.channel.send('Amen!', { files: ['./images/amen_a.gif'] });
+            cmd.msg.channel.send('Amen!', { files: ['./Images/amen_a.gif'] });
             break;
         default:
-            cmd.msg.channel.send('Amen!', { files: ['./images/amen_b.gif'] });
+            cmd.msg.channel.send('Amen!', { files: ['./Images/amen_b.gif'] });
     }
 };

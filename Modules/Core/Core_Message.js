@@ -8,6 +8,7 @@ const { fso_validate, hasPerms } = require('../Utility/Utils_User');
 const { fso_query } = require('../FSO/FSO_Utils');
 const { generateErrorMsg, validateURL, handleDenMsg } = require('../Utility/Utils_Aux');
 const { processXP } = require('../XP/XP_Core');
+const { handleShiny } = require('../Utility/Utils_Shiny');
 
 const { prefix } = require('../Core/Core_config.json');
 const { discDen } = require('../Core/Core_ids.json');
@@ -141,6 +142,12 @@ async function processMessage(Fishsticks, msg) {
 					const urls = extractUrls(cmd.msg.content);
 					await validateURL(cmd.msg, urls[0], true);
 				}
+			}
+
+			//Shiny?
+			const number = Math.random() * (8192 - 1) + 1;
+			if (number === 5 && msg.content.length <= 70) {
+				await handleShiny(msg);
 			}
 		}
 	}
