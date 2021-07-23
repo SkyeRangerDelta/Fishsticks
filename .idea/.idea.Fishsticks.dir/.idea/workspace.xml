@@ -2,77 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="994ca3f8-ca2e-46d7-b225-e391c1e5d508" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Images/Utility/shinyBanner.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Modules/Utility/Utils_Shiny.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Modules/Core/Core_NewJoin.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Fishsticks.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Fishsticks.dir/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/42.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/42.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/amen.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/amen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/clearance.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/clearance.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/engage.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/engage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/fire.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/fire.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/fishsticks.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/fishsticks.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/frodo.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/frodo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/gasp.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/gasp.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/got.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/got.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/grenade.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/grenade.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/inconceivable.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/inconceivable.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/inquisition.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/inquisition.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/ive.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/ive.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/lemons.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/lemons.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/ni.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/ni.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/nod.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/nod.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/schwartz.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/schwartz.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/sdu.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/sdu.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/surely.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/surely.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/troll.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/troll.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Message.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Message.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_NewMember.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_NewMember.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/42.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/42.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/alotofdamage.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/alotofdamage.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/alwaysWatching.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/alwaysWatching.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/amen.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/amen.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/amen_a.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/amen_a.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/amen_b.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/amen_b.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/awesome.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/awesome.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/clearance.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/clearance.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/confused.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/confused.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/dewit.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/dewit.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/dipper.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/dipper.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/duchess.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/duchess.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/engage.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/engage.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/fleshWound.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/fleshWound.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/flyFools.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/flyFools.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/football.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/football.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/football.png" beforeDir="false" afterPath="$PROJECT_DIR$/Images/football.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/frodobiggins.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/frodobiggins.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/fs_defense.png" beforeDir="false" afterPath="$PROJECT_DIR$/Images/fs_defense.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/fsimg.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Images/fsimg.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/gandalfnod.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/gandalfnod.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/gasp.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/gasp.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/gotTime.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/gotTime.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/grenade1.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/grenade1.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/grenade2.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/grenade2.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/grievous.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/grievous.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/grievous2.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/grievous2.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/helmet.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/helmet.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/highGround.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/highGround.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/incon.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/incon.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/inquisition.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/inquisition.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/lemons.png" beforeDir="false" afterPath="$PROJECT_DIR$/Images/lemons.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/ludicrous.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/ludicrous.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/memberWelcomeBanner.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Utility/memberWelcomeBanner.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/ni.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/ni.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/phasers.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/phasers.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/plaid.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/plaid.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/schwartz.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/schwartz.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/screaming.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/screaming.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/shirley.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/shirley.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/soitbegins.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/soitbegins.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/thonk.png" beforeDir="false" afterPath="$PROJECT_DIR$/Images/thonk.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/timeWaste.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/timeWaste.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/torpedoes.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/torpedoes.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/weapons.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/weapons.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/why.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/why.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Library/systemResponses.json" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Library/systemResponses.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fishsticks.js" beforeDir="false" afterPath="$PROJECT_DIR$/fishsticks.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,11 +40,8 @@
       <option value="$PROJECT_DIR$/Modules/Errors/fsProcessException.js" />
       <option value="$PROJECT_DIR$/Modules/Core/Core_Ready.js" />
       <option value="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" />
-      <option value="$PROJECT_DIR$/Modules/Core/Core_ids.json" />
-      <option value="$PROJECT_DIR$/fishsticks.js" />
       <option value="$PROJECT_DIR$/Commands/Active/docket.js" />
       <option value="$PROJECT_DIR$/Modules/Utility/Utils_EmbedBuilder.js" />
-      <option value="$PROJECT_DIR$/Modules/Library/systemResponses.json" />
       <option value="$PROJECT_DIR$/Commands/Active/bible.js" />
       <option value="$PROJECT_DIR$/Modules/Library/quotesLib.json" />
       <option value="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" />
@@ -139,6 +69,10 @@
       <option value="$PROJECT_DIR$/Commands/Passive/troll.js" />
       <option value="$PROJECT_DIR$/Modules/Core/Core_Message.js" />
       <option value="$PROJECT_DIR$/Modules/Utility/Utils_Shiny.js" />
+      <option value="$PROJECT_DIR$/fishsticks.js" />
+      <option value="$PROJECT_DIR$/Modules/Core/Core_ids.json" />
+      <option value="$PROJECT_DIR$/Modules/Core/Core_NewJoin.js" />
+      <option value="$PROJECT_DIR$/Modules/Library/systemResponses.json" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1sE1K32TBQCYhku0LF3U4AMIFtc" />
@@ -194,7 +128,8 @@
       <workItem from="1621451359879" duration="6236000" />
       <workItem from="1623695676302" duration="5017000" />
       <workItem from="1623794579045" duration="2637000" />
-      <workItem from="1623950017893" duration="4126000" />
+      <workItem from="1623950017893" duration="4399000" />
+      <workItem from="1627070525923" duration="2721000" />
     </task>
     <servers />
   </component>

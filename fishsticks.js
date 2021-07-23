@@ -24,7 +24,7 @@ const { startUp } = require('./Modules/Core/Core_Ready');
 const { log } = require('./Modules/Utility/Utils_Log');
 const { processMessage } = require('./Modules/Core/Core_Message');
 const { validateReaction, doDailyPost } = require('./Modules/Utility/Utils_Aux');
-const { handleNewMember } = require('./Modules/Core/Core_NewMember');
+const { handleNewJoin } = require('./Modules/Core/Core_NewJoin');
 const { handleOldMember } = require('./Modules/Core/Core_OldMember');
 
 //Configs
@@ -97,7 +97,7 @@ Fishsticks.on('voiceStateUpdate', (prevMemberState, newMemberState) => {
 //Member Join Server
 Fishsticks.on('guildMemberAdd', newMember => {
 	log('info', `[CLIENT] ${newMember.nickname} joined the server.`);
-	handleNewMember(Fishsticks, newMember);
+	handleNewJoin(Fishsticks, newMember);
 });
 
 //Member Leave Server
