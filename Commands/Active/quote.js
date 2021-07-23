@@ -34,6 +34,10 @@ async function run(fishsticks, cmd) {
 	if (cmd.content[1] === 'delete') {
 		//Delete a quote from the pool
 	}
+	if (cmd.content[1] === 'random') {
+		//Displays a random quote
+
+	}
 	else if (cmd.msg.reference.channelID === cmd.channel.id) {
 		//Message is referencing
 		const quoteMsgObj = await cmd.msg.channel.messages.fetch(cmd.msg.reference.messageID);
