@@ -37,6 +37,7 @@ async function run(fishsticks, cmd) {
 	if (cmd.content[1] === 'random') {
 		//Displays a random quote
 
+
 	}
 	else if (cmd.msg.reference.channelID === cmd.channel.id) {
 		//Message is referencing
