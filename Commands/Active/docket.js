@@ -257,7 +257,7 @@ async function clearDocket(fishsticks, cmd) {
 	for (const point in pointListing) {
 		if (!pointListing[point].sticky) {
 			log('info', '[DOCKET] Attempting to delete pointID: ' + pointListing[point].pointID);
-			const delRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Docket', 'deleteAlt', { pointID: pointListing[point].pointID });
+			const delRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Docket', 'delete', { pointID: pointListing[point].pointID });
 
 			if (delRes.deleted !== 1) {
 				return cmd.msg.reply('Clearing halted - point deletion attempt failed.');

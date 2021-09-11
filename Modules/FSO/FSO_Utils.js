@@ -1,13 +1,12 @@
 // ---- FSO Driver ----
 
 //Imports
-const Rethink = require('rethinkdb');
+const { MongoClient } = require('mongodb');
 
 const { fsoValidationException } = require('../Errors/fsoValidationException');
 const { log } = require('../Utility/Utils_Log');
-const { systemTimestamp } = require('../Utility/Utils_Time');
 
-const { host, port, user, pass, db } = require('./FSO_assets.json');
+const { uri } = require('./FSO_assets.json');
 
 //Exports
 module.exports = {
@@ -17,31 +16,23 @@ module.exports = {
 	fso_verify
 };
 
+//Functions
+
+const client = new MongoClient(uri);
+
 async function fso_connect() {
 	log('info', '[FSO] Pending Connection...');
 
-	let FSO_CONNECTION;
-
-	await Rethink.connect({
-		host: host,
-		port: port,
-		db: db,
-		user: user,
-		password: pass
-	}).then(conn => {
-		log('info', '[FSO] Connection opened.');
-		FSO_CONNECTION = conn;
-	}).error(error => {
-		throw 'FSO Connection Failure.\n' + error;
-	});
-
-	return FSO_CONNECTION;
+	//Return conduit
+	return await client.connect();
 }
 
 async function fso_status(connection) {
 	log('info', '[FSO] Querying FSO Status...');
 
-	const currentStatus = await Rethink.table('Fs_Status').get(1).run(connection);
+	const query = { id: 1 };
+	const database = connection.db('FishsticksOnline');
+	const currentStatus = await database.collection('FSO_Status').findOne(query);
 
 	if (currentStatus.Online) {
 		log('proc', '[FSO] Reporting ONLINE.');
@@ -53,127 +44,43 @@ async function fso_status(connection) {
 	}
 }
 
-async function fso_query(connection, table, key, value) {
+async function fso_query(connection, table, key, value, filter) {
 	log('info', '[FSO] Dispatching a query');
 
-	const currentStatus = await Rethink.table('Fs_Status').get(1).run(connection);
-	await Rethink.table('Fs_Status').update({ id: 1, Queries: ++currentStatus.Queries }).run(connection);
+	const filterDoc = { id: 1 };
+	const updateDoc = {
+		$inc: {
+			Queries: 1
+		}
+	};
 
-	let docs = [];
+	const database = connection.db('FishsticksOnline');
+	await database.collection('FSO_Status').updateOne(filterDoc, updateDoc);
 
 	switch (key) {
 		case 'select':
-			return await Rethink.table(table).get(value).run(connection);
+			return database.collection(table).findOne(value);
 		case 'selectAll':
-			return await Rethink.table(table).run(connection);
+			return await database.collection(table).find({}).toArray();
 		case 'update':
-			return await Rethink.table(table).get(value.id).update(value).run(connection);
+			return database.collection(table).updateOne(filter, value);
 		case 'replace':
-			return await Rethink.table(table).get(value.id).replace(value.content).run(connection);
+			return await database.collection(table).replaceOne(filter, value);
 		case 'insert':
-			return await Rethink.table(table).insert(value).run(connection);
+			return database.collection(table).insertOne(value);
 		case 'filter':
-			return await Rethink.table(table).filter(value).run(connection);
+			return database.collection(table).find(value);
 		case 'table':
-			return await Rethink.table(table).run(connection);
-		case 'tableSmall':
-			await Rethink.table(table).run(connection, function(err, stream) {
-				if (err) throw err;
-				stream.toArray().then(arr => {docs = arr;});
-			});
-
-			return docs;
+			return database.collection(table);
 		case 'delete':
-			return await Rethink.table(table).get(value).delete().run(connection);
-		case 'deleteAlt':
-			return await Rethink.table(table).filter(value).delete().run(connection);
+			return await database.collection(table).deleteOne(value);
+		case 'deleteMany':
+			return await database.collection(table).deleteMany(value);
 		default:
 			throw 'Invalid FSO Query!';
 	}
 }
 
 async function fso_verify(connection) {
-	log('info', '[FSO] Conducting a DB validity check...');
-	const tableList = await Rethink.tableList().run(connection);
-	let validCount = 0;
-
-	//Validate table count
-	if (await verify_tableLength(connection, tableList) === 1) {
-		log('info', '[FSO] DB integrity check passed.');
-		validCount++;
-	}
-
-	//Validate table naming schema
-	if (await verify_tableNameSchema(connection, tableList) === 1) {
-		log('info', '[FSO] Table name schema check passed.');
-		validCount++;
-	}
-
-	//Validate required table records
-	if (await verify_statusTableInit(connection) === 1) {
-		log('info', '[FSO] Status record check passed.');
-		validCount++;
-	}
-
-	if (validCount === 3) {
-		return 'True';
-	}
-	else {
-		throw new fsoValidationException('FSO verification failed for unknown reasons.');
-	}
-}
-
-async function verify_tableLength(connection, tableList) {
-	if (tableList.length !== 6) {
-		throw new fsoValidationException('Improper table count.');
-	}
-
-	return 1;
-}
-
-async function verify_tableNameSchema(connection, tableList) {
-	const tablePrefix = 'Fs_';
-	const tables = ['Docket', 'MemberStats', 'Polls', 'Roles', 'Status', 'TempCh'];
-
-	for (const tableInd in tables) {
-		if (!tableList.includes(tablePrefix + tables[tableInd])) {
-			log('info', `[FSO] ${tablePrefix + tables[tableInd]} missing!`);
-			await Rethink.tableCreate(tablePrefix + tables[tableInd]).run(connection).then(res => {
-				if (res.tables_created === 1) {
-					log('info', `[FSO] ${tablePrefix + tables[tableInd]} created successfully.`);
-				}
-				else {
-					throw new fsoValidationException('FSO table creation failed whilst creating table ' + tablePrefix + tables[tableInd]);
-				}
-			});
-		}
-	}
-
-	return 1;
-}
-
-async function verify_statusTableInit(connection) {
-	log('info', '[FSO] Looking for a status record...');
-
-	const statusRecordRes = await Rethink.table('Fs_Status').get(1).run(connection);
-
-	if (!statusRecordRes) {
-		const statusInit = {
-			id: 1,
-			Online: true,
-			Session: 2720,
-			StartupTime: systemTimestamp(),
-			StartupUTC: Date.now(),
-			Queries: 0
-		};
-
-
-		const insertRes = await Rethink.table('Fs_Status').insert(statusInit).run(connection);
-
-		if (!insertRes || insertRes.inserted !== 1) {
-			throw new fsoValidationException('Status INIT record failed to create.');
-		}
-	}
-
-	return 1;
+	log('info', '[FSO] Verification routine...');
 }

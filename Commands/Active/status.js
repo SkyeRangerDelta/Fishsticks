@@ -15,7 +15,7 @@ async function run(fishsticks, cmd) {
 	cmd.msg.reply('Hey.');
 
 	//Get FSO status
-	const fsoStatus = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Status', 'selectAll');
+	const fsoStatus = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'selectAll');
 
 	//Const build embed
 	const statusReport = {

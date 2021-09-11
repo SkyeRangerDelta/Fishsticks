@@ -155,7 +155,7 @@ async function processMessage(Fishsticks, msg) {
 
 //Process the random quote logic
 async function processQuote(fishsticks, cmd) {
-	const quoteCheck = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Status', 'select', 1);
+	const quoteCheck = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', 1);
 	const tick = quoteCheck.rMsgTick;
 
 	if (!quoteCheck) throw 'Didnt receive an FSO response!';
@@ -185,7 +185,7 @@ async function updateQuoteTick(fishsticks, tickNum) {
 		rMsgTick: tickNum
 	};
 
-	const updateRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Status', 'update', rMsgStatus);
+	const updateRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', rMsgStatus);
 
 	//Validate
 	if (updateRes.replaced !== 1) {

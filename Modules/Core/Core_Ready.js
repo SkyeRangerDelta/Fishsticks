@@ -47,6 +47,7 @@ async function startUp(Fishsticks) {
 		Fishsticks.FSO_CONNECTION = await fso_connect();
 
 		//Before FSO syncs begin - conduct a DB validation
+		/*
 		try {
 			Fishsticks.FSO_VALID = await fso_verify(Fishsticks.FSO_CONNECTION);
 		}
@@ -56,26 +57,33 @@ async function startUp(Fishsticks) {
 		finally {
 			Fishsticks.FSO_STATE = await fso_status(Fishsticks.FSO_CONNECTION);
 		}
+		*/
 	}
 	catch (error) {
 		log('err', '[FSO] Something has gone wrong in the startup routine.\n' + error);
 	}
 
 	//Sync FSO Status
-	const statusPreUpdate = await fso_query(Fishsticks.FSO_CONNECTION, 'Fs_Status', 'select', 1);
+	const statusPreUpdate = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 });
+
+	console.log(statusPreUpdate);
 
 	Fishsticks.session = ++statusPreUpdate.Session;
 	Fishsticks.lastSystemStart = convertMsFull(statusPreUpdate.StartupTime - timeNow);
 
+	const filterDoc = {
+		id: 1
+	};
 	const statusTableUpdate = {
-		id: 1,
-		Online: true,
-		Session: Fishsticks.session,
-		StartupTime: systemTimestamp(timestamp),
-		StartupUTC: timeNow
+		$set: {
+			Online: true,
+			Session: Fishsticks.session,
+			StartupTime: systemTimestamp(),
+			StartupUTC: timeNow
+		}
 	};
 
-	const statusPostUpdate = await fso_query(Fishsticks.FSO_CONNECTION, 'Fs_Status', 'update', statusTableUpdate);
+	const statusPostUpdate = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', statusTableUpdate, filterDoc);
 
 	if (statusPostUpdate.replaced !== 1) {
 		log('warn', '[FSO] Status table update failed. Record update count was not expected.');

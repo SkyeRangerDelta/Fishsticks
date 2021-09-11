@@ -8,6 +8,7 @@ module.exports = {
 };
 
 //Imports
+const { schedule } = require('../../Modules/Core/Core_ids.json');
 
 
 //Functions

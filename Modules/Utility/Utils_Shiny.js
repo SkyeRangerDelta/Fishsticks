@@ -5,7 +5,7 @@
 const Discord = require('discord.js');
 
 const { createCanvas, registerFont, loadImage } = require('canvas');
-const { log } = require('Utils_Log');
+const { log } = require('./Utils_Log');
 
 //Exports
 module.exports = {
