@@ -15,7 +15,9 @@ function run(fishsticks, cmd) {
     //Validate
     if (!target || target == null || target == undefined) {
         console.log('[BAC-MODE] Target found to be null.');
-        cmd.msg.reply('Clearing the bacon target.').then(sent => sent.delete({ timeout: 10000 }));
+        cmd.msg.reply({ content: 'Clearing the bacon target.' })
+            .then(sent => sent.delete({ timeout: 10000 }));
+
         return fishsticks.baconTarget = null;
     }
 
@@ -27,7 +29,8 @@ function run(fishsticks, cmd) {
         throw 'Bacon mode failed to engage.';
     }
 
-    cmd.msg.reply('Bacon mode engaged!').then(sent => sent.delete({ timeout: 10000 }));
+    cmd.msg.reply({ content: 'Bacon mode engaged!' })
+        .then(sent => sent.delete({ timeout: 10000 }));
 
 }
 

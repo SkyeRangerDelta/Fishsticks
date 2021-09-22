@@ -34,14 +34,14 @@ async function run(fishsticks, cmd) {
 
     //Obtain a current set of roles in array for future use
     const queryRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'selectAll');
-    memberFSO = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'select', `${cmd.msg.author.id}`);
+    memberFSO = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: `${cmd.msg.author.id}` });
 
     //Recalibrate time indexes and perform table maintenance
     await updateRoles(fishsticks, queryRes);
 
     //Parse the query
     parseRequest(fishsticks, cmd, queryRes).catch(e => {
-        cmd.msg.reply('*Ok but why.*\n' + e);
+        cmd.msg.reply({ content: '*Ok but why.*\n' + e });
     });
 
     //Possible syntax
@@ -169,13 +169,13 @@ async function newRole(fishsticks, cmd) {
         throw 'Something went wrong adding the role to the listings...';
     }
     else {
-        cmd.msg.reply('Role listed!');
+        cmd.msg.reply({ content: 'Role listed!' });
     }
 }
 
 //Edit a role
 async function editRole(fishsticks, cmd) {
-    cmd.msg.reply('Insert neat things here.').then(sent => sent.delete({ timeout: 10000 }));
+    cmd.msg.reply({ content: 'Insert neat things here.' }).then(sent => sent.delete({ timeout: 10000 }));
 }
 
 //Vote for a role
@@ -187,13 +187,13 @@ async function voteRole(fishsticks, cmd) {
         throw 'That role doesnt exist!';
     }
     else if (roleObj.votes >= 5) {
-        return cmd.msg.reply('This role has already been officialized, assigning it instead...').then(sent => sent.delete({ timeout: 10000 }));
+        return cmd.msg.reply({ content: 'This role has already been officialized, assigning it instead...' }).then(sent => sent.delete({ timeout: 10000 }));
     }
     else {
 
         for (const memID in roleObj.founders) {
             if (roleObj.founders[memID] == cmd.msg.author.id) {
-                return cmd.msg.reply('You already voted for this role! Get outta here!').then(sent => sent.delete({ timeout: 10000 }));
+                return cmd.msg.reply({ content: 'You already voted for this role! Get outta here!' }).then(sent => sent.delete({ timeout: 10000 }));
             }
         }
 
@@ -222,13 +222,14 @@ async function voteRole(fishsticks, cmd) {
         else {
             const updateRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'update', updateObj);
 
-            if (updateRes.replaced != 1) {
+            if (updateRes.modifiedCount != 1) {
                 throw 'Role update in FSO failed!';
             }
             else {
                 const missingVotes = 5 - updateObj.votes;
 
-                cmd.msg.reply(`Vote counted; ${roleObj.name} requires ${missingVotes} vote(s) before being activated!`).then(sent => sent.delete({ timeout: 10000 }));
+                cmd.msg.reply({ content: `Vote counted; ${roleObj.name} requires ${missingVotes} vote(s) before being activated!` })
+                    .then(sent => sent.delete({ timeout: 10000 }));
             }
         }
     }
@@ -240,8 +241,8 @@ async function joinRole(fishsticks, cmd) {
     const roleX = findRole();
     if (roleX.activated == false) {
         //Vote role override
-        cmd.msg.reply('Role not active, voting for it instead.').then(sent => sent.delete({ timeout: 10000 }));
-        voteRole(fishsticks, cmd);
+        cmd.msg.reply({ content: 'Role not active, voting for it instead.' }).then(sent => sent.delete({ timeout: 10000 }));
+        await voteRole(fishsticks, cmd);
     }
     else {
         //Get role and add
@@ -252,20 +253,21 @@ async function joinRole(fishsticks, cmd) {
 
             //Update FSO with the new role list
             const roleUpdate = {
-                id: cmd.msg.author.id,
-                roles: memberRolesList.push(roleY.id)
+                $set: {
+                    roles: memberRolesList.push(roleY.id)
+                }
             };
 
-            fso_query(fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'update', roleUpdate).then(done => {
-                if (done.replaced == 1) {
+            fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', roleUpdate, { id: cmd.msg.author.id }).then(done => {
+                if (done.modifiedCount == 1) {
                     cmd.msg.channel.send(`${cmd.msg.member} has joined ${roleY}!`);
                 }
                 else {
-                    cmd.msg.reply('Something is...incorrect. Have someone check your roles.');
+                    cmd.msg.reply({ content: 'Something is...incorrect. Have someone check your roles.' });
                 }
             });
         }).catch(err => {
-            cmd.msg.reply('Something went wrong trying to add your role.\n' + err).then(sent => sent.delete({ timeout: 10000 }));
+            cmd.msg.reply({ content: 'Something went wrong trying to add your role.\n' +err }).then(sent => sent.delete({ timeout: 10000 }));
         });
     }
 }
@@ -277,7 +279,7 @@ async function leaveRole(fishsticks, cmd) {
     const roleX = findRole();
     if (roleX.activated == false) {
         //Vote role override
-        cmd.msg.reply('No active role to leave!').then(sent => sent.delete({ timeout: 10000 }));
+        cmd.msg.reply({ content: 'No active role to leave!' }).then(sent => sent.delete({ timeout: 10000 }));
     }
     else {
         //Get role and remove
@@ -296,23 +298,25 @@ async function leaveRole(fishsticks, cmd) {
                 roles: memberRolesList
             };
 
-            fso_query(fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'update', roleUpdate).then(done => {
-                if (done.replaced == 1) {
+            fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', roleUpdate)
+                .then(done => {
+                if (done.modifiedCount == 1) {
                     cmd.msg.channel.send('Role removed.').then(sent => sent.delete({ timeout: 10000 }));
                 }
                 else {
-                    cmd.msg.reply('Something is...incorrect. Have someone check your roles.');
+                    cmd.msg.reply({ content: 'Something is...incorrect. Have someone check your roles.' });
                 }
             });
         }).catch(err => {
-            cmd.msg.reply('Something went wrong trying to remove your role.\n' + err).then(sent => sent.delete({ timeout: 10000 }));
+            cmd.msg.reply({ content: 'Something went wrong trying to remove your role.\n' + err })
+                .then(sent => sent.delete({ timeout: 10000 }));
         });
     }
 }
 
 //Print the statistics for all roles
 async function roleStats(fishsticks, cmd) {
-    cmd.msg.reply('Insert neat things here.').then(sent => sent.delete({ timeout: 10000 }));
+    cmd.msg.reply({ content: 'Insert neat things here.' }).then(sent => sent.delete({ timeout: 10000 }));
 }
 
 //List all roles
@@ -357,9 +361,9 @@ async function listRoles(fishsticks, cmd, ext) {
         delete: 45000
     };
 
-    cmd.msg.channel.send({ embed: embedBuilder(roleListEmbed) }).then(sent => {
+    cmd.msg.channel.send({ embeds: [embedBuilder(roleListEmbed)] }).then(sent => {
         sent.delete({ timeout: 45000 });
-        cmd.msg.channel.send({ embed: embedBuilder(inactiveListEmbed) }).then(sent2 => sent2.delete({ timeout: 450000 }));
+        cmd.msg.channel.send({ embeds: [embedBuilder(inactiveListEmbed)] }).then(sent2 => sent2.delete({ timeout: 450000 }));
     });
 }
 
@@ -461,7 +465,7 @@ async function aboutRole(fishsticks, cmd) {
         delete: 30000
     };
 
-    return cmd.msg.channel.send({ embed: embedBuilder(roleEmbed) }).then(sent => sent.delete({ timeout: 30000 }));
+    return cmd.msg.channel.send({ embeds: [embedBuilder(roleEmbed)] }).then(sent => sent.delete({ timeout: 30000 }));
 }
 
 //Activate the role
@@ -478,7 +482,7 @@ async function activateRole(fishsticks, cmd, obj) {
 
     const activateRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'update', obj);
 
-    if (activateRes.replaced != 1) {
+    if (activateRes.modifiedCount != 1) {
         throw 'Activation failed!';
     }
     else {

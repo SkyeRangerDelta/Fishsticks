@@ -23,10 +23,12 @@ async function run(fishsticks, cmd) {
     cmd.msg.delete({ timeout: 0 });
 
     if (cmd.content[0] == 'random') {
-        return cmd.msg.channel.send({ embed: await buildPoem() });
+        const poemToSend = await buildPoem();
+        return cmd.msg.channel.send({ embeds: [poemToSend] });
     }
 
-    return cmd.msg.reply('Nothing here yet. Be on your way.').then(sent => sent.delete({ timeout: 10000 }));
+    return cmd.msg.reply({ content: 'Nothing here yet. Be on your way.' })
+        .then(sent => sent.delete({ timeout: 10000 }));
 }
 
 async function fetchDailyPoem() {

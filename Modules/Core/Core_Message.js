@@ -77,7 +77,7 @@ async function processMessage(Fishsticks, msg) {
 
 			//Success here
 			log('info', '[ACTIVE-CMD] Executed successfully.');
-			await fso_query(Fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'update', {
+			await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', {
 				id: msg.author.id,
 				acAttempts: ++memberFSORecord.acAttempts,
 				acSuccess: ++memberFSORecord.acSuccess
@@ -85,36 +85,39 @@ async function processMessage(Fishsticks, msg) {
 		}
 		catch (activeCmdErr) {
 			//Fail here
+			const upVal = {
+				$set: {
+					acAttempts: ++memberFSORecord.acAttempts
+				}
+			};
+
 			log('warn', '[ACTIVE-CMD] Execution failed.\n' + activeCmdErr);
-			await fso_query(Fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'update', {
-				id: msg.author.id,
-				acAttempts: ++memberFSORecord.acAttempts
-			});
+			await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', upVal, { id: msg.author.id });
 
 			//Handle common error responses
 			if (activeCmdErr.message.includes('../../Commands/Active/')) {
 				msg.delete({ timeout: 0 }).then(sent => {
-					sent.reply(generateErrorMsg() + '\nThats not a command.');
+					sent.reply({ content: generateErrorMsg() + '\nThats not a command.' });
 				});
 			}
 			else if (activeCmdErr.message.includes('../../Modules')) {
 				msg.delete({ timeout: 0 }).then(sent => {
-					sent.reply(generateErrorMsg() + `\nLooks like Im missing some major config somewhere and Im on the edge of losing it.\nPing ${Fishsticks.RANGER}`);
+					sent.reply({ content: generateErrorMsg() + `\nLooks like Im missing some major config somewhere and Im on the edge of losing it.\nPing ${Fishsticks.RANGER}` });
 				});
 			}
 			else if (activeCmdErr.message.includes('Test mode')) {
 				msg.delete({ timeout: 0 }).then(sent => {
-					sent.reply(generateErrorMsg() + `\nThis is a test mode only command. It won't run unless ${Fishsticks.RANGER} is up to no good.`);
+					sent.reply({ content: generateErrorMsg() + `\nThis is a test mode only command. It won't run unless ${Fishsticks.RANGER} is up to no good.`	});
 				});
 			}
 			else if (activeCmdErr.message.includes('No permissions')) {
 				msg.delete({ timeout: 0 }).then(sent => {
-					sent.reply(generateErrorMsg() + '\nLooks like you lack to necessary permissions to run this one.');
+					sent.reply({ content: generateErrorMsg() + '\nLooks like you lack to necessary permissions to run this one.' });
 				});
 			}
 			else {
 				msg.delete({ timeout: 0 }).then(sent => {
-					sent.reply(generateErrorMsg() + '\n' + activeCmdErr.message);
+					sent.reply({ content: generateErrorMsg() + '\n' + activeCmdErr.message });
 				});
 			}
 		}
@@ -155,12 +158,12 @@ async function processMessage(Fishsticks, msg) {
 
 //Process the random quote logic
 async function processQuote(fishsticks, cmd) {
-	const quoteCheck = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', 1);
+	const quoteCheck = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 });
 	const tick = quoteCheck.rMsgTick;
 
 	if (!quoteCheck) throw 'Didnt receive an FSO response!';
 
-	if (tick === 0) {
+	if (tick === 0 || !tick || isNaN(tick)) {
 		log('info', '[R-QUOTE] Tick was on DB check, resetting...');
 		const newTickNum = newTick();
 
@@ -181,14 +184,15 @@ async function processQuote(fishsticks, cmd) {
 //Update status
 async function updateQuoteTick(fishsticks, tickNum) {
 	const rMsgStatus = {
-		id: 1,
-		rMsgTick: tickNum
+		$set: {
+			rMsgTick: tickNum
+		}
 	};
 
-	const updateRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', rMsgStatus);
+	const updateRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', rMsgStatus, { id: 1 });
 
 	//Validate
-	if (updateRes.replaced !== 1) {
+	if (updateRes.modifiedCount !== 1) {
 		log('warn', '[R-QUOTE] Tick update failed.');
 	}
 	else {

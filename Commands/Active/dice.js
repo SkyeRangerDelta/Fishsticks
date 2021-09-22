@@ -32,7 +32,8 @@ function run(fishsticks, cmd) {
     const valid = roll.validate(dieRoll);
 
     if (!valid) {
-        return cmd.msg.reply('That doesnt look like a valid roll, hit me again.').then(sent => sent.delete({ timeout: 10000 }));
+        return cmd.msg.reply({ content: 'That doesnt look like a valid roll, hit me again.' })
+            .then(sent => sent.delete({ timeout: 10000 }));
     }
 
     //Handle Roll(s)
@@ -85,7 +86,7 @@ function run(fishsticks, cmd) {
 		]
 	};
 
-    cmd.msg.channel.send({ embed: embedBuilder(rollPanel) });
+    cmd.msg.channel.send({ embeds: [embedBuilder(rollPanel)] });
 }
 
 function genEncounter() {

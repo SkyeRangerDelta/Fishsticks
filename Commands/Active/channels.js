@@ -92,7 +92,7 @@ function run(fishsticks, cmd) {
 		]
 	};
 
-	cmd.msg.channel.send({ embed: embedBuilder(channelsPanel) }).then(sent => sent.delete({ timeout: channelsPanel.delete }));
+	cmd.msg.channel.send({ embeds: [embedBuilder(channelsPanel)] }).then(sent => sent.delete({ timeout: channelsPanel.delete }));
 }
 
 function help() {

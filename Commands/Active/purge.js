@@ -18,7 +18,8 @@ async function run(fishsticks, cmd) {
 
     //Permissions check
     if (!hasPerms(['Moderator', 'Council Member', 'Council Advisor'])) {
-        return cmd.msg.reply('Your lack of permissions disturbs me.').then(sent => sent.delete({ timeout: 10000 }));
+        return cmd.msg.reply({ content: 'Your lack of permissions disturbs me.' })
+            .then(sent => sent.delete({ timeout: 10000 }));
     }
 
     //Syntax: !purge <@user> <number>
@@ -30,12 +31,16 @@ async function run(fishsticks, cmd) {
         log('info', '[PURGE] No user detected, initiating general deletion.');
 
         count = parseInt(cmd[0]);
-        if (!count || isNaN(count)) return cmd.msg.reply('No number specified, might as well just delete the whole channel if you want them all gone.').then(sent => sent.delete({ timeout: 10000 }));
+        if (!count || isNaN(count)) {
+            return cmd.msg.reply({ content: 'No number specified, might as well just delete the whole channel if you want them all gone.' })
+                .then(sent => sent.delete({ timeout: 10000 }));
+        }
 
         const targetChannelMsgs = await targetChannel.messages.fetch({ limit: count });
 
         if (count > 5) {
-            cmd.msg.reply('Sit tight, this might take a minute.').then(sent => sent.delete({ timeout: 7000 }));
+            cmd.msg.reply({ content: 'Sit tight, this might take a minute.' })
+                .then(sent => sent.delete({ timeout: 7000 }));
         }
 
         for (const msgObj in targetChannelMsgs) {
@@ -48,8 +53,14 @@ async function run(fishsticks, cmd) {
         log('info', '[PURGE] Possible user specified, initiating targeted deletion.');
 
         const targetMember = await cmd.msg.mentions.members.first();
-        if (!targetMember) return cmd.msg.reply('No valid member found!').then(sent => sent.delete({ timeout: 10000 }));
-        if (hasPerms(targetMember, ['Moderator', 'Event Coordinator', 'Council Advisor', 'Council Member'])) return cmd.msg.reply('Invalid member target!').then(sent => sent.delete({ timeout: 10000 }));
+        if (!targetMember) {
+            return cmd.msg.reply({ content: 'No valid member found!' })
+                .then(sent => sent.delete({ timeout: 10000 }));
+        }
+        if (hasPerms(targetMember, ['Moderator', 'Event Coordinator', 'Council Advisor', 'Council Member'])) {
+            return cmd.msg.reply({ content: 'Invalid member target!' })
+                .then(sent => sent.delete({ timeout: 10000 }));
+        }
 
         count = parseInt(cmd[1]);
         if (!count || isNaN(count)) {
@@ -65,7 +76,8 @@ async function run(fishsticks, cmd) {
         }
         else {
             if (count > 5) {
-                cmd.msg.reply('Sit tight, this might take a minute.').then(sent => sent.delete({ timeout: 7000 }));
+                cmd.msg.reply({ content: 'Sit tight, this might take a minute.' })
+                    .then(sent => sent.delete({ timeout: 7000 }));
             }
 
             const targetChannelMsgs = await targetChannel.messages.fetch({ limit: count }).then(m => m.filter(a => a.author.id === targetMember.id));

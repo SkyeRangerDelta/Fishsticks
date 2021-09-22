@@ -19,7 +19,7 @@ async function run(fishsticks, cmd) {
     annChannel = fishsticks.channels.cache.get(announcements);
 
     if (!hasPerms(cmd.msg.author, ['Event Coordinator', 'Staff'])) {
-        return cmd.msg.reply('Hey, hey there; not so fast. You need permissions to run that command.');
+        return cmd.msg.reply({ content: 'Hey, hey there; not so fast. You need permissions to run that command.' });
     }
 
     //Syntax: !echo <waitTimeInMinutes> [pingType] [messageToSend]
@@ -30,7 +30,8 @@ async function run(fishsticks, cmd) {
     //Accepted ping types: e, everyone, h, here, game role, game name
 
     if (!cmd[0] || cmd[0] == null || cmd[0] == undefined) {
-        cmd.msg.reply('Why do I waste my time here. You cant dispatch an announcement with nothing in the message.').then(sent => sent.delete({ timeout: 10000 }));
+        cmd.msg.reply({ content: 'Why do I waste my time here. You cant dispatch an announcement with nothing in the message.' })
+            .then(sent => sent.delete({ timeout: 10000 }));
     }
 
     if ((typeof cmd[0] != typeof 0) || isNaN(cmd[0])) {

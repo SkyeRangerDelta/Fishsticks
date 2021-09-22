@@ -33,20 +33,20 @@ async function run(fishsticks, cmd) {
     //FSO Sync Suggestions
     log('info', '[SUGGEST] Syncing member suggestions');
 
-    const currMemberData = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'select', cmd.msg.author.id);
+    const currMemberData = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: cmd.msg.author.id });
 
     const updateData = {
         id: cmd.msg.author.id,
         suggestionsPosted: currMemberData.suggestionsPosted++
     };
 
-    const updatedMember = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'update', updateData);
+    const updatedMember = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', updateData);
 
-    if (updatedMember.replaced == 1) {
+    if (updatedMember.modifiedCount == 1) {
         log('proc', '[SUGGEST] Synced.');
     }
     else {
-        cmd.msg.reply('Something went wrong. Ask Skye to investigate.');
+        cmd.msg.reply({ content: 'Something went wrong. Ask Skye to investigate.' });
     }
 }
 

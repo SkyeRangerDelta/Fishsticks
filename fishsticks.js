@@ -28,7 +28,7 @@ const { handleNewJoin } = require('./Modules/Core/Core_NewJoin');
 const { handleOldMember } = require('./Modules/Core/Core_OldMember');
 
 //Configs
-const { token } = require('./Modules/Core/Core_config.json');
+const { token, intents } = require('./Modules/Core/Core_config.json');
 const { validateChannel } = require('./Commands/Active/tempch');
 
 //=============================================
@@ -36,7 +36,7 @@ const { validateChannel } = require('./Commands/Active/tempch');
 //=============================================
 
 //Client
-const Fishsticks = new Discord.Client();
+const Fishsticks = new Discord.Client({ intents: intents });
 
 //Client Variables
 Fishsticks.FSO_CONNECTION = null;
@@ -75,7 +75,7 @@ Fishsticks.on('warn', async (fs_warn) => {
 });
 
 //Message
-Fishsticks.on('message', async (msg) => {
+Fishsticks.on('messageCreate', async (msg) => {
 	if (msg.author === Fishsticks.user) return;
 	if (msg.author.bot) return;
 

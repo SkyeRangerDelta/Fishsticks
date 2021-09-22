@@ -28,7 +28,7 @@ function run(fishsticks, cmd) {
 			helpMenu = helpMenu.concat(`**${cmdFileID}**: ${helpFunc}`);
 		}
 		catch (helpListErr) {
-			cmd.msg.reply('Wait. Stop. No, something is off. Like literally turned off. ' + fishsticks.ranger + ' Hey can you check on this please.');
+			cmd.msg.reply({ content: 'Wait. Stop. No, something is off. Like literally turned off. ' + fishsticks.RANGER + ' Hey can you check on this please.' });
 			throw `${cmdList[file]} has no help entry!\n${helpListErr}`;
 		}
 	}
@@ -43,7 +43,7 @@ function run(fishsticks, cmd) {
 		delete: 60000
 	};
 
-	cmd.msg.channel.send({ embed: embedBuilder(helpPanel) }).then(sent => sent.delete(helpPanel.delete));
+	cmd.msg.channel.send({ embeds: [embedBuilder(helpPanel)] }).then(sent => sent.delete(helpPanel.delete));
 }
 
 function help() {

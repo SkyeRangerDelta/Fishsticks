@@ -27,7 +27,7 @@ function run(fishsticks, cmd) {
 		]
 	};
 
-    cmd.msg.channel.send({ embed: embedBuilder(ips) }).then(sent => sent.delete({ timeout: 30000 }));
+    cmd.msg.channel.send({ embeds: [embedBuilder(ips)] }).then(sent => sent.delete({ timeout: 30000 }));
 }
 
 function help() {

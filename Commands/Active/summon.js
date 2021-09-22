@@ -51,7 +51,8 @@ async function run(fishsticks, cmd) {
         }
     }
     catch (summonErr) {
-        return cmd.msg.reply('*You failed to summon that, perhaps you have no mana?*').then(sent => sent.delete({ timeout: 10000 })); //Friendly response on failure
+        return cmd.msg.reply({ content: '*You failed to summon that, perhaps you have no mana?*' })
+            .then(sent => sent.delete({ timeout: 10000 })); //Friendly response on failure
     }
 }
 

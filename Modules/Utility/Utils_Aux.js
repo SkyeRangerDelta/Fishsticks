@@ -73,7 +73,7 @@ async function validateReaction(fishsticks, addedReaction, reactor) {
 
 function doDailyPost(fishsticks) {
 	const hangoutCH = fishsticks.CCG.channels.cache.get(hangout);
-	hangoutCH.send({ embed: buildPoem() });
+	hangoutCH.send({ embeds: [buildPoem()] });
 }
 
 //Root func for URL scans
@@ -147,7 +147,7 @@ async function processURLReport(msg, report, subRes, inline) {
 			}
 			else {
 				msg.react('⚠️');
-				msg.reply('Your post looks like it has a link in it that I have deemed to be of questionable intent. Proceed with caution, a staff member will likely vet this soon.');
+				msg.reply({ content: 'Your post looks like it has a link in it that I have deemed to be of questionable intent. Proceed with caution, a staff member will likely vet this soon.' });
 			}
 		}
 		else {
@@ -157,7 +157,7 @@ async function processURLReport(msg, report, subRes, inline) {
 				msg.edit(`[❌] Scan done. Verdict: ${verdicts.overall.score}% malicious. Do not follow the link or post it in any of the chats.`);
 			}
 			else {
-				msg.reply('Your post contained a link that I have deemed to be highly malicious and I have removed it as a preventative measure. If this is by mistake, please have a staff member replace the link.');
+				msg.reply({ content: 'Your post contained a link that I have deemed to be highly malicious and I have removed it as a preventative measure. If this is by mistake, please have a staff member replace the link.' });
 				msg.delete({ timeout: 0 });
 			}
 		}
@@ -192,7 +192,7 @@ async function handleDenMsg(msg) {
 			description: discussionDenRules
 		};
 
-		await msg.author.send({ embed: embedBuilder(denMsg) }).then(sent => {
+		await msg.author.send({ embeds: [embedBuilder(denMsg)] }).then(sent => {
 			sent.react('✅');
 		});
 
@@ -200,6 +200,7 @@ async function handleDenMsg(msg) {
 
 		await msg.author.send(conMsg);
 
-		return msg.reply('You need to agree to the den rules before posting here! Check your DMs!').then(sent => sent.delete({ timeout: 10000 }));
+		return msg.reply({ content: 'You need to agree to the den rules before posting here! Check your DMs!' })
+			.then(sent => sent.delete({ timeout: 10000 }));
 	}
 }

@@ -54,7 +54,7 @@ async function run(fishticks, cmd) {
     };
 
     //Send Response
-    cmd.msg.channel.send({ embed: embedBuilder(defEmbed) });
+    cmd.msg.channel.send({ embeds: [embedBuilder(defEmbed)] });
 }
 
 async function getDefinitions(word, dict, cmd) {

@@ -12,7 +12,7 @@ module.exports = {
 
 //Functions
 async function run(fishsticks, cmd) {
-	cmd.msg.reply('Hey.');
+	cmd.msg.delete({ timeout: 0 });
 
 	//Get FSO status
 	const fsoStatus = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'selectAll');
@@ -34,11 +34,12 @@ async function run(fishsticks, cmd) {
 				title: 'Startup Time',
 				description: fsoStatus.StartupTime
 			}
-		]
+		],
+		footer: 'Status is subject to sudden changes.'
 	};
 
 	//Send embed
-	await cmd.msg.channel.send({ embed: embedBuilder(statusReport) });
+	await cmd.msg.channel.send({ embeds: [embedBuilder(statusReport)] });
 }
 
 function help() {

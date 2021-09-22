@@ -30,7 +30,7 @@ function hasPerms(member, perms) {
 //Validate
 //Return the member record, create one if necessary
 async function fso_validate(Fishsticks, msg) {
-	const memberCheck = await fso_query(Fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'select', msg.author.id);
+	const memberCheck = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: msg.author.id });
 
 	if (memberCheck != null) {
 		log('info', '[MEMBER-STATS] Member record located.');
@@ -64,7 +64,7 @@ async function fso_validate(Fishsticks, msg) {
 		const insertResponse = await insertNewMember(Fishsticks, memberRecord);
 		if (insertResponse) {
 			log('proc', '[MEMBER-STATS] New member record added successfully.');
-			return await fso_query(Fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'select', msg.author.id);
+			return await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: msg.author.id });
 		}
 		else {
 			log('err', '[MEMBER-STATS] Record addition responded with an error.\n' + insertResponse);
@@ -73,7 +73,7 @@ async function fso_validate(Fishsticks, msg) {
 }
 
 async function insertNewMember(Fishsticks, recordToAdd) {
-	const recordInsertionResponse = await fso_query(Fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'insert', recordToAdd);
+	const recordInsertionResponse = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'insert', recordToAdd);
 
 	if (recordInsertionResponse.inserted == 1) {
 		return true;
@@ -87,7 +87,7 @@ async function insertNewMember(Fishsticks, recordToAdd) {
 async function clearRecord(Fishsticks, formerMember) {
 	//Desc: clears the former members FSO roles, vouches, and stats
 
-	const memberRecord = await fso_query(Fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'select', formerMember.id);
+	const memberRecord = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: formerMember.id });
 
 	if (!memberRecord) {
 		return log('err', '[RECORD-MAINT] Could not locate the record to clear!');
@@ -109,9 +109,9 @@ async function clearRecord(Fishsticks, formerMember) {
 		}
 	};
 
-	const clearRecordRes = await fso_query(Fishsticks.FSO_CONNECTION, 'Fs_MemberStats', 'update', updatedRecord);
+	const clearRecordRes = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', updatedRecord);
 
-	if (clearRecordRes.replaced != 1) {
+	if (clearRecordRes.modifiedCount != 1) {
 		log('err', '[RECORD-MAINT] Could not clear the record in question!');
 	}
 	else {

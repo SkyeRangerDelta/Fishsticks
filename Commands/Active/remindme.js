@@ -18,7 +18,7 @@ function run(fishsticks, cmd) {
 
 
     setTimeout(function() {
-        cmd.msg.reply('The time is now!\n' + msgSent);
+        cmd.msg.reply({ content: 'The time is now!\n' + msgSent });
     }, waitTime);
 }
 

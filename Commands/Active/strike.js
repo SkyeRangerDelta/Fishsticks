@@ -12,7 +12,8 @@ module.exports = {
 //Functions
 function run(fishsticks, cmd) {
     cmd.msg.delete({ timeout: 0 });
-    cmd.msg.reply('Nonono, not yet.').then(sent => sent.delete({ timeout: 10000 }));
+    cmd.msg.reply({ content: 'Nonono, not yet.' })
+        .then(sent => sent.delete({ timeout: 10000 }));
 }
 
 function help() {

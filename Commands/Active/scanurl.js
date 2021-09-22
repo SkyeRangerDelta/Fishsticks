@@ -15,8 +15,9 @@ async function run(fishsticks, cmd) {
 
     let workingMsg = null;
 
-    await cmd.msg.reply('Slating a URL scan. This will take a moment.').then(msg => {
-        workingMsg = msg;
+    await cmd.msg.reply({ content: 'Slating a URL scan. This will take a moment.' })
+        .then(msg => {
+            workingMsg = msg;
     });
     cmd.msg.delete({ timeout: 0 });
 

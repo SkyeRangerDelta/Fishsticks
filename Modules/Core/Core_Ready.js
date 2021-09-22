@@ -85,7 +85,7 @@ async function startUp(Fishsticks) {
 
 	const statusPostUpdate = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', statusTableUpdate, filterDoc);
 
-	if (statusPostUpdate.replaced !== 1) {
+	if (statusPostUpdate.modifiedCount !== 1) {
 		log('warn', '[FSO] Status table update failed. Record update count was not expected.');
 	}
 	else {
@@ -116,11 +116,11 @@ async function startUp(Fishsticks) {
 			]
 		};
 
-		Fishsticks.CONSOLE.send({ embed: embedBuilder(startupMessage) });
+		Fishsticks.CONSOLE.send({ embeds: [embedBuilder(startupMessage)] });
 
 		//Set Status
 		await Fishsticks.user.setPresence({
-			activity: { name: version + ' | TEST MODE', type: 'PLAYING' },
+			activities: [{ name: version + ' | TEST MODE', type: 'PLAYING' }],
 			status: 'online'
 		});
 	}
@@ -144,11 +144,12 @@ async function startUp(Fishsticks) {
 			]
 		};
 
-		Fishsticks.CONSOLE.send({ embed: embedBuilder(startupMessage) });
+		const startupEmbed = embedBuilder(startupMessage);
+		Fishsticks.CONSOLE.send({ embeds: [startupEmbed] });
 
 		//Set Status
 		await Fishsticks.user.setPresence({
-			activity: { name: 'for !help | ' + version, type: 'WATCHING' },
+			activities: [{ name: 'for !help | ' + version, type: 'WATCHING' }],
 			status: 'online'
 		});
 	}

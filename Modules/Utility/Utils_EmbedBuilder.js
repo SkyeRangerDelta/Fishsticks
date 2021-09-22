@@ -40,8 +40,14 @@ function embedBuilder(embed) {
 		constructedEmbed.setThumbnail(embed.thumbnail);
 	}
 
+	//Set fields
+	const embedFields = [];
+	if (embed.fields) {
+		constructedEmbed.setFields(embedFields);
+	}
+
 	for (const field in embed.fields) {
-		constructedEmbed.addField(embed.fields[field].title, embed.fields[field].description, embed.fields[field].inline);
+		embedFields.push(embed.fields[field]);
 	}
 
 	return constructedEmbed;

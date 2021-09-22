@@ -25,7 +25,7 @@ function run(fishsticks, cmd) {
 					'``This message will delete itself in 30 seconds.``'
 	};
 
-    cmd.msg.channel.send({ embed: embedBuilder(links) }).then(sent => sent.delete({ timeout: 30000 }));
+    cmd.msg.channel.send({ embeds: [embedBuilder(links)] }).then(sent => sent.delete({ timeout: 30000 }));
 }
 
 function help() {

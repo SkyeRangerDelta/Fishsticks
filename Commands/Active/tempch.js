@@ -22,13 +22,14 @@ async function run(Fishsticks, cmd) {
     const guild = cmd.msg.guild;
 
     //Syntax: !tempch -<maxUsers> -[channelName]
-    if (!cmd.content[0] || cmd.content[0] == null || cmd.content[0] == undefined) {
-        return cmd.msg.reply('Why are you the way that you are. Give me something to work with here.').then(sent => sent.delete({ timeout: 10000 }));
+    if (!cmd.content[0] || cmd.content[0] == null || cmd.content[0] === undefined) {
+        return cmd.msg.reply({ content: 'Why are you the way that you are. Give me something to work with here.' })
+            .then(sent => sent.delete({ timeout: 10000 }));
     }
 
     //Check voice state
-    if (!cmd.msg.member.voice.channelID || cmd.msg.member.voice.channelID != chSpawner) {
-        return cmd.msg.reply('You must connect to the channel spawner first!');
+    if (!cmd.msg.member.voice.channelID || cmd.msg.member.voice.channelID !== chSpawner) {
+        return cmd.msg.reply({ content: 'You must connect to the channel spawner first!' });
     }
 
     createCh(Fishsticks, cmd, guild);
@@ -57,7 +58,7 @@ async function createCh(Fishsticks, cmd, guild) {
 
         await chSpawnerChannel.clone(chData).then(async newCh => {
             cmd.msg.member.voice.setChannel(newCh);
-            fso_query(Fishsticks.FSO_CONNECTION, 'Fs_TempCh', 'insert', { id: newCh.id, name: chName });
+            fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: newCh.id, name: chName });
         });
     }
     else { //Has limit
@@ -73,7 +74,7 @@ async function createCh(Fishsticks, cmd, guild) {
 
         await chSpawnerChannel.clone(chData).then(async newCh => {
             cmd.msg.member.voice.setChannel(newCh);
-            await fso_query(Fishsticks.FSO_CONNECTION, 'Fs_TempCh', 'insert', { id: newCh.id, name: chName });
+            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: newCh.id, name: chName });
         });
     }
 }
@@ -85,7 +86,7 @@ async function validateChannel(fishsticks, preMemberState) {
 
     if (oldMemberChannel.members.size === 0) {
 
-        const chRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_TempCh', 'select', oldMemberChannel.id);
+        const chRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'select', { id: oldMemberChannel.id });
         if (!chRes || chRes == null) return;
 
         log('info', '[TEMP-CH] Channel slated for deletion (no users).');
@@ -101,7 +102,7 @@ async function delCh(fishsticks, oldMemberChannel) {
         log('proc', '[TEMP-CH] Channel "' + ch.name + '" deleted.');
     });
 
-    const chRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_TempCh', 'delete', oldMemberChannel.id);
+    const chRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'delete', oldMemberChannel.id);
 
     if (chRes.deleted != 1) {
         fishsticks.CONSOLE.send(fishsticks.RANGER + ', FSO failed to properly delete a channel - or possibly something more sinister.');
