@@ -23,23 +23,23 @@ async function run(fishsticks, cmd) {
 		description: 'Fishsticks system state report.',
 		fields: [
 			{
-				title: 'Application',
-				description: fsoStatus.Online
+				name: 'Application',
+				value: fsoStatus.Online
 			},
 			{
-				title: 'Session',
-				description: fsoStatus.Session
+				name: 'Session',
+				value: fsoStatus.Session
 			},
 			{
-				title: 'Startup Time',
-				description: fsoStatus.StartupTime
+				name: 'Startup Time',
+				value: fsoStatus.StartupTime
 			}
 		],
 		footer: 'Status is subject to sudden changes.'
 	};
 
 	//Send embed
-	await cmd.msg.channel.send({ embeds: [embedBuilder(statusReport)] });
+	await cmd.channel.send({ embeds: [embedBuilder(statusReport)] });
 }
 
 function help() {

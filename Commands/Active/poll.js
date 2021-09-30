@@ -14,16 +14,16 @@ const responseEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', 
 //Exports
 module.exports = {
     run,
+    handleAddedReaction,
     help
 };
 
 //Functions
 async function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
+    cmd.msg.delete();
 
     if (!hasPerms(cmd.msg.member, ['CC Member', 'ACC Member'])) {
-        return cmd.msg.reply({ content: 'Only members can post polls!' })
-            .then(sent => sent.delete({ timeout: 10000 }));
+        return cmd.reply('Only members can post polls!', 10);
     }
 
     //For the sake of aesthetic
@@ -59,7 +59,7 @@ async function run(fishsticks, cmd) {
 
     try {
         if (cmdPoll[1] == null) {
-            return cmd.msg.reply({ content: 'You need to have at least two poll responses!' });
+            return cmd.reply('You need to have at least two poll responses!', 10);
         }
         else if (cmdPoll[1] != null) {
 
@@ -67,7 +67,7 @@ async function run(fishsticks, cmd) {
             opCount++;
 
             if (cmdPoll[2] == null) {
-                return cmd.msg.reply({ content: 'You need to have at least two poll responses!' });
+                return cmd.reply('You need to have at least two poll responses!', 10);
             }
             else if (cmdPoll[2] != null) {
 
@@ -112,8 +112,7 @@ async function run(fishsticks, cmd) {
         }
     }
     catch (error) {
-        cmd.msg.reply({ content: 'Ive just caught a glitch in sector 5 of the neural net. I dont know what you did - but you probably should stop.\n' + error })
-            .then(sent => sent.delete({ timeout: 10000 }));
+        cmd.reply('Ive just caught a glitch in sector 5 of the neural net. I dont know what you did - but you probably should stop.\n' + error, 10);
 
         return log('warn', '[POLL-SYS] An unknown error has been caught somewhere in response construction.\n' + error);
     }
@@ -124,7 +123,7 @@ async function run(fishsticks, cmd) {
         pollQuestion.setDescription(desc);
 
     try {
-        const pollToSend = await cmd.msg.channel.send({ embeds: [pollQuestion] });
+        const pollToSend = await cmd.channel.send({ embeds: [pollQuestion] });
 
         for (let t = 0; t < opCount; t++) {
             try {
@@ -143,14 +142,12 @@ async function run(fishsticks, cmd) {
         };
 
         log('info', '[POLL-SYS] Attempting to create new poll with this object:');
-        console.log(newPoll);
 
         const FSORes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Polls', 'insert', newPoll);
 
-        if (FSORes.inserted == 1) {
+        if (FSORes.acknowledged === true) {
             log('proc', '[POLL-SYS] A new poll has been posted and saved to FSO.');
-            cmd.msg.reply({ content: 'Poll saved successfully.' })
-                .then(sent => sent.delete({ timeout: 10000 }));
+            cmd.reply('Poll saved successfully.', 10);
         }
         else {
             log('err', '[POLL-SYS] FSO poll insertion failed.');
@@ -159,10 +156,16 @@ async function run(fishsticks, cmd) {
     }
     catch (postErr) {
         log('err', '[POLL SYS] An error occured when trying to post the poll. \n\n' + postErr);
-        return cmd.msg.reply({ content: 'Poll posting failed...did you change something you shouldnt have?' });
+        return cmd.reply('Poll posting failed...did you change something you shouldnt have?');
     }
 }
 
 function help() {
     return 'Allows you to post polls.';
+}
+
+async function handleAddedReaction(fishsticks, addedReaction, reactor) {
+    //Response was added to a poll
+
+    //Determine if unique
 }

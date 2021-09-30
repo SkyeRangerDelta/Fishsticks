@@ -13,8 +13,14 @@ const { schedule } = require('../../Modules/Core/Core_ids.json');
 
 //Functions
 function run(fishsticks, cmd) {
-	cmd.msg.reply({ content: 'Mmmm. What fun - an empty command.' })
-		.then(sent => sent.delete({ timeout: 10000 }));
+	cmd.reply('Mmmm. What fun - an empty command.', 10);
+
+	//Syntax: !event -a/d/e/r
+	//!event -a | add -DAY -HR:MIN:TZ -event title -event desc
+	//!event -d | delete -DAY -HR:MIN:TZ
+	//!event -e | edit -DAY -HR:MIN:TZ -event title -event desc
+	//!event -r | reload
+	//!event -t | toggleDST
 }
 
 function help() {

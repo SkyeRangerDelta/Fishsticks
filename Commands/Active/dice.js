@@ -17,23 +17,27 @@ module.exports = {
 
 //Functions
 function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
+    cmd.msg.delete();
+
+    //Validate
+    if (!cmd.content[0]) {
+        return cmd.reply('Specify a die type or calculation!', 10);
+    }
 
     //Command Breakup
     const dieRoll = cmd.content[0];
     const diceRolled = cmd.content[0].split('+');
 
     //Check for encounter generator
-    if (cmd.content[0].toLowerCase() == 'encounter') {
-        return cmd.msg.channel.send('Encounter type: ' + genEncounter());
+    if (cmd.content[0].toLowerCase() === 'encounter') {
+        return cmd.channel.send('Encounter type: ' + genEncounter());
     }
 
     //Validate
     const valid = roll.validate(dieRoll);
 
     if (!valid) {
-        return cmd.msg.reply({ content: 'That doesnt look like a valid roll, hit me again.' })
-            .then(sent => sent.delete({ timeout: 10000 }));
+        return cmd.reply('That doesnt look like a valid roll, hit me again.', 10);
     }
 
     //Handle Roll(s)
@@ -57,7 +61,7 @@ function run(fishsticks, cmd) {
         diceRolls = diceRolls.concat(`**${diceRolled[dieRollResult]}**: ${rollNumbers}\n`);
     }
 
-    if (diceRolled.length == 1) {
+    if (diceRolled.length === 1) {
         diceRolls = `**${diceRolled[0]}**: ${rollResult.rolled}`;
     }
 
@@ -69,33 +73,31 @@ function run(fishsticks, cmd) {
 		color: primary,
 		fields: [
 			{
-				title: 'Dice Rolls',
-				description: diceRolls,
+				name: 'Dice Rolls',
+				value: diceRolls,
 				inline: true
 			},
 			{
-				title: 'Encounter Type',
-				description: genEncounter(),
+				name: 'Encounter Type',
+				value: genEncounter(),
 				inline: true
 			},
 			{
-				title: 'Calculations',
-				description: dieCalcs,
+				name: 'Calculations',
+				value: dieCalcs,
 				inline: true
 			}
 		]
 	};
 
-    cmd.msg.channel.send({ embeds: [embedBuilder(rollPanel)] });
+    cmd.channel.send({ embeds: [embedBuilder(rollPanel)] });
 }
 
 function genEncounter() {
     //Calculate Yes-No-Maybe Factor
-    const factor = Math.floor(Math.random() * (6 - 0)) + 0;
+    const factor = Math.floor(Math.random() * (6));
     const encounterTypes = ['Yes', 'Yes, but', 'Yes, and', 'Maybe', 'No', 'No, but', 'No, and'];
-    const factorResult = encounterTypes[factor];
-
-    return factorResult;
+    return encounterTypes[factor];
 }
 
 function help() {

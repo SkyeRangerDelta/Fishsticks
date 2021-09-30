@@ -7,30 +7,29 @@ module.exports = {
 };
 
 function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
+    cmd.msg.delete();
 
     //Collect target
-    const target = cmd.msg.mentions.users.first();
+    const target = cmd.msg.mentions.members.first();
 
     //Validate
-    if (!target || target == null || target == undefined) {
+    if (!target) {
         console.log('[BAC-MODE] Target found to be null.');
-        cmd.msg.reply({ content: 'Clearing the bacon target.' })
-            .then(sent => sent.delete({ timeout: 10000 }));
+        cmd.channel.send({ content: 'Cleared the bacon target.' })
+            .then(sent => setTimeout(() => sent.delete(), 10000));
 
         return fishsticks.baconTarget = null;
     }
 
     //Set target global
     try {
-        fishsticks.baconTarget = target;
+        fishsticks.baconTarget = target.id;
 	}
 	catch (error) {
         throw 'Bacon mode failed to engage.';
     }
 
-    cmd.msg.reply({ content: 'Bacon mode engaged!' })
-        .then(sent => sent.delete({ timeout: 10000 }));
+    cmd.reply('Bacon mode engaged!', 10);
 
 }
 

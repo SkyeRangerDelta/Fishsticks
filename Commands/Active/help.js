@@ -14,21 +14,23 @@ module.exports = {
 
 //Functions
 function run(fishsticks, cmd) {
-	cmd.msg.delete({ timeout: 0 });
+	cmd.msg.delete();
 
-	cmd.msg.channel.send('Building help menu...').then(sent => sent.delete({ timeout: 10000 }));
+	cmd.channel.send({ content: 'Building help menu...' })
+		.then(s => { setTimeout(() => s.delete(), 3000); });
 
 	const cmdList = fs.readdirSync('./Commands/Active').filter(cmdFile => cmdFile.endsWith('.js'));
 	let helpMenu = '';
 
 	for (const file in cmdList) {
 		try {
-			const helpFunc = require(`./${cmdList[file]}`).help;
 			const cmdFileID = cmdList[file].substring(0, cmdList[file].length - 3);
-			helpMenu = helpMenu.concat(`**${cmdFileID}**: ${helpFunc}`);
+			const helpFunc = require(`./${cmdFileID}`);
+			const helpTxt = helpFunc.help();
+			helpMenu = helpMenu.concat(`**${cmdFileID}**: ${helpTxt}\n`);
 		}
 		catch (helpListErr) {
-			cmd.msg.reply({ content: 'Wait. Stop. No, something is off. Like literally turned off. ' + fishsticks.RANGER + ' Hey can you check on this please.' });
+			cmd.reply('Wait. Stop. No, something is off. Like literally turned off. ' + fishsticks.RANGER + ' Hey can you check on this please.');
 			throw `${cmdList[file]} has no help entry!\n${helpListErr}`;
 		}
 	}
@@ -39,13 +41,15 @@ function run(fishsticks, cmd) {
 						'------------------------------------\n' +
 						helpMenu,
 		color: primary,
-		footer: 'Full Reference: https://wiki.pldyn.net/en/fishsticks/command-listing',
-		delete: 60000
+		footer: 'Full Reference: https://wiki.pldyn.net/en/fishsticks/command-listing.',
+		delete: 60000,
+		noThumbnail: true
 	};
 
-	cmd.msg.channel.send({ embeds: [embedBuilder(helpPanel)] }).then(sent => sent.delete(helpPanel.delete));
+	cmd.channel.send({ embeds: [embedBuilder(helpPanel)] })
+		.then(s => { setTimeout(() => s.delete(), 60000); });
 }
 
 function help() {
-	return 'Displays this menu.';
+	return 'Displays the help menu. Duh.';
 }

@@ -12,7 +12,7 @@ module.exports = {
 
 //Functions
 function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
+    cmd.msg.delete();
 
 	const links = {
 		title: 'o0o - CC GAMING LINKS - o0o',
@@ -21,11 +21,13 @@ function run(fishsticks, cmd) {
 					'[Official CCTV Twitch Stream](https://twitch.tv/christiancrewtv)\n' +
 					'[Official CC YouTube Channel](https://www.youtube.com/user/ChristianCrewGaming)\n\n' +
 					'[LCARS Database: Fishsticks](https://wiki.pldyn.net/en/fishsticks)\n' +
-					'[LCARS Database: Guide to Fishsticks](https://wiki.pldyn.net/en/fishsticks/general-guide)\n\n' +
-					'``This message will delete itself in 30 seconds.``'
+					'[LCARS Database: Guide to Fishsticks](https://wiki.pldyn.net/en/fishsticks/general-guide)',
+		footer: 'Please report bad links.',
+		delete: 20000
 	};
 
-    cmd.msg.channel.send({ embeds: [embedBuilder(links)] }).then(sent => sent.delete({ timeout: 30000 }));
+    cmd.channel.send({ embeds: [embedBuilder(links)] })
+		.then(s => { setTimeout(() => s.delete(), 20000); });
 }
 
 function help() {

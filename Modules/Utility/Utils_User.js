@@ -39,6 +39,12 @@ async function fso_validate(Fishsticks, msg) {
 	else {
 		log('info', '[MEMBER-STATS] No member record located, attempting to create one.');
 
+		let vouchState = 'Not Yet';
+
+		if (hasPerms(msg.member, ['Recognized'])) {
+			vouchState = 'Yes';
+		}
+
 		const memberRecord = {
 			id: msg.author.id,
 			username: msg.author.username,
@@ -49,6 +55,7 @@ async function fso_validate(Fishsticks, msg) {
 			pcSuccess: 0,
 			suggestionsPosted: 0,
 			messagesSent: 0,
+			lastMsg: msg.createdTimestamp,
 			xp: {
 				level: 1,
 				RP: 0,
@@ -57,7 +64,7 @@ async function fso_validate(Fishsticks, msg) {
 			},
 			roles: [],
 			vouches: [],
-			vouchedIn: 'Not Yet'
+			vouchedIn: vouchState
 		};
 
 

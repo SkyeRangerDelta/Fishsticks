@@ -9,10 +9,10 @@ module.exports = {
 
 //Functions
 function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
+    cmd.msg.delete();
 
-    const rawInput = cmd.join(' ');
-    const msgToMutilate = rawInput.split('');
+    const msgRaw = cmd.content[0];
+    const msgToMutilate = msgRaw.split('');
 
     const outputArr = [];
 
@@ -27,7 +27,7 @@ function run(fishsticks, cmd) {
 
     const output = outputArr.join('');
 
-    cmd.msg.channel.send(output);
+    cmd.channel.send(output);
 
 }
 

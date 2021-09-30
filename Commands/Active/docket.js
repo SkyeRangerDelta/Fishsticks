@@ -33,39 +33,39 @@ async function run(fishsticks, cmd) {
 		validateParams('add', params, cmd);
 
 		log('info', '[DOCKET] Adding a point.');
-		addPoint(fishsticks, cmd);
+		await addPoint(fishsticks, cmd);
 	}
 	else if (params[0] === 'e' || params[0] === 'edit') {
 		validateParams('edit', params, cmd);
 
 		log('info', '[DOCKET] Editing a point.');
-		editPoint(fishsticks, cmd);
+		await editPoint(fishsticks, cmd);
 	}
 	else if (params[0] === 'd' || params[0] === 'delete') {
 		validateParams('delete', params, cmd);
 
 		log('info', '[DOCKET] Deleting a point.');
-		deletePoint(fishsticks, cmd);
+		await deletePoint(fishsticks, cmd);
 	}
 	else if (params[0] === 's' || params[0] === 'sticky') {
 		validateParams('toggle', params, cmd);
 
 		log('info', '[DOCKET] Setting a point to sticky.');
-		toggleStickyPoint(fishsticks, cmd);
+		await toggleStickyPoint(fishsticks, cmd);
 	}
 	else if (params[0] === 'c' || params[0] === 'closed') {
 		validateParams('toggle', params, cmd);
 
 		log('info', '[DOCKET] Setting a point to closed.');
-		toggleClosedPoint(fishsticks, cmd);
+		await toggleClosedPoint(fishsticks, cmd);
 	}
 	else if (params[0] === 'clear') {
 		log('info', '[DOCKET] Clearing the docket.');
-		clearDocket(fishsticks, cmd);
+		await clearDocket(fishsticks, cmd);
 	}
 	else {
 		log('info', '[DOCKET] Listing points.');
-		listPoints(fishsticks, cmd);
+		await listPoints(fishsticks, cmd);
 	}
 }
 
@@ -98,12 +98,11 @@ async function addPoint(fishsticks, cmd) {
 	//Add the point and verify
 	const docketAddResponse = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'insert', newDocketPoint);
 
-	if (docketAddResponse.inserted === 1) {
-		cmd.msg.reply({ content: 'Docket point added!' })
-			.then(sent => sent.delete({ timeout: 10000 }));
+	if (docketAddResponse.acknowledged === true) {
+		cmd.reply('Docket point added!', 10);
 	}
 	else {
-		throw 'Mmmmm, adding that had some unexpected repurcussions. Might wanna check on that.' + fishsticks.RANGER;
+		cmd.reply('Mmmmm, adding that had some unexpected repercussions. Might wanna check on that. ' + fishsticks.RANGER);
 	}
 
 	//Clear global
@@ -115,40 +114,27 @@ async function editPoint(fishsticks, cmd) {
 	//!docket -[e | edit] -[pointNum] -[newPoint]
 
 	//Try to collect point in question
-	const editVerify = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'filter', { pointID: pointNum });
-	const editVerifyArr = await editVerify.toArray();
-
-	//Validate
-	if (!editVerify || editVerifyArr.length === 0) {
-		return cmd.msg.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?' })
-			.then(sent => sent.delete({ timeout: 10000 }));
-	}
+	const docketPt = await getDocketPointValidate(fishsticks, cmd);
 
 	//Create update object
 	const editedPoint = {
-		pointDesc: pointDesc,
-		timestamp: systemTimestamp(),
-		pointID: pointNum,
-		id: null
+		$set: {
+			pointDesc: pointDesc,
+			timestamp: systemTimestamp(),
+		}
 	};
 
-	//Validate point ID
-	if (editVerifyArr[0].pointID !== pointNum) {
-		return cmd.msg.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?' })
-			.then(sent => sent.delete({ timeout: 10000 }));
-	}
-
 	//Try update
-	editedPoint.id = editVerifyArr[0].id;
-	const editDispatch = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'update', editedPoint);
+	const editDispatch = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'update', editedPoint, { pointID: docketPt.pointID });
+
+	console.log(editDispatch);
 
 	//Check response
 	if (editDispatch.modifiedCount === 1) {
-		return cmd.msg.reply({ content: 'Point updated!' })
-			.then(sent => sent.delete({ timeout: 10000 }));
+		return cmd.reply('Point updated!', 10);
 	}
 	else {
-		throw 'Not sure what happened in here but something likely needs to be looked at. Someone ping Delta.';
+		return cmd.reply('Not sure what happened in here but something likely needs to be looked at. Someone ping Delta.', 10);
 	}
 
 }
@@ -158,29 +144,17 @@ async function deletePoint(fishsticks, cmd) {
 	//!docket -[d | delete] -[pointNum]
 
 	//Try to collect point in question
-	const editVerify = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'filter', { pointID: pointNum });
-	const editVerifyArr = await editVerify.toArray();
-
-	//Validate
-	if (!editVerify || editVerifyArr.length === 0) {
-		return cmd.msg.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?' })
-			.then(sent => sent.delete({ timeout: 10000 }));
-	}
-	else if (editVerifyArr[0].pointID !== pointNum) {
-		return cmd.msg.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?' })
-			.then(sent => sent.delete({ timeout: 10000 }));
-	}
+	const docketPt = await getDocketPointValidate(fishsticks, cmd);
 
 	//Do delete
-	const delDispatch = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'delete', editVerifyArr[0].id);
+	const delDispatch = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'delete', { pointID: docketPt.pointID });
 
 	//Verify
-	if (delDispatch.deleted !== 1) {
+	if (delDispatch.deletedCount !== 1) {
 		throw 'Deletion error!';
 	}
 	else {
-		return cmd.msg.reply({ content: 'Point deleted!' })
-			.then(sent => sent.delete({ timeout: 10000 }));
+		return cmd.reply('Point deleted!', 10);
 	}
 
 }
@@ -188,69 +162,48 @@ async function deletePoint(fishsticks, cmd) {
 //Toggle Sticky
 async function toggleStickyPoint(fishsticks, cmd) {
 	//Try to collect point in question
-	const editVerify = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'filter', { pointID: pointNum });
-	const editVerifyArr = await editVerify.toArray();
-
-	//Validate
-	if (!editVerify || editVerifyArr.length === 0) {
-		return cmd.msg.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?' })
-			.then(sent => sent.delete({ timeout: 10000 }));
-	}
-	else if (editVerifyArr[0].pointID !== pointNum) {
-		return cmd.msg.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?' })
-			.then(sent => sent.delete({ timeout: 10000 }));
-	}
+	const docketPoint = await getDocketPointValidate(fishsticks, cmd);
 
 	//Do toggle
 	const newObj = {
-		id: editVerifyArr[0].id,
-		sticky: !editVerifyArr[0].sticky
+		$set: {
+			sticky: !docketPoint.sticky
+		}
 	};
 
-	const toggleRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'update', newObj);
+	const toggleRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'update', newObj, { pointID: docketPoint.pointID });
+
+	console.log(toggleRes);
 
 	//Verify
 	if (toggleRes.modifiedCount !== 1) {
 		throw 'Update error!';
 	}
 	else {
-		return cmd.msg.reply({ content: 'Sticky toggled!' })
-			.then(sent => sent.delete({ timeout: 10000 }));
+		return cmd.reply('Sticky toggled!', 10);
 	}
 }
 
 //Toggle Closed
 async function toggleClosedPoint(fishsticks, cmd) {
 	//Try to collect point in question
-	const editVerify = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'filter', { pointID: pointNum });
-	const editVerifyArr = await editVerify.toArray();
-
-	//Validate
-	if (!editVerify || editVerifyArr.length === 0) {
-		return cmd.msg.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?' })
-			.then(sent => sent.delete({ timeout: 10000 }));
-	}
-	else if (editVerifyArr[0].pointID !== pointNum) {
-		return cmd.msg.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?' })
-			.then(sent => sent.delete({ timeout: 10000 }));
-	}
+	const docketPoint = await getDocketPointValidate(fishsticks, cmd);
 
 	//Do toggle
 	const newObj = {
 		$set: {
-			closed: !editVerifyArr[0].closed
+			closed: !docketPoint.closed
 		}
 	};
 
-	const toggleRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'update', newObj, { id: editVerifyArr[0].id });
+	const toggleRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'update', newObj, { pointID: docketPoint.pointID });
 
 	//Verify
 	if (toggleRes.modifiedCount !== 1) {
 		throw 'Update error!';
 	}
 	else {
-		return cmd.msg.reply({ content: 'Closed toggled!' })
-			.then(sent => sent.delete({ timeout: 10000 }));
+		return cmd.reply('Closed toggled!', 10);
 	}
 }
 
@@ -258,30 +211,23 @@ async function toggleClosedPoint(fishsticks, cmd) {
 async function clearDocket(fishsticks, cmd) {
 	const docketListing = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'selectAll');
 
-	let pointListing = null;
-
 	if (!docketListing) {
 		log('info', '[DOCKET] No points found.');
-		return cmd.msg.reply({ content: 'Docket is already clear!' })
-			.then(sent => sent.delete({ timeout: 10000 }));
-	}
-	else {
-		pointListing = await docketListing.toArray();
+		return cmd.reply('Docket is already clear!', 10);
 	}
 
-	for (const point in pointListing) {
-		if (!pointListing[point].sticky) {
-			log('info', '[DOCKET] Attempting to delete pointID: ' + pointListing[point].pointID);
-			const delRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'delete', { pointID: pointListing[point].pointID });
+	for (const point in docketListing) {
+		if (!docketListing[point].sticky) {
+			log('info', '[DOCKET] Attempting to delete pointID: ' + docketListing[point].pointID);
+			const delRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'delete', { pointID: docketListing[point].pointID });
 
-			if (delRes.deleted !== 1) {
-				return cmd.msg.reply({ content: 'Clearing halted - point deletion attempt failed.' });
+			if (delRes.deletedCount !== 1) {
+				return cmd.reply('Clearing halted - point deletion attempt failed.');
 			}
 		}
 	}
 
-	return cmd.msg.reply({ content: 'Docket cleared!' })
-		.then(sent => sent.delete({ timeout: 10000 }));
+	return cmd.reply('Docket cleared!', 10);
 }
 
 //List
@@ -296,7 +242,7 @@ async function listPoints(fishsticks, cmd) {
 		pointListing = 'Looks pretty empty in here. Perhaps you should add something.';
 	}
 	else {
-		pointListing = await docketListing.toArray();
+		pointListing = await docketListing;
 	}
 
 	const listEmbed = {
@@ -308,11 +254,11 @@ async function listPoints(fishsticks, cmd) {
 
 	//Process fields
 	//If council
-	if (cmd.msg.channel.id === council) {
+	if (cmd.channel.id === council) {
 		for (const point in pointListing) {
 			listEmbed.fields.push({
-				title: getTitle(pointListing[point]),
-				description: pointListing[point].pointDesc,
+				name: getTitle(pointListing[point]),
+				value: pointListing[point].pointDesc,
 				inline: false
 			});
 		}
@@ -321,15 +267,15 @@ async function listPoints(fishsticks, cmd) {
 		for (const point in pointListing) {
 			if (!pointListing[point].closed) {
 				listEmbed.fields.push({
-					title: getTitle(pointListing[point]),
-					description: pointListing[point].pointDesc,
+					name: getTitle(pointListing[point]),
+					value: pointListing[point].pointDesc,
 					inline: false
 				});
 			}
 		}
 	}
 
-	await cmd.msg.channel.send({ embeds: [embedBuilder(listEmbed)] });
+	await cmd.channel.send({ embeds: [embedBuilder(listEmbed)] });
 }
 
 function help() {
@@ -372,8 +318,7 @@ function validateParams(mode, params, cmd) {
 	else if (mode === 'edit') {
 		//If editing a point
 		if (isNaN(params[1])) { //Check if not a number for second param
-			return cmd.msg.reply({ content: 'I cant edit a nonexistent point!' })
-				.then(sent => sent.delete({ timeout: 10000 }));
+			return cmd.reply('I cant edit a nonexistent point!', 10);
 		}
 
 		if (!params[2]) { //If no edit was found
@@ -386,12 +331,10 @@ function validateParams(mode, params, cmd) {
 	else if (mode === 'delete' || mode === 'toggle') {
 		//If deleting a point
 		if (isNaN(params[1])) {
-			return cmd.msg.reply({ content: 'The point number must be a number!' })
-				.then(sent => sent.delete({ timeout: 10000 }));
+			return cmd.reply('The point number must be a number!', 10);
 		}
 		else if(!params[1]) {
-			return cmd.msg.reply({ content: 'Theres a disconnect here. Like, you didnt even throw me a bone on this one. Give me a point number.' })
-				.then(sent => sent.delete({ timeout: 10000 }));
+			return cmd.reply('Theres a disconnect here. Like, you didnt even throw me a bone on this one. Give me a point number.', 10);
 		}
 
 		pointNum = parseInt(params[1]);
@@ -419,4 +362,29 @@ function getTitle(docketPoint) {
 
 function genPointID() {
 	return Math.floor(Math.random() * (999 - 100) + 100);
+}
+
+async function getDocketPoint(fishsticks, cmd) {
+	const editVerify = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'selectAll', { pointID: pointNum });
+
+	//Validate
+	if (!editVerify) {
+		return cmd.reply('Couldnt find that docket point. Check the listings to make sure its there?', 10);
+	}
+
+	return editVerify;
+}
+
+async function getDocketPointValidate(fishsticks, cmd) {
+	const dtPoint = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'select', { pointID: pointNum });
+
+	//Validate
+	if (!dtPoint) {
+		return cmd.reply('Couldnt find that docket point. Check the listings to make sure its there?', 10);
+	}
+	else if (dtPoint.pointID !== pointNum) {
+		return cmd.reply('Couldnt find that docket point. Check the listings to make sure its there?', 10);
+	}
+
+	return dtPoint;
 }

@@ -66,8 +66,6 @@ async function startUp(Fishsticks) {
 	//Sync FSO Status
 	const statusPreUpdate = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 });
 
-	console.log(statusPreUpdate);
-
 	Fishsticks.session = ++statusPreUpdate.Session;
 	Fishsticks.lastSystemStart = convertMsFull(statusPreUpdate.StartupTime - timeNow);
 
@@ -109,8 +107,8 @@ async function startUp(Fishsticks) {
 			footer: 'Sequence initiated at ' + systemTimestamp(timestamp),
 			fields: [
 				{
-					title: 'Last startup time',
-					description: statusPreUpdate.StartupTime,
+					name: 'Last startup time',
+					value: statusPreUpdate.StartupTime,
 					inline: true
 				}
 			]
@@ -132,13 +130,13 @@ async function startUp(Fishsticks) {
 			footer: 'Sequence initiated at ' + systemTimestamp(timestamp),
 			fields: [
 				{
-					title: 'Last startup time',
-					description: statusPreUpdate.StartupTime,
+					name: 'Last startup time',
+					value: statusPreUpdate.StartupTime,
 					inline: true
 				},
 				{
-					title: 'Time since last startup',
-					description: convertMsFull(statusPreUpdate.StartupUTC - timeNow),
+					name: 'Time since last startup',
+					value: convertMsFull(statusPreUpdate.StartupUTC - timeNow),
 					inline: true
 				}
 			]

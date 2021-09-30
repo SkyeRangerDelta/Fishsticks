@@ -18,7 +18,7 @@ module.exports = {
 };
 
 async function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
+	cmd.msg.delete();
 
     //Command breakup
     /*
@@ -46,8 +46,7 @@ async function run(fishsticks, cmd) {
 
 	//Parse book/bookNum
 	if (!cmd.content[0]) {
-		return cmd.msg.reply({ content: 'This only works when you specify all the parameters. Start with specifying a book.' })
-			.then(sent => sent.delete({ timeout: 10000 }));
+		return cmd.reply('This only works when you specify all the parameters. Start with specifying a book.', 10);
 	}
 	else if (isNaN(cmd.content[0])) {
 		//Not a numerical book
@@ -63,8 +62,7 @@ async function run(fishsticks, cmd) {
 	//Parse everything else
 	if (params.bookFirst) {
 		if (!cmd.content[1]) {
-			return cmd.msg.reply({ content: 'Gonna need a bit more than that, whats the chapter and verse(s) then?' })
-				.then(sent => sent.delete({ timeout: 10000 }));
+			return cmd.reply('Gonna need a bit more than that, whats the chapter and verse(s) then?', 10);
 		}
 
 		//Breakup chapter and verse (3:11-16)
@@ -77,16 +75,14 @@ async function run(fishsticks, cmd) {
 			console.log('ChBreakup: ' + chBreakup);
 
 			if (isNaN(chBreakup[0])) {
-				return cmd.msg.reply({ content: 'Hey, hey, hey, thats not a chapter number. Cmon.' })
-					.then(sent => sent.delete({ timeout: 10000 }));
+				return cmd.reply('Hey, hey, hey, thats not a chapter number. Cmon.', 10);
 			}
 			else {
 				params.chapter = chBreakup[0];
 			}
 
 			if (!chBreakup[1] || isNaN(chBreakup[1])) {
-				return cmd.msg.reply({ content: 'That wasnt a verse number. I dont know what that was.' })
-					.then(sent => sent.delete({ timeout: 10000 }));
+				return cmd.reply('That wasnt a verse number. I dont know what that was.', 10);
 			}
 			else {
 				params.verse = chBreakup[1];
@@ -94,8 +90,7 @@ async function run(fishsticks, cmd) {
 		}
 		else {
 			//Just the chapter?
-			return cmd.msg.reply({ content: 'Nope, give me a verse. Not gonna post a whole chapter.' })
-				.then(sent => sent.delete({ timeout: 10000 }));
+			return cmd.reply('Nope, give me a verse. Not gonna post a whole chapter.', 10);
 		}
 
 		if (cmd.content[2] && !isNaN(cmd.content[2])) {
@@ -107,8 +102,7 @@ async function run(fishsticks, cmd) {
 	else {
 		//Book is numerical (2 Samuel)
 		if (!cmd.content[2]) {
-			return cmd.msg.reply({ content: 'Gonna need a bit more than that, whats the chapter and verse(s) then?' })
-				.then(sent => sent.delete({ timeout: 10000 }));
+			return cmd.reply('Gonna need a bit more than that, whats the chapter and verse(s) then?', 10);
 		}
 
 		//Breakup chapter and verse (3:11-16)
@@ -122,7 +116,10 @@ async function run(fishsticks, cmd) {
 
 			if (isNaN(chBreakup[0])) {
 				return cmd.msg.reply({ content: 'Hey, hey, hey, thats not a chapter number. Cmon.' })
-					.then(sent => sent.delete({ timeout: 10000 }));
+					.then(sent => {
+						sent.delete({ timeout: 10000 });
+						setTimeout(() => cmd.msg.delete(), 10000);
+					});
 			}
 			else {
 				params.chapter = chBreakup[0];
@@ -130,7 +127,10 @@ async function run(fishsticks, cmd) {
 
 			if (!chBreakup[1] || isNaN(chBreakup[1])) {
 				return cmd.msg.reply({ content: 'That wasnt a verse number. I dont know what that was.' })
-					.then(sent => sent.delete({ timeout: 10000 }));
+					.then(sent => {
+						sent.delete({ timeout: 10000 });
+						setTimeout(() => cmd.msg.delete(), 10000);
+					});
 			}
 			else {
 				params.verse = chBreakup[1];
@@ -139,7 +139,10 @@ async function run(fishsticks, cmd) {
 		else {
 			//Just the chapter?
 			return cmd.msg.reply({ content: 'Nope, give me a verse. Not gonna post a whole chapter.' })
-				.then(sent => sent.delete({ timeout: 10000 }));
+				.then(sent => {
+					sent.delete({ timeout: 10000 });
+					setTimeout(() => cmd.msg.delete(), 10000);
+				});
 		}
 
 		if (cmd.content[3] && !isNaN(cmd.content[3])) {
@@ -148,14 +151,17 @@ async function run(fishsticks, cmd) {
 		}
 	}
 
-    await buildPayload(params, cmd.msg);
+    await buildPayload(params, cmd);
 }
 
 //Construct a payload to be shipped off
-async function buildPayload(paramObj, msg) {
+async function buildPayload(paramObj, cmd) {
 
-    console.log('Attempting to build a payload request with the following information:\nParams:');
-    console.log(paramObj);
+	const msg = cmd.msg;
+
+	//docker run -di -p 30000:30003/udp --restart unless-stopped -v $PWD/gamedir:/home/user/Steam bitr/empyrion-server
+
+    console.log('Attempting to build a payload request.');
 
     const API_URL = 'https://api.esv.org/v3/passage/text/';
 
@@ -206,18 +212,17 @@ async function buildPayload(paramObj, msg) {
 
             const received = JSON.parse(content);
             if (received.passages[0].length > 2048) {
-                return msg.reply({ content: 'The passage is too large! Try breaking it into smaller verses.' })
-					.then(sent => sent.delete({ timeout: 10000 }));
+                return cmd.reply('The passage is too large! Try breaking it into smaller verses.', 15);
             }
 
             const verseEmbed = {
 				title: 'o0o - Bible (ESV) - o0o',
 				color: primary,
-				description: received.passages,
+				description: received.passages.toString(),
 				footer: 'ESV Bible provided by Crossway Publishers; licensed to Fishsticks.'
 			};
 
-            msg.channel.send({ embeds: [embedBuilder(verseEmbed)] });
+            cmd.channel.send({ embeds: [embedBuilder(verseEmbed)] });
         });
     });
 }

@@ -23,8 +23,8 @@ function handleNewJoin(fishsticks, newJoin) {
 		footer: `${newJoin.nickname} joined at ${systemTimestamp}.`,
 		fields: [
 			{
-				title: `Welcome to the official CC Discord, ${newJoin.nickname}!`,
-				description: 'Stick around for some Fish!'
+				name: `Welcome to the official CC Discord, ${newJoin.nickname}!`,
+				value: 'Stick around for some Fish!'
 			}
 		]
 	};

@@ -24,7 +24,7 @@ async function run(fishsticks, cmd) {
 
     //Syntax: !purge <@user> <number>
 
-    const targetChannel = cmd.msg.channel;
+    const targetChannel = cmd.channel;
     let count = 0;
 
     if (!cmd.msg.mentions.users.first()) {

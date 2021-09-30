@@ -1,5 +1,5 @@
 // ---- Passive: Ni ----
 
 exports.run = (fishsticks, cmd) => {
-    cmd.msg.channel.send('We are the knights who say....NI!', { files: ['./Images/ni.gif'] });
+    cmd.channel.send('We are the knights who say....NI!', { files: ['./Images/ni.gif'] });
 };

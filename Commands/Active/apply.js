@@ -15,9 +15,10 @@ module.exports = {
 
 //Functions
 function run(fishsticks, cmd) {
+	cmd.msg.delete();
 
 	//Not done
-	return cmd.msg.reply({ content: 'This command aint done just yet. You can still apply for membership via this link: https://bit.ly/CCMemberApp' });
+	return cmd.reply('This command aint done just yet. You can still apply for membership via this link: https://bit.ly/CCMemberApp');
 
 	//Dispatch introduction embed
 	const introPanel = {

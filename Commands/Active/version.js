@@ -2,7 +2,7 @@
 
 //Imports
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
-const config = require('../../Modules/Core/Core_sys.json');
+const config = require('../../Modules/Core/Core_config.json');
 const packageVer = require('../../package.json').version;
 
 //Exports
@@ -18,26 +18,26 @@ function run(fishsticks, cmd) {
 	const versionPanel = {
 		title: 'o0o - Fishsticks Version/About - o0o',
 		description: 'This contains general info about Fishsticks.',
-		color: config.color,
+		color: config.colors.primary,
 		footer: `Panel was summoned by ${cmd.msg.author.username}. This message will delete itself in 30 seconds.`,
 		timeout: 30000,
 		fields: [
 			{
-				title: 'Version: ',
-				description: packageVer
+				name: 'Version: ',
+				value: packageVer
 			},
 			{
-				title: 'Current Status: ',
-				description: 'Blah',
+				name: 'Current Status: ',
+				value: 'Blah',
 			},
 			{
-				title: 'Fishsticks GitHub Repository',
-				description: '[Official Fishsticks Repo](https://github.com/SkyeRangerDelta/Fishsticks)'
+				name: 'Fishsticks GitHub Repository',
+				value: '[Official Fishsticks Repo](https://github.com/SkyeRangerDelta/Fishsticks)'
 			}
 		]
 	};
 
-    cmd.msg.channel.send({ embeds: [embedBuilder(versionPanel)] }).then(sent => sent.delete({ timeout: 30000 }));
+    cmd.channel.send({ embeds: [embedBuilder(versionPanel)] }).then(sent => sent.delete({ timeout: 30000 }));
 }
 
 function help() {

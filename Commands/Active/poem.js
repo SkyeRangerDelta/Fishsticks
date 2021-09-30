@@ -20,15 +20,19 @@ const API_URL = 'https://poetrydb.org/';
 
 //Functions
 async function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
+    cmd.msg.reply('This may take a moment.').then(async sent => {
+        if (cmd.content[0] === 'random') {
+            const poemToSend = await buildPoem();
+            cmd.channel.send({ embeds: [poemToSend] });
+        }
+        else {
+            cmd.reply('Nothing here yet. Be on your way.', 10);
+        }
 
-    if (cmd.content[0] == 'random') {
-        const poemToSend = await buildPoem();
-        return cmd.msg.channel.send({ embeds: [poemToSend] });
-    }
 
-    return cmd.msg.reply({ content: 'Nothing here yet. Be on your way.' })
-        .then(sent => sent.delete({ timeout: 10000 }));
+        cmd.msg.delete();
+        sent.delete();
+    });
 }
 
 async function fetchDailyPoem() {
@@ -71,7 +75,7 @@ async function buildPoem() {
     while (poemTxt.length >= maxSize && limit < 11);
 
 	const poemEmbed = {
-		title: `[From the Fishsticks Poetry Archive] ${poemObj[0].title}`,
+		title: `[From the Fishsticks Poetry Archive] ${poemObj[0].title} - Provided by PoetryDB`,
 		description: poemTxt,
         footer: `${poemObj[0].title} by ${poemObj[0].author}`,
         noThumbnail: true

@@ -86,7 +86,7 @@ Fishsticks.on('messageCreate', async (msg) => {
 
 //Voice Channel Change
 Fishsticks.on('voiceStateUpdate', (prevMemberState, newMemberState) => {
-	log('info', `[CLIENT] [VC STATE] ${prevMemberState.channelID} : ${newMemberState.channelID}`);
+	log('info', `[CLIENT] [VC STATE] ${prevMemberState.id} : ${newMemberState.id}`);
 
 	//Trigger tempch check
 	if (prevMemberState.channelID != null) {

@@ -14,12 +14,12 @@ module.exports = {
 };
 
 async function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
+    cmd.msg.delete();
 
-    annChannel = fishsticks.channels.cache.get(announcements);
+    annChannel = await fishsticks.channels.cache.get(announcements);
 
-    if (!hasPerms(cmd.msg.author, ['Event Coordinator', 'Staff'])) {
-        return cmd.msg.reply({ content: 'Hey, hey there; not so fast. You need permissions to run that command.' });
+    if (!hasPerms(cmd.msg.member, ['Event Coordinator', 'Staff'])) {
+        return cmd.reply('Hey, hey there; not so fast. You need permissions to run that command.', 15);
     }
 
     //Syntax: !echo <waitTimeInMinutes> [pingType] [messageToSend]
@@ -29,41 +29,48 @@ async function run(fishsticks, cmd) {
 
     //Accepted ping types: e, everyone, h, here, game role, game name
 
-    if (!cmd[0] || cmd[0] == null || cmd[0] == undefined) {
-        cmd.msg.reply({ content: 'Why do I waste my time here. You cant dispatch an announcement with nothing in the message.' })
-            .then(sent => sent.delete({ timeout: 10000 }));
+    if (!cmd.content[0]) {
+        cmd.reply('Why do I waste my time here. You cant dispatch an announcement with nothing in the message.', 10);
     }
 
-    if ((typeof cmd[0] != typeof 0) || isNaN(cmd[0])) {
+    if ((typeof cmd.content[0] != typeof 0) || isNaN(cmd.content[0])) {
         //First param is not a number, check ping type or message
 
-        switch (cmd[0]) {
+        switch (cmd.content[0]) {
             case 'e':
             case 'everyone':
-                setTimeout(dispatchMsg, 0, '@everyone ' + cmd[1]);
+                setTimeout(dispatchMsg, 0, '@everyone ' + cmd.content[1]);
                 break;
             case 'h':
             case 'here':
-                setTimeout(dispatchMsg, 0, '@here ' + cmd[1]);
+                setTimeout(dispatchMsg, 0, '@here ' + cmd.content[1]);
+                break;
+            case 'n':
+            case 'none':
+                setTimeout(dispatchMsg, 0, cmd.content[1]);
                 break;
             default:
-                setTimeout(dispatchMsg, 0, getRolePing + cmd[1]);
+                setTimeout(dispatchMsg, 0, getRolePing + cmd.content[1]);
         }
     }
     else {
-        const waitTime = (cmd[0] * 60) * 1000;
+        const waitTime = (cmd.content[0] * 60) * 1000;
 
-        switch (cmd[1]) {
+        switch (cmd.content[1]) {
             case 'e':
             case 'everyone':
-                setTimeout(dispatchMsg, waitTime, '@everyone ' + cmd[2]);
+                setTimeout(dispatchMsg, waitTime, '@everyone ' + cmd.content[2]);
                 break;
             case 'h':
             case 'here':
-                setTimeout(dispatchMsg, waitTime, '@here ' + cmd[2]);
+                setTimeout(dispatchMsg, waitTime, '@here ' + cmd.content[2]);
+                break;
+            case 'n':
+            case 'none':
+                setTimeout(dispatchMsg, waitTime, cmd.content[2]);
                 break;
             default:
-                setTimeout(dispatchMsg, waitTime, getRolePing + cmd[2]);
+                setTimeout(dispatchMsg, waitTime, getRolePing + cmd.content[2]);
         }
     }
 }
@@ -73,7 +80,7 @@ function help() {
 }
 
 function dispatchMsg(msg) {
-    annChannel.send(msg);
+    annChannel.send({ content: msg });
 }
 
 async function getRolePing(fishsticks, query) {

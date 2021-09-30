@@ -19,13 +19,11 @@ async function run(fishsticks, cmd) {
 
 	if (hasPerms(cmd.msg.member, ['Creative'])) {
 		cmd.msg.member.roles.remove(creativeRole, 'Toggled by command.');
-		cmd.msg.reply({ content: 'Removed.' })
-			.then(sent => sent.delete({ timeout: 10000 }));
+		cmd.reply('Removed.', 10);
 	}
 	else {
 		cmd.msg.member.roles.add(creativeRole, 'Toggled by command.');
-		cmd.msg.reply({ content: 'Assigned.' })
-			.then(sent => sent.delete({ timeout: 10000 }));
+		cmd.reply('Assigned.', 10);
 	}
 }
 

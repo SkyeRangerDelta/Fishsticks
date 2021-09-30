@@ -11,8 +11,8 @@ module.exports = {
 };
 
 //Functions
-function run(fishsticks, cmd) {
-	listRoles(fishsticks, cmd);
+async function run(fishsticks, cmd) {
+	await listRoles(fishsticks, cmd);
 }
 
 function help() {

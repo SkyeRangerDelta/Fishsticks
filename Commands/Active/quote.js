@@ -4,7 +4,8 @@
 //Exports
 module.exports = {
 	run,
-	processReaction
+	processReaction,
+	help
 };
 
 //Imports
@@ -41,7 +42,7 @@ async function run(fishsticks, cmd) {
 	}
 	else if (cmd.msg.reference.channelID === cmd.channel.id) {
 		//Message is referencing
-		const quoteMsgObj = await cmd.msg.channel.messages.fetch(cmd.msg.reference.messageID);
+		const quoteMsgObj = await cmd.channel.messages.fetch(cmd.msg.reference.messageID);
 
 		const quoteMsg = quoteMsgObj.content;
 
@@ -86,10 +87,14 @@ async function processReaction(data) {
 async function confirmQuoteAddition(fishsticks, cmd, data) {
 	const quoteMsg = data;
 
-	cmd.msg.channel.send('Are you sure you want to quote this?\n`' + quoteMsg + '`').then(sent => {
+	cmd.channel.send('Are you sure you want to quote this?\n`' + quoteMsg + '`').then(sent => {
 		sent.react('✅');
 		sent.react('❌');
 
 		fso_query(fishsticks.FSO_CONNECTION, 'Fs_QuoteRef', 'insert', { id: sent.id, quote: quoteMsg });
 	});
+}
+
+function help() {
+	return 'Does quote things!';
 }

@@ -12,22 +12,30 @@ module.exports = {
 
 //Functions
 function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
+    cmd.msg.delete();
 
     const ips = {
 		title: 'o0o - THE FISH SERVERS - o0o',
 		description: 'CCG recognized servers and their IPS.',
 		fields: [
 			{
-				title: 'Official CC Servers',
-				description: 'ARK: Survival Evolved (Admin: Nils Sargon): `158.69.13.88:51226` -Request password -\n' +
-							'Terraria (Admin: Winged Scribe): `tr.pldyn.net:41213` -Request password -\n' +
-							'Minecraft (Admin: SkyeRangerDelta): `ccgmc.pldyn.net` -Requires Whitelisting-'
+				name: 'ARK: Survival Evolved (Admin: Nils Sargon)',
+				value: 'Socket: `158.69.13.88:51226` - Request password'
+			},
+			{
+				name: 'Terraria (Admin: Winged Scribe)',
+				value: 'Socket: `tr.pldyn.net:41213` - Request password'
+			},
+			{
+				name: 'Minecraft (Admin: Minecraft Ops)',
+				value: 'Socket: `ccgmc.pldyn.net` - Requires whitelisting'
 			}
-		]
+		],
+		footer: 'If any IPs are bad, or missing - let a staff member know.',
+		noThumbnail: true
 	};
 
-    cmd.msg.channel.send({ embeds: [embedBuilder(ips)] }).then(sent => sent.delete({ timeout: 30000 }));
+    cmd.channel.send({ embeds: [embedBuilder(ips)] });
 }
 
 function help() {

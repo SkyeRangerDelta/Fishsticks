@@ -15,6 +15,7 @@ const { fso_query } = require('../FSO/FSO_Utils');
 const { processReaction } = require('../../Commands/Active/quote');
 
 const urlscan = require('urlscan-api');
+const { handleAddedReaction } = require('../../Commands/Active/poll');
 
 //Exports
 module.exports = {
@@ -35,6 +36,14 @@ function generateErrorMsg() {
 async function validateReaction(fishsticks, addedReaction, reactor) {
 	//Sort through all known ID checks and find which one is in question
 
+	//Check for poll response
+	const polls = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Polls', 'selectAll');
+	for (const id in polls) {
+		if (addedReaction.message.id === polls[id].id) {
+			return handleAddedReaction(fishsticks, addedReaction, reactor);
+		}
+	}
+
 	//Check CCG Membership Apps
 	for (const ID in fishsticks.appMsgIDs) {
 		if (addedReaction.message.id === fishsticks.appMsgIDs[ID]) {
@@ -51,8 +60,7 @@ async function validateReaction(fishsticks, addedReaction, reactor) {
 	}
 
 	//Check for Quote Queries
-	const quoteRef = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_QuoteRef', 'selectAll');
-	const quoteIDs = await quoteRef.toArray();
+	const quoteIDs = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_QuoteRef', 'selectAll');
 
 	for (const quoteID in quoteIDs) {
 		if (addedReaction.message.id === quoteIDs[quoteID].id) {

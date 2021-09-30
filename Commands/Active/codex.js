@@ -12,22 +12,25 @@ module.exports = {
 
 //Functions
 function run(fishsticks, cmd) {
-	cmd.msg.delete({ timeout: 0 });
+	cmd.msg.delete();
 
-	const cmdList = fs.readdirSync('./').filter(dirItem => dirItem.endsWith('.js'));
+	const cmdList = fs.readdirSync('./Commands/Active').filter(dirItem => dirItem.endsWith('.js'));
 
 	log('info', '[CODEX] Attempting to find command.');
 
     for (const file in cmdList) {
 		const fileID = cmdList[file].substring(0, cmdList[file].length - 3);
-		if (fileID.toLowerCase() == cmd.content[0]) {
-			const helpEntry = require(`./${fileID}`).codex;
-			return cmd.msg.channel.send(helpEntry + '\nThat entry can be found here: https://wiki.pldyn.net/fishsticks/command-listing#${entry}')
-			.then(sent => sent.delete({ timeout: 15000 }));
+		if (fileID.toLowerCase() === cmd.content[0]) {
+			const helpFile = require(`./${fileID}`);
+			const helpEntry = helpFile.help();
+			return cmd.channel.send(helpEntry + `\nThat entry can be found here: https://wiki.pldyn.net/fishsticks/command-listing#${fileID}`)
+			.then(sent => {
+				setTimeout(() => sent.delete(), 25000);
+			});
 		}
 	}
 
-	cmd.msg.channel.send('What, are you looking for something? Thats not a command youre looking for.').then(sent => sent.delete(10000));
+	cmd.reply('There is no such command.', 10);
 }
 
 function help() {

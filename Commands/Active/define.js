@@ -36,7 +36,7 @@ async function run(fishticks, cmd) {
     for (const defItem in definitions) {
         if (defItem > 4) break;
 
-        if (defItem == 0) {
+        if (defItem === 0) {
             emDesc = emDesc.concat('**' + bullet + '. ' + definitions[defItem] + '**\n');
             bullet++;
         }
@@ -54,14 +54,15 @@ async function run(fishticks, cmd) {
     };
 
     //Send Response
-    cmd.msg.channel.send({ embeds: [embedBuilder(defEmbed)] });
+    cmd.channel.send({ embeds: [embedBuilder(defEmbed)] });
 }
 
 async function getDefinitions(word, dict, cmd) {
     //Process defs
     const lookup = await dict.definitions(word).catch(err => {
         if (err === 'No such entry found.') {
-            cmd.msg.channel.send('No definitions were found!').then(sent => sent.delete({ timeout: 10000 }));
+            cmd.channel.send('No definitions were found!')
+                .then(sent => setTimeout(() => sent.delete(), 10000));
         }
         log('warn', '[DICT] Error ' + err);
     });

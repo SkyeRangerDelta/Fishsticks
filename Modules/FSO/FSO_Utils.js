@@ -68,8 +68,6 @@ async function fso_query(connection, table, key, value, filter) {
 			return await database.collection(table).replaceOne(filter, value);
 		case 'insert':
 			return database.collection(table).insertOne(value);
-		case 'filter':
-			return database.collection(table).find(value);
 		case 'table':
 			return database.collection(table);
 		case 'delete':

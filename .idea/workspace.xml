@@ -2,12 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="268f6f2d-76f4-4d2e-9c55-dc815a6dd08b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Commands/Active/rules.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/afk.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/afk.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/apply.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/apply.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/baconmode.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/baconmode.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/bible.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/bible.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/channels.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/channels.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/codex.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/codex.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/creative.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/creative.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/define.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/define.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/dice.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/dice.js" afterDir="false" />
@@ -17,28 +19,45 @@
       <change beforePath="$PROJECT_DIR$/Commands/Active/help.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/help.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/ips.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/ips.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/links.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/links.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/mutilate.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/mutilate.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/poem.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/poem.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/poll.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/poll.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/purge.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/purge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/remindme.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/remindme.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/quote.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/quote.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/role.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/role.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/scanurl.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/scanurl.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/roles.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/roles.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/status.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/status.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/strike.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/strike.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/suggest.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/suggest.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/summon.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/summon.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/tempch.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/tempch.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/tempname.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/tempname.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/version.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/version.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/vouch.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/vouch.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/break.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/break.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/got.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/got.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Passive/ive.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/ive.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/42.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/42.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/amen.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/amen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/clearance.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/clearance.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/engage.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/engage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/eyup.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/eyup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/fire.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/fire.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/fishsticks.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/fishsticks.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/frodo.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/frodo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/gasp.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/gasp.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/grenade.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/grenade.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/hello.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/hello.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/hi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/hi.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/inconceivable.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/inconceivable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/inquisition.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/inquisition.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/lemons.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/lemons.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/ni.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/ni.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/nod.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/nod.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/schwartz.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/schwartz.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/sdu.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/sdu.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/surely.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/surely.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Passive/troll.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Passive/troll.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Message.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Message.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_NewJoin.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_NewJoin.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_EmbedBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_EmbedBuilder.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_User.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_User.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/XP/XP_Core.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/XP/XP_Core.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fishsticks.js" beforeDir="false" afterPath="$PROJECT_DIR$/fishsticks.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,8 +65,23 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="ProjectId" id="1yKqONZfTTsIM3V3llyZ2osQwvd" />
   <component name="ProjectViewState">
@@ -66,6 +100,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.standard" value="" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="settings.javascript.linters.eslint" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -80,6 +115,10 @@
       <workItem from="1632010597842" duration="147000" />
       <workItem from="1632010758033" duration="1448000" />
       <workItem from="1632251760083" duration="12132000" />
+      <workItem from="1632349583536" duration="4695000" />
+      <workItem from="1632442076632" duration="4552000" />
+      <workItem from="1632510534132" duration="17397000" />
+      <workItem from="1632763819751" duration="17932000" />
     </task>
     <servers />
   </component>

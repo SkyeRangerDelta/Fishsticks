@@ -41,13 +41,8 @@ function embedBuilder(embed) {
 	}
 
 	//Set fields
-	const embedFields = [];
 	if (embed.fields) {
-		constructedEmbed.setFields(embedFields);
-	}
-
-	for (const field in embed.fields) {
-		embedFields.push(embed.fields[field]);
+		constructedEmbed.setFields(embed.fields);
 	}
 
 	return constructedEmbed;

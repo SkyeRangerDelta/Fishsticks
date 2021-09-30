@@ -260,7 +260,7 @@ async function joinRole(fishsticks, cmd) {
 
             fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', roleUpdate, { id: cmd.msg.author.id }).then(done => {
                 if (done.modifiedCount == 1) {
-                    cmd.msg.channel.send(`${cmd.msg.member} has joined ${roleY}!`);
+                    cmd.channel.send(`${cmd.msg.member} has joined ${roleY}!`);
                 }
                 else {
                     cmd.msg.reply({ content: 'Something is...incorrect. Have someone check your roles.' });
@@ -301,7 +301,7 @@ async function leaveRole(fishsticks, cmd) {
             fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', roleUpdate)
                 .then(done => {
                 if (done.modifiedCount == 1) {
-                    cmd.msg.channel.send('Role removed.').then(sent => sent.delete({ timeout: 10000 }));
+                    cmd.channel.send('Role removed.').then(sent => sent.delete({ timeout: 10000 }));
                 }
                 else {
                     cmd.msg.reply({ content: 'Something is...incorrect. Have someone check your roles.' });
@@ -361,9 +361,9 @@ async function listRoles(fishsticks, cmd, ext) {
         delete: 45000
     };
 
-    cmd.msg.channel.send({ embeds: [embedBuilder(roleListEmbed)] }).then(sent => {
+    cmd.channel.send({ embeds: [embedBuilder(roleListEmbed)] }).then(sent => {
         sent.delete({ timeout: 45000 });
-        cmd.msg.channel.send({ embeds: [embedBuilder(inactiveListEmbed)] }).then(sent2 => sent2.delete({ timeout: 450000 }));
+        cmd.channel.send({ embeds: [embedBuilder(inactiveListEmbed)] }).then(sent2 => sent2.delete({ timeout: 450000 }));
     });
 }
 
@@ -416,56 +416,56 @@ async function aboutRole(fishsticks, cmd) {
         footer: `Footer summoned by ${cmd.msg.member.displayName}.`,
         fields: [
             {
-                title: 'Creator',
-                description: roleObj.creator,
+                name: 'Creator',
+                value: roleObj.creator,
                 inline: true
             },
             {
-                title: 'Game',
-                description: roleObj.game,
+                name: 'Game',
+                value: roleObj.game,
                 inline: true
             },
             {
-                title: 'Created On',
-                description: roleObj.createdFriendly,
+                name: 'Created On',
+                value: roleObj.createdFriendly,
                 inline: true
             },
             {
-                title: 'Active?',
-                description: roleObj.active,
+                name: 'Active?',
+                value: roleObj.active,
                 inline: true
             },
             activeField,
             {
-                title: 'Actitivity Factor',
-                description: roleObj.activityFactor,
+                name: 'Actitivity Factor',
+                value: roleObj.activityFactor,
                 inline: true
             },
             {
-                title: 'Timeout Date',
-                description: roleObj.timeoutFriendly,
+                name: 'Timeout Date',
+                value: roleObj.timeoutFriendly,
                 inline: true
             },
             {
-                title: 'Pings',
-                description: roleObj.pings,
+                name: 'Pings',
+                value: roleObj.pings,
                 inline: false
             },
             {
-                title: 'Founders',
-                description: foundersList,
+                name: 'Founders',
+                value: foundersList,
                 inline: true
             },
             {
-                title: 'Members',
-                description: membersList,
+                name: 'Members',
+                value: membersList,
                 inline: true
             }
         ],
         delete: 30000
     };
 
-    return cmd.msg.channel.send({ embeds: [embedBuilder(roleEmbed)] }).then(sent => sent.delete({ timeout: 30000 }));
+    return cmd.channel.send({ embeds: [embedBuilder(roleEmbed)] }).then(sent => sent.delete({ timeout: 30000 }));
 }
 
 //Activate the role
@@ -512,7 +512,7 @@ async function activateRole(fishsticks, cmd, obj) {
         for (const indexA in obj.founders) {
             const memberItem = await cmd.msg.guild.members.cache.get(obj.founders[indexA]);
             await memberItem.roles.add(newlyCreatedRole, '[ROLE-SYS] Role added automatically after having voted for it.');
-            cmd.msg.channel.send(`${memberItem.displayName} - you've been assigned ${obj.name} because you voted for it!`).then(sent => sent.delete({ timeout: 10000 }));
+            cmd.channel.send(`${memberItem.displayName} - you've been assigned ${obj.name} because you voted for it!`).then(sent => sent.delete({ timeout: 10000 }));
         }
     }
 }
