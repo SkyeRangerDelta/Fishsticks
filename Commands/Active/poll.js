@@ -164,8 +164,28 @@ function help() {
     return 'Allows you to post polls.';
 }
 
-async function handleAddedReaction(fishsticks, addedReaction, reactor) {
+async function handleAddedReaction(fishsticks, addedReaction, reactor, poll) {
     //Response was added to a poll
 
-    //Determine if unique
+    //Determine if respondent has already voted
+    for (const id in poll.respondents) {
+        if (reactor.id === poll.respondents[id]) {
+            addedReaction.remove(reactor.id); //Remove response
+            return addedReaction.channel.send(reactor + ', you cannot vote twice!')
+                .then(sent => setTimeout(() => sent.delete(), 10000));
+        }
+    }
+
+    const respondentUpdate = {
+        $set: {
+            respondents: poll.respondents.push(reactor.id)
+        }
+    };
+
+    //New respondent
+    const newResponderRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Polls', 'update', respondentUpdate, { id: poll.id });
+
+    if (newResponderRes.modifiedCount !== 1) {
+        return addedReaction.channel.send(fishsticks.RANGER + ' Something is WRONG!');
+    }
 }

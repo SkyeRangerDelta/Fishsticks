@@ -31,7 +31,15 @@ async function fso_status(connection) {
 	log('info', '[FSO] Querying FSO Status...');
 
 	const query = { id: 1 };
-	const database = connection.db('FishsticksOnline');
+	let database;
+
+	try {
+		database = connection.db('FishsticksOnline');
+	}
+	catch (fsoErr) {
+		log('err', '[FSO] FSO conduit is invalid! Connection aborted!');
+	}
+
 	const currentStatus = await database.collection('FSO_Status').findOne(query);
 
 	if (currentStatus.Online) {
@@ -54,7 +62,15 @@ async function fso_query(connection, table, key, value, filter) {
 		}
 	};
 
-	const database = connection.db('FishsticksOnline');
+	let database;
+
+	try {
+		database = connection.db('FishsticksOnline');
+	}
+	catch (fsoErr) {
+		log('err', '[FSO] FSO conduit is invalid! Connection aborted!');
+	}
+
 	await database.collection('FSO_Status').updateOne(filterDoc, updateDoc);
 
 	switch (key) {

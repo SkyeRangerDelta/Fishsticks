@@ -92,7 +92,8 @@ async function processMessage(Fishsticks, msg) {
                     acSuccess: ++memberFSORecord.acSuccess
                 }
             }, { id: msg.author.id });
-        } catch (activeCmdErr) {
+        }
+        catch (activeCmdErr) {
             //Fail here
             const upVal = {
                 $set: {
@@ -138,9 +139,11 @@ async function processMessage(Fishsticks, msg) {
         try {
             const passiveCmd = require(`../../Commands/Passive/${passiveID}.js`);
             passiveCmd.run(Fishsticks, cmd);
-        } catch (passiveCmdErr) {
+        }
+        catch (passiveCmdErr) {
             log('info', '[PASSIVE-CMD] Attempt failed.');
-        } finally {
+        }
+        finally {
             //Attempt possible unique messages
 
             //URL Scan Framework

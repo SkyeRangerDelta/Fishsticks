@@ -192,7 +192,7 @@ async function voteRole(fishsticks, cmd) {
     else {
 
         for (const memID in roleObj.founders) {
-            if (roleObj.founders[memID] == cmd.msg.author.id) {
+            if (roleObj.founders[memID] === cmd.msg.author.id) {
                 return cmd.msg.reply({ content: 'You already voted for this role! Get outta here!' }).then(sent => sent.delete({ timeout: 10000 }));
             }
         }
@@ -216,13 +216,13 @@ async function voteRole(fishsticks, cmd) {
 
         updateObj.founders.push(cmd.msg.author.id);
 
-        if (updateObj.votes == 5) {
-            activateRole(fishsticks, cmd, updateObj);
+        if (updateObj.votes === 5) {
+            await activateRole(fishsticks, cmd, updateObj);
         }
         else {
             const updateRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_Roles', 'update', updateObj);
 
-            if (updateRes.modifiedCount != 1) {
+            if (updateRes.modifiedCount !== 1) {
                 throw 'Role update in FSO failed!';
             }
             else {

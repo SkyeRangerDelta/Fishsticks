@@ -38,6 +38,11 @@ async function startUp(Fishsticks) {
 	const timestamp = new Date();
 	const timeNow = Date.now();
 
+	//Init Objs
+	Fishsticks.CONSOLE = await Fishsticks.channels.cache.get(fs_console);
+	Fishsticks.CCG = await Fishsticks.guilds.fetch(guild_CCG);
+	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch(ranger);
+
 	//Console confirmation
 	log('proc', '[CLIENT] Fishsticks is out of the oven.\n-------------------------------------------------------');
 
@@ -60,7 +65,14 @@ async function startUp(Fishsticks) {
 		*/
 	}
 	catch (error) {
-		log('err', '[FSO] Something has gone wrong in the startup routine.\n' + error);
+		if (error.contains('MongoServerSelectionError')) {
+			console.log(typeof error);
+			log('err', '[FSO] [FATAL] FSO could not be reached!.\n' + error);
+			return Fishsticks.CONSOLE.send(Fishsticks.RANGER + ', FSO connection failed, check the server and subroutine config.');
+		}
+		else {
+			log('err', '[FSO] Something has gone wrong in the startup routine.\n' + error);
+		}
 	}
 
 	//Sync FSO Status
@@ -89,11 +101,6 @@ async function startUp(Fishsticks) {
 	else {
 		log ('info', '[FSO] Status table update done.');
 	}
-
-	//Init Objs
-	Fishsticks.CONSOLE = Fishsticks.channels.cache.get(fs_console);
-	Fishsticks.CCG = await Fishsticks.guilds.fetch(guild_CCG);
-	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch(ranger);
 
 
 	//Dispatch Startup Message

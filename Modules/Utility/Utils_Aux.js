@@ -40,7 +40,7 @@ async function validateReaction(fishsticks, addedReaction, reactor) {
 	const polls = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Polls', 'selectAll');
 	for (const id in polls) {
 		if (addedReaction.message.id === polls[id].id) {
-			return handleAddedReaction(fishsticks, addedReaction, reactor);
+			return handleAddedReaction(fishsticks, addedReaction, reactor, polls[id]);
 		}
 	}
 
