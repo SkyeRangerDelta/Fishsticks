@@ -11,6 +11,7 @@ const { embedBuilder } = require('../Utility/Utils_EmbedBuilder');
 
 const { guild_CCG, fs_console, ranger } = require('./Core_ids.json');
 const { version } = require('../../package.json');
+const { terminate } = require('../Utility/Utils_Aux');
 const { primary, emergency } = require('./Core_config.json').colors;
 
 //Exports
@@ -39,8 +40,8 @@ async function startUp(Fishsticks) {
 	const timeNow = Date.now();
 
 	//Init Objs
-	Fishsticks.CONSOLE = await Fishsticks.channels.cache.get(fs_console);
 	Fishsticks.CCG = await Fishsticks.guilds.fetch(guild_CCG);
+	Fishsticks.CONSOLE = await Fishsticks.channels.cache.get(fs_console);
 	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch(ranger);
 
 	//Console confirmation
@@ -65,10 +66,10 @@ async function startUp(Fishsticks) {
 		*/
 	}
 	catch (error) {
-		if (error.contains('MongoServerSelectionError')) {
-			console.log(typeof error);
+		if (error.name === 'MongoServerSelectionError') {
 			log('err', '[FSO] [FATAL] FSO could not be reached!.\n' + error);
-			return Fishsticks.CONSOLE.send(Fishsticks.RANGER + ', FSO connection failed, check the server and subroutine config.');
+			await Fishsticks.CONSOLE.send(`${Fishsticks.RANGER}, FSO connection failed, check the server and subroutine config.`);
+			return terminate(Fishsticks);
 		}
 		else {
 			log('err', '[FSO] Something has gone wrong in the startup routine.\n' + error);

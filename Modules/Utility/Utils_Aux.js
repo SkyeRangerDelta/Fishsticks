@@ -24,7 +24,8 @@ module.exports = {
 	doDailyPost,
 	validateURL,
 	toTitleCase,
-	handleDenMsg
+	handleDenMsg,
+	terminate
 };
 
 //Functions
@@ -211,4 +212,16 @@ async function handleDenMsg(msg) {
 		return msg.reply({ content: 'You need to agree to the den rules before posting here! Check your DMs!' })
 			.then(sent => sent.delete({ timeout: 10000 }));
 	}
+}
+
+async function terminate(fishsticks) {
+	if (fishsticks.FSO_CONNECTION) {
+		await fishsticks.FSO_CONNECTION.close();
+	}
+
+	if (fishsticks) {
+		await fishsticks.CONSOLE.send('[Auxiliary Override] Controller terminating.');
+		fishsticks.destroy();
+	}
+	process.exit(1);
 }

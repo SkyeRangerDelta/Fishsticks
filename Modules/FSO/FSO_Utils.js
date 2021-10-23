@@ -3,8 +3,9 @@
 //Imports
 const { MongoClient } = require('mongodb');
 
-const { fsoValidationException } = require('../Errors/fsoValidationException');
+//const { fsoValidationException } = require('../Errors/fsoValidationException');
 const { log } = require('../Utility/Utils_Log');
+const { terminate } = require('../Utility/Utils_Aux');
 
 const { uri } = require('./FSO_assets.json');
 
@@ -38,6 +39,7 @@ async function fso_status(connection) {
 	}
 	catch (fsoErr) {
 		log('err', '[FSO] FSO conduit is invalid! Connection aborted!');
+		return terminate();
 	}
 
 	const currentStatus = await database.collection('FSO_Status').findOne(query);
@@ -69,6 +71,7 @@ async function fso_query(connection, table, key, value, filter) {
 	}
 	catch (fsoErr) {
 		log('err', '[FSO] FSO conduit is invalid! Connection aborted!');
+		return terminate();
 	}
 
 	await database.collection('FSO_Status').updateOne(filterDoc, updateDoc);
