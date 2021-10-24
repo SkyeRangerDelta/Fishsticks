@@ -23,13 +23,14 @@ const schedule = require('node-schedule');
 const { startUp } = require('./Modules/Core/Core_Ready');
 const { log } = require('./Modules/Utility/Utils_Log');
 const { processMessage } = require('./Modules/Core/Core_Message');
-const { validateReaction, doDailyPost } = require('./Modules/Utility/Utils_Aux');
+const { validateAddedReaction, doDailyPost } = require('./Modules/Utility/Utils_Aux');
+const { handleButtonInteraction } = require('./Modules/Utility/Utils_Interactions');
+const { validateChannel } = require('./Commands/Active/tempch');
 const { handleNewJoin } = require('./Modules/Core/Core_NewJoin');
 const { handleOldMember } = require('./Modules/Core/Core_OldMember');
 
 //Configs
 const { token, intents } = require('./Modules/Core/Core_config.json');
-const { validateChannel } = require('./Commands/Active/tempch');
 
 //=============================================
 //				  GLOBALS
@@ -47,6 +48,7 @@ Fishsticks.lastSystemStart;
 Fishsticks.CCG;
 Fishsticks.RANGER;
 Fishsticks.CONSOLE;
+Fishsticks.pollCache = 0;
 Fishsticks.appMsgIDs = [];
 Fishsticks.debMsgIDs = [];
 Fishsticks.TESTMODE = false;
@@ -108,14 +110,24 @@ Fishsticks.on('guildMemberRemove', prevMember => {
 
 //Receive Message Reaction
 Fishsticks.on('messageReactionAdd', (addedReaction, reactor) => {
-	log('info', `[CLIENT] ${addedReaction.emoji} : ${reactor.username}`);
+	log('info', `[CLIENT] Reaction Add - ${addedReaction.emoji} : ${reactor.username}`);
 
-	validateReaction(Fishsticks, addedReaction, reactor);
+	validateAddedReaction(Fishsticks, addedReaction, reactor);
 });
 
 //Remove Message Reaction
 Fishsticks.on('messageReactionRemove', (removedReaction, reactor) => {
-	log('info', `[CLIENT] ${removedReaction.emoji} : ${reactor.username}`);
+	log('info', `[CLIENT] Reaction Remove - ${removedReaction.emoji} : ${reactor.username}`);
+});
+
+//Receive new interaction
+Fishsticks.on('interactionCreate', async interaction => {
+	log('info', `[CLIENT] New interaction created. ID: ${interaction.id}`);
+
+	//If button
+	if (interaction.isButton()) {
+		handleButtonInteraction(Fishsticks, interaction);
+	}
 });
 
 //Utility

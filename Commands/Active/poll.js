@@ -9,7 +9,8 @@ const { hasPerms } = require('../../Modules/Utility/Utils_User');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 
 //Variables
-const responseEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣', '🔟'];
+const responseEmojis = require('../../Modules/Library/emojiList');
+const { MessageButton, MessageActionRow } = require('discord.js');
 
 //Exports
 module.exports = {
@@ -63,7 +64,7 @@ async function run(fishsticks, cmd) {
         }
         else if (cmdPoll[1] != null) {
 
-            desc = desc + responseEmojis[0] + ' ' + cmdPoll[1] + '\n';
+            desc = desc + responseEmojis[1] + ' ' + cmdPoll[1] + '\n';
             opCount++;
 
             if (cmdPoll[2] == null) {
@@ -71,40 +72,20 @@ async function run(fishsticks, cmd) {
             }
             else if (cmdPoll[2] != null) {
 
-                desc = desc + responseEmojis[1] + ' ' + cmdPoll[2] + '\n';
+                desc = desc + responseEmojis[2] + ' ' + cmdPoll[2] + '\n';
                 opCount++;
 
                 if (cmdPoll[3] != null) {
-                    desc = desc + responseEmojis[2] + ' ' + cmdPoll[3] + '\n';
+                    desc = desc + responseEmojis[3] + ' ' + cmdPoll[3] + '\n';
                     opCount++;
 
                     if (cmdPoll[4] != null) {
-                        desc = desc + responseEmojis[3] + ' ' + cmdPoll[4] + '\n';
+                        desc = desc + responseEmojis[4] + ' ' + cmdPoll[4] + '\n';
                         opCount++;
 
                         if (cmdPoll[5] != null) {
-                            desc = desc + responseEmojis[4] + ' ' + cmdPoll[5] + '\n';
+                            desc = desc + responseEmojis[5] + ' ' + cmdPoll[5] + '\n';
                             opCount++;
-
-                            if (cmdPoll[6] != null) {
-                                desc = desc + responseEmojis[5] + ' ' + cmdPoll[6] + '\n';
-                                opCount++;
-
-                                if (cmdPoll[7] != null) {
-                                    desc = desc + responseEmojis[6] + ' ' + cmdPoll[7] + '\n';
-                                    opCount++;
-
-                                    if (cmdPoll[8] != null) {
-                                        desc = desc + responseEmojis[7] + ' ' + cmdPoll[8] + '\n';
-                                        opCount++;
-
-                                        if (cmdPoll[9] != null) {
-                                            desc = desc + responseEmojis[8] + ' ' + cmdPoll[9] + '\n';
-                                            opCount++;
-                                        }
-                                    }
-                                }
-                            }
                         }
                     }
                 }
@@ -124,20 +105,34 @@ async function run(fishsticks, cmd) {
 
     try {
         const pollToSend = await cmd.channel.send({ embeds: [pollQuestion] });
+        const resTypes = [];
 
-        for (let t = 0; t < opCount; t++) {
-            try {
-                await pollToSend.react(responseEmojis[t]);
-                log('info', '[POLL-SYS] Adding reaction: ' + responseEmojis[t]);
+        try {
+            const responseRow = new MessageActionRow()
+
+            for (let t = 1; t < opCount + 1; t++) {
+                responseRow.addComponents(
+                    new MessageButton()
+                        .setCustomId(`${t}`)
+                        .setStyle('PRIMARY')
+                        .setLabel(cmdPoll[t])
+                        .setEmoji(responseEmojis[t])
+                );
             }
-            catch (error) {
-                log('err', '[POLL-SYS] Some funk has occurred.\n' + error);
-            }
+
+            await pollToSend.reply({ content: 'Applicable answers:', components: [responseRow] });
+            //await pollToSend.react(responseEmojis[t]);
+            log('info', '[POLL-SYS] Adding reaction: ' + responseEmojis[t]);
+            resTypes.push(responseEmojis[t]);
+        }
+        catch (error) {
+            log('err', '[POLL-SYS] Some funk has occurred.\n' + error);
         }
 
         const newPoll = {
             id: pollToSend.id,
-            numOptions: opCount,
+            chId: cmd.channel.id,
+            responseTypes: resTypes,
             respondents: []
         };
 
@@ -148,6 +143,7 @@ async function run(fishsticks, cmd) {
         if (FSORes.acknowledged === true) {
             log('proc', '[POLL-SYS] A new poll has been posted and saved to FSO.');
             cmd.reply('Poll saved successfully.', 10);
+            fishsticks.pollCache += 1;
         }
         else {
             log('err', '[POLL-SYS] FSO poll insertion failed.');
@@ -165,20 +161,39 @@ function help() {
 }
 
 async function handleAddedReaction(fishsticks, addedReaction, reactor, poll) {
+    log('info', '[POLL] Incoming poll reaction.');
     //Response was added to a poll
+
+    //Check if the emoji added is legit
+    let invalid = true;
+    for (const emoji in poll.responseTypes) {
+        log('info', `[POLL] Comparing reaction ${addedReaction.emoji.toString()} to ${poll.responseTypes[emoji]}`);
+        if (addedReaction.emoji.toString() === poll.responseTypes[emoji]) {
+            invalid = false;
+        }
+    }
+
+    if (invalid) {
+        return addedReaction.message.channel.send(`${reactor}, that is not a valid response type.`)
+            .then(async sent => {
+                await addedReaction.users.remove(reactor.id);
+                setTimeout(() => sent.delete(), 5000);
+            });
+    }
 
     //Determine if respondent has already voted
     for (const id in poll.respondents) {
         if (reactor.id === poll.respondents[id]) {
-            addedReaction.remove(reactor.id); //Remove response
-            return addedReaction.channel.send(reactor + ', you cannot vote twice!')
-                .then(sent => setTimeout(() => sent.delete(), 10000));
+            await addedReaction.users.remove(reactor.id); //Remove response
+            return addedReaction.message.channel.send(`${reactor}, you can't vote twice!`)
+                .then(sent => setTimeout(() => sent.delete(), 5000));
         }
     }
 
+    poll.respondents.push(reactor.id);
     const respondentUpdate = {
         $set: {
-            respondents: poll.respondents.push(reactor.id)
+            respondents: poll.respondents
         }
     };
 

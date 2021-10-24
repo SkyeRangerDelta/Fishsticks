@@ -20,12 +20,11 @@ const { handleAddedReaction } = require('../../Commands/Active/poll');
 //Exports
 module.exports = {
 	generateErrorMsg,
-	validateReaction,
+	validateAddedReaction,
 	doDailyPost,
 	validateURL,
 	toTitleCase,
-	handleDenMsg,
-	terminate
+	handleDenMsg
 };
 
 //Functions
@@ -34,7 +33,7 @@ function generateErrorMsg() {
 	return '*' + errorMsgPool[msgNum] + '* ';
 }
 
-async function validateReaction(fishsticks, addedReaction, reactor) {
+async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 	//Sort through all known ID checks and find which one is in question
 
 	//Check for poll response
@@ -212,16 +211,4 @@ async function handleDenMsg(msg) {
 		return msg.reply({ content: 'You need to agree to the den rules before posting here! Check your DMs!' })
 			.then(sent => sent.delete({ timeout: 10000 }));
 	}
-}
-
-async function terminate(fishsticks) {
-	if (fishsticks.FSO_CONNECTION) {
-		await fishsticks.FSO_CONNECTION.close();
-	}
-
-	if (fishsticks) {
-		await fishsticks.CONSOLE.send('[Auxiliary Override] Controller terminating.');
-		fishsticks.destroy();
-	}
-	process.exit(1);
 }

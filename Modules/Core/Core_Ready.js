@@ -8,10 +8,10 @@ const { log } = require('../Utility/Utils_Log');
 const { fso_connect, fso_status, fso_query, fso_verify } = require('../FSO/FSO_Utils');
 const { convertMsFull, systemTimestamp } = require('../Utility/Utils_Time');
 const { embedBuilder } = require('../Utility/Utils_EmbedBuilder');
+const { terminate } = require('../Utility/Utils_Terminate');
 
 const { guild_CCG, fs_console, ranger } = require('./Core_ids.json');
 const { version } = require('../../package.json');
-const { terminate } = require('../Utility/Utils_Aux');
 const { primary, emergency } = require('./Core_config.json').colors;
 
 //Exports
@@ -103,6 +103,19 @@ async function startUp(Fishsticks) {
 		log ('info', '[FSO] Status table update done.');
 	}
 
+	//Cache data
+	// - Poll messages
+	try {
+		const polls = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Polls', 'selectAll');
+		for (const poll in polls) {
+			const ch = await Fishsticks.channels.cache.get(polls[poll].chId);
+			await ch.messages.fetch(polls[poll].id);
+			Fishsticks.pollCache++;
+		}
+	}
+	finally {
+		log('proc', `[POLL] Cached all ${Fishsticks.pollCache} polls successfully.`);
+	}
 
 	//Dispatch Startup Message
 	if (Fishsticks.TESTMODE) {
