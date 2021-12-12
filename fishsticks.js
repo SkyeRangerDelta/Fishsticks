@@ -59,6 +59,8 @@ Fishsticks.SUMM_BRODEMODE = false;
 //				   EVENTS
 //=============================================
 
+//TODO: Press events to an indexer?
+
 //Primary
 
 //Online and Ready
@@ -131,6 +133,63 @@ Fishsticks.on('interactionCreate', async interaction => {
 });
 
 //Utility
+
+//==============================================
+// Do Logging >> Replace Logger
+
+//applicationCommandCreate**
+
+//applicationCommandDelete**
+
+//applicationCommandUpdate**
+
+//channelCreate
+
+//channelDelete
+
+//channelUpdate
+
+//emojiCreate
+
+//emojiDelete
+
+//emojiUpdate
+
+//guildBanAdd
+
+//guildBanRemove
+
+//guildMemberUpdate
+
+//inviteCreate
+
+//inviteDelete
+
+//messageUpdate
+
+//roleCreate
+
+//roleDelete
+
+//roleUpdate
+
+//stageInstanceCreate
+
+//stageInstanceDelete
+
+//stageInstanceUpdate
+
+//stickerCreate
+
+//stickerDelete
+
+//stickerUpdate
+
+//threadCreate
+
+//threadDelete
+
+//webhookUpdate
 
 //Schedule Crons
 schedule.scheduleJob('8 * * *', function() {
