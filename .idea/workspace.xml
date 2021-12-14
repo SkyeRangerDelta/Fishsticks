@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="268f6f2d-76f4-4d2e-9c55-dc815a6dd08b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Modules/Logger/Log_Handler.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/poll.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/poll.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Message.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Message.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_Interactions.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_Interactions.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_User.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_User.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fishsticks.js" beforeDir="false" afterPath="$PROJECT_DIR$/fishsticks.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,6 +106,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

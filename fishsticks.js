@@ -24,13 +24,13 @@ const { startUp } = require('./Modules/Core/Core_Ready');
 const { log } = require('./Modules/Utility/Utils_Log');
 const { processMessage } = require('./Modules/Core/Core_Message');
 const { validateAddedReaction, doDailyPost } = require('./Modules/Utility/Utils_Aux');
-const { handleButtonInteraction } = require('./Modules/Utility/Utils_Interactions');
 const { validateChannel } = require('./Commands/Active/tempch');
 const { handleNewJoin } = require('./Modules/Core/Core_NewJoin');
 const { handleOldMember } = require('./Modules/Core/Core_OldMember');
 
 //Configs
 const { token, intents } = require('./Modules/Core/Core_config.json');
+const { handleButtonInteraction } = require('./Modules/Utility/Utils_Interactions');
 
 //=============================================
 //				  GLOBALS
@@ -125,8 +125,6 @@ Fishsticks.on('messageReactionRemove', (removedReaction, reactor) => {
 //Receive new interaction
 Fishsticks.on('interactionCreate', async interaction => {
 	log('info', `[CLIENT] New interaction created. ID: ${interaction.id}`);
-
-	//If button
 	if (interaction.isButton()) {
 		handleButtonInteraction(Fishsticks, interaction);
 	}
