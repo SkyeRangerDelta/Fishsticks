@@ -77,12 +77,14 @@ async function processMessage(Fishsticks, msg) {
 
     //Handle Active Commands
     if (msg.content.startsWith(prefix)) {
+        const channel = msg.channel;
+
         //Active Command
         log('info', '[ACTIVE-CMD] Incoming active command: ' + cmd.ID);
 
         try {
             const cmdFile = require(`../../Commands/Active/${cmd.ID}`);
-            cmdFile.run(Fishsticks, cmd);
+            await cmdFile.run(Fishsticks, cmd);
 
             //Success here
             log('info', '[ACTIVE-CMD] Executed successfully.');
@@ -106,29 +108,22 @@ async function processMessage(Fishsticks, msg) {
 
             //Handle common error responses
             if (activeCmdErr.message.includes('../../Commands/Active/')) {
-                msg.delete().then(sent => {
-                    sent.channel.send({ content: generateErrorMsg() + '\nI dont know the command: `' + cmd.ID + '` (did you miss a hyphen parameter?)' });
-                });
+                channel.send({ content: generateErrorMsg() + '\nI dont know the command: `' + cmd.ID + '` (did you miss a hyphen parameter?)' });
             }
             else if (activeCmdErr.message.includes('../../Modules')) {
-                msg.delete({ timeout: 0 }).then(sent => {
-                    sent.reply({ content: generateErrorMsg() + `\nLooks like Im missing some major config somewhere and Im on the edge of losing it.\nPing ${Fishsticks.RANGER}` });
-                });
+                channel.send({ content: generateErrorMsg() + `\nLooks like Im missing some major config somewhere and Im on the edge of losing it.\nPing ${Fishsticks.RANGER}` });
             }
             else if (activeCmdErr.message.includes('Test mode')) {
-                msg.delete({ timeout: 0 }).then(sent => {
-                    sent.reply({ content: generateErrorMsg() + `\nThis is a test mode only command. It won't run unless ${Fishsticks.RANGER} is up to no good.` });
-                });
+                channel.send({ content: generateErrorMsg() + `\nThis is a test mode only command. It won't run unless ${Fishsticks.RANGER} is up to no good.` });
             }
             else if (activeCmdErr.message.includes('No permissions')) {
-                msg.delete({ timeout: 0 }).then(sent => {
-                    sent.reply({ content: generateErrorMsg() + '\nLooks like you lack to necessary permissions to run this one.' });
-                });
+                channel.send({ content: generateErrorMsg() + '\nLooks like you lack to necessary permissions to run this one.' });
+            }
+            else if (Fishsticks.TESTMODE) {
+                    channel.send({ content: '**Test Mode Log**:\n' + generateErrorMsg() + '\n' + activeCmdErr.message + '\n' + activeCmdErr.stack });
             }
             else {
-                msg.delete({ timeout: 0 }).then(sent => {
-                    sent.reply({ content: generateErrorMsg() + '\n' + activeCmdErr.message });
-                });
+                channel.send({ content: generateErrorMsg() + '\n' + activeCmdErr.message });
             }
         }
     }
@@ -153,7 +148,7 @@ async function processMessage(Fishsticks, msg) {
                 if (!hasPerms(cmd.msg.member, ['Moderator', 'Event Coordinator', 'Council Advisor', 'Council Member'])) {
                     //Not a staff member, check link
                     const urls = extractUrls(cmd.msg.content);
-                    await validateURL(cmd.msg, urls[0], true);
+                    await validateURL(cmd.msg, urls);
                 }
             }
 

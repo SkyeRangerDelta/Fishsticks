@@ -7,6 +7,8 @@ const { MongoClient } = require('mongodb');
 const { log } = require('../Utility/Utils_Log');
 const { terminate } = require('../Utility/Utils_Terminate');
 
+const { fsoValidationException } = require('../Errors/fsoValidationException');
+
 const { uri } = require('./FSO_assets.json');
 
 //Exports
@@ -54,7 +56,7 @@ async function fso_status(connection) {
 	}
 }
 
-async function fso_query(connection, table, key, value, filter) {
+async function fso_query(connection, coll, key, value, filter, aFilter) {
 	log('info', '[FSO] Dispatching a query');
 
 	const filterDoc = { id: 1 };
@@ -78,23 +80,27 @@ async function fso_query(connection, table, key, value, filter) {
 
 	switch (key) {
 		case 'select':
-			return database.collection(table).findOne(value);
+			return database.collection(coll).findOne(value);
 		case 'selectAll':
-			return await database.collection(table).find({}).toArray();
+			return await database.collection(coll).find({}).toArray();
 		case 'update':
-			return database.collection(table).updateOne(filter, value);
+			return await database.collection(coll).updateOne(filter, value);
+		case 'arrUpdate':
+			return await database.collection(coll).updateOne(filter, value, aFilter);
+		case 'findAndMod':
+			return await database.collection(coll).findOneAndUpdate(filter, value);
 		case 'replace':
-			return await database.collection(table).replaceOne(filter, value);
+			return await database.collection(coll).replaceOne(filter, value);
 		case 'insert':
-			return database.collection(table).insertOne(value);
+			return database.collection(coll).insertOne(value);
 		case 'table':
-			return database.collection(table);
+			return database.collection(coll);
 		case 'delete':
-			return await database.collection(table).deleteOne(value);
+			return await database.collection(coll).deleteOne(value);
 		case 'deleteMany':
-			return await database.collection(table).deleteMany(value);
+			return await database.collection(coll).deleteMany(value);
 		default:
-			throw 'Invalid FSO Query!';
+			throw new fsoValidationException('Invalid FSO Query!');
 	}
 }
 

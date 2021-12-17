@@ -13,9 +13,9 @@ const { embedBuilder } = require('./Utils_EmbedBuilder');
 const { log } = require('../Utility/Utils_Log');
 const { fso_query } = require('../FSO/FSO_Utils');
 const { processReaction } = require('../../Commands/Active/quote');
-
-const urlscan = require('urlscan-api');
 const { handleAddedReaction } = require('../../Commands/Active/poll');
+
+const axios = require('axios');
 
 //Exports
 module.exports = {
@@ -26,6 +26,9 @@ module.exports = {
 	toTitleCase,
 	handleDenMsg
 };
+
+//Globals
+const urlTests = [];
 
 //Functions
 function generateErrorMsg() {
@@ -85,89 +88,113 @@ function doDailyPost(fishsticks) {
 }
 
 //Root func for URL scans
-async function validateURL(msg, urlToScan, inline) {
-	log('info', '[URL-SCAN] Beginning scan on ' + urlToScan);
-	const urlID = await fetchURLScan(urlToScan);
+async function validateURL(msg, urlArr) {
+	const testResMsg = 'Running a quick test for any malicious content...\n';
 
+	//React message
 	await msg.react('🕓');
+	const testNotice = await msg.reply(testResMsg);
 
-	setTimeout(function() {
-		fetchURLScanResult(msg, urlID, inline);
-	}, 45000);
+	//Loop through URLs
+	for (const link in urlArr) {
 
+		setTimeout(async function() {
+			const scanUUID = await fetchURLScan(urlArr[link]);
 
+			log('info', '[URL-SCAN] Received a new url to scan.');
+			urlTests.push({
+				url: urlArr[link],
+				uuid: scanUUID,
+				result: 'WAITING',
+				d: `[🕓] Link ${link + 1}: ${urlArr[link]}\n`,
+				msg: await testNotice.channel.send(`[🕓] Link ${link + 1}: ${urlArr[link]}\n`)
+			});
+		}, 3000);
+	}
+
+	//Send UUID data to report requester
+	for (const urlToTest in urlTests) {
+		setTimeout(function() {
+			fetchURLScanResult(testNotice, msg, urlTests[urlToTest]);
+		}, 45000);
+	}
 }
 
 //Submit the URL scan; return the UUID
 async function fetchURLScan(urlToScan) {
 
-	const output = await new urlscan().submit(urlscanIO, urlToScan);
-	return output.uuid;
+	axios({
+		method: 'post',
+		url: 'https://urlscan.io/api/v1/scan/',
+		headers: {
+			'API-Key': urlscanIO,
+			'Content-Type': 'application/json'
+		},
+		data: {
+			'url': urlToScan,
+			'visibility': 'public'
+		}
+	}).then(res => {
+		console.log(res.status + ' : ' + res.statusText + ' : ' + res.data.uuid);
+		return res.data.uuid;
+	});
+
+	log('info', '[URL-SCAN] Beginning scan on ' + urlToScan);
 }
 
 //Use the UUID to retrieve the scan
-function fetchURLScanResult(msg, urlID, inline) {
+function fetchURLScanResult(testNotice, msg, urlObj) {
 
 	log('info', '[URL-SCAN] Attempting to retrieve results of URL scan.');
 
-	new urlscan().result(urlID).then(output => {
-		return processURLReport(msg, output, urlID, inline);
+	axios({
+		url: 'https://urlscan.io/api/v1/result/' + urlObj.uuid,
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	}).then(res => {
+		return processURLReport(testNotice, msg, res.data, urlObj);
 	});
 }
 
 //Update message accordingly to scan report
-async function processURLReport(msg, report, subRes, inline) {
-	log('info', '[URL-SCAN] Received report status: ' + report.statusCode);
+async function processURLReport(testNotice, msg, scanResult, urlObj) {
+	log('info', '[URL-SCAN] Received report status: ' + scanResult.statusCode);
 
-	if (report.statusCode === 404) {
-
+	if (scanResult.statusCode === 404) {
+		//Scan not finished...update notice and wait 15 for scan res
 		log('info', '[URL-SCAN] Report not ready; standing by for 15s.');
 
-		if (!inline) {
-			msg.edit('Just a bit longer... (report still pending)');
-		}
+		await testNotice.edit('Tests arent quite done yet, gimmie a few seconds...');
 
 		setTimeout(function() {
-			report = fetchURLScanResult(msg, subRes);
+			fetchURLScanResult(testNotice, msg, scanResult);
 		}, 15000);
 	}
 	else {
-
+		//Scan done, update notice and relevant link msg
 		await msg.reactions.removeAll();
 
-		const verdicts = report.verdicts;
+		const verdicts = scanResult.verdicts;
+
+		console.log(scanResult);
 
 		if (verdicts.overall.score === 0) {
 			log('info', '[URL-SCAN] URL scan looks good.');
 
-			if (!inline) {
-				msg.edit(`[✔️] Scan done. Verdict: ${verdicts.overall.score}% malicious. Looks clean.`);
-			}
-			else {
-				msg.react('✔️');
-			}
+			urlObj.msg.edit(`[✔] Scan done. Verdict: ${verdicts.overall.score}% malicious. Looks clean.`);
 		}
 		else if (verdicts.overall.score >= 10 && verdicts.overall.score < 50) {
 			log('info', '[URL-SCAN] URL scan looks questionable.');
 
-			if (!inline) {
-				msg.edit(`[⚠️] Scan done. Verdict: ${verdicts.overall.score}% malicious. Looks good for the most part but is questionable Proceed with caution.`);
-			}
-			else {
-				msg.react('⚠️');
-				msg.reply({ content: 'Your post looks like it has a link in it that I have deemed to be of questionable intent. Proceed with caution, a staff member will likely vet this soon.' });
-			}
+			urlObj.msg.edit(`[⚠] Scan done. Verdict: ${verdicts.overall.score}% malicious. Looks good for the most part but is questionable Proceed with caution.`);
 		}
 		else {
 			log('info', '[URL-SCAN] URL scan reports significant activity.');
 
-			if (!inline) {
-				msg.edit(`[❌] Scan done. Verdict: ${verdicts.overall.score}% malicious. Do not follow the link or post it in any of the chats.`);
-			}
-			else {
-				msg.reply({ content: 'Your post contained a link that I have deemed to be highly malicious and I have removed it as a preventative measure. If this is by mistake, please have a staff member replace the link.' });
-				msg.delete({ timeout: 0 });
-			}
+			msg.delete({ timeout: 0 });
+
+			urlObj.msg.edit(`[❌] Scan done. Verdict: ${verdicts.overall.score}% malicious. Do not follow the link or post it in any of the chats. I have removed the message containing this link.`);
 		}
 	}
 }

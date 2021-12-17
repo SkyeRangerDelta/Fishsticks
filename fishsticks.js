@@ -124,7 +124,7 @@ Fishsticks.on('messageReactionRemove', (removedReaction, reactor) => {
 
 //Receive new interaction
 Fishsticks.on('interactionCreate', async interaction => {
-	log('info', `[CLIENT] New interaction created. ID: ${interaction.id}`);
+	log('info', `[CLIENT] New interaction created by ${interaction.member.displayName}. ID: ${interaction.id}`);
 	if (interaction.isButton()) {
 		handleButtonInteraction(Fishsticks, interaction);
 	}

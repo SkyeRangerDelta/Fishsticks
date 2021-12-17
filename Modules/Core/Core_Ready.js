@@ -109,7 +109,7 @@ async function startUp(Fishsticks) {
 		const polls = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Polls', 'selectAll');
 		for (const poll in polls) {
 			const ch = await Fishsticks.channels.cache.get(polls[poll].chId);
-			await ch.messages.fetch(polls[poll].id);
+			await ch.messages.fetch(polls[poll].intId);
 			Fishsticks.pollCache++;
 		}
 	}

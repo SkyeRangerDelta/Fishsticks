@@ -82,7 +82,7 @@ async function fso_validate(Fishsticks, msg) {
 async function insertNewMember(Fishsticks, recordToAdd) {
 	const recordInsertionResponse = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'insert', recordToAdd);
 
-	if (recordInsertionResponse.inserted == 1) {
+	if (recordInsertionResponse.inserted === 1) {
 		return true;
 	}
 	else {
