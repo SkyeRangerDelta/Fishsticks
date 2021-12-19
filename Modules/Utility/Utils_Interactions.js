@@ -11,11 +11,13 @@ module.exports = {
 
 //Functions
 async function handleButtonInteraction(fishsticks, interaction) {
-    const intID = interaction.customId.substring(0, 4);
+    const intData = interaction.customId.split('-');
+    const intID = intData[0];
     switch (intID) {
         case 'POLL':
             log('info', '[INT] [POLL] Handling new Poll interaction');
-            return handleInteraction(fishsticks, interaction);
+            return handleInteraction(fishsticks, interaction, null);
+
         default:
             return log('warn', '[INT] No applicable button handler ID');
     }

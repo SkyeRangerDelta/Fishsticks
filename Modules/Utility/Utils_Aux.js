@@ -107,7 +107,7 @@ async function validateURL(msg, urlArr) {
 				uuid: scanUUID,
 				result: 'WAITING',
 				d: `[🕓] Link ${link + 1}: ${urlArr[link]}\n`,
-				msg: await testNotice.channel.send(`[🕓] Link ${link + 1}: ${urlArr[link]}\n`)
+				msg: await testNotice.channel.send(`[🕓] Link ${link + 1}: <${urlArr[link]}>\n`)
 			});
 		}, 3000);
 	}

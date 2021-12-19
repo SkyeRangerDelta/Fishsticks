@@ -105,6 +105,7 @@ async function parseCmd(fishsticks, cmd) {
         chId: cmd.channel.id,
         authId: cmd.msg.author.id,
         active: true,
+        tied: false,
         q: cmdPoll[0],
         d: null,
         responses: {
@@ -208,8 +209,6 @@ async function postPoll(cmd, pollObj) {
 
 //Process Interaction
 async function handleInteraction(fishsticks, interaction) {
-    console.log('Interaction received');
-
     const pollRecord = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Polls', 'select', { id: interaction.message.id });
 
     if (pollRecord.active === false) {
@@ -218,6 +217,10 @@ async function handleInteraction(fishsticks, interaction) {
 
     if (interaction.component.customId === 'POLL-A') {
         //End poll received
+        return endPoll(fishsticks, pollRecord, interaction);
+    }
+    else if (interaction.component.customId === 'POLL-E') {
+        //Confirm end poll with tie
         return endPoll(fishsticks, pollRecord, interaction);
     }
 
@@ -304,13 +307,15 @@ async function updateResponse(fishsticks, pollObj, interaction) {
 
 //End Poll
 async function endPoll(fishsticks, pollObj, interaction) {
-    //TODO: Find response with greatest response length
     const res = getWinner(fishsticks, pollObj);
 
-    if (res.tieExists) {
-        if (verifyTie(interaction, res)) {
-            handleTie();
-        }
+    if (res.tieExists && pollObj.tied === true) {
+        log('info', '[POLL] Tied found, confirmed >> ending poll.');
+        handleTie(fishsticks, pollObj, interaction, res);
+    }
+    else if (res.tieExists && pollObj.tied === false) {
+        log('info', '[POLL] Tied found, not confirmed.');
+        verifyTie(fishsticks, interaction, res);
     }
     else {
         handleWinner(fishsticks, pollObj, interaction, res);
@@ -399,20 +404,55 @@ async function handleWinner(fishsticks, pollObj, interaction, results) {
 }
 
 //Confirm whether to move on with tie or not
-function verifyTie(interaction, results) {
+async function verifyTie(fishsticks, interaction, results) {
     let confirmMsg = `[WIP] There's currently a tie in the poll responses between ${results.currWinner}`;
 
     for (const i in results.ties) {
         confirmMsg += ` and ${results.ties[i]}`;
     }
 
-    confirmMsg += '. Are you sure you want to end the poll or leave the tie?';
+    confirmMsg += '. Are you sure you want to end the poll or wait for a break? Click End Poll again to confirm.';
 
-    interaction.reply({ content: confirmMsg });
+    await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Polls', 'update', { $set: { tied: true } }, { id: interaction.message.id });
+
+    interaction.reply({ content: confirmMsg, ephemeral: true });
 }
 
 //Present Tie
-function handleTie() {
+async function handleTie(fishsticks, pollObj, interaction, result) {
     console.log('Poll tied.');
-    //TODO: Handle ties
+
+    const updatedRow = new MessageActionRow();
+
+    //Iterate through responses
+    for (const i in pollObj.responses.types) {
+        for (const y in result.ties) {
+            //Determine if tied winner response
+            if (pollObj.responses.types[i].d === result.ties[y] || pollObj.responses.types[i].d === result.currWinner) {
+                //Is a tied response
+                updatedRow.addComponents(
+                    new MessageButton()
+                        .setCustomId(`POLL-${i}`)
+                        .setStyle('SUCCESS')
+                        .setLabel(pollObj.responses.types[i].d)
+                        .setEmoji('✨')
+                );
+            }
+            else {
+                //Not a tied response
+                updatedRow.addComponents(
+                    new MessageButton()
+                        .setCustomId(`POLL-${i}`)
+                        .setStyle('PRIMARY')
+                        .setLabel(pollObj.responses.types[i].d)
+                );
+            }
+        }
+    }
+
+    const endTiePollRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Polls', 'update', { $set: { active: false } }, { id: interaction.message.id });
+
+    //Re-post with button responses for winner
+    interaction.message.edit({ content: 'Poll concluded!', components: [updatedRow] });
+    interaction.reply({ content: 'Poll ended! The winning response was **__tied__**.' });
 }
