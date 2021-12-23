@@ -57,8 +57,8 @@ async function createCh(Fishsticks, cmd, guild) {
         };
 
         await chSpawnerChannel.clone(chData).then(async newCh => {
-            cmd.msg.member.voice.setChannel(newCh);
-            fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: newCh.id, name: chName });
+            await cmd.msg.member.voice.setChannel(newCh);
+            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: newCh.id, name: chName });
         });
     }
     else { //Has limit
@@ -73,7 +73,7 @@ async function createCh(Fishsticks, cmd, guild) {
         };
 
         await chSpawnerChannel.clone(chData).then(async newCh => {
-            cmd.msg.member.voice.setChannel(newCh);
+            await cmd.msg.member.voice.setChannel(newCh);
             await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: newCh.id, name: chName });
         });
     }
@@ -90,7 +90,7 @@ async function validateChannel(fishsticks, preMemberState) {
         if (!chRes || chRes == null) return;
 
         log('info', '[TEMP-CH] Channel slated for deletion (no users).');
-        delCh(fishsticks, oldMemberChannel);
+        await delCh(fishsticks, oldMemberChannel);
     }
 
 }

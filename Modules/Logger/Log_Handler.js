@@ -2,27 +2,16 @@
 // Processes logging for client events
 
 //Imports
-const fs = require('fs');
-
-const { log } = require('/Modules/Utility/Utils_Log');
+const { log } = require('../Utility/Utils_Log');
+const { bLogger } = require('../Core/Core_ids.json');
 
 //Exports
 module.exports = {
-    Logger,
-    readEvents
+    Logger
 };
 
-//Class
-class Logger {
-    constructor(fishsticks, eventData) {
-        log('info', '[LOGGER] Received new event.');
-    }
-}
-
-//Indexer
-function readEvents() {
-    const eventHandlers = fs.readdirSync('./Modules/Logger/Events');
-    for (const file in eventHandlers) {
-
-    }
+//Main
+function Logger(data) {
+    log('info', '[INFO] Log Event: ' + data.type);
+    log('info', 'Something useful here eventually.');
 }
