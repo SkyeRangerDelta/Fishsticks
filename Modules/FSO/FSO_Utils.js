@@ -99,6 +99,8 @@ async function fso_query(connection, coll, key, value, filter, aFilter) {
 			return await database.collection(coll).deleteOne(value);
 		case 'deleteMany':
 			return await database.collection(coll).deleteMany(value);
+		case 'count':
+			return await database.collection(coll).count();
 		default:
 			throw new fsoValidationException('Invalid FSO Query!');
 	}

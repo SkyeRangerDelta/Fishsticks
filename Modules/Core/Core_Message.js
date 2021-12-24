@@ -27,7 +27,7 @@ async function processMessage(Fishsticks, msg) {
     // --- Pre Message Core ---
 
     //Member validation
-    const memberFSORecord = await fso_validate(Fishsticks, msg);
+    await fso_validate(Fishsticks, msg);
 
     //Handler
     const cmdBreakup = msg.content.toLowerCase().substring(1, msg.content.length).split('-');
@@ -89,22 +89,32 @@ async function processMessage(Fishsticks, msg) {
             //Success here
             log('info', '[ACTIVE-CMD] Executed successfully.');
             await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', {
-                $set: {
-                    acAttempts: ++memberFSORecord.acAttempts,
-                    acSuccess: ++memberFSORecord.acSuccess
+                $inc: {
+                    acAttempts: 1,
+                    acSuccess: 1
                 }
             }, { id: msg.author.id });
+            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', {
+                $inc: {
+                    cmdQueriesSucc: 1
+                }
+            }, { id: 1 });
         }
         catch (activeCmdErr) {
             //Fail here
             const upVal = {
-                $set: {
-                    acAttempts: ++memberFSORecord.acAttempts
+                $inc: {
+                    acAttempts: 1
                 }
             };
 
             log('warn', '[ACTIVE-CMD] Execution failed.\n' + activeCmdErr);
             await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', upVal, { id: msg.author.id });
+            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', {
+                $inc: {
+                    cmdQueriesFail: 1
+                }
+            }, { id: 1 });
 
             //Handle common error responses
             if (activeCmdErr.message.includes('../../Commands/Active/')) {

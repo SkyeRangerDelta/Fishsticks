@@ -39,10 +39,6 @@ Fishsticks.FSO_CONNECTION = null;
 Fishsticks.FSO_STATE = null;
 Fishsticks.FSO_VALID = null;
 Fishsticks.session;
-Fishsticks.lastSystemStart;
-Fishsticks.CCG;
-Fishsticks.RANGER;
-Fishsticks.CONSOLE;
 Fishsticks.pollCache = 0;
 Fishsticks.appMsgIDs = [];
 Fishsticks.debMsgIDs = [];
@@ -68,7 +64,6 @@ for (const eventFile in eventsIndex) {
 //=============================================
 //				   UTILITY
 //=============================================
-//==============================================
 //applicationCommandUpdate**
 
 //channelCreate
