@@ -12,7 +12,9 @@ module.exports = {
 
 //Functions
 async function run(fishsticks, cmd) {
-	await listRoles(fishsticks, cmd);
+	cmd.msg.delete();
+
+	await listRoles(fishsticks, cmd, true);
 }
 
 function help() {

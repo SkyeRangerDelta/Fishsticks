@@ -70,13 +70,13 @@ async function parseRequest(fishsticks, cmd) {
 
         //Validate all required parameters existence
         if (!params[1] || params[1] === null) {
-            throw 'A capital choice. A new role with no name. Fantastic.';
+            return cmd.reply('A capital choice. A new role with no name. Fantastic.');
         }
         if (!params[2] || params[2] === null) {
-            throw 'Why are you the way that you are? I need a game name to go with the role.';
+            return cmd.reply('Why are you the way that you are? I need a game name to go with the role.');
         }
         if (!params[3] || params[3] === null) {
-            throw 'For the sake of knowing what people are getting into, perhaps it would be conducive to add a description to the neew role.';
+            return cmd.reply('For the sake of knowing what people are getting into, perhaps it would be conducive to add a description to the new role.');
         }
 
         //Begin new role listing
@@ -97,6 +97,10 @@ async function parseRequest(fishsticks, cmd) {
     else if (params[0] === 'v' || params[0] === 'vote') {
         log('info', '[ROLE-SYS] Voting for a role.');
 
+        if (!params[1]) {
+            return cmd.reply('Specify a role to vote for!');
+        }
+
         voteRole(fishsticks, cmd).catch(e => {
             log('warn', `[ROLE-SYS] ${e.message}`);
         });
@@ -104,10 +108,18 @@ async function parseRequest(fishsticks, cmd) {
     else if (params[0] === 'j' || params[0] === 'join') {
         log('info', '[ROLE-SYS] Joining a role.');
 
+        if (!params[1]) {
+            return cmd.reply('Specify a role to join!');
+        }
+
         joinRole(fishsticks, cmd);
     }
     else if (params[0] === 'l' || params[0] === 'leave') {
         log('info', '[ROLE-SYS] Leaving a role.');
+
+        if (!params[1]) {
+            return cmd.reply('Specify a role to leave!');
+        }
 
         leaveRole(fishsticks, cmd);
     }
@@ -168,7 +180,7 @@ async function newRole(fishsticks, cmd) {
     //Add role to the listings
     const addRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'insert', newRoleObj);
     if (addRes.acknowledged === true) {
-        cmd.reply({ content: 'Role listed!' });
+        cmd.reply('Role listed.');
     }
     else {
         throw 'Something went wrong adding the role to the listings...';
@@ -177,7 +189,7 @@ async function newRole(fishsticks, cmd) {
 
 //Edit a role
 async function editRole(fishsticks, cmd) {
-    cmd.channel.send({ content: 'Insert neat things here.' }).then(sent => {
+    cmd.channel.send({ content: 'Cant do this just yet!' }).then(sent => {
         setTimeout(() => sent.delete(), 10000);
     });
 }
@@ -185,19 +197,18 @@ async function editRole(fishsticks, cmd) {
 //Vote for a role
 async function voteRole(fishsticks, cmd) {
 
-    const roleObj = findRole();
+    const roleObj = await findRole();
 
     if (roleObj === -1) {
         throw 'That role doesnt exist!';
     }
     else if (roleObj.votes >= 5) {
-        return cmd.reply({ content: 'This role has already been officialized, assigning it instead...' }, 10000);
+        return cmd.reply('This role has already been officialized, assigning it instead...', 10000);
     }
     else {
-
         for (const memID in roleObj.founders) {
             if (roleObj.founders[memID] === cmd.msg.author.id) {
-                return cmd.reply({ content: 'You already voted for this role! Get outta here!' }, 10000);
+                return cmd.reply('You already voted for this role! Get outta here!', 10000);
             }
         }
 
@@ -232,7 +243,7 @@ async function voteRole(fishsticks, cmd) {
             else {
                 const missingVotes = 5 - updateObj.votes;
 
-                cmd.reply({ content: `Vote counted; ${roleObj.name} requires ${missingVotes} vote(s) before being activated!` }, 10000);
+                cmd.reply(`Vote counted; ${roleObj.name} requires ${missingVotes} vote(s) before being activated!`, 10000);
             }
         }
     }
@@ -241,10 +252,13 @@ async function voteRole(fishsticks, cmd) {
 //Join a role
 async function joinRole(fishsticks, cmd) {
     //Check active
-    const roleX = findRole();
-    if (roleX.activated === false) {
+    const roleX = await findRole();
+
+    console.log(roleX);
+
+    if (roleX.active === false) {
         //Vote role override
-        cmd.reply({ content: 'Role not active, voting for it instead.' }, 10000);
+        cmd.reply('Role not active, voting for it instead.', 10000);
         await voteRole(fishsticks, cmd);
     }
     else {
@@ -266,11 +280,11 @@ async function joinRole(fishsticks, cmd) {
                     cmd.channel.send(`${cmd.msg.member} has joined ${roleY}!`);
                 }
                 else {
-                    cmd.reply({ content: 'Something is...incorrect. Have someone check your roles.' });
+                    cmd.reply('Something is...incorrect. Have someone check your roles.');
                 }
             });
         }).catch(err => {
-            cmd.reply({ content: 'Something went wrong trying to add your role.\n' + err }, 10000);
+            cmd.reply('Something went wrong trying to add your role.\n' + err, 10000);
         });
     }
 }
@@ -279,10 +293,10 @@ async function joinRole(fishsticks, cmd) {
 //Leave a role
 async function leaveRole(fishsticks, cmd) {
     //Check active
-    const roleX = findRole();
-    if (roleX.activated === false) {
+    const roleX = await findRole();
+    if (roleX.active === false) {
         //Vote role override
-        cmd.reply({ content: 'No active role to leave!' }, 10000);
+        cmd.reply('No active role to leave!', 10000);
     }
     else {
         //Get role and remove
@@ -309,18 +323,18 @@ async function leaveRole(fishsticks, cmd) {
                     });
                 }
                 else {
-                    cmd.reply({ content: 'Something is...incorrect. Have someone check your roles.' });
+                    cmd.reply('Something is...incorrect. Have someone check your roles.');
                 }
             });
         }).catch(err => {
-            cmd.reply({ content: 'Something went wrong trying to remove your role.\n' + err }, 10000);
+            cmd.reply('Something went wrong trying to remove your role.\n' + err, 10000);
         });
     }
 }
 
 //Print the statistics for all roles
 async function roleStats(fishsticks, cmd) {
-    cmd.reply({ content: 'Insert neat things here.' }, 10000);
+    cmd.reply('Insert neat things here.', 10000);
 }
 
 //List all roles
@@ -356,13 +370,15 @@ async function listRoles(fishsticks, cmd, ext) {
     const roleListEmbed = {
         title: 'o0o - Role Listing [Active] - o0o',
         description: activeRoleList,
-        delete: 45000
+        delete: 45000,
+        footer: 'Active role listings pulled from FSO.'
     };
 
     const inactiveListEmbed = {
         title: 'o0o - Role Listing [Inactive] - o0o',
         description: inactiveRoleList,
-        delete: 45000
+        delete: 45000,
+        footer: 'Inactive role listings pulled from FSO.'
     };
 
     cmd.channel.send({ embeds: [embedBuilder(roleListEmbed)] }).then(sent => {
@@ -375,22 +391,20 @@ async function listRoles(fishsticks, cmd, ext) {
 
 //Print the stats for a single role
 async function aboutRole(fishsticks, cmd) {
-    cmd.reply('Insert neat things here.', 10000);
-
     const roleObj = await findRole();
     let activeField;
 
     if (roleObj.active) {
         activeField = {
-            title: 'Activated On',
-            description: roleObj.activated,
+            name: 'Activated On',
+            value: `${ roleObj.activated }`,
             inline: true
         };
     }
     else {
         activeField = {
-            title: 'Votes',
-            description: roleObj.votes,
+            name: 'Votes',
+            value: `${ roleObj.votes }`,
             inline: true
         };
     }
@@ -423,48 +437,48 @@ async function aboutRole(fishsticks, cmd) {
         fields: [
             {
                 name: 'Creator',
-                value: roleObj.creator,
+                value: `${ roleObj.creator }`,
                 inline: true
             },
             {
                 name: 'Game',
-                value: roleObj.game,
+                value: `${ roleObj.game }`,
                 inline: true
             },
             {
                 name: 'Created On',
-                value: roleObj.createdFriendly,
+                value: `${ roleObj.createdFriendly }`,
                 inline: true
             },
             {
                 name: 'Active?',
-                value: roleObj.active,
+                value: `${ roleObj.active }`,
                 inline: true
             },
             activeField,
             {
-                name: 'Actitivity Factor',
-                value: roleObj.activityFactor,
+                name: 'Activity Factor',
+                value: `${ roleObj.activityFactor }`,
                 inline: true
             },
             {
                 name: 'Timeout Date',
-                value: roleObj.timeoutFriendly,
+                value: `${ roleObj.timeoutFriendly }`,
                 inline: true
             },
             {
                 name: 'Pings',
-                value: roleObj.pings,
+                value: `${ roleObj.pings }`,
                 inline: false
             },
             {
                 name: 'Founders',
-                value: foundersList,
+                value: `${ foundersList }`,
                 inline: true
             },
             {
                 name: 'Members',
-                value: membersList,
+                value: `${ membersList }`,
                 inline: true
             }
         ],
