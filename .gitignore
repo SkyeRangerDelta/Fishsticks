@@ -10,3 +10,6 @@ Modules/Core/Core_keys.json
 #FSO
 /Modules/FSO/FSO_assets.json
 .idea/workspace.xml
+
+#Library - Declutter
+/Modules/Library/prayerReqs.json

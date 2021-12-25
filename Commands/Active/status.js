@@ -19,8 +19,6 @@ async function run(fishsticks, cmd) {
 	const fsoStatus = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 });
 	const memberStats = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'count');
 
-	console.log(fsoStatus);
-
 	const timeNow = Date.now();
 
 	//Const build embed

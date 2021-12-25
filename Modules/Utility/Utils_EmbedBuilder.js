@@ -6,7 +6,8 @@ const config = require('../../Modules/Core/Core_config.json');
 
 //Exports
 module.exports = {
-	embedBuilder
+	embedBuilder,
+	quickEmbed
 };
 
 function embedBuilder(embed) {
@@ -46,4 +47,13 @@ function embedBuilder(embed) {
 	}
 
 	return constructedEmbed;
+}
+
+function quickEmbed(data) {
+	const qe = new Discord.MessageEmbed();
+	qe.setTitle(data.title);
+	qe.setDescription(data.description);
+	qe.setColor(config.colors.primary);
+
+	return qe;
 }

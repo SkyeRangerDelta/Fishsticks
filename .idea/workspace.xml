@@ -2,12 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Commands/Active/launch.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Commands/Active/prayer.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Modules/Library/prayerReqs.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/quote.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/quote.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/role.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/role.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/status.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/status.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Events/channelUpdate.js" beforeDir="false" afterPath="$PROJECT_DIR$/Events/channelUpdate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Events/guildBanAdd.js" beforeDir="false" afterPath="$PROJECT_DIR$/Events/guildBanAdd.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Events/guildBanRemove.js" beforeDir="false" afterPath="$PROJECT_DIR$/Events/guildBanRemove.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Events/guildMemberAdd.js" beforeDir="false" afterPath="$PROJECT_DIR$/Events/guildMemberAdd.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Events/guildMemberRemove.js" beforeDir="false" afterPath="$PROJECT_DIR$/Events/guildMemberRemove.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Events/guildMemberUpdate.js" beforeDir="false" afterPath="$PROJECT_DIR$/Events/guildMemberUpdate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Events/messageUpdate.js" beforeDir="false" afterPath="$PROJECT_DIR$/Events/messageUpdate.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Message.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Message.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fishsticks.js" beforeDir="false" afterPath="$PROJECT_DIR$/fishsticks.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Library/quotesLib.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_EmbedBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_EmbedBuilder.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +73,11 @@
     <property name="ts.external.directory.path" value="I:\Programs\WebStorm 2021.2.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Commands/Active" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -91,7 +109,8 @@
       <workItem from="1640237589944" duration="8561000" />
       <workItem from="1640246749386" duration="3958000" />
       <workItem from="1640307058783" duration="2308000" />
-      <workItem from="1640319960792" duration="4018000" />
+      <workItem from="1640319960792" duration="4700000" />
+      <workItem from="1640376587812" duration="22896000" />
     </task>
     <servers />
   </component>

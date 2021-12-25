@@ -12,13 +12,13 @@ const { handleShiny } = require('../Utility/Utils_Shiny');
 
 const { prefix } = require('../Core/Core_config.json');
 const { discDen } = require('../Core/Core_ids.json');
-const { quotes } = require('../../Modules/Library/quotesLib.json');
 
 const extractUrls = require('extract-urls');
 
 //Exports
 module.exports = {
-    processMessage
+    processMessage,
+    generateRandomQuote
 };
 
 //Functions
@@ -187,7 +187,7 @@ async function processQuote(fishsticks, cmd) {
 
     if ((tick - 1) === 0) {
         const newTickNum = newTick();
-        await generateRandomQuote(cmd);
+        await generateRandomQuote(fishsticks, cmd);
 
         await updateQuoteTick(fishsticks, newTickNum);
     }
@@ -216,12 +216,14 @@ async function updateQuoteTick(fishsticks, tickNum) {
 }
 
 //Generate the random quote and return
-function generateRandomQuote(cmd) {
+async function generateRandomQuote(fishsticks, cmd) {
+    const quotes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_QuoteRef', 'selectAll');
+
     const quoteIndex = Math.floor(Math.random() * quotes.length);
     log('proc', `[R-QUOTE] New quote fired. Index ${quoteIndex}.`);
 
     //Send it
-    cmd.channel.send(quotes[quoteIndex]);
+    cmd.channel.send(`${quotes[quoteIndex].q}`);
 }
 
 //Generate a new tick count

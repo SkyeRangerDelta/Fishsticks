@@ -12,7 +12,6 @@ const { hasPerms } = require('./Utils_User');
 const { embedBuilder } = require('./Utils_EmbedBuilder');
 const { log } = require('../Utility/Utils_Log');
 const { fso_query } = require('../FSO/FSO_Utils');
-const { processReaction } = require('../../Commands/Active/quote');
 const { handleAddedReaction } = require('../../Commands/Active/poll');
 
 const axios = require('axios');
@@ -59,25 +58,6 @@ async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 		if (addedReaction.message.id === fishsticks.debMsgIDs[ID]) {
 			return;
 			//TODO: Debator app start
-		}
-	}
-
-	//Check for Quote Queries
-	const quoteIDs = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_QuoteRef', 'selectAll');
-
-	for (const quoteID in quoteIDs) {
-		if (addedReaction.message.id === quoteIDs[quoteID].id) {
-			if (addedReaction.emoji === '✅') {
-				return processReaction(quoteIDs[quoteID]);
-			}
-			else {
-				//Delete query
-				const delRes = await fso_query(fishsticks.FSO_CONNECTION, 'Fs_QueryRef', 'delete', quoteIDs[quoteID].id);
-
-				if (delRes.deleted !== 1) {
-					log('warn', '[QUOTE-VALIDATOR] Deleted query didnt process.');
-				}
-			}
 		}
 	}
 }
