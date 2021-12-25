@@ -15,8 +15,7 @@ function run(fishsticks, cmd) {
     //Validate
     if (!target) {
         console.log('[BAC-MODE] Target found to be null.');
-        cmd.channel.send({ content: 'Cleared the bacon target.' })
-            .then(sent => setTimeout(() => sent.delete(), 10000));
+        cmd.reply('Cleared the bacon target.', 10000);
 
         return fishsticks.baconTarget = null;
     }

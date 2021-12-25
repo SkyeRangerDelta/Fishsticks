@@ -14,7 +14,7 @@ module.exports = {
 //Functions
 function handleNewJoin(fishsticks, newJoin) {
 	//Dispatch Welcome/Intro DM
-	newJoin.sendMessage(welcomeDM);
+	newJoin.send(welcomeDM);
 
 	//Dispatch Welcome Embed
 	const cPadEmbedPanel = {

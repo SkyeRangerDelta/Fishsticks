@@ -16,10 +16,10 @@ module.exports = {
 };
 
 async function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
+    cmd.msg.delete();
 
     //Syntax: !suggest -title -body
-    let hookURL = fsSuggestionHook.concat(`?sender=${cmd.msg.author.username}&suggTitle=${cmd[0]}&suggBody=${cmd[1]}`);
+    let hookURL = fsSuggestionHook.concat(`?sender=${cmd.msg.author.username}&suggTitle=${cmd.content[0]}&suggBody=${cmd.content[1]}`);
     hookURL = encodeURI(hookURL);
 
     //Attempt suggestion send
@@ -42,11 +42,11 @@ async function run(fishsticks, cmd) {
 
     const updatedMember = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', updateData);
 
-    if (updatedMember.modifiedCount == 1) {
+    if (updatedMember.modifiedCount === 1) {
         log('proc', '[SUGGEST] Synced.');
     }
     else {
-        cmd.msg.reply({ content: 'Something went wrong. Ask Skye to investigate.' });
+        return cmd.reply('Something went wrong. Ask Skye to investigate.');
     }
 }
 

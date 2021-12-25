@@ -17,6 +17,7 @@ function run(fishsticks, cmd) {
     const ips = {
 		title: 'o0o - THE FISH SERVERS - o0o',
 		description: 'CCG recognized servers and their IPS.',
+		delete: 60000,
 		fields: [
 			{
 				name: 'ARK: Survival Evolved (Admin: Nils Sargon)',
@@ -35,7 +36,7 @@ function run(fishsticks, cmd) {
 		noThumbnail: true
 	};
 
-    cmd.channel.send({ embeds: [embedBuilder(ips)] });
+    cmd.channel.send({ embeds: [embedBuilder(ips)] }).then(s => { setTimeout(() => s.delete(), 60000); });
 }
 
 function help() {

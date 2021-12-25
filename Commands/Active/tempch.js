@@ -17,19 +17,18 @@ module.exports = {
 
 //Functions
 async function run(Fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
+    cmd.msg.delete();
 
     const guild = cmd.msg.guild;
 
     //Syntax: !tempch -<maxUsers> -[channelName]
     if (!cmd.content[0] || cmd.content[0] == null || cmd.content[0] === undefined) {
-        return cmd.msg.reply({ content: 'Why are you the way that you are. Give me something to work with here.' })
-            .then(sent => sent.delete({ timeout: 10000 }));
+        return cmd.reply('Why are you the way that you are. Give me something to work with here.', 10000);
     }
 
     //Check voice state
-    if (!cmd.msg.member.voice.channelID || cmd.msg.member.voice.channelID !== chSpawner) {
-        return cmd.msg.reply({ content: 'You must connect to the channel spawner first!' });
+    if (!cmd.msg.member.voice.channel.id || cmd.msg.member.voice.channel.id !== chSpawner) {
+        return cmd.reply('You must connect to the channel spawner first!');
     }
 
     createCh(Fishsticks, cmd, guild);
@@ -46,7 +45,7 @@ async function createCh(Fishsticks, cmd, guild) {
     const maxUsers = parseInt(cmd.content[0]);
 
     //No Limit
-    if (isNaN(maxUsers) || typeof maxUsers != typeof 0) {
+    if (isNaN(maxUsers) || typeof maxUsers !== typeof 0) {
         log('info', '[TEMP-CH] Temp channel has no maxUser limit.');
 
         const chName = toTitleCase(cmd.content[0]);
@@ -87,7 +86,7 @@ async function validateChannel(fishsticks, preMemberState) {
     if (oldMemberChannel.members.size === 0) {
 
         const chRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'select', { id: oldMemberChannel.id });
-        if (!chRes || chRes == null) return;
+        if (!chRes) return;
 
         log('info', '[TEMP-CH] Channel slated for deletion (no users).');
         await delCh(fishsticks, oldMemberChannel);
@@ -104,7 +103,7 @@ async function delCh(fishsticks, oldMemberChannel) {
 
     const chRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'delete', oldMemberChannel.id);
 
-    if (chRes.deleted != 1) {
+    if (chRes.deleted !== 1) {
         fishsticks.CONSOLE.send(fishsticks.RANGER + ', FSO failed to properly delete a channel - or possibly something more sinister.');
     }
 }

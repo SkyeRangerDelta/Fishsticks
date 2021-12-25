@@ -13,6 +13,9 @@ module.exports = {
 
 async function run(fishsticks, cmd) {
 
+    cmd.msg.delete();
+    return cmd.reply('This one isnt quite done yet.');
+
     let workingMsg = null;
 
     await cmd.msg.reply({ content: 'Slating a URL scan. This will take a moment.' })

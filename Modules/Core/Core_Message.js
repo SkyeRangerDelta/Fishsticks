@@ -151,6 +151,8 @@ async function processMessage(Fishsticks, msg) {
         finally {
             //Attempt possible unique messages
 
+            /*
+            //TODO: Re-enable later
             //URL Scan Framework
             if (cmd.msg.content.includes('http://') || cmd.msg.content.includes('https://')) {
                 log('info', 'URL scanner triggered.');
@@ -161,6 +163,7 @@ async function processMessage(Fishsticks, msg) {
                     await validateURL(cmd.msg, urls);
                 }
             }
+             */
 
             //Shiny?
             const number = Math.random() * (8192 - 1) + 1;

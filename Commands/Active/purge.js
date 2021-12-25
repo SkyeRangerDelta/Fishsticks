@@ -14,38 +14,36 @@ module.exports = {
 
 //Functions
 async function run(fishsticks, cmd) {
-    await cmd.msg.delete({ timeout: 0 });
+    await cmd.msg.delete();
 
     //Permissions check
-    if (!hasPerms(['Moderator', 'Council Member', 'Council Advisor'])) {
-        return cmd.msg.reply({ content: 'Your lack of permissions disturbs me.' })
-            .then(sent => sent.delete({ timeout: 10000 }));
+    if (!hasPerms(cmd.msg.member, ['Moderator', 'Council Member', 'Council Advisor'])) {
+        return cmd.reply('Your lack of permissions disturbs me.', 10000);
     }
 
     //Syntax: !purge <@user> <number>
 
-    const targetChannel = cmd.channel;
+    const targetChannel = cmd.msg.channel;
     let count = 0;
 
     if (!cmd.msg.mentions.users.first()) {
         log('info', '[PURGE] No user detected, initiating general deletion.');
 
-        count = parseInt(cmd[0]);
+        count = parseInt(cmd.content[0]);
+
         if (!count || isNaN(count)) {
-            return cmd.msg.reply({ content: 'No number specified, might as well just delete the whole channel if you want them all gone.' })
-                .then(sent => sent.delete({ timeout: 10000 }));
+            return cmd.reply('No number specified, might as well just delete the whole channel if you want them all gone.', 10000);
+        }
+
+        if (count > 5) {
+            cmd.reply(`Sit tight, this might take a minute. (Processing ${count} messages.)`, 7000);
         }
 
         const targetChannelMsgs = await targetChannel.messages.fetch({ limit: count });
 
-        if (count > 5) {
-            cmd.msg.reply({ content: 'Sit tight, this might take a minute.' })
-                .then(sent => sent.delete({ timeout: 7000 }));
-        }
-
         for (const msgObj in targetChannelMsgs) {
             await targetChannel.messages.fetch(targetChannelMsgs[msgObj]).then(msgColl => {
-                msgColl.delete({ timeout: 0 });
+                msgColl.delete();
             });
         }
     }
@@ -54,15 +52,13 @@ async function run(fishsticks, cmd) {
 
         const targetMember = await cmd.msg.mentions.members.first();
         if (!targetMember) {
-            return cmd.msg.reply({ content: 'No valid member found!' })
-                .then(sent => sent.delete({ timeout: 10000 }));
+            return cmd.reply('No valid member found!', 10000);
         }
         if (hasPerms(targetMember, ['Moderator', 'Event Coordinator', 'Council Advisor', 'Council Member'])) {
-            return cmd.msg.reply({ content: 'Invalid member target!' })
-                .then(sent => sent.delete({ timeout: 10000 }));
+            return cmd.reply('Invalid member target!', 10000);
         }
 
-        count = parseInt(cmd[1]);
+        count = parseInt(cmd.content[1]);
         if (!count || isNaN(count)) {
             log('warn', '[PURGE] No count specified, deleting all messages?');
 
@@ -70,21 +66,20 @@ async function run(fishsticks, cmd) {
 
             for (const msgObj in targetChannelMsgs) {
                 await targetChannel.messages.fetch(targetChannelMsgs[msgObj]).then(msgColl => {
-                    msgColl.delete({ timeout: 0 });
+                    msgColl.delete();
                 });
             }
         }
         else {
             if (count > 5) {
-                cmd.msg.reply({ content: 'Sit tight, this might take a minute.' })
-                    .then(sent => sent.delete({ timeout: 7000 }));
+                cmd.reply('Sit tight, this might take a minute.', 7000);
             }
 
             const targetChannelMsgs = await targetChannel.messages.fetch({ limit: count }).then(m => m.filter(a => a.author.id === targetMember.id));
 
             for (const msgObj in targetChannelMsgs) {
                 await targetChannel.messages.fetch(targetChannelMsgs[msgObj]).then(msgColl => {
-                    msgColl.delete({ timeout: 0 });
+                    msgColl.delete();
                 });
             }
         }
