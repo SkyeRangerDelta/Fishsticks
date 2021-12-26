@@ -8,7 +8,7 @@ const { convertMsFull, systemTimestamp } = require('../Utility/Utils_Time');
 const { embedBuilder } = require('../Utility/Utils_EmbedBuilder');
 const { terminate } = require('../Utility/Utils_Terminate');
 
-const { guild_CCG, fs_console, bLogger, ranger } = require('./Core_ids.json');
+const { guild_CCG, fs_console, fsID, bLogger, ranger } = require('./Core_ids.json');
 const { version } = require('../../package.json');
 const { primary, emergency } = require('./Core_config.json').colors;
 
@@ -42,6 +42,7 @@ async function startUp(Fishsticks) {
 	Fishsticks.CONSOLE = await Fishsticks.channels.cache.get(fs_console);
 	Fishsticks.BOT_LOG = await Fishsticks.channels.cache.get(bLogger);
 	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch(ranger);
+	Fishsticks.MEMBER = await Fishsticks.CCG.members.fetch(fsID);
 
 	//Console confirmation
 	log('proc', '[CLIENT] Fishsticks is out of the oven.\n-------------------------------------------------------');

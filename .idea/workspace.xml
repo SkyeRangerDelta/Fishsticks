@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Commands/Active/profile.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/After Hours.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Alpha Squad.png" beforeDir="false" />
@@ -45,17 +46,9 @@
       <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Temper.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Toondogjoe.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Tracks.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/baconmode.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/baconmode.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/codex.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/codex.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/event.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/ips.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/ips.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/purge.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/purge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/scanurl.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/scanurl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/suggest.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/suggest.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/summon.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/summon.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/tempch.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/tempch.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Message.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Message.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_NewJoin.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_NewJoin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Events/voiceStateUpdate.js" beforeDir="false" afterPath="$PROJECT_DIR$/Events/voiceStateUpdate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,6 +140,7 @@
       <workItem from="1640319960792" duration="4700000" />
       <workItem from="1640376587812" duration="22896000" />
       <workItem from="1640444276020" duration="12935000" />
+      <workItem from="1640475284375" duration="7536000" />
     </task>
     <servers />
   </component>

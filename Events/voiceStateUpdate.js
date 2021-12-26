@@ -23,7 +23,7 @@ async function execute(fishsticks, prevMemberState, newMemberState) {
     }
 
     //Trigger tempch check
-    if (prevMemberState.channelID != null) {
+    if (prevMemberState.channel != null) {
         await validateChannel(fishsticks, prevMemberState);
     }
 }

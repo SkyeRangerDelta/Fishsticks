@@ -31,7 +31,7 @@ async function run(Fishsticks, cmd) {
         return cmd.reply('You must connect to the channel spawner first!');
     }
 
-    createCh(Fishsticks, cmd, guild);
+    await createCh(Fishsticks, cmd, guild);
 }
 
 function help() {
@@ -45,17 +45,18 @@ async function createCh(Fishsticks, cmd, guild) {
     const maxUsers = parseInt(cmd.content[0]);
 
     //No Limit
-    if (isNaN(maxUsers) || typeof maxUsers !== typeof 0) {
+    if (isNaN(maxUsers)) {
         log('info', '[TEMP-CH] Temp channel has no maxUser limit.');
 
         const chName = toTitleCase(cmd.content[0]);
 
         const chData = {
-            name: chName,
-            type: 'voice'
+            name: `${chName}`,
+            type: 'GUILD_VOICE',
         };
 
         await chSpawnerChannel.clone(chData).then(async newCh => {
+            await newCh.setPosition(chSpawnerChannel.position - 1);
             await cmd.msg.member.voice.setChannel(newCh);
             await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: newCh.id, name: chName });
         });
@@ -66,12 +67,13 @@ async function createCh(Fishsticks, cmd, guild) {
         const chName = toTitleCase(cmd.content[1]);
 
         const chData = {
-            name: chName,
-            type: 'voice',
+            name: `${chName}`,
+            type: 'GUILD_VOICE',
             userLimit: maxUsers
         };
 
         await chSpawnerChannel.clone(chData).then(async newCh => {
+            await newCh.setPosition(chSpawnerChannel.position - 1);
             await cmd.msg.member.voice.setChannel(newCh);
             await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: newCh.id, name: chName });
         });
