@@ -10,6 +10,6 @@ module.exports = {
 };
 
 //Functions
-function handleOldMember(fishsticks, oldMember) {
-    clearRecord(fishsticks, oldMember); //Clear member's record
+async function handleOldMember(fishsticks, oldMember) {
+    await clearRecord(fishsticks, oldMember); //Clear member's record
 }

@@ -46,6 +46,6 @@ async function handleShiny(msg) {
 	ctx.fillText(`${msg.content}`, canvas.width / 2.5, canvas.height / 1.8);
 
 	//Save and fire off
-	const welcomeAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
-	await msg.channel.send('Dropping the mic on the haters.', welcomeAttachment);
+	const shinyAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
+	await msg.channel.send({ content: 'Oooooh, pretty...', files: [shinyAttachment] });
 }

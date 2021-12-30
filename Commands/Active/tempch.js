@@ -7,6 +7,7 @@ const { chSpawner } = require('../../Modules/Core/Core_ids.json');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { toTitleCase } = require('../../Modules/Utility/Utils_Aux');
+const { hasPerms } = require('../../Modules/Utility/Utils_User');
 
 //Exports
 module.exports = {
@@ -19,6 +20,10 @@ module.exports = {
 async function run(Fishsticks, cmd) {
     cmd.msg.delete();
 
+    if(!hasPerms(cmd.msg.member, ['CC Member', 'ACC Member'])) {
+        return cmd.reply('Only (A)CC Members can create temporary channels!', 10);
+    }
+
     const guild = cmd.msg.guild;
 
     //Syntax: !tempch -<maxUsers> -[channelName]
@@ -27,7 +32,7 @@ async function run(Fishsticks, cmd) {
     }
 
     //Check voice state
-    if (!cmd.msg.member.voice.channel.id || cmd.msg.member.voice.channel.id !== chSpawner) {
+    if (!cmd.msg.member.voice.channel || cmd.msg.member.voice.channel.id !== chSpawner) {
         return cmd.reply('You must connect to the channel spawner first!');
     }
 
@@ -53,29 +58,33 @@ async function createCh(Fishsticks, cmd, guild) {
         const chData = {
             name: `${chName}`,
             type: 'GUILD_VOICE',
+            reason: '[TEMP-CH] System channel creation.',
+            position: chSpawnerChannel.rawPosition + 1
         };
 
-        await chSpawnerChannel.clone(chData).then(async newCh => {
-            await newCh.setPosition(chSpawnerChannel.position - 1);
-            await cmd.msg.member.voice.setChannel(newCh);
-            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: newCh.id, name: chName });
+        await chSpawnerChannel.clone(chData).then(async (clonedCh) => {
+            await cmd.msg.member.voice.setChannel(clonedCh);
+
+            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: clonedCh.id, name: chName });
         });
     }
     else { //Has limit
-        log('info', '[TEMP-CH] Creating a new channel with no user limit.');
+        log('info', '[TEMP-CH] Creating a new channel with a user limit.');
 
         const chName = toTitleCase(cmd.content[1]);
 
         const chData = {
             name: `${chName}`,
             type: 'GUILD_VOICE',
-            userLimit: maxUsers
+            userLimit: maxUsers,
+            reason: '[TEMP-CH] System channel creation.',
+            position: chSpawnerChannel.rawPosition + 1
         };
 
-        await chSpawnerChannel.clone(chData).then(async newCh => {
-            await newCh.setPosition(chSpawnerChannel.position - 1);
-            await cmd.msg.member.voice.setChannel(newCh);
-            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: newCh.id, name: chName });
+        await chSpawnerChannel.clone(chData).then(async (clonedCh) => {
+            await cmd.msg.member.voice.setChannel(clonedCh);
+
+            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: clonedCh.id, name: chName });
         });
     }
 }
@@ -99,13 +108,14 @@ async function validateChannel(fishsticks, preMemberState) {
 //Deletes a temp channel
 async function delCh(fishsticks, oldMemberChannel) {
 
-    await oldMemberChannel.delete('FS TempCh trash collection.').then(ch => {
-        log('proc', '[TEMP-CH] Channel "' + ch.name + '" deleted.');
-    });
+    const chRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'delete', { id: oldMemberChannel.id });
 
-    const chRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'delete', oldMemberChannel.id);
-
-    if (chRes.deleted !== 1) {
+    if (chRes.deletedCount !== 1) {
         fishsticks.CONSOLE.send(fishsticks.RANGER + ', FSO failed to properly delete a channel - or possibly something more sinister.');
+    }
+    else {
+        await oldMemberChannel.delete('FS TempCh trash collection.').then(ch => {
+            log('proc', '[TEMP-CH] Channel "' + ch.name + '" deleted.');
+        });
     }
 }

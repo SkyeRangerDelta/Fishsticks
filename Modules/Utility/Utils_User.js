@@ -95,31 +95,9 @@ async function insertNewMember(Fishsticks, recordToAdd) {
 async function clearRecord(Fishsticks, formerMember) {
 	//Desc: clears the former members FSO roles, vouches, and stats
 
-	const memberRecord = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: formerMember.id });
+	const memberRecord = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'delete', { id: formerMember.id });
 
-	if (!memberRecord) {
-		return log('err', '[RECORD-MAINT] Could not locate the record to clear!');
-	}
-
-	const updatedRecord = {
-		id: formerMember.id,
-		roles: [],
-		vouches: [],
-		acAttempts: 0,
-		acSuccess: 0,
-		pcSuccess: 0,
-		messagesSent: 0,
-		xp: {
-			level: 1,
-			rp: 0,
-			goldfish: 0,
-			spentGoldfish: 0
-		}
-	};
-
-	const clearRecordRes = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', updatedRecord);
-
-	if (clearRecordRes.modifiedCount != 1) {
+	if (memberRecord.deletedCount !== 1) {
 		log('err', '[RECORD-MAINT] Could not clear the record in question!');
 	}
 	else {
