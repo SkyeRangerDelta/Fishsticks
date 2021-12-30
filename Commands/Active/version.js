@@ -13,7 +13,12 @@ module.exports = {
 
 //Functions
 function run(fishsticks, cmd) {
-	cmd.msg.delete({ timeout: 0 });
+	cmd.msg.delete();
+
+	let branch = 'Master';
+	if(fishsticks.TESTMODE) {
+		branch = 'Experimental';
+	}
 
 	const versionPanel = {
 		title: 'o0o - Fishsticks Version/About - o0o',
@@ -23,12 +28,16 @@ function run(fishsticks, cmd) {
 		timeout: 30000,
 		fields: [
 			{
-				name: 'Version: ',
-				value: packageVer
+				name: 'Version:',
+				value: `${packageVer}`
 			},
 			{
-				name: 'Current Status: ',
-				value: 'Blah',
+				name: 'Branch:',
+				value: `${branch}`
+			},
+			{
+				name: 'Current Status:',
+				value: `ONLINE: Watching for !help | ${packageVer}`,
 			},
 			{
 				name: 'Fishsticks GitHub Repository',
@@ -37,7 +46,8 @@ function run(fishsticks, cmd) {
 		]
 	};
 
-    cmd.channel.send({ embeds: [embedBuilder(versionPanel)] }).then(sent => sent.delete({ timeout: 30000 }));
+    cmd.channel.send({ embeds: [embedBuilder(versionPanel)] })
+		.then(s => { setTimeout(() => s.delete(), 30000); });
 }
 
 function help() {

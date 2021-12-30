@@ -79,5 +79,5 @@ async function handleNewMember(fishsticks, newMember) {
 
     //Save and fire off
     const welcomeAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
-    dispatchChannel.send('Dropping the mic on the haters.', welcomeAttachment);
+    dispatchChannel.send({ content: `Welcome ${newMember} to the server!`, files: [welcomeAttachment] });
 }

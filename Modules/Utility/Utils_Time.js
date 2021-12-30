@@ -42,14 +42,13 @@ function systemTimestamp(date) {
 
 //Returns a 'date-and-time' date obj
 function flexTime(date) {
-	const now = new Date();
 	if (!date) {
-		const newFlex = DATE.format(now, 'ddd MM D YYYY - HH:mm:ss');
+		const newFlex = DateTime.now().toLocaleString(DateTime.DATETIME_MED);
 
 		return newFlex;
 	}
 	else {
-		const newFlex = DATE.format(date, 'ddd MM D YYYY - HH:mm:ss');
+		const newFlex = new DateTime(date.toISOString()).toLocaleString(DateTime.DATETIME_MED);
 
 		return newFlex;
 	}

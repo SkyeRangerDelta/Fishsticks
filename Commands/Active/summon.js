@@ -11,8 +11,7 @@ module.exports = {
 
 //Functions
 async function run(fishsticks, cmd) {
-
-    cmd.msg.delete({ timeout: 0 });
+    cmd.msg.delete();
 
     //Set card name
     const cardName = cmd.content[0]; //Process card name from command
@@ -48,7 +47,7 @@ async function run(fishsticks, cmd) {
 
     try { //Attempt to summon/execute
         if (fishsticks.SUMM_BRODEMODE === false) {
-            cmd.channel.send({ files: [{
+            await cmd.channel.send({ files: [{
                     attachment: `./Commands/Active/Summons/${cardName}.png`
                 }] });
         }

@@ -5,6 +5,7 @@
 const { fso_query } = require('../FSO/FSO_Utils');
 const { log } = require('../Utility/Utils_Log');
 const { discDen, prReqs, bStudy } = require('../Core/Core_ids.json');
+const { createLevelBanner } = require('./XP_LevelUp');
 
 //Exports
 module.exports = {
@@ -71,6 +72,7 @@ async function doXP(fishsticks, cmd, memberProf) {
         currLvl = currLvl + 1;
         lvlTriggered = true;
         //TODO: Canvas?
+        createLevelBanner(fishsticks, cmd, currLvl);
     }
 
     const updateProf = {
@@ -215,6 +217,6 @@ function determineXP(msgScore) {
         return Math.floor(Math.random() * (30 - 20) + 20);
     }
     else {
-        return Math.floor(Math.random() * (40 - 30) + 20);
+        return Math.floor(Math.random() * (40 - 30) + 30);
     }
 }

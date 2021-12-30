@@ -12,6 +12,7 @@ const { DuplicatedRoleException } = require('../../Modules/Errors/DuplicatedRole
 const { InvalidParameterException } = require('../../Modules/Errors/InvalidParameterException');
 
 const dateMod = require('date-and-time');
+const { DateTime } = require('luxon');
 
 //Exports
 module.exports = {
@@ -91,8 +92,10 @@ async function parseRequest(fishsticks, cmd) {
 
         //!role -edit -ID -param -new value
 
+        return cmd.reply('Editing isnt done quite yet, check back later.', 10);
+
         //Validate all required parameters existence
-        editRole(fishsticks, cmd);
+        //await editRole(fishsticks, cmd);
     }
     else if (params[0] === 'v' || params[0] === 'vote') {
         log('info', '[ROLE-SYS] Voting for a role.');
@@ -112,7 +115,7 @@ async function parseRequest(fishsticks, cmd) {
             return cmd.reply('Specify a role to join!');
         }
 
-        joinRole(fishsticks, cmd);
+        await joinRole(fishsticks, cmd);
     }
     else if (params[0] === 'l' || params[0] === 'leave') {
         log('info', '[ROLE-SYS] Leaving a role.');
@@ -121,22 +124,28 @@ async function parseRequest(fishsticks, cmd) {
             return cmd.reply('Specify a role to leave!');
         }
 
-        leaveRole(fishsticks, cmd);
+        await leaveRole(fishsticks, cmd);
     }
     else if (params[0] === 's' || params[0] === 'stats') {
         log('info', '[ROLE-SYS] Getting the statistics for a role.');
 
-        roleStats(fishsticks, cmd);
+        await roleStats(fishsticks, cmd);
     }
     else if (params[0] === 'list') {
         log('info', '[ROLE-SYS] Listing roles.');
 
-        listRoles(fishsticks, cmd);
+        await listRoles(fishsticks, cmd);
     }
     else if (params[0] === 'show') {
         log('info', '[ROLE-SYS] Showing the about for a role.');
 
-        aboutRole(fishsticks, cmd);
+        await aboutRole(fishsticks, cmd);
+    }
+    else if (params[0] === 'sync') {
+        log('info', '[ROLE-SYS] Syncing Discord game roles to FSO.');
+
+        return cmd.reply('No need for this one, carry on.', 10);
+        //syncRoles(fishsticks, cmd);
     }
     else {
         throw 'You need to state your intentions!';
@@ -266,12 +275,10 @@ async function joinRole(fishsticks, cmd) {
         const roleY = await cmd.msg.guild.roles.cache.find(role => role.name === `${roleX.name}`);
         cmd.msg.member.roles.add(roleY).then(function() {
 
-            const memberRolesList = memberFSO.roles; //Get member role listing
-
             //Update FSO with the new role list
             const roleUpdate = {
-                $set: {
-                    roles: memberRolesList.push(roleY.id)
+                $push: {
+                    roles: roleY.id
                 }
             };
 
@@ -311,11 +318,12 @@ async function leaveRole(fishsticks, cmd) {
 
             //Update FSO with the new role list
             const roleUpdate = {
-                id: cmd.msg.author.id,
-                roles: memberRolesList
+                $set: {
+                    roles: memberRolesList
+                }
             };
 
-            fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', roleUpdate)
+            fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', roleUpdate, { id: cmd.msg.author.id })
                 .then(done => {
                 if (done.modifiedCount === 1) {
                     cmd.channel.send('Role removed.').then(sent => {
@@ -392,6 +400,13 @@ async function listRoles(fishsticks, cmd, ext) {
 //Print the stats for a single role
 async function aboutRole(fishsticks, cmd) {
     const roleObj = await findRole();
+
+    if(!roleObj || roleObj === -1) {
+        return cmd.reply('No role found!', 10);
+    }
+
+    log('info', '[ROLE] Displaying about for ' + roleObj.name);
+
     let activeField;
 
     if (roleObj.active) {
@@ -412,9 +427,14 @@ async function aboutRole(fishsticks, cmd) {
     let foundersList = '';
     let membersList = '';
 
-    for (const founder in roleObj.founders) {
-        const founderMember = await fishsticks.CCG.members.fetch(roleObj.founders[founder]);
-        foundersList += `${founderMember.displayName}\n`;
+    if (roleObj.founders.length === 0) {
+        foundersList = 'This mustve been created pre-V18. No data.';
+    }
+    else {
+        for (const founder in roleObj.founders) {
+            const founderMember = await fishsticks.CCG.members.fetch(roleObj.founders[founder]);
+            foundersList += `${founderMember.displayName}\n`;
+        }
     }
 
     if (roleObj.members.length === 0) {
@@ -430,9 +450,7 @@ async function aboutRole(fishsticks, cmd) {
     const roleEmbed = {
         title: `o0o - ${roleObj.name} Role Info - o0o`,
         description: roleObj.description,
-        embed: {
-            noThumbnail: true
-        },
+        noThumbnail: true,
         footer: `Footer summoned by ${cmd.msg.member.displayName}.`,
         fields: [
             {
@@ -485,7 +503,7 @@ async function aboutRole(fishsticks, cmd) {
         delete: 30000
     };
 
-    return cmd.channel.send({ embeds: [embedBuilder(roleEmbed)] }).then(sent => {
+    return cmd.channel.send({ content: 'Role info.', embeds: [embedBuilder(roleEmbed)] }).then(sent => {
         setTimeout(() => sent.delete(), 30000);
     });
 }
@@ -497,7 +515,7 @@ async function activateRole(fishsticks, cmd, obj) {
     obj.active = true;
     obj.permanent = true;
     obj.activated = systemTimestamp();
-    obj.timeout = dateMod.addMonths(obj.timeout, 3);
+    obj.timeout = DateTime.now().plus({ 'weeks': 2 });
     obj.timeoutFriendly = flexTime(obj.timeout);
 
     const roleCount = cmd.msg.guild.roles.cache.length;
@@ -651,6 +669,73 @@ async function updateRoles(fishsticks, poolRes) {
         }
     }
 }
+
+//Sync game-roles in Discord to FSO
+async function syncRoles(fishsticks, cmd) {
+    const roleList = await populateRoleList(fishsticks);
+
+    const syncRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'insertMany', roleList);
+
+    if(syncRes.insertedCount !== roleList.length) {
+        cmd.reply('Not all roles were synced to FSO!');
+    }
+    else {
+        cmd.reply('All roles synced to FSO.', 15);
+    }
+
+}
+
+async function populateRoleList(fishsticks) {
+    const grColor = 10389358; //Decimal number of the hex color code: #9e876e
+    const roleList = [];
+    const roleCache = Array.from(fishsticks.CCG.roles.cache.values());
+
+    for (const roleIndex in roleCache) {
+        const role = roleCache[roleIndex];
+
+        if (role.color === grColor) {
+            const roleData = await processRole(role);
+            roleList.push(roleData);
+        }
+    }
+
+    log('info', '[ROLE-SYNC] Role listing to sync holds ' + roleList.length + ' roles.');
+    console.log(roleList);
+    return roleList;
+}
+
+async function processRole(role) {
+    const roleTimeout = DateTime.now().setZone('UTC-5').plus({ 'weeks': 2 });
+
+    log('info', '[ROLE-SYNC] Processing ' + role.name);
+    const newRoleObj = {
+        id: role.id,
+        name: role.name,
+        creator: 'Fishsticks',
+        game: 'Something Relevant',
+        description: 'Role created pre-V18, no info.',
+        created: role.createdAt,
+        createdFriendly: new DateTime(role.createdAt).toLocaleString(DateTime.DATETIME_MED),
+        activated: true,
+        timeout: roleTimeout,
+        timeoutFriendly: `${roleTimeout.toLocaleString(DateTime.DATETIME_MED)}`,
+        pings: 0,
+        votes: 5,
+        founds: [],
+        members: [],
+        active: true,
+        permanent: true,
+        activityFactor: 0
+    };
+
+    const memberList = Array.from(role.members.values());
+    for (const memberIndex in memberList) {
+        newRoleObj.members.push((memberList[memberIndex].user.id));
+    }
+
+    return newRoleObj;
+}
+
 
 //Help
 function help() {
