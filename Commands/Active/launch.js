@@ -12,7 +12,7 @@ async function run(fishsticks, cmd) {
     cmd.msg.delete();
 
     if (cmd.content[0] === 'rules') {
-        return cmd.reply('Ill add these eventually.');
+        return cmd.reply('Code extraction rules are as follows:\n-The code is extracted from the keyset of 3 sets of 7 randomized letters and numbers.\n-The code can simply be entered into chat without re-using `!launch`.\n-The code follows this format: 3,4-3,4,5-4,5 from the keyset.\n-ie: Given keyset 2J|71|DCK-VH|72C|VO-UGH|V7|BU; the code is 7172CV7.');
     }
 
     //Generate 3 sets of 7 characters

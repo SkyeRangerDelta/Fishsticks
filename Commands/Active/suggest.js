@@ -36,11 +36,12 @@ async function run(fishsticks, cmd) {
     const currMemberData = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: cmd.msg.author.id });
 
     const updateData = {
-        id: cmd.msg.author.id,
-        suggestionsPosted: currMemberData.suggestionsPosted++
+        $inc: {
+            suggestionsPosted: 1
+        }
     };
 
-    const updatedMember = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', updateData);
+    const updatedMember = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', updateData, { id: cmd.msg.author.id });
 
     if (updatedMember.modifiedCount === 1) {
         log('proc', '[SUGGEST] Synced.');

@@ -31,7 +31,7 @@ async function run(fishticks, cmd) {
     const definitions = await getDefinitions(word, dict, cmd);
 
     //Build response
-    let emDesc = '';
+    let emDesc = 'Definitions:\n';
     let bullet = 1;
     for (const defItem in definitions) {
         if (defItem > 4) break;
@@ -48,7 +48,7 @@ async function run(fishticks, cmd) {
 
     const defEmbed = {
         title: 'o0o - Dictionary [' + word + '] - o0o',
-        description: emDesc,
+        description: `${ emDesc }`,
         footer: 'Powered by the Oxford University Press Dictionary API.',
         noThumbnail: true
     };
@@ -59,20 +59,24 @@ async function run(fishticks, cmd) {
 
 async function getDefinitions(word, dict, cmd) {
     //Process defs
+    const defs = [];
+
     const lookup = await dict.definitions(word).catch(err => {
+        log('warn', '[DICT] Error: ' + err);
         if (err === 'No such entry found.') {
-            cmd.channel.send('No definitions were found!')
-                .then(sent => setTimeout(() => sent.delete(), 10000));
+            defs.push('None found!');
         }
-        log('warn', '[DICT] Error ' + err);
+
+        return defs;
     });
 
-    const defs = [];
     for (const item in lookup.results) {
         for (const lexicalItem in lookup.results[item].lexicalEntries) {
             defs.push(lookup.results[item].lexicalEntries[lexicalItem].entries[0].senses[0].definitions[0]);
         }
     }
+
+    console.log(defs);
 
     return defs;
 }

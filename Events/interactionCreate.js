@@ -6,7 +6,7 @@ const { handleButtonInteraction } = require('../Modules/Utility/Utils_Interactio
 
 //Export
 module.exports = {
-    name: 'messageReactionRemove',
+    name: 'interactionCreate',
     execute
 };
 

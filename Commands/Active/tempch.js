@@ -23,7 +23,7 @@ async function run(Fishsticks, cmd) {
 
     //Syntax: !tempch -<maxUsers> -[channelName]
     if (!cmd.content[0] || cmd.content[0] == null || cmd.content[0] === undefined) {
-        return cmd.reply('Why are you the way that you are. Give me something to work with here.', 10000);
+        return cmd.reply('Why are you the way that you are. Give me something to work with here.', 10);
     }
 
     //Check voice state

@@ -7,6 +7,7 @@ const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { systemTimestamp } = require('../../Modules/Utility/Utils_Time');
 const { council } = require('../../Modules/Core/Core_ids.json');
+const { hasPerms } = require('../../Modules/Utility/Utils_User');
 
 //Exports
 module.exports = {
@@ -209,6 +210,10 @@ async function toggleClosedPoint(fishsticks, cmd) {
 
 //Clear
 async function clearDocket(fishsticks, cmd) {
+	if(!hasPerms(cmd.message.member, ['Moderator', 'Council Member', 'Council Advisor'])) {
+		return cmd.reply('You lack the permissions to clear the docket!', 10);
+	}
+
 	const docketListing = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'selectAll');
 
 	if (!docketListing) {

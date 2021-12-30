@@ -15,7 +15,7 @@ function run(fishsticks, cmd) {
 	cmd.msg.delete();
 
 	if (!cmd.content[0]) {
-		return cmd.reply('Codex doesnt work without a search query!', 10000);
+		return cmd.reply('Codex doesnt work without a search query!', 10);
 	}
 
 	const cmdList = fs.readdirSync('./Commands/Active').filter(dirItem => dirItem.endsWith('.js'));

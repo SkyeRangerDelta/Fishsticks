@@ -44,8 +44,6 @@ function run(fishsticks, cmd) {
     const rollResult = roll.roll(dieRoll);
     let diceRolls = '', dieCalcs = '';
 
-    console.log(rollResult);
-
     for (let t = rollResult.calculations.length - 1; t > -1; t--) {
         dieCalcs = dieCalcs.concat(`${rollResult.calculations[t]}\n`);
     }

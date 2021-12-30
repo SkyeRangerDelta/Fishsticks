@@ -36,7 +36,9 @@ function run(fishsticks, cmd) {
 					'**Memes**: For memes, duh.\n' +
 					'**Hall of Aptitude**: Channel for posting art and creative media.\n' +
 					'🔇 **Hall of Spontaneity**: Chat channel for those without mics.\n' +
-					'**Movie Theatre**: Chat channel for movie/video streams.\n' +
+					'**Tech Chat**: Discuss technical stuff.\n' +
+					'**Production Studio**: Discuss content and media creation.\n' +
+					'**WCCM CC Radio**: Share music and podcasts.\n' +
 					'**Meeting Hall**: Chat channel for all things CCG Meeting related.'
 			},
 			{

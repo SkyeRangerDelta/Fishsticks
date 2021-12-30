@@ -69,12 +69,12 @@ function addToList(cmd) {
 
     fs.writeFileSync('./Modules/Library/prayerReqs.json', JSON.stringify(pReqDataFile));
 
-    cmd.reply('Pushed!', 10000);
+    cmd.reply('Pushed!', 10);
 }
 
 function clearList(cmd) {
     const pReqData = { pReqs: [] };
     fs.writeFileSync('./Modules/Library/prayerReqs.json', JSON.stringify(pReqData));
 
-    cmd.reply('Done!', 10000);
+    cmd.reply('Done!', 10);
 }

@@ -32,6 +32,9 @@ async function run(fishsticks, cmd) {
 
     //Parse
     const pollData = await parseCmd(fishsticks, cmd);
+    if(pollData === -1) {
+        return;
+    }
 
     //Post the poll
     const newPollData = await postPoll(cmd, pollData);
@@ -124,7 +127,8 @@ async function parseCmd(fishsticks, cmd) {
 
     //Verify at least 2 answer choices
     if (!cmdPoll[1] || !cmdPoll[2]) {
-        return cmd.reply('There has to be at least 2 responses!', 10);
+        cmd.reply('There has to be at least 2 responses!', 10);
+        return -1;
     }
 
     //Go through parameters filling in answers
@@ -307,18 +311,28 @@ async function updateResponse(fishsticks, pollObj, interaction) {
 
 //End Poll
 async function endPoll(fishsticks, pollObj, interaction) {
+    if (pollObj.responses.recVotes === 0) {
+        return interaction.reply('No responses were submitted!')
+            .then(sent => { setTimeout(() => sent.delete(), 10000); });
+    }
+
+    if(interaction.member.id !== pollObj.authId) {
+        return interaction.reply('Only the poll owner can end the poll')
+            .then(sent => { setTimeout(() => sent.delete(), 10000); });
+    }
+
     const res = getWinner(fishsticks, pollObj);
 
     if (res.tieExists && pollObj.tied === true) {
         log('info', '[POLL] Tied found, confirmed >> ending poll.');
-        handleTie(fishsticks, pollObj, interaction, res);
+        await handleTie(fishsticks, pollObj, interaction, res);
     }
     else if (res.tieExists && pollObj.tied === false) {
         log('info', '[POLL] Tied found, not confirmed.');
-        verifyTie(fishsticks, interaction, res);
+        await verifyTie(fishsticks, interaction, res);
     }
     else {
-        handleWinner(fishsticks, pollObj, interaction, res);
+        await handleWinner(fishsticks, pollObj, interaction, res);
     }
 }
 
@@ -405,7 +419,7 @@ async function handleWinner(fishsticks, pollObj, interaction, results) {
 
 //Confirm whether to move on with tie or not
 async function verifyTie(fishsticks, interaction, results) {
-    let confirmMsg = `[WIP] There's currently a tie in the poll responses between ${results.currWinner}`;
+    let confirmMsg = `There's currently a tie in the poll responses between ${results.currWinner}`;
 
     for (const i in results.ties) {
         confirmMsg += ` and ${results.ties[i]}`;
@@ -450,9 +464,19 @@ async function handleTie(fishsticks, pollObj, interaction, result) {
         }
     }
 
-    const endTiePollRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Polls', 'update', { $set: { active: false } }, { id: interaction.message.id });
+    const res = getWinner(fishsticks, pollObj);
+
+    await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Polls', 'update', { $set: { active: false } }, { id: interaction.message.id });
 
     //Re-post with button responses for winner
+    let tiePost = `Poll ended! The winning responses were **__${res.currWinner}__**`;
+
+    for (const i in res.ties) {
+        tiePost += ` and **__${res.ties[i]}__**`;
+    }
+
+    tiePost += '.';
+
     interaction.message.edit({ content: 'Poll concluded!', components: [updatedRow] });
-    interaction.reply({ content: 'Poll ended! The winning response was **__tied__**.' });
+    interaction.reply({ content: tiePost });
 }

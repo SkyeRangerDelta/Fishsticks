@@ -13,12 +13,13 @@ function run(fishsticks, cmd) {
 
     //Syntax: !remindme -[time] -[message]
 
-    const waitTime = parseInt(cmd[0]);
-    const msgSent = cmd[1];
+    const waitTime = parseInt(cmd.content[0]) * 1000 * 60;
+    const msgSent = cmd.content[1];
 
+    cmd.reply(`Very good, I'll come find you in ${cmd.content[0]} minutes.`, 10);
 
     setTimeout(function() {
-        cmd.msg.reply({ content: 'The time is now!\n' + msgSent });
+        cmd.reply(`The time is now!\n${msgSent}`, 30);
     }, waitTime);
 }
 

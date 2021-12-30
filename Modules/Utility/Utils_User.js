@@ -48,8 +48,9 @@ async function fso_validate(Fishsticks, msg) {
 		const memberRecord = {
 			id: msg.author.id,
 			username: msg.author.username,
-			joinTimestamp: new Date(),
-			joinTimeFriendly: flexTime(),
+			joinTime: msg.member.joinedAt,
+			joinMs: msg.member.joinedTimestamp,
+			joinTimeFriendly: await flexTime(msg.member.joinedAt),
 			acAttempts: 0,
 			acSuccess: 0,
 			pcSuccess: 0,
@@ -64,7 +65,7 @@ async function fso_validate(Fishsticks, msg) {
 			},
 			roles: [],
 			vouches: [],
-			vouchedIn: vouchState
+			vouchedIn: `${vouchState}`
 		};
 
 

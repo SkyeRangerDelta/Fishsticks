@@ -55,7 +55,7 @@ async function run(fishsticks, cmd) {
     }
     catch (summonErr) {
         log('info', '[SUMMON] Summon Err\n' + summonErr);
-        return cmd.reply('*You failed to summon that, perhaps you have no mana?*', 10000); //Friendly response on failure
+        return cmd.reply('*You failed to summon that, perhaps you have no mana?*', 10); //Friendly response on failure
     }
 }
 

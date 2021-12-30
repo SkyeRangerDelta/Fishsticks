@@ -15,7 +15,7 @@ function run(fishsticks, cmd) {
     //Validate
     if (!target) {
         console.log('[BAC-MODE] Target found to be null.');
-        cmd.reply('Cleared the bacon target.', 10000);
+        cmd.reply('Cleared the bacon target.', 10);
 
         return fishsticks.baconTarget = null;
     }

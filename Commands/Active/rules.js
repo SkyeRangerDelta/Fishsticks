@@ -10,8 +10,10 @@ module.exports = {
 };
 
 async function run(fishsticks, cmd) {
+    cmd.msg.delete();
+
     const ruleCh = await fishsticks.channels.cache.get(rules);
-    cmd.reply(`See ${ruleCh}`, 10000);
+    cmd.reply(`See ${ruleCh}`, 10);
 }
 
 function help() {

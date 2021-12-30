@@ -93,7 +93,7 @@ async function doXP(fishsticks, cmd, memberProf) {
                 fishsticks.CONSOLE.send(`${cmd.msg.member}, You've reached level ${currLvl}!`, 10000);
             }
             else {
-                cmd.reply(`You've reached level ${currLvl}!`, 10000);
+                cmd.reply(`You've reached level ${currLvl}!`, 10);
             }
         }
     }

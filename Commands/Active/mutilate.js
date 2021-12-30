@@ -11,13 +11,21 @@ module.exports = {
 function run(fishsticks, cmd) {
     cmd.msg.delete();
 
-    const msgRaw = cmd.content[0];
+    let msgRaw = '';
+
+    if(!cmd.content[0]) {
+        msgRaw = 'Looks like someone doesnt know how to run commands.';
+    }
+    else {
+        msgRaw = cmd.content[0];
+    }
+
     const msgToMutilate = msgRaw.split('');
 
     const outputArr = [];
 
     for (const character in msgToMutilate) {
-        if (character % 2 == 0) {
+        if (character % 2 === 0) {
             outputArr.push(msgToMutilate[character].toUpperCase());
         }
         else {

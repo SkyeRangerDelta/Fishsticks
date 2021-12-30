@@ -4,6 +4,7 @@
 //Imports
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+const { convertMsFull, timeSinceDate } = require('../../Modules/Utility/Utils_Time');
 
 //Exports
 module.exports = {
@@ -27,12 +28,12 @@ async function run(fishsticks, cmd) {
     const profileEmbed = {
         title: `o0o - ${cmd.msg.member.displayName}'s Profile - o0o`,
         description: 'A synopsis of your FSO profile and XP data.',
-        footer: `FSO data may be slightly inaccurate depending on activity surrounding when this command was executed.`,
+        footer: 'FSO data may be slightly inaccurate depending on activity surrounding when this command was executed.',
         delete: 60000,
         fields: [
             {
                 name: 'Join Date',
-                value: memberProf.joinTimeFriendly,
+                value: memberProf.joinTimeFriendly + ' (Been a member for ' + timeSinceDate(memberProf.joinMs) + ').',
                 inline: true
             },
             {

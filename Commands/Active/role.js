@@ -203,12 +203,12 @@ async function voteRole(fishsticks, cmd) {
         throw 'That role doesnt exist!';
     }
     else if (roleObj.votes >= 5) {
-        return cmd.reply('This role has already been officialized, assigning it instead...', 10000);
+        return cmd.reply('This role has already been officialized, assigning it instead...', 10);
     }
     else {
         for (const memID in roleObj.founders) {
             if (roleObj.founders[memID] === cmd.msg.author.id) {
-                return cmd.reply('You already voted for this role! Get outta here!', 10000);
+                return cmd.reply('You already voted for this role! Get outta here!', 10);
             }
         }
 
@@ -243,7 +243,7 @@ async function voteRole(fishsticks, cmd) {
             else {
                 const missingVotes = 5 - updateObj.votes;
 
-                cmd.reply(`Vote counted; ${roleObj.name} requires ${missingVotes} vote(s) before being activated!`, 10000);
+                cmd.reply(`Vote counted; ${roleObj.name} requires ${missingVotes} vote(s) before being activated!`, 10);
             }
         }
     }
@@ -258,7 +258,7 @@ async function joinRole(fishsticks, cmd) {
 
     if (roleX.active === false) {
         //Vote role override
-        cmd.reply('Role not active, voting for it instead.', 10000);
+        cmd.reply('Role not active, voting for it instead.', 10);
         await voteRole(fishsticks, cmd);
     }
     else {
@@ -284,7 +284,7 @@ async function joinRole(fishsticks, cmd) {
                 }
             });
         }).catch(err => {
-            cmd.reply('Something went wrong trying to add your role.\n' + err, 10000);
+            cmd.reply('Something went wrong trying to add your role.\n' + err, 10);
         });
     }
 }
@@ -296,7 +296,7 @@ async function leaveRole(fishsticks, cmd) {
     const roleX = await findRole();
     if (roleX.active === false) {
         //Vote role override
-        cmd.reply('No active role to leave!', 10000);
+        cmd.reply('No active role to leave!', 10);
     }
     else {
         //Get role and remove
@@ -327,14 +327,14 @@ async function leaveRole(fishsticks, cmd) {
                 }
             });
         }).catch(err => {
-            cmd.reply('Something went wrong trying to remove your role.\n' + err, 10000);
+            cmd.reply('Something went wrong trying to remove your role.\n' + err, 10);
         });
     }
 }
 
 //Print the statistics for all roles
 async function roleStats(fishsticks, cmd) {
-    cmd.reply('Insert neat things here.', 10000);
+    cmd.reply('Insert neat things here.', 10);
 }
 
 //List all roles
@@ -519,7 +519,7 @@ async function activateRole(fishsticks, cmd, obj) {
             reason: '[ROLE-SYS] Game role subroutine has created a new role based on the votes fo 5 different members.'
         }).then(async newRoleObj => {
             log('proc', `[ROLE-SYS] Created new role ${newRoleObj.name}`);
-            cmd.reply('Activation successful!', 10000);
+            cmd.reply('Activation successful!', 10);
 
             const updateData = {
                 id: obj.id,
@@ -547,19 +547,19 @@ async function activateRole(fishsticks, cmd, obj) {
 function checkDupes(roleObj, cmd) {
     for (const roleItem in currentPool) {
         if (currentPool[roleItem].name === roleObj.name) {
-            cmd.reply('This role already exists!', 10000);
+            cmd.reply('This role already exists!', 10);
             return -1;
         }
         else if (currentPool[roleItem].game === roleObj.name) {
-            cmd.reply('*Suspecting sus*; that role name already exists as a game in the listing.', 10000);
+            cmd.reply('*Suspecting sus*; that role name already exists as a game in the listing.', 10);
             return -2;
         }
         else if (currentPool[roleItem].name === roleObj.game) {
-            cmd.reply('There is a role with that game as its name already in the listing!', 10000);
+            cmd.reply('There is a role with that game as its name already in the listing!', 10);
             return -3;
         }
         else if (currentPool[roleItem].game === roleObj.game) {
-            cmd.reply('A role with that game already exists!', 10000);
+            cmd.reply('A role with that game already exists!', 10);
             return -4;
         }
     }
