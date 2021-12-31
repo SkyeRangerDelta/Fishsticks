@@ -21,6 +21,11 @@ let recognizedRole;
 async function run(fishsticks, cmd) {
     cmd.msg.delete();
 
+    //Ensure perms
+    if (!hasPerms(cmd.msg.member, ['Moderator', 'Council Member', 'Council Advisor'])) {
+        return cmd.reply('You dont have permission to vouch people in!', 20);
+    }
+
     //Get role
     recognizedRole = await cmd.msg.guild.roles.fetch(recognized);
 
