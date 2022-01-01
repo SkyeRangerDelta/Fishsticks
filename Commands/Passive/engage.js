@@ -1,5 +1,6 @@
 // ---- Passive: Engage ----
 
 exports.run = (fishsticks, cmd) => {
-    cmd.channel.send('Aye captain.', { files: ['./Images/engage.gif'] });
+    cmd.msg.delete();
+    cmd.channel.send({ content: 'Aye captain.', files: ['./Images/Passives/engage.gif'] });
 };
