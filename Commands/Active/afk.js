@@ -13,7 +13,7 @@ module.exports = {
 async function run(fishsticks, cmd) {
     cmd.msg.delete();
 
-    if (cmd.content.length != 3) {
+    if (cmd.content.length !== 3) {
         return cmd.reply('AFK has 3 words...', 10);
     }
 
