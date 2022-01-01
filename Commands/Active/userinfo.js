@@ -1,46 +1,134 @@
-//----USER INFO----
+// ---- Userinfo ----
 
-const Discord = require('discord.js');
-const sys = require('../../Modules/Core/corecfg.json');
+//Imports
+const { hasPerms } = require('../../Modules/Utility/Utils_User');
+const { systemTimestamp } = require('../../Modules/Utility/Utils_Time');
+const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+const { log } = require('../../Modules/Utility/Utils_Log');
 
-exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+//Export
+module.exports = {
+    run,
+    help
+};
 
-    if (!msg.member.roles.find("name", "Staff")) {
-        return msg.reply("This is a staff command only!").then(sent => sent.delete(10000));
+async function run(fishsticks, cmd) {
+    cmd.msg.delete();
+
+    if (!hasPerms(cmd.msg.member, ['Moderator', 'Council Member'])) {
+        return cmd.reply('You lack the permissions to do this!');
     }
 
-    let user = msg.mentions.users.first();
+    let username = null;
 
-    if (user == null || user == undefined) {
-        return msg.channel.send("I don't have those records on file...").then(sent => sent.delete(10000));
+    if(!cmd.content[0]) {
+        username = cmd.msg.member.displayName;
+    }
+    else {
+        username = cmd.msg.content.split('-')[1];
+        username = username.trim();
     }
 
-    let uClient = user.client;
 
-    let created = user.createdAt;
-    let timeCreated = user.createdTimestamp;
-    let isBot = convertBool(user.bot);
-    let lastMsg = user.lastMessage;
+    //Syntax: !userinfo [userName]
+    let targetUser, targetMember;
+    if (!cmd.msg.mentions.members.first()) {
+        log('info', `[USER-INFO] Pulling report from text input (${username}).`);
+        targetMember = await fishsticks.CCG.members.cache.find(u => u.user.username === `${username}`);
 
-    let reportEmbed = new Discord.RichEmbed();
-        reportEmbed.setColor(sys.fscolor);
-        reportEmbed.setFooter("User Info for " + user.username + " summoned by " + msg.author.username + ". Auto-Delete in 30s.");
-        reportEmbed.setTitle("o0o - User Info Report - o0o");
-        reportEmbed.setThumbnail(user.avatarURL);
-        reportEmbed.setDescription("**Name**: " + user.username + "\n**Tag**: " + user.tag + "\n**Created**: " + created + "\n**Bot?** " + isBot + "\n**Last message**: `" + lastMsg + "`.");;
-        reportEmbed.addField("Current Status", uClient.status, true);
-        reportEmbed.addField("In Browser? ", convertBool(uClient.browser), true);
-        reportEmbed.addField("Ping", uClient.ping, true);
-        reportEmbed.addField("Uptime", uClient.uptime + "ms", true);
+        if (!targetMember) {
+            log('info', '[USER-INFO] Could not find a valid username');
+            targetMember = await fishsticks.CCG.members.cache.find(u => u.displayName === `${username}`);
 
-    msg.channel.send("Here are those files you asked for...", {embed: reportEmbed}).then(sent => sent.delete(30000));
-
-    function convertBool(state) {
-        if (state) {
-            return "Yes";
-        } else {
-            return "No";
+            if (!targetMember) {
+                log('info', '[USER-INFO] Could not find a valid displayname');
+                targetMember = await fishsticks.CCG.members.cache.find(u => u.user.tag === `${username}`);
+            }
         }
     }
+    else {
+        log('info', '[USER-INFO] Pulling report from mention.');
+        targetMember = await cmd.msg.mentions.members.first();
+    }
+
+    if (!targetMember) {
+        log('warn', '[USER-INFO] Couldnt id a user.');
+        return cmd.reply('Couldnt identify a user!', 10);
+    }
+    else {
+        targetUser = targetMember.user;
+        console.log(targetMember);
+    }
+
+    const vState = await targetMember.voice;
+    let vCh, vName;
+
+    if (!vState) {
+        vCh = null;
+    }
+    else {
+        vCh = vState.channel;
+    }
+
+    if (!vCh) {
+        vName = 'Not connected.';
+    }
+    else {
+        vName = `Connected to ${vCh.name}`;
+    }
+
+    const embed = {
+        title: `[Intelligence Profile] ${targetMember.displayName}`,
+        description: 'Heres that report you asked for...',
+        footer: `Report summoned by ${cmd.msg.member.displayName}`,
+        thumbnail: targetMember.displayAvatarURL(),
+        fields: [
+            {
+                name: 'ID',
+                value: targetMember.id,
+                inline: true
+            },
+            {
+                name: 'Username',
+                value: targetMember.user.username,
+                inline: true
+            },
+            {
+                name: 'Nickname',
+                value: targetMember.nickname,
+                inline: true
+            },
+            {
+                name: 'Join Date',
+                value: systemTimestamp(targetMember.joinedAt),
+                inline: true
+            },
+            {
+                name: 'Membership Gate Status',
+                value: `${ targetMember.pending }`,
+                inline: true
+            },
+            {
+                name: 'Voice State',
+                value: `${vName}`,
+                inline: true
+            },
+            {
+                name: 'Bot?',
+                value: `${ targetUser.bot }`,
+                inline: true
+            },
+            {
+                name: 'Tag',
+                value: targetUser.tag,
+                inline: true
+            }
+        ]
+    };
+
+    cmd.channel.send({ content: 'Doing some snooping...', embeds: [embedBuilder(embed)] });
+}
+
+function help() {
+    return '[Mod+] Displays some user details.';
 }

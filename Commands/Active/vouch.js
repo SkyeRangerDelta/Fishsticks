@@ -1,105 +1,134 @@
-const ids = require('../../Modules/fs_ids.json');
-const fs = require('fs');
+//----VOUCH----
+//Vote for a user to join the community.
 
-const log = require('../../Modules/Functions/log.js');
+//Imports
+const { recognized } = require('../../Modules/Core/Core_ids.json');
+const { handleNewMember } = require('../../Modules/Core/Core_NewMember');
+const { fso_query } = require('../../Modules/FSO/FSO_Utils');
+const { log } = require('../../Modules/Utility/Utils_Log');
+const { hasPerms } = require('../../Modules/Utility/Utils_User');
 
-exports.run = async (fishsticks, msg, cmd) => {
-	msg.delete();
+//Exports
+module.exports = {
+    run,
+    help
+};
 
-    //LOGGER INITIALZE
-	function syslog(message, level) {
-		try {
-			log.run(fishsticks, message, level);
-		}
-		catch (err) {
-			systemLog.send("**[SOMETHING IS WRONG]** I tried to send a message via a command, but something has gone askew. (Origin: Vouch)\n\nDetailing:\n" + err);
-		}
+//Globals
+let recognizedRole;
+
+//Functions
+async function run(fishsticks, cmd) {
+    cmd.msg.delete();
+
+    //Ensure perms
+    if (!hasPerms(cmd.msg.member, ['Moderator', 'Council Member', 'Council Advisor'])) {
+        return cmd.reply('You dont have permission to vouch people in!', 20);
     }
 
-    //PERMISSIONS CHECK
-    if (fishsticks.subroutines.get("vouch")) {
-        if (msg.member.roles.has(ids.ccmember) || msg.member.roles.has(ids.accmember)) {
-            runCmd();
+    //Get role
+    recognizedRole = await cmd.msg.guild.roles.fetch(recognized);
+
+    //Interpret vouch
+    const vouchee = cmd.msg.mentions.members.first();
+    log('info', '[VOUCH] Vouchee ID is ' + vouchee.id);
+
+    if(!vouchee) {
+        return cmd.reply('But...you didnt say who to vouch in.', 10);
+    }
+
+    if (vouchee.id === fishsticks.user.id) {
+        //Prevent Fs vouches
+        log('info', `[VOUCH] ${cmd.msg.member.displayName} tried to vouch Fishsticks in.`);
+        return cmd.reply('*Shakes head* No. This is not how that works.', 10);
+    }
+    else if (vouchee.id === cmd.msg.author.id) {
+        //Prevent self-vouching
+        log('info', `[VOUCH] ${cmd.msg.member.displayName} tried to vouch themselves in.`);
+        return cmd.reply('*No*. Duh. You cannot vouch for yourself.', 10);
+    }
+    else if (hasPerms(vouchee, ['Recognized', 'CC Member', 'ACC Member'])) {
+        //Prevent membership vouches
+        log('info', `[VOUCH] ${cmd.msg.member.displayName} tried to vouch someone who didn't need it in.`);
+        return cmd.reply(`Why...why? ${vouchee.displayName} definitely doesn't need it.`, 10);
+    }
+
+    if (!vouchee) {
+        log('info', `[VOUCH] ${vouchee} is an invalid vouchee.`);
+        throw 'I could not find the member to vouch for!';
+    }
+
+    //Interact with FSO table
+    log('info', '[VOUCH] Pending vouch record...');
+    const vouchQuery = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: vouchee.id });
+
+    if (!vouchQuery) {
+        log('info', '[VOUCH] Failed to collect vouchee record!');
+        return cmd.reply(`I can't do that until ${vouchee.displayName} has a valid FSO record. Get them to say something in chat.`, 20);
+    }
+
+    //Do FSO checks/validation then add
+    const memberVouches = vouchQuery.vouches;
+
+    if(memberVouches.includes(cmd.msg.author.id)) {
+        return cmd.reply(`You've already vouched for ${vouchee.displayName}!`, 10);
+    }
+
+    if (memberVouches.length < 2) {
+        //clear, do vouch
+        await addVouch(fishsticks, cmd, vouchQuery);
+    }
+    else {
+        //Not clear
+        return cmd.msg.reply({ content: 'This person has already reached 2 vouches! If they are lacking Recognized despite this, ping Skye.' });
+    }
+
+}
+
+async function addVouch(fishsticks, cmd, memberFSORecord) {
+
+    if (memberFSORecord.vouches.length === 0) {
+        //None on record, add new record
+        const recordUpdate = {
+            $push: {
+                vouches: cmd.msg.author.id
+            }
+        };
+
+        const addVouchRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', recordUpdate, { id: memberFSORecord.id });
+
+        if (addVouchRes.modifiedCount === 1) {
+            return cmd.reply(`${memberFSORecord.username} has been vouched for and needs only one more vouch.`);
         }
         else {
-            return msg.reply("You're not trusted enough to vouch for someone!").then(sent => sent.delete(15000));
+            return cmd.reply('Mmmmmmmm, something is wrong and the vouch may have not been tallied correctly.', 10);
         }
     }
     else {
-        return msg.reply("The vouch subroutine is currently disabled. Get a staff member to turn it on!");
-    }
-
-    async function runCmd() {
-        //COMMAND
-        let recognized = msg.guild.roles.find('name', 'Recognized');
-        let vouchee = msg.author.id;
-        let userID = cmd[0].replace(/[\\<>@#&!]/g, "");
-        let userToVouch = fishsticks.users.get(userID);
-        let vouchedFor = false;
-
-        msg.guild.fetchMember(userToVouch).then(mem => {
-            if (mem.roles.find("name", "Recognized")) {
-                msg.reply("Why are you vouching for someone who is already Recognized? Don't be dumb. :facepalm:").then(sent => sent.delete(20000));
-                return;
+        //1 vouch on record, update and add Recognized
+        const recordUpdate = {
+            $push: {
+                vouches: cmd.msg.author.id
+            },
+            $set: {
+                vouchedIn: 'Yes'
             }
-        });
+        };
 
-        syslog("Received a vouch command from " + msg.author.username + " for " + userToVouch.username, 2);
+        const addVouchRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', recordUpdate, { id: memberFSORecord.id });
+        const vouchee = await cmd.msg.guild.members.cache.get(memberFSORecord.id);
+        await vouchee.roles.add(recognizedRole, '[VOUCH] Granted recognized on due to reaching 2 vouches.');
 
-        var vouchesFile = JSON.parse(fs.readFileSync('./Modules/Vouches/fs_vouches.json', 'utf8'));
-        
-        //Attempt to read keys
-        try {
-            for (i in vouchesFile.vouches) {
-                if (vouchesFile.vouches[i].userID == userID) { //Found a key
-                    if (vouchesFile.vouches[i].vouches == 1) { //Check for an already existing vouch
-
-                        for (t in vouchesFile.vouches[i].userIDs) { //If the voucher has already vouched for the vouchee
-                            if (vouchesFile.vouches[i].userIDs[t] == msg.author.id) {
-                                return msg.reply("You can't vouch for the same person twice! Get outta here...").then(sent => sent.delete(15000));
-                            }
-                        }
-
-                        vouchesFile.vouches[i].vouches++;
-                        vouchesFile.vouches[i].userIDs.push(msg.author.id);
-                        msg.reply("You've vouched for " + userToVouch.username + "! Granting them Recognized!").then(sent => sent.delete(10000));
-                        msg.channel.send(userToVouch.username + " has been granted Recognized.");
-                        msg.guild.fetchMember(userToVouch).then(vouchPerson => {
-                            vouchPerson.addRole(recognized);
-
-                            //Send member a game watcher request
-                            vouchPerson.send("Now that you're a recognized member of our Discord, I'd like to point out that we have a multiude of game-specific channels in here."+
-                            " Some of them are hidden (text chats) but the voice chats are always open. You can see **all** of these text chats (and get a better idea of what all we"+
-                            " play by joining the game watcher role (which you can remove any time if you don't want it). I can assign this to you now if you'd like. Just click the check below if so.").then(gwDM => {
-                                gwDM.react('✅');
-                                fishsticks.gwDMMessages.push(gwDM.id);
-                            });
-                        });
-                        syslog("[VOUCH SYS] Granted Recognized to " + userToVouch.tag + " due to receiving 2 vouches.", 2);
-                        vouchedFor = true;
-                    }
-                    else {
-                        msg.reply(userToVouch.username + " has already received 2 vouches! He doesn't need anymore and should already be recognized. If not, ask a staff member!");
-                        return;
-                    }
-                }
-            }
-
-            if (vouchedFor == false) {
-                //Didn't find a key, therefore create one
-                let newKey = {"userID": userToVouch.id, "vouches": 1, "userIDs":[]};
-                vouchesFile.vouches.push(newKey);
-                vouchesFile.vouches[vouchesFile.vouches.length - 1].userIDs.push(msg.author.id);
-                msg.reply("You've vouched for " + userToVouch.username + "! They need another vouch before they're granted Recognized!");
-            }
+        if (addVouchRes.modifiedCount === 1) {
+            cmd.channel.send({ content: `${memberFSORecord.username} has been vouched for and has been granted Recognized!` });
+            return handleNewMember(fishsticks, vouchee); //Handle member welcome graphic
         }
-        catch (err) {
-            syslog("[VOUCH SYS] SOMETHING IS ON FIRE. WHY IS THIS ON FIRE? THIS IS *NEVER ON FIRE*.", 3);
+        else {
+            return cmd.reply('Mmmmmmmm, something is wrong and the vouch may have not been tallied correctly.', 20);
         }
-
-        fs.writeFileSync('./Modules/Vouches/fs_vouches.json', JSON.stringify(vouchesFile));
     }
+}
 
-
-    
+function help() {
+    return 'Vouches a user into the community from the Crash Pad.';
 }

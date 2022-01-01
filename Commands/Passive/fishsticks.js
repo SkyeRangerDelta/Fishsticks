@@ -1,9 +1,8 @@
-const Discord = require('discord.js');
-const config = require('../../Modules/Core/corecfg.json');
+// ---- Passive: Fishsticks ----
 
-exports.run = (fishsticks, msg, cmd) => {
+exports.run = (fishsticks, cmd) => {
 
-    if (msg.content.length > 10) return;
+    if (cmd.msg.content.length > 10) return;
 
-    msg.channel.send("Mmmm, fishsticks....", {files: ["./images/fsimg.jpg"]});
-}
+    cmd.channel.send('Mmmm, fishsticks....', { files: ['./Images/fsimg.jpg'] });
+};

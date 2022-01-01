@@ -1,26 +1,41 @@
 //----AFK----
+//Renames the AFK voice chat
 
-const chs = require('../../Modules/fs_ids.json');
+//Imports
+const chs = require('../../Modules/Core/Core_ids.json');
 
-exports.run = async (fishsticks, msg, cmd) => {
-    msg.delete();
+//Exports
+module.exports = {
+	run,
+	help
+};
 
-    if (cmd.length != 3) {
-        return msg.reply("AFK has 3 words...").then(sent => sent.delete(10000));
+async function run(fishsticks, cmd) {
+    cmd.msg.delete();
+
+    if (cmd.content.length != 3) {
+        return cmd.reply('AFK has 3 words...', 10);
     }
 
-    let newName = "";
-    
-    if (cmd[0].toLowerCase().charAt(0) != 'a') {
-        return msg.reply("(A)FK - The word needs to start with an A!").then(sent => sent.delete(7000));
-    } else if (cmd[1].toLowerCase().charAt(0) != 'f') {
-        return msg.reply("A(F)K - The word needs to start with an F!").then(sent => sent.delete(7000));
-    } else if (cmd[2].toLowerCase().charAt(0) != 'k') {
-        return msg.reply("AF(K) - The word needs to start with a K!").then(sent => sent.delete(7000));
+    let newName = '';
+
+    if (cmd.content[0].toLowerCase().charAt(0) !== 'a') {
+        return cmd.reply('(A)FK - The word needs to start with an A!', 7);
+	}
+	else if (cmd.content[1].toLowerCase().charAt(0) !== 'f') {
+        return cmd.reply('A(F)K - The word needs to start with an F!', 7);
+	}
+	else if (cmd.content[2].toLowerCase().charAt(0) !== 'k') {
+        return cmd.reply('AF(K) - The word needs to start with a K!', 7);
     }
 
-    newName = "AFK (" + cmd.join(' ') + ")";
+    newName = 'AFK (' + cmd.content.join(' ') + ')';
 
-    let AFKChannel = await fishsticks.channels.get(chs.afkChannel);
-    AFKChannel.setName(newName, "The AFK command was used!").then(t => msg.reply("Done!").then(sent => sent.delete(5000)));
+    const AFKChannel = await fishsticks.channels.cache.get(chs.afkChannel);
+    AFKChannel.setName(newName, 'The AFK command was used!')
+        .then(cmd.reply('Done!', 10));
+}
+
+function help() {
+	return 'Changes the AFK channel name';
 }

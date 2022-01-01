@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/After Hours.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Alpha Squad.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Applicatinos.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Bandit.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Banhammer.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Catchphrase.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Chosen Poorly.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Chronic.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Confidence.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Context.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Copy Paste.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/D.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/DW Overcome.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/DW Uplift.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Dodge.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Door.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Enhance.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Fishsticks.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/FutronBob.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Graham.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Greek.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Harmony.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Houdini.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Impossible.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Kesarahk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Koalefant.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Lewis.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Megs.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Meme War.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Ongurth.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Platypus.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Regret.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Safety First.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Scribe.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Skye.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/SkyeRangerDelta.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Spelling.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Squadmate.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Teamspeak2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Temper.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Toondogjoe.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Tracks.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/vouch.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/vouch.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="1yKqONZfTTsIM3V3llyZ2osQwvd" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../FlickMeter" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.standard" value="" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="reference.settings.project.statistic.project.settings" />
+    <property name="ts.external.directory.path" value="I:\Programs\WebStorm 2021.2.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Commands/Active" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="" />
+      <created>1632010595422</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1632010595422</updated>
+      <workItem from="1632010597842" duration="147000" />
+      <workItem from="1632010758033" duration="1448000" />
+      <workItem from="1632251760083" duration="12132000" />
+      <workItem from="1632349583536" duration="4695000" />
+      <workItem from="1632442076632" duration="4552000" />
+      <workItem from="1632510534132" duration="17397000" />
+      <workItem from="1632763819751" duration="17932000" />
+      <workItem from="1633793410803" duration="346000" />
+      <workItem from="1633981114907" duration="2004000" />
+      <workItem from="1633984279278" duration="3818000" />
+      <workItem from="1633988143462" duration="618000" />
+      <workItem from="1634941311157" duration="15000" />
+      <workItem from="1635006263383" duration="6330000" />
+      <workItem from="1635024110001" duration="13777000" />
+      <workItem from="1635089499775" duration="2750000" />
+      <workItem from="1635093213374" duration="7773000" />
+      <workItem from="1639316231380" duration="5044000" />
+      <workItem from="1639681975199" duration="11863000" />
+      <workItem from="1639948967900" duration="7883000" />
+      <workItem from="1640213936787" duration="150000" />
+      <workItem from="1640237589944" duration="8561000" />
+      <workItem from="1640246749386" duration="3958000" />
+      <workItem from="1640307058783" duration="2308000" />
+      <workItem from="1640319960792" duration="4700000" />
+      <workItem from="1640376587812" duration="22896000" />
+      <workItem from="1640444276020" duration="12935000" />
+      <workItem from="1640475284375" duration="7536000" />
+      <workItem from="1640821381370" duration="26971000" />
+      <workItem from="1640876416631" duration="23792000" />
+      <workItem from="1640917410686" duration="670000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

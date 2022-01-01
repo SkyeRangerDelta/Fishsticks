@@ -1,26 +1,44 @@
 //----MUTILATE----
+//Converts a message into tRiGgEr TeXt
 
-exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+//Exports
+module.exports = {
+    run,
+    help
+};
 
-    let rawInput = cmd.join(' ');
-    let msgToMutilate = rawInput.split('');
+//Functions
+function run(fishsticks, cmd) {
+    cmd.msg.delete();
 
-    console.log("rawInput: " + rawInput);
-    console.log("msgToMutilate: " + msgToMutilate);
+    let msgRaw = '';
 
-    let outputArr = [];
+    if(!cmd.content[0]) {
+        msgRaw = 'Looks like someone doesnt know how to run commands.';
+    }
+    else {
+        msgRaw = cmd.content[0];
+    }
 
-    for (character in msgToMutilate) {
-        if (character % 2 == 0) {
+    const msgToMutilate = msgRaw.split('');
+
+    const outputArr = [];
+
+    for (const character in msgToMutilate) {
+        if (character % 2 === 0) {
             outputArr.push(msgToMutilate[character].toUpperCase());
-        } else {
+        }
+        else {
             outputArr.push(msgToMutilate[character].toLowerCase());
         }
     }
 
-    let output = outputArr.join('');
-    
-    msg.channel.send(output);
+    const output = outputArr.join('');
 
+    cmd.channel.send(output);
+
+}
+
+function help() {
+    return 'Converts text into tRiGgEr TeXt.';
 }

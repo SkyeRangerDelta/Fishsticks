@@ -1,97 +1,142 @@
-const Discord = require('discord.js');
-const config = require('../../Modules/Core/corecfg.json');
-const chs = require('../../Modules/fs_ids.json');
-const syslog = require('../../Modules/Functions/syslog.js');
-const permsCheck = require("../../Modules/Functions/permissionsCheck.js");
-const subroutineCheck = require('../../Modules/Functions/subroutineCheck.js');
+// ---- Echo ----
+//Posts an ping on a delayed timer in Announcements
 
-//State command required permissions
-let permissions = {
-    "perms": ["Staff", "Bot", "Event Coordinator"]
+const { hasPerms } = require('../../Modules/Utility/Utils_User');
+const { announcements } = require('../../Modules/Core/Core_ids.json');
+const { log } = require('../../Modules/Utility/Utils_Log');
+const { toTitleCase } = require('../../Modules/Utility/Utils_Aux');
+const { findRole } = require('./role');
+
+let annChannel;
+
+//Exports
+module.exports = {
+    run,
+    help
 };
 
-exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+async function run(fishsticks, cmd) {
+    cmd.msg.delete();
 
-    const announcements = fishsticks.channels.get(chs.announcements);
+    annChannel = await fishsticks.channels.cache.get(announcements);
 
-    function echoFunc(statement) {
-        announcements.send(statement);
+    if (!hasPerms(cmd.msg.member, ['Event Coordinator', 'Moderator', 'Council Member', 'Council Advisor'])) {
+        return cmd.reply('Hey, hey there; not so fast. You need permissions to run that command.', 15);
     }
 
-    if (subroutineCheck.run(fishsticks, "echo", msg)) { //Make sure subroutine is running
-        if (permsCheck.run(fishsticks, msg.member, permissions)) { //Check Perms
-            if (fishsticks.engmode == true) {
-                if (msg.member.roles.has(chs.bot)) {
-                    syslog.run(fishsticks, "[ECHO-CMD] ENGM Override Executed: Permission granted to " + msg.author.tag, 1);
-    
-                    msg.reply("ENGM Override Recognized. Granting permissions to " + msg.author.tag + ".").then(sent => sent.delete(10000));
-    
-                    var milTime;
+    //Syntax: !echo <waitTimeInMinutes> [pingType] [messageToSend]
+    //!echo -10 -Blah                       sends blah in 10 minutes to everyone
+    //!echo -10 -wzfiretime -blah           sends blah in 10 minutes to wzfireteam
+    //!echo -wzfireteam -blah               sends blah to wzfireteam instantly
 
-                    //Sanitize time parameter
-                    try {
-                        milTime = parseInt(cmd[0], 10);
-                    } catch (processTimeErr) {
-                        msg.reply("[ECHO-CMD] Hmmm, I'm seeing a electrical surge in sector 9 of my neural net. I think time is supposed to be a number.");
-                    }
+    //Accepted ping types: e, everyone, h, here, game role, game name
 
-                    if (typeof milTime != 'number' || isNaN(milTime)) {
-                        return msg.reply(`Hol' up, I can't wait '${cmd[0]}' minutes. That's gonna need to be a number.`).then(sent => sent.delete(15000));
-                    }
+    if (!cmd.content[0]) {
+        cmd.reply('Why do I waste my time here. You cant dispatch an announcement with nothing in the message.', 10);
+    }
 
-                    if (milTime < 0) {
-                        milTime = milTime * -1;
-                    }
+    let waitTime;
+    try {
+        waitTime = (parseInt(cmd.content[0]) * 60) * 1000;
+    }
+    catch (e) {
+        waitTime = -1;
+    }
 
-                    var waitTime = milTime * 60;
-                    var cmdTime = waitTime * 1000;
-    
-                    var relayMSg = cmd.splice(1).join(' ');
+    if (waitTime === -1 || isNaN(waitTime)) {
+        log('info', '[ECHO] Announcement has no wait time, immediate post.');
+        //First param is not a number, check ping type or message
 
-                    syslog.run(fishsticks, "[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg, 1);
-                    msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete(10000));
+        const disMsg = toTitleCase(cmd.content[1]);
 
-                    setTimeout(echoFunc, cmdTime, "here " + relayMSg);
-                }
-                else {
-                    msg.reply("Engineering Mode is enabled. I can't let you do that.");
-                }
-            }
-            else { //Not in ENGM
-                var milTime;
-
-                //Sanitize time parameter
-                try {
-                    milTime = parseInt(cmd[0], 10);
-                } catch (processTimeErr) {
-                    msg.reply("[ECHO-CMD] Hmmm, I'm seeing a electrical surge in sector 9 of my neural net. I think time is supposed to be a number.");
-                }
-
-                if (typeof milTime != 'number' || isNaN(milTime)) {
-                    return msg.reply(`Hol' up, I can't wait '${cmd[0]}' minutes. That's gonna need to be a number.`).then(sent => sent.delete(15000));
-                }
-
-                if (milTime < 0) {
-                    milTime = milTime * -1;
-                }
-
-                var waitTime = milTime * 60;
-                var cmdTime = waitTime * 1000;
-    
-                var relayMSg = cmd.splice(1).join(' ');
-
-                syslog.run(fishsticks, "[ECHO-CMD] Message Received - No division noted. Awaiting " + milTime + " minute(s) to relay message: " + relayMSg, 1);
-                msg.reply("Command Received. Awaiting " + milTime + " minute(s) to deploy.\nNo division noted.").then(sent => sent.delete(10000));
-
-                setTimeout(echoFunc, cmdTime, "@everyone " + relayMSg);
-            }
-        }
-        else {
-            msg.reply("Permissions check failed. Command restricted.");
+        switch (cmd.content[0]) {
+            case 'e':
+            case 'everyone':
+                setTimeout(dispatchMsg, 0, '@everyone ' + disMsg);
+                break;
+            case 'h':
+            case 'here':
+                setTimeout(dispatchMsg, 0, '@here ' + disMsg);
+                break;
+            case 'n':
+            case 's':
+            case 'soft':
+            case 'none':
+                setTimeout(dispatchMsg, 0, disMsg);
+                break;
+            default:
+                await doPingDispatch(fishsticks, cmd);
         }
     }
     else {
-        msg.reply("The `echo` subroutine is offline. Find " + fishsticks.ranger + " and get him to turn it back on!").then(sent => sent.delete(15000));
+        log('info', `[ECHO] Announcement has ${waitTime} minute wait time.`);
+
+        cmd.reply(`Roger that, waiting ${cmd.content[0]} minute(s) to post.`, 10);
+
+        const disMsg = toTitleCase(cmd.content[2]);
+
+        switch (cmd.content[1]) {
+            case 'e':
+            case 'everyone':
+                setTimeout(dispatchMsg, waitTime, '@everyone ' + disMsg);
+                break;
+            case 'h':
+            case 'here':
+                setTimeout(dispatchMsg, waitTime, '@here ' + disMsg);
+                break;
+            case 'n':
+            case 's':
+            case 'soft':
+            case 'none':
+                setTimeout(dispatchMsg, waitTime, disMsg);
+                break;
+            default:
+                await doPingDispatch(fishsticks, cmd, waitTime);
+        }
+    }
+}
+
+function help() {
+    return 'Posts a delayed announcement.';
+}
+
+function dispatchMsg(msg) {
+    annChannel.send({ content: msg });
+}
+
+async function getRolePing(fishsticks, cmd, role) {
+    let rolePing;
+
+    if (!cmd.msg.mentions.roles.first()) {
+        //No ping - returns DiscordID
+        const roleObj = await findRole(fishsticks, role);
+        rolePing = roleObj.discordID;
+    }
+    else {
+        //Returns role OBJ
+        const rolePingObj = cmd.msg.mentions.roles.first();
+        rolePing = rolePingObj.id;
+    }
+
+    if (!rolePing) {
+        return '@everyone';
+    }
+    else {
+        const roleToPing = fishsticks.CCG.roles.cache.get(rolePing);
+        return `${roleToPing} `;
+    }
+}
+
+async function doPingDispatch(fs, cmd, wait) {
+
+    if (!wait) {
+        const disMsg = await toTitleCase(cmd.content[1]);
+        const sendMsg = await getRolePing(fs, cmd, cmd.content[0]) + disMsg;
+        setTimeout(dispatchMsg, 0, sendMsg);
+    }
+    else {
+        const disMsg = await toTitleCase(cmd.content[2]);
+        const sendMsg = await getRolePing(fs, cmd, cmd.content[1]) + disMsg;
+        setTimeout(dispatchMsg, wait, sendMsg);
     }
 }

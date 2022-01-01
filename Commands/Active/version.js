@@ -1,29 +1,55 @@
-const Discord = require('discord.js');
-const config = require('../../Modules/Core/corecfg.json');
-const coresys = require('../../Modules/Core/coresys.json');
+// ---- Version ----
 
-exports.run = (fishsticks, msg, cmd) => {
-	msg.delete();
-	
-	function fetchStatus() {
-		if (fishsticks.subroutines.get("online")) {
-			return "`Online`";
-		}
-		else {
-			return "`Offline`";
-		}
+//Imports
+const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+const config = require('../../Modules/Core/Core_config.json');
+const packageVer = require('../../package.json').version;
+
+//Exports
+module.exports = {
+	run,
+	help
+};
+
+//Functions
+function run(fishsticks, cmd) {
+	cmd.msg.delete();
+
+	let branch = 'Master';
+	if(fishsticks.TESTMODE) {
+		branch = 'Experimental';
 	}
 
-    var version = new Discord.RichEmbed();
-			version.setTitle("o0o - FISHSTICKS VERSION REPORT - o0o")
-			version.setColor(config.fscolor)
-			version.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
-			version.setDescription("This contains information regarding Fishsticks' current version and where to find out more concerning his structure.")
-			version.addField("Version: ", "V" + fishsticks.version);
-			version.addField("Current Status: ", fetchStatus());
-			version.addField("Fishsticks' GitHub Repository: ", "[Official Fishsticks Repo](https://github.com/SkyeRangerDelta/Fishsticks)");
-			version.addField("Complete Fishsticks Guide: ", "[KBase Article](https://forums.ccgaming.com/kb/viewarticle?a=3)");
-			version.setFooter(`Panel was summoned by ${msg.author.username}. This message will delete itself in 30 seconds.`);
+	const versionPanel = {
+		title: 'o0o - Fishsticks Version/About - o0o',
+		description: 'This contains general info about Fishsticks.',
+		color: config.colors.primary,
+		footer: `Panel was summoned by ${cmd.msg.author.username}. This message will delete itself in 30 seconds.`,
+		timeout: 30000,
+		fields: [
+			{
+				name: 'Version:',
+				value: `${packageVer}`
+			},
+			{
+				name: 'Branch:',
+				value: `${branch}`
+			},
+			{
+				name: 'Current Status:',
+				value: `ONLINE: Watching for !help | ${packageVer}`,
+			},
+			{
+				name: 'Fishsticks GitHub Repository',
+				value: '[Official Fishsticks Repo](https://github.com/SkyeRangerDelta/Fishsticks)'
+			}
+		]
+	};
 
-    msg.channel.send({embed: version}).then(sent => sent.delete(30000));
+    cmd.channel.send({ embeds: [embedBuilder(versionPanel)] })
+		.then(s => { setTimeout(() => s.delete(), 30000); });
+}
+
+function help() {
+	return 'Displays general Fishsticks information.';
 }

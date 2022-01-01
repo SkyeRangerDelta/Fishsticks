@@ -1,42 +1,41 @@
 # Fishsticks
-Official CC Discord Bot
+This is the official Christian Crew Gaming (CCG) Discord bot. Fishsticks (or just Fs) is a Discord.js based Discord bot that serves as the CCG Discord's liason for server operations including but not limited to user joins, announcements, custom roles, utility systems, and much more. He (yes, he) is a complex creation with a load of custom content. It is not designed for multi-server support or systems.
 
-This Discord bot has entered a stage of advancement that has surpassed my other bot, LCARS47 by nothing less than leaps and bounds. Use it wisely, and you may have some fun. Most systems within this repository are custom designed for the CCG community and are not meant for multi-platform control.
-
-Subroutine Systems
-- Modular command handler
-- Temporary channel spawner/handler
-- Music player
-- Newcomer join handling
-- Vouch system (User based rank promotions)
-- Filter systems
-- Advertisement-nixer system
+## Subroutines:
+- Modular Command Handler
+- Temporary Channel Spawner
+- Newcomer Join Handling
+- Link moderation
+- Advertisment moderation
+- Vouch system (moderator-centric anti-troll mechanism)
 - Self-diagnostics
-- Passive (fun) commands
-- Developer mode
-- Admin functions
-- Polling system (With duplication check)
-- Advanced subroutine control systems
+- Custom role system (complete with diagnostics)
+- Passive (meme) commands
+- Dev Mode
+- Poll system (with duplication check)
+- Bible verse library
+- Docket/Meeting point system
+- Event scheduler
+- Member rank/XP system
+- Advanced custom graphic generation (new joins, rank ups, etc.)
+- Online Statistics tools
 
-Experimental Features
-- Inter-bot playlist (non-web-based)
+## Code Integrity
+Designed and based primarily on JavaScript (Discord.js)
 
-Code Integrity
+###Requirements
+- Canvas (2.7.8)
+- Colors (1.4.8)
+- Date-and-time (2.0.0)
+- Discord.js (13.1.0)
+- ESLint (7.13.0)
+- Extract-URLs (1.3.2)
+- MongoDB (4.1.1)
+- Node-Schedule (2.0.0)
+- NPM (7.24.0)
+- Oxford-Dictionary (1.6.0)
+- Roll (1.2.0)
+- URLScan-API (0.0.4)
 
-Designed primarily from NodeJS JavaScript with a small amount of JSON used for data storage.
-
-Privacy Situation
-
-User IDs are handled in specific command strictly for data processing. Specifically for user permissions checks, data validation, and target locking. User data is processed in a non-storage oriented fashion, not expressly for malicious or even informational data recording.
-
-Dependencies
-- ffmpeg
-- ffmpeg-binaries
-- colors
-- ytdl-core
-- fs
-- count-files
-- opusscript
-- striptags
-- bufferutil
-- got
+## Privacy?
+IDs and data are handled purely for data processing such as user permission checks, data validation, and statistics controls. Users can view how their information is handled via the Fishsticks Online (FSO) control panel and under the PlDyn Privacy statament online (https://pldyn.net).

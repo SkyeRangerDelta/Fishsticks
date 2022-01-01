@@ -1,37 +1,89 @@
 //----PURGE----
+//-------------
+//Clears a users posts
 
-const permissionsCheck = require('../../Modules/Functions/permissionsCheck.js');
+//Imports
+const { log } = require('../../Modules/Utility/Utils_Log');
+const { hasPerms } = require('../../Modules/Utility/Utils_User');
 
-exports.run = async (fishsticks, msg, cmd) => {
+//Exports
+module.exports = {
+    run,
+    help
+};
+
+//Functions
+async function run(fishsticks, cmd) {
+    await cmd.msg.delete();
 
     //Permissions check
-    let perms = {"perms": ["Staff", "Moderator", "Bot"]}
-    if (!permissionsCheck.run(fishsticks, msg.member, perms)) {
-        return msg.reply("You don't have the authority to purge messages!").then(msg => msg.delete);
+    if (!hasPerms(cmd.msg.member, ['Moderator', 'Council Member', 'Council Advisor'])) {
+        return cmd.reply('Your lack of permissions disturbs me.', 10);
     }
 
-    let targetChannel = msg.channel;
+    //Syntax: !purge <@user> <number>
 
-    console.log("[PURGE] No user found, executing general deletion.");
+    const targetChannel = cmd.msg.channel;
+    let count = 0;
 
-    let count = parseInt(cmd[0]) + 1;
-    let targetChannelMsgs = await targetChannel.fetchMessages({limit: count});
+    if (!cmd.msg.mentions.users.first()) {
+        log('info', '[PURGE] No user detected, initiating general deletion.');
 
-    if (count > 5) {
-        msg.reply("Sit tight, this might take a minute.").then(sent => sent.delete(7000));
+        count = parseInt(cmd.content[0]);
+
+        if (!count || isNaN(count)) {
+            return cmd.reply('No number specified, might as well just delete the whole channel if you want them all gone.', 10);
+        }
+
+        if (count > 5) {
+            cmd.reply(`Sit tight, this might take a minute. (Processing ${count} messages.)`, 7);
+        }
+
+        const targetChannelMsgs = await targetChannel.messages.fetch({ limit: count });
+
+        targetChannelMsgs.forEach(msgItem => {
+            msgItem.delete();
+        });
     }
+    else {
+        log('info', '[PURGE] Possible user specified, initiating targeted deletion.');
 
-    console.log("[PURGE] Deleting " + count + " target messages...");
+        const targetMember = await cmd.msg.mentions.members.first();
+        if (!targetMember) {
+            return cmd.reply('No valid member found!', 10);
+        }
+        if (hasPerms(targetMember, ['Moderator', 'Event Coordinator', 'Council Advisor', 'Council Member'])) {
+            return cmd.reply('Invalid member target!', 10);
+        }
 
-    targetChannelMsgs.forEach(deleteItems);
+        count = parseInt(cmd.content[1]);
+        if (!count || isNaN(count)) {
+            log('warn', '[PURGE] No count specified, deleting all messages?');
 
-    async function deleteItems(key, value, map) {
-        let messageItem = value;
+            const targetChannelMsgs = await targetChannel.messages.fetch().then(m => m.filter(a => a.author.id === targetMember.id));
 
-        await targetChannel.fetchMessage(messageItem).then(msgColl => {
-            console.log("[PURGE] Target Content: " + msgColl.content)
-            msgColl.delete();
-            console.log("[PURGE] Removed.");
-        })
+            for (const msgObj in targetChannelMsgs) {
+                await targetChannel.messages.fetch(targetChannelMsgs[msgObj]).then(msgColl => {
+                    msgColl.delete();
+                });
+            }
+        }
+        else {
+            if (count > 5) {
+                cmd.reply('Sit tight, this might take a minute.', 7);
+            }
+
+            const targetChannelMsgs = await targetChannel.messages.fetch({ limit: count }).then(m => m.filter(a => a.author.id === targetMember.id));
+
+            for (const msgObj in targetChannelMsgs) {
+                await targetChannel.messages.fetch(targetChannelMsgs[msgObj]).then(msgColl => {
+                    msgColl.delete();
+                });
+            }
+        }
     }
+}
+
+function help() {
+    return 'Administrative command allowing bulk message deletion.';
 }

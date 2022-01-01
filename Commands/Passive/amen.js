@@ -1,12 +1,16 @@
-exports.run = (fishsticks, msg, cmd) => {
-    let pick = Math.random() * 3;
-    pick = Math.round(pick);
+// ---- Passive: Amen ----
 
-    if (pick == 0) {
-        msg.channel.send("Amen!", {files: ['./images/amen.gif']});
-    } else if (pick == 1) {
-        msg.channel.send("Amen!", {files: ['./images/amen_a.gif']});
-    } else {
-        msg.channel.send("Amen!", {files: ['./images/amen_b.gif']});
+exports.run = (fishticks, cmd) => {
+    const pick = Math.round(Math.random() * 3);
+
+    switch (pick) {
+        case 0:
+            cmd.channel.send('Amen!', { files: ['./Images/amen.gif'] });
+            break;
+        case 1:
+            cmd.channel.send('Amen!', { files: ['./Images/amen_a.gif'] });
+            break;
+        default:
+            cmd.channel.send('Amen!', { files: ['./Images/amen_b.gif'] });
     }
-}
+};

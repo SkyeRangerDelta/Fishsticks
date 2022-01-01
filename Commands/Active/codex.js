@@ -1,22 +1,42 @@
-const Discord = require('discord.js');
-const config = require('../../Modules/Core/corecfg.json');
-const colors = require('colors');
+// ---- Codex ----
 
-exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+//Imports
+const fs = require('fs');
+const { log } = require('../../Modules/Utility/Utils_Log');
 
-    let entry = cmd[0];
-    console.log(colors.blue("[CODEX] Attempting to find a codex entry " + entry));
-    fishsticks.commandAttempts++;
+//Exports
+module.exports = {
+	run,
+	help
+};
 
-    try {
-        let codexCommand = require(`../../Commands/Active/Codex/${entry}.js`);
-        codexCommand.run(fishsticks, msg, entry);
-        msg.channel.send(`You may also wish to see the full documentation of this command: https://wiki.pldyn.net/fishsticks/command-listing#${entry}`).then(sent => sent.delete(15000));
-        console.log(colors.blue("[CODEX] Success"));
-        fishsticks.commandSuccess++;
-    } catch (codexErr) {
-        console.log(colors.cyan("[CODEX] Failed:\n" + codexErr));
-        return msg.reply("Hmm, that's not an entry in the codex. (Should it be? Ask Ranger.)").then(sent => sent.delete(20000));
-    }
+//Functions
+function run(fishsticks, cmd) {
+	cmd.msg.delete();
+
+	if (!cmd.content[0]) {
+		return cmd.reply('Codex doesnt work without a search query!', 10);
+	}
+
+	const cmdList = fs.readdirSync('./Commands/Active').filter(dirItem => dirItem.endsWith('.js'));
+
+	log('info', '[CODEX] Attempting to find command.');
+
+    for (const file in cmdList) {
+		const fileID = cmdList[file].substring(0, cmdList[file].length - 3);
+		if (fileID.toLowerCase() === cmd.content[0]) {
+			const helpFile = require(`./${fileID}`);
+			const helpEntry = helpFile.help();
+			return cmd.channel.send(helpEntry + `\nThat entry can be found here: https://wiki.pldyn.net/fishsticks/command-listing#${fileID}`)
+			.then(sent => {
+				setTimeout(() => sent.delete(), 25000);
+			});
+		}
+	}
+
+	cmd.reply('There is no such command.', 10);
+}
+
+function help() {
+	return 'Provides more detailed info on a specific command.';
 }

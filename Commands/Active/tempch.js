@@ -1,152 +1,121 @@
-const Discord = require('discord.js');
-const sys = require('../../Modules/Core/coresys.json');
-const fs = require('fs');
-const engm = require('../../Modules/fishsticks_engm.json');
-const chs = require('../../Modules/fs_ids.json');
+// ---- Temp CH ----
+// Creates temporary voice channels
 
-const syslogFunc = require('../../Modules/Functions/syslog.js');
+//Imports
+const { chSpawner } = require('../../Modules/Core/Core_ids.json');
 
-var tempChannels = [];
+const { log } = require('../../Modules/Utility/Utils_Log');
+const { fso_query } = require('../../Modules/FSO/FSO_Utils');
+const { toTitleCase } = require('../../Modules/Utility/Utils_Aux');
+const { hasPerms } = require('../../Modules/Utility/Utils_User');
 
-exports.run = (fishsticks, msg, cmd) => {
-    msg.delete();
+//Exports
+module.exports = {
+    run,
+    help,
+    validateChannel
+};
 
-    function syslog(message, level) {
-        syslogFunc.run(fishsticks, "[TEMP-CHA] " + message, level);
+//Functions
+async function run(Fishsticks, cmd) {
+    cmd.msg.delete();
+
+    if(!hasPerms(cmd.msg.member, ['CC Member', 'ACC Member'])) {
+        return cmd.reply('Only (A)CC Members can create temporary channels!', 10);
     }
 
-    let engmode = fishsticks.engmode;
+    const guild = cmd.msg.guild;
 
-    if (fishsticks.subroutines.get("tempch")) {
+    //Syntax: !tempch -<maxUsers> -[channelName]
+    if (!cmd.content[0] || cmd.content[0] == null || cmd.content[0] === undefined) {
+        return cmd.reply('Why are you the way that you are. Give me something to work with here.', 10);
+    }
 
-        if (msg.member.roles.has(chs.staff) || msg.member.roles.has(chs.recognized)) {
-            if (engmode == true) {
-                if (msg.member.roles.find('name', 'Staff') || msg.member.roles.find('name', 'Bot')) {
-                    syslog("ENGM Override Executed: Permission granted to " + msg.author.tag + ".", 2);
+    //Check voice state
+    if (!cmd.msg.member.voice.channel || cmd.msg.member.voice.channel.id !== chSpawner) {
+        return cmd.reply('You must connect to the channel spawner first!');
+    }
 
-                    msg.channel.send("ENGM Override Recognized. Granting permissions to " + msg.author.tag + ".");
+    await createCh(Fishsticks, cmd, guild);
+}
 
-                    var maxUsers = parseInt(cmd[0]);
-                    var tname;
+function help() {
+    return 'Creates a temporary voice channel.';
+}
 
-                    if (maxUsers == null || maxUsers == NaN) {
-                        maxUsers == 0;
-                        tname == cmd[0] ? cmd.slice(1).join(" ") : cmd.join(' ');
-                    }
-        
-                    var tempChannelCategory = chs.tempchannelCat;
-                    var channelCloner = chs.fs_vcclone;
-                    var channelClonerClone = fishsticks.channels.get(chs.fs_vcclone);
-                    var tchID;
-        
-                    var user = msg.member;
-                    const userVC = user.voiceChannelID;
-        
-                    if (userVC == undefined || userVC != channelCloner) {
-                        msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete(15000));
-                    }
-                    else if (userVC === channelCloner) {
-                        channelClonerClone.clone(tname)
-                        .then(clone => {
-                        syslog("Channel created called: " + tname + " by: " + msg.author.tag, 3);
-        
-                        tchID = clone.id;
-                        fishsticks.tempChannels.push(tchID);
-        
-                        syslog("Channel " + tname + " has ID: " + tchID, 2);
-                        syslog("Temp Channels now include " + fishsticks.tempChannels.length + " channels of IDs: ", 2);
-        
-                        msg.reply("Channel created!").then(sent => sent.delete(15000));
-        
-                        for (x = 0; x < fishsticks.tempChannels.length; x++) {
-                            syslog(fishsticks.tempChannels[x], 1);
-                        }
-        
-                        clone.setParent(tempChannelCategory);
-        
-                        if (maxUsers > 1) {
-                            clone.setUserLimit(maxUsers).then(clone => syslog("Channel '" + tname + "' set max users to " + maxUsers, 1))
-                            msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete(15000));
-                        }
-                        else if (maxUsers = null) {
-        
-                        }
-        
-                        msg.member.setVoiceChannel(tchID);
-                    
-                        })
-                        .catch(console.error);
-                    }
-                }
-                else {
-                    msg.reply("Engineering mode is enabled! Disable it before using this command! (Ask a staff member).");
-                }
-                
-            } else {
-                var maxUsers = parseInt(cmd[0]);
-                var tname = msg.author.username + "'s Channel";
+//Creates a temp channel
+async function createCh(Fishsticks, cmd, guild) {
 
-                syslog(maxUsers, 1);
+    const chSpawnerChannel = guild.channels.cache.get(chSpawner);
+    const maxUsers = parseInt(cmd.content[0]);
 
-                if (isNaN(maxUsers)) {
-                    maxUsers = 0;
-                    tname = cmd.splice(0).join(' ');
-                }
-                else {
-                    tname = cmd.splice(1).join(' ');
-                }
+    //No Limit
+    if (isNaN(maxUsers)) {
+        log('info', '[TEMP-CH] Temp channel has no maxUser limit.');
 
-                var tempChannelCategory = chs.tempchannelCat;
-                var channelCloner = chs.fs_vcclone;
-                var channelClonerClone = fishsticks.channels.get(chs.fs_vcclone);
-                var tchID;
+        const chName = toTitleCase(cmd.content[0]);
 
-                var user = msg.member;
-                const userVC = user.voiceChannelID;
+        const chData = {
+            name: `${chName}`,
+            type: 'GUILD_VOICE',
+            reason: '[TEMP-CH] System channel creation.',
+            position: chSpawnerChannel.rawPosition + 1
+        };
 
-                if (userVC == undefined || userVC != channelCloner) {
-                    msg.reply("Join the #channel-spawner channel first!").then(sent => sent.delete(15000));
-                }
-                else if (userVC === channelCloner) {
-                    channelClonerClone.clone(tname)
-                    .then(clone => {
-                    syslog("Channel created called: " + tname + " by: " + msg.author.tag), 2;
+        await chSpawnerChannel.clone(chData).then(async (clonedCh) => {
+            await cmd.msg.member.voice.setChannel(clonedCh);
 
-                    tchID = clone.id;
-                    fishsticks.tempChannels.push(tchID);
+            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: clonedCh.id, name: chName });
+        });
+    }
+    else { //Has limit
+        log('info', '[TEMP-CH] Creating a new channel with a user limit.');
 
-                    syslog("Channel " + tname + " has ID: " + tchID, 2);
-                    syslog("Temp Channels now include " + fishsticks.tempChannels.length + " channels of IDs: ", 2);
+        const chName = toTitleCase(cmd.content[1]);
 
-                    msg.reply("Channel created!").then(sent => sent.delete(15000));
+        const chData = {
+            name: `${chName}`,
+            type: 'GUILD_VOICE',
+            userLimit: maxUsers,
+            reason: '[TEMP-CH] System channel creation.',
+            position: chSpawnerChannel.rawPosition + 1
+        };
 
-                    for (x = 0; x < fishsticks.tempChannels.length; x++) {
-                        syslog(fishsticks.tempChannels[x], 1);
-                    }
+        await chSpawnerChannel.clone(chData).then(async (clonedCh) => {
+            await cmd.msg.member.voice.setChannel(clonedCh);
 
-                    clone.setParent(tempChannelCategory);
+            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: clonedCh.id, name: chName });
+        });
+    }
+}
 
-                    if (maxUsers > 1) {
-                        clone.setUserLimit(maxUsers).then(clone => syslog("[TEMP-CHA] Channel '" + tname + "' set max users to " + maxUsers, 1))
-                        msg.reply("Setting user maximum to: " + maxUsers).then(sent => sent.delete(15000));
-                    }
-                    else if (maxUsers = null) {
+//Check exit channel
+async function validateChannel(fishsticks, preMemberState) {
+    //Get channels
+    const oldMemberChannel = preMemberState.channel;
 
-                    }
+    if (oldMemberChannel.members.size === 0) {
 
-                    msg.member.setVoiceChannel(tchID);
-                
-                    })
-                    .catch(console.error);
-                }
-                
-            }
-        }
-        else {
-            msg.reply("Looks like you're not permitted to run this thing! Check with staff to make sure you have the proper role assignment!")
-        }
+        const chRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'select', { id: oldMemberChannel.id });
+        if (!chRes) return;
+
+        log('info', '[TEMP-CH] Channel slated for deletion (no users).');
+        await delCh(fishsticks, oldMemberChannel);
+    }
+
+}
+
+//Deletes a temp channel
+async function delCh(fishsticks, oldMemberChannel) {
+
+    const chRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'delete', { id: oldMemberChannel.id });
+
+    if (chRes.deletedCount !== 1) {
+        fishsticks.CONSOLE.send(fishsticks.RANGER + ', FSO failed to properly delete a channel - or possibly something more sinister.');
     }
     else {
-        msg.reply("This subroutine is disabled! Ask " + fishsticks.ranger + " or another Staff member to turn it back on!").then(sent => sent.delete(15000));
+        await oldMemberChannel.delete('FS TempCh trash collection.').then(ch => {
+            log('proc', '[TEMP-CH] Channel "' + ch.name + '" deleted.');
+        });
     }
 }

@@ -1,13 +1,9 @@
-const sysLog = require('../../Modules/Functions/log.js');
+// ---- Passive: Eyup ----
 
-exports.run = (fishsticks, msg, cmd) => {
+exports.run = (fishsticks, cmd) => {
 
-    var replyList = ["'Ello, I'm right chuffed you're 'ere.", "Ey up; people've been keepin' their neb clean 'round 'ere since we last saw ye.", "Aye, fill thi boits while you're 'round."];
-    var replyNum = Math.random() * 2;
-    replyNum = Math.round(replyNum);
+    const replyList = ["'Ello, I'm right chuffed you're 'ere.", "Ey up; people've been keepin' their neb clean 'round 'ere since we last saw ye.", "Aye, fill thi boits while you're 'round."];
+    const replyNum = Math.round(Math.random() * 2);
 
-    console.log("[PAS-COMM] Eyup Response: " + replyNum);
-    sysLog.run(fishsticks, "[PAS-COMM] Eyup Response: " + replyNum, 0);
-
-    msg.reply(replyList[replyNum]);
+    cmd.channel.send(replyList[replyNum]);
 }

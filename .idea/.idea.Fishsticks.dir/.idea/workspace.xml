@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="994ca3f8-ca2e-46d7-b225-e391c1e5d508" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Fishsticks.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Fishsticks.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/docket.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/docket.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/event.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/event.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/status.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/status.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Message.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Message.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_Shiny.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_Shiny.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JSON File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/package-lock.json" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <changedPaths>
+      <option value="$PROJECT_DIR$/Modules/Errors/fsoValidationException.js" />
+      <option value="$PROJECT_DIR$/Commands/Active/role.js" />
+      <option value="$PROJECT_DIR$/Modules/Utility/Utils_Time.js" />
+      <option value="$PROJECT_DIR$/Modules/Errors/fsProcessException.js" />
+      <option value="$PROJECT_DIR$/Modules/Utility/Utils_EmbedBuilder.js" />
+      <option value="$PROJECT_DIR$/Commands/Active/bible.js" />
+      <option value="$PROJECT_DIR$/Modules/Library/quotesLib.json" />
+      <option value="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" />
+      <option value="$PROJECT_DIR$/Modules/Core/Core_NewMember.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/42.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/amen.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/clearance.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/engage.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/fire.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/fishsticks.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/frodo.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/gasp.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/got.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/grenade.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/inconceivable.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/inquisition.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/ive.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/lemons.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/ni.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/nod.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/schwartz.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/sdu.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/surely.js" />
+      <option value="$PROJECT_DIR$/Commands/Passive/troll.js" />
+      <option value="$PROJECT_DIR$/fishsticks.js" />
+      <option value="$PROJECT_DIR$/Modules/Core/Core_NewJoin.js" />
+      <option value="$PROJECT_DIR$/Modules/Library/systemResponses.json" />
+      <option value="$PROJECT_DIR$/Commands/Active/quote.js" />
+      <option value="$PROJECT_DIR$/Modules/Core/Core_ids.json" />
+      <option value="$PROJECT_DIR$/Commands/Active/event.js" />
+      <option value="$PROJECT_DIR$/Modules/FSO/FSO_assets.json" />
+      <option value="$PROJECT_DIR$/Commands/Active/docket.js" />
+      <option value="$PROJECT_DIR$/Modules/Utility/Utils_Shiny.js" />
+      <option value="$PROJECT_DIR$/Modules/Core/Core_Ready.js" />
+      <option value="$PROJECT_DIR$/Commands/Active/status.js" />
+      <option value="$PROJECT_DIR$/Modules/Core/Core_Message.js" />
+      <option value="$PROJECT_DIR$/Modules/FSO/FSO_Utils.js" />
+    </changedPaths>
+  </component>
+  <component name="ProjectId" id="1sE1K32TBQCYhku0LF3U4AMIFtc" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="javascript.nodejs.core.library.configured.version" value="15.12.0" />
+    <property name="javascript.nodejs.core.library.typings.version" value="15.0.2" />
+    <property name="js.linters.configure.manually.selectedeslint" value="true" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.standard" value="true" />
+    <property name="node.js.selected.package.eslint" value="P:\GitHub Repos\Fishsticks\node_modules\eslint" />
+    <property name="node.js.selected.package.standard" value="" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.JavaScript" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration name="fishsticks.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/fishsticks.js" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.fishsticks.js" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="994ca3f8-ca2e-46d7-b225-e391c1e5d508" name="Default Changelist" comment="" />
+      <created>1620422868926</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1620422868926</updated>
+      <workItem from="1620422872314" duration="2859000" />
+      <workItem from="1620426177600" duration="2321000" />
+      <workItem from="1620435221395" duration="89000" />
+      <workItem from="1620689383839" duration="1371000" />
+      <workItem from="1620693917183" duration="8262000" />
+      <workItem from="1621119602808" duration="6133000" />
+      <workItem from="1621380304986" duration="883000" />
+      <workItem from="1621451359879" duration="6236000" />
+      <workItem from="1623695676302" duration="5017000" />
+      <workItem from="1623794579045" duration="2637000" />
+      <workItem from="1623950017893" duration="4399000" />
+      <workItem from="1627070525923" duration="3923000" />
+      <workItem from="1629907237003" duration="496000" />
+      <workItem from="1631307483744" duration="1375000" />
+      <workItem from="1631328282461" duration="10786000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

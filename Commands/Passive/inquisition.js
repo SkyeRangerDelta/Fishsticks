@@ -1,5 +1,6 @@
-//Inquisition
+// ---- Passive: Inquisition ----
 
-exports.run = (fishsticks, msg, cmd) => {
-    msg.channel.send("No one expects the Spanish Inquisition!", {files: ["./images/inquisition.gif"]});
-}
+exports.run = (fishsticks, cmd) => {
+    cmd.msg.delete({ timeout: 0 });
+    cmd.channel.send('No one expects the Spanish Inquisition!', { files: ['./Images/inquisition.gif'] });
+};

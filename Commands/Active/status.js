@@ -1,140 +1,103 @@
-const Discord = require('discord.js');
-const config = require('../../Modules/Core/corecfg.json');
-const eng = require('../../Modules/fishsticks_engm.json');
-const sys = require('../../Modules/Core/coresys.json');
-const ses = require('../../Modules/fs_ids.json');
-const fssys = require('fs');
+//----STATUS----
+// Generates a status report on Fs systems
 
-const subroutines = require('../../Modules/Functions/subRoutines.js');
+const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+const { fso_query } = require('../../Modules/FSO/FSO_Utils');
+const { convertMsFull } = require('../../Modules/Utility/Utils_Time');
 
-const actDir = './Commands/Active';
-const pasDir = './Commands/Passive/';
-const botDir = './';
+//Exports
+module.exports = {
+	run,
+	help
+};
 
-exports.run = async (fishsticks, msg, cmd) => {
-	msg.delete();
+//Functions
+async function run(fishsticks, cmd) {
+	cmd.msg.delete({ timeout: 0 });
 
-	console.log("Requesting subroutines state.");
-	await subroutines.run(fishsticks);
+	//Get FSO status
+	const fsoStatus = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 });
+	const memberStats = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'count');
 
-	let engmode = fishsticks.engmode;
+	const timeNow = Date.now();
 
-	let activeDirs = 0;
-	let passiveDirs = 0;
-	var externalDirs = 0;
+	//Const build embed
+	const statusReport = {
+		title: 'o0o - Fishsticks Status Report - o0o',
+		description: 'Fishsticks system state report.',
+		fields: [
+			{
+				name: 'Application State',
+				value: toggle(fsoStatus.Online),
+				inline: true
+			},
+			{
+				name: 'Session',
+				value: `${fsoStatus.Session}`,
+				inline: true
+			},
+			{
+				name: 'Startup Time',
+				value: fsoStatus.StartupTime,
+				inline: true
+			},
+			{
+				name: 'Successful Commands',
+				value: `${fsoStatus.cmdQueriesSucc}`,
+				inline: true
+			},
+			{
+				name: 'Failed Commands',
+				value: `${fsoStatus.cmdQueriesFail}`,
+				inline: true
+			},
+			{
+				name: 'Command Executions',
+				value: `${fsoStatus.cmdQueriesSucc + fsoStatus.cmdQueriesFail}`,
+				inline: true
+			},
+			{
+				name: 'FSO Queries',
+				value: `${fsoStatus.Queries}`,
+				inline: true
+			},
+			{
+				name: 'Uptime',
+				value: convertMsFull(fsoStatus.StartupUTC - timeNow),
+				inline: true
+			},
+			{
+				name: 'Random Msg Tick',
+				value: `${fsoStatus.rMsgTick}`,
+				inline: true
+			},
+			{
+				name: 'Member Records',
+				value: `${memberStats}`,
+				inline: true
+			},
+			{
+				name: 'Owner',
+				value: 'SkyeRangerDelta',
+				inline: true
+			}
+		],
+		footer: 'Status is subject to sudden changes.'
+	};
 
-	if (fishsticks.CCGuild.available) {
-		fishsticks.servStatus = "Online";
+	//Send embed
+	cmd.channel.send({ embeds: [embedBuilder(statusReport)] });
+}
+
+function help() {
+	return 'Displays a list of all Fishsticks system states.';
+}
+
+function toggle(t) {
+	if (t) {
+		return 'Online';
 	}
 	else {
-		fishsticks.servStatus = "Potential Outage";
+		return 'Offline';
 	}
-
-	console.log("Building report.");
-
-	fssys.readdir(actDir, (err, files) => {
-		if (err) throw err;
-		activeDirs = files.length;
-
-		fssys.readdir(pasDir, (err, files) => {
-			if (err) throw err;
-			passiveDirs = files.length;
-
-			fssys.readdir(botDir, (err, files) => {
-				if (err) throw err;
-				externalDirs = files.length;
-
-
-				function evalRoutine(routine) {
-					if (fishsticks.subroutines.get(routine)) {
-						return "`Online`";
-					}
-					else {
-						return "`Offline`";
-					}
-				}
-
-				msg.reply("*Word of Warning: This command uses a library that is under FSO migration development. Efficiency ratings are likely wrong or downright not working.*")
-					.then(sent => sent.delete(10000));
-
-				if (engmode == true) {
-					console.log("ENGM is on.");
-
-					var statusENG = new Discord.RichEmbed();
-					statusENG.setTitle("o0o - FISHSTICKS STATUS REPORT - o0o");
-					statusENG.setColor(config.fscolor);
-					statusENG.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
-					statusENG.setDescription(
-						"Current variables listing in this Fishsticks session.\n"+
-						"-----------------------------------------------\n"+
-						"Registered Server Status: `" + fishsticks.servStatus + "`\n"+
-						"Session Number: `" + fishsticks.syssession + "`\n"+
-						"Version: `" + sys.fsversion + "`\n"+
-						"Bot Tag: " + "`Fishsticks#8663`" + "\n"+
-						"File Read System: " + "`Online`" + "\n"+
-						"Online Directories: `" + externalDirs + "`\n"+
-						"Online Active Commands: `" + activeDirs + "`\n"+
-						"Online Passive Commands: `" + passiveDirs + "`\n"+
-						"Successful Commands: `" + fishsticks.commandSuccess + "`\n"+
-						"Attempted Commands: `" + fishsticks.commandAttempts + "`\n\n"+
-						"**__Subroutines__**\n"+
-						"**Engineering Mode**: " + evalRoutine("engm")
-					);
-					statusENG.addField("__Twitch Screen:__", evalRoutine("twitch"), true);
-					statusENG.addField("__Music Player:__", evalRoutine("musi"), true);
-					statusENG.addField("__Echo Announcer:__", evalRoutine("echo"), true);
-					statusENG.addField("__MattyB Filter:__", evalRoutine("matb"), true);
-					statusENG.addField("__Active Command Systems:__", evalRoutine("active"), true);
-					statusENG.addField("__Passive Command Systems:__", evalRoutine("passive"), true);
-					statusENG.addField("__Vouch System__", evalRoutine("vouch"), true);
-					statusENG.addField("__N. Link Screen__", evalRoutine("nlinkscn"), true);
-					statusENG.addField("__Poll System__", evalRoutine("poll"), true);
-					statusENG.addBlankField();
-					statusENG.addField("System Efficiency: ", fishsticks.eff + "%");
-			
-					msg.channel.send({embed: statusENG}).then(sent => sent.delete(45000));
-				}
-				else {
-					console.log("ENGM is off.");
-					
-					var status = new Discord.RichEmbed();
-					status.setTitle("o0o - FISHSTICKS STATUS REPORT - o0o");
-					status.setColor(config.fscolor);
-					status.setThumbnail("https://cdn.discordapp.com/attachments/125677594669481984/419996636370960385/fishdiscord.png")
-					status.setDescription(
-						"Current variables listing in this Fishsticks session.\n"+
-						"-----------------------------------------------\n"+
-						"Registered Server Status: `" + fishsticks.servStatus + "`\n"+
-						"Session Number: `" + fishsticks.syssession + "`\n"+
-						"Version: `" + sys.fsversion + "`\n"+
-						"Bot Tag: `" + "`Fishsticks#8663`" + "`\n"+
-						"File Read System: " + "`Online`" + "\n"+
-						"Online Directories: `" + externalDirs + "`\n"+
-						"Online Active Commands: `" + activeDirs + "`\n"+
-						"Online Passive Commands: `" + passiveDirs + "`\n"+
-						"Successful Commands: `" + fishsticks.commandSuccess + "`\n"+
-						"Attempted Commands: `" + fishsticks.commandAttempts + "`\n\n"+
-						"**__Subroutines__**\n"+
-						"**Engineering Mode**: " + evalRoutine("engm")
-					);
-					status.addField("__Twitch Screen:__", evalRoutine("twitch"), true);
-					status.addField("__Music Player:__", evalRoutine("musi"), true);
-					status.addField("__Echo Announcer:__", evalRoutine("echo"), true);
-					status.addField("__MattyB Filter:__", evalRoutine("matb"), true);
-					status.addField("__Active Command Systems:__", evalRoutine("active"), true);
-					status.addField("__Passive Command Systems:__", evalRoutine("passive"), true);
-					status.addField("__Vouch System__", evalRoutine("vouch"), true);
-					status.addField("__N. Link Screen__", evalRoutine("nlinkscn"), true);
-					status.addField("__Poll System__", evalRoutine("poll"), true);
-					status.addField("__Game Roles__", evalRoutine("gamerole"), true);
-					status.addBlankField();
-					status.addField("__Database Connection__", fishsticks.dbaseConnection, true);
-					status.addBlankField();
-					status.addField("System Efficiency: ", fishsticks.eff + "%");
-			
-					msg.channel.send({embed: status}).then(sent => sent.delete(45000));
-				}
-			});
-		});
-	});
 }

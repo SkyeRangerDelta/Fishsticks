@@ -1,9 +1,8 @@
-const Discord = require('discord.js');
-const config = require('../../Modules/Core/corecfg.json');
+// ---- Passive: Hello ----
 
-exports.run = (fishsticks, msg, cmd) => {
+exports.run = (fishsticks, cmd) => {
 
-    if (msg.content.length > 5) return;
+    if (cmd.msg.content.length > 5) return;
 
-    msg.channel.send("Hi There!")    
-}
+    cmd.channel.send('Hi There!');
+};

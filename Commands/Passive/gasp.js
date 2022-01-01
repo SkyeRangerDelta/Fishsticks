@@ -1,5 +1,5 @@
-//Gasp
+// ---- Passive: Gasp ----
 
-exports.run = (fishsticks, msg, cmd) => {
-	msg.channel.send({files: ["./images/gasp.gif"]});
-}
+exports.run = (fishsticks, cmd) => {
+	cmd.channel.send({ files: ['./Images/gasp.gif'] });
+};
