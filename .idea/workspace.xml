@@ -2,50 +2,111 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Images/Passives/42.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/alotofdamage.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/gotTime.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/grenade1.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/grenade2.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/grievous.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/phasers.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/plaid.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/schwartz.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/screaming.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/shirley.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/soitbegins.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/thonk.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/timeWaste.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/torpedoes.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/weapons.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Images/Passives/why.gif" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/After Hours.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Alpha Squad.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Applicatinos.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Bandit.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Banhammer.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Catchphrase.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Chosen Poorly.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Chronic.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Confidence.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Context.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Copy Paste.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/D.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/DW Overcome.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/DW Uplift.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Dodge.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Door.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Enhance.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Fishsticks.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/FutronBob.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Graham.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Greek.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Harmony.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Houdini.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Impossible.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Kesarahk.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Koalefant.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Lewis.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Megs.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Meme War.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Ongurth.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Platypus.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Regret.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Safety First.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Scribe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Skye.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/SkyeRangerDelta.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Spelling.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Squadmate.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Teamspeak2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Temper.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Toondogjoe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Tracks.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/vouch.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/vouch.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/After Hours.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/after hours.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Alpha Squad.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/alpha squad.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Applicatinos.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/applicatinos.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Bandit.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/bandit.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Banhammer.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/banhammer.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Catchphrase.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/catchphrase.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Chosen Poorly.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/chosen poorly.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Chronic.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/chronic.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Confidence.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/confidence.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Context.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/context.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Copy Paste.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/copy paste.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/D.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/d.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/DW Overcome.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/dw overcome.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/DW Uplift.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/dw uplift.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Dodge.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/dodge.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Door.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/door.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Enhance.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/enhance.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Fishsticks.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/fishsticks.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/FutronBob.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/futronbob.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Graham.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/graham.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Greek.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/greek.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Harmony.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/harmony.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Houdini.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/houdini.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Impossible.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/impossible.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Kesarahk.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/kesarahk.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Koalefant.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/koalefant.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Lewis.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/lewis.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Megs.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/megs.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Meme War.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/meme war.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Ongurth.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/ongurth.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Platypus.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/platypus.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Regret.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/regret.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Safety First.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/safety first.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Scribe.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/scribe.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Skye.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/skye.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/SkyeRangerDelta.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/skyerangerdelta.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Spelling.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/spelling.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Squadmate.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/squadmate.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Teamspeak2.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/teamspeak2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Temper.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/temper.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Toondogjoe.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/toondogjoe.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/Summons/Tracks.png" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/Summons/tracks.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/42.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/alotofdamage.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/alwaysWatching.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/alwaysWatching.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/amen.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/amen.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/amen_a.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/amen_a.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/amen_b.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/amen_b.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/awesome.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/awesome.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/clearance.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/clearance.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/confused.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/confused.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/dewit.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/dewit.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/dipper.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/dipper.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/duchess.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/duchess.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/engage.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/engage.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/fleshWound.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/fleshWound.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/flyFools.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/flyFools.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/football.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/football.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/football.png" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/football.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/frodobiggins.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/frodobiggins.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/fs_defense.png" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/fs_defense.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/fsimg.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/fsimg.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/gandalfnod.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/gandalfnod.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/gasp.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/gasp.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/gotTime.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/grenade1.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/grenade2.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/grievous.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/grievous2.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/grievous2.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/helmet.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/helmet.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/highGround.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/highGround.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/incon.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/incon.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/inquisition.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/inquisition.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/lemons.png" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/lemons.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/ludicrous.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/ludicrous.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/ni.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Images/Passives/ni.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/phasers.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/plaid.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/schwartz.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/screaming.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/shirley.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/soitbegins.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/thonk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/timeWaste.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/torpedoes.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/weapons.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Images/why.gif" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,6 +203,7 @@
       <workItem from="1640821381370" duration="26971000" />
       <workItem from="1640876416631" duration="23792000" />
       <workItem from="1640917410686" duration="670000" />
+      <workItem from="1641009790215" duration="694000" />
     </task>
     <servers />
   </component>
