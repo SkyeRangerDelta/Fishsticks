@@ -34,7 +34,7 @@ async function run(fishsticks, cmd) {
             {
                 name: 'Join Date',
                 value: memberProf.joinTimeFriendly + ' (Been a member for ' + timeSinceDate(memberProf.joinMs) + ').',
-                inline: true
+                inline: false
             },
             {
                 name: 'Command Attempts',

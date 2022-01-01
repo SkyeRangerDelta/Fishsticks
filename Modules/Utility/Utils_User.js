@@ -7,6 +7,7 @@
 const { fso_query } = require('../FSO/FSO_Utils');
 const { log } = require('../Utility/Utils_Log');
 const { flexTime } = require('./Utils_Time');
+const { DateTime } = require('luxon');
 
 //Exports
 module.exports = {
@@ -45,12 +46,17 @@ async function fso_validate(Fishsticks, msg) {
 			vouchState = 'Yes';
 		}
 
+		const jt = new Date(msg.member.joinedTimestamp);
+		const jtISO = jt.toISOString();
+		const jtDT = DateTime.fromISO(jtISO).setZone('UTC-5');
+		const jtFriendly = jtDT.toLocaleString(DateTime.DATETIME_MED);
+
 		const memberRecord = {
 			id: msg.author.id,
 			username: msg.author.username,
 			joinTime: msg.member.joinedAt,
 			joinMs: msg.member.joinedTimestamp,
-			joinTimeFriendly: await flexTime(new Date(msg.member.joinedTimestamp)),
+			joinTimeFriendly: `${jtFriendly}`,
 			acAttempts: 0,
 			acSuccess: 0,
 			pcSuccess: 0,
