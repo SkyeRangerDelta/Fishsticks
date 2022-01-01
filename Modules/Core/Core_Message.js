@@ -117,23 +117,28 @@ async function processMessage(Fishsticks, msg) {
             }, { id: 1 });
 
             //Handle common error responses
-            if (activeCmdErr.message.includes('../../Commands/Active/')) {
-                channel.send({ content: generateErrorMsg() + '\nI dont know the command: `' + cmd.ID + '` (did you miss a hyphen parameter?)' });
-            }
-            else if (activeCmdErr.message.includes('../../Modules')) {
-                channel.send({ content: generateErrorMsg() + `\nLooks like Im missing some major config somewhere and Im on the edge of losing it.\nPing ${Fishsticks.RANGER}` });
-            }
-            else if (activeCmdErr.message.includes('Test mode')) {
-                channel.send({ content: generateErrorMsg() + `\nThis is a test mode only command. It won't run unless ${Fishsticks.RANGER} is up to no good.` });
-            }
-            else if (activeCmdErr.message.includes('No permissions')) {
-                channel.send({ content: generateErrorMsg() + '\nLooks like you lack to necessary permissions to run this one.' });
-            }
-            else if (Fishsticks.TESTMODE) {
+            try {
+                if (activeCmdErr.message.includes('../../Commands/Active/')) {
+                    channel.send({ content: generateErrorMsg() + '\nI dont know the command: `' + cmd.ID + '` (did you miss a hyphen parameter?)' });
+                }
+                else if (activeCmdErr.message.includes('../../Modules')) {
+                    channel.send({ content: generateErrorMsg() + `\nLooks like Im missing some major config somewhere and Im on the edge of losing it.\nPing ${Fishsticks.RANGER}` });
+                }
+                else if (activeCmdErr.message.includes('Test mode')) {
+                    channel.send({ content: generateErrorMsg() + `\nThis is a test mode only command. It won't run unless ${Fishsticks.RANGER} is up to no good.` });
+                }
+                else if (activeCmdErr.message.includes('No permissions')) {
+                    channel.send({ content: generateErrorMsg() + '\nLooks like you lack to necessary permissions to run this one.' });
+                }
+                else if (Fishsticks.TESTMODE) {
                     channel.send({ content: '**Test Mode Log**:\n' + generateErrorMsg() + '\n' + activeCmdErr.message + '\n' + activeCmdErr.stack });
+                }
+                else {
+                    channel.send({ content: generateErrorMsg() + '\n' + activeCmdErr.message });
+                }
             }
-            else {
-                channel.send({ content: generateErrorMsg() + '\n' + activeCmdErr.message });
+            catch (cErr) {
+                channel.send(generateErrorMsg() + '\nNot quite sure what to make of that. Looks like a crash. ' + Fishsticks.RANGER + ' please investigate.');
             }
         }
     }
@@ -164,6 +169,12 @@ async function processMessage(Fishsticks, msg) {
                 }
             }
              */
+
+            if (cmd.msg.content.includes('https://twitch.tv/')) {
+                if (!hasPerms(cmd.msg.member, ['The Nod']) && !hasPerms(cmd.msg.member, ['Moderator', 'Council Member', 'Council Advisor'])) {
+                    cmd.reply('You need the nod to post Twitch links!');
+                }
+            }
 
             //Shiny?
             const number = Math.random() * (8192 - 1) + 1;

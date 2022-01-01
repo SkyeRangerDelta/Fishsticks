@@ -6,7 +6,7 @@ This is the official Christian Crew Gaming (CCG) Discord bot. Fishsticks (or jus
 - Temporary Channel Spawner
 - Newcomer Join Handling
 - Link moderation
-- Advertisment moderation
+- Advertisement moderation
 - Vouch system (moderator-centric anti-troll mechanism)
 - Self-diagnostics
 - Custom role system (complete with diagnostics)
@@ -24,13 +24,15 @@ This is the official Christian Crew Gaming (CCG) Discord bot. Fishsticks (or jus
 Designed and based primarily on JavaScript (Discord.js)
 
 ###Requirements
+- Axios (0.24.0)
 - Canvas (2.7.8)
 - Colors (1.4.8)
 - Date-and-time (2.0.0)
 - Discord.js (13.1.0)
 - ESLint (7.13.0)
 - Extract-URLs (1.3.2)
-- MongoDB (4.1.1)
+- Luxon (2.2.0)
+- MongoDB (4.2.1)
 - Node-Schedule (2.0.0)
 - NPM (7.24.0)
 - Oxford-Dictionary (1.6.0)
