@@ -1,5 +1,5 @@
 // ---- Passive: Clearance ----
 
 exports.run = (fishsticks, cmd) => {
-    cmd.channel.send('Roger, Roger!', { files: ['./Images/clearance.gif'] });
+    cmd.channel.send({ content: 'Roger, Roger!', files: ['./Images/Passives/clearance.gif'] });
 };
