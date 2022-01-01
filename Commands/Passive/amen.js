@@ -1,6 +1,7 @@
 // ---- Passive: Amen ----
 
 exports.run = (fishsticks, cmd) => {
+    cmd.msg.delete();
     const pick = Math.round(Math.random() * 3);
 
     switch (pick) {
