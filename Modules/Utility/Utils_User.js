@@ -50,7 +50,7 @@ async function fso_validate(Fishsticks, msg) {
 			username: msg.author.username,
 			joinTime: msg.member.joinedAt,
 			joinMs: msg.member.joinedTimestamp,
-			joinTimeFriendly: await flexTime(msg.member.joinedAt),
+			joinTimeFriendly: await flexTime(new Date(msg.member.joinedTimestamp)),
 			acAttempts: 0,
 			acSuccess: 0,
 			pcSuccess: 0,
