@@ -1,5 +1,6 @@
 // ---- Passive: Schwartz ----
 
 exports.run = (fishsticks, cmd) => {
-    cmd.channel.send('May da schwartz be wid you.', { files: ['./Images/Passives/schwartz.gif'] });
+    cmd.msg.delete();
+    cmd.channel.send({ content: 'May da schwartz be wid you.', files: ['./Images/Passives/schwartz.gif'] });
 };
