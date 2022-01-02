@@ -2,7 +2,7 @@
 
 //Imports
 const errorMsgPool = require('../Library/errorMsgs.json');
-const { hangout } = require('../../Modules/Core/Core_ids.json');
+const { hangout, debater } = require('../../Modules/Core/Core_ids.json');
 const { urlscanIO } = require('../Core/Core_keys.json');
 const { discussionDenRules } = require('../Library/systemResponses.json');
 
@@ -55,8 +55,11 @@ async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 
 	//Check for Debator apps
 	for (const ID in fishsticks.debMsgIDs) {
+		log('info', '[DEBATER] Checking IDs for debater rules acceptance.');
 		if (addedReaction.message.id === fishsticks.debMsgIDs[ID]) {
-			return;
+			const member = await fishsticks.CCG.members.cache.get(reactor.id);
+			const debRole = await fishsticks.CCG.roles.cache.get(debater);
+			return await member.roles.add(debRole);
 			//TODO: Debator app start
 		}
 	}
@@ -196,10 +199,10 @@ function toTitleCase(toConvert) {
 }
 
 //Handle Den Permissions
-async function handleDenMsg(msg) {
+async function handleDenMsg(msg, fishsticks) {
 	if (!hasPerms(msg.member, ['Debater'])) {
 		const msgDeleted = msg.content;
-		msg.delete({ timeout: 0 });
+		msg.delete();
 
 		const denMsg = {
 			title: 'o0o - Discussion Den Rules - o0o',
@@ -209,13 +212,14 @@ async function handleDenMsg(msg) {
 
 		await msg.author.send({ embeds: [embedBuilder(denMsg)] }).then(sent => {
 			sent.react('✅');
+			fishsticks.debMsgIDs.push(sent.id);
 		});
 
 		const conMsg = 'For your convenience; below is the message you attempted to send to the den (posts are deleted):\n```' + msgDeleted + '```';
 
 		await msg.author.send(conMsg);
 
-		return msg.reply({ content: 'You need to agree to the den rules before posting here! Check your DMs!' })
-			.then(sent => sent.delete({ timeout: 10000 }));
+		return msg.channel.send(msg.member.displayName + ', you need to agree to the den rules before posting here! Check your DMs!')
+			.then(sent => { setTimeout(() => sent.delete(), 15000); });
 	}
 }
