@@ -13,5 +13,5 @@ module.exports = {
 async function execute(fishsticks, addedReaction, reactor) {
     log('info', `[CLIENT] Reaction Add - ${addedReaction.emoji} : ${reactor.username}`);
 
-    validateAddedReaction(fishsticks, addedReaction, reactor);
+    await validateAddedReaction(fishsticks, addedReaction, reactor);
 }
