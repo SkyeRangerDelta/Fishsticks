@@ -91,7 +91,7 @@ async function run(fishsticks, cmd) {
 
 	//Reet Status
 	await fishsticks.user.setPresence({
-		activities: [{ name: version + ' | TEST MODE', type: 'PLAYING' }],
+		activities: [{ name: 'for !help | ' + version, type: 'WATCHING' }],
 		status: 'online'
 	});
 }
