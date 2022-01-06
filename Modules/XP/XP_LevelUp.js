@@ -34,7 +34,7 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
     //Upper title
     ctx.font = '30px Julius Sans One';
     ctx.fillStyle = '#ffffff';
-    ctx.fillText('Level up!', canvas.width / 2.5, canvas.height / 3.5);
+    ctx.fillText(`${cmd.msg.member.displayName}`, canvas.width / 2.5, canvas.height / 3.5);
 
     //Level shift
     ctx.font = '70px Trebuchet MS';

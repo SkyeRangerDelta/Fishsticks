@@ -75,9 +75,9 @@ async function buildPoem() {
     while (poemTxt.length >= maxSize && limit < 11);
 
 	const poemEmbed = {
-		title: `[From the Fishsticks Poetry Archive] ${poemObj[0].title} - Provided by PoetryDB`,
-		description: poemTxt,
-        footer: `${poemObj[0].title} by ${poemObj[0].author}`,
+		title: `[From the Fishsticks Poetry Archive] ${poemObj[0].title}`,
+		description: `${poemTxt}`,
+        footer: `${poemObj[0].title} by ${poemObj[0].author} provided by PoetryDB.`,
         noThumbnail: true
     };
 

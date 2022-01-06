@@ -9,6 +9,7 @@ const { fso_query } = require('../FSO/FSO_Utils');
 const { generateErrorMsg, validateURL, handleDenMsg } = require('../Utility/Utils_Aux');
 const { processXP } = require('../XP/XP_Core');
 const { handleShiny } = require('../Utility/Utils_Shiny');
+const { worst } = require('../../Commands/Passive/the');
 
 const { prefix } = require('../Core/Core_config.json');
 const { discDen } = require('../Core/Core_ids.json');
@@ -180,6 +181,12 @@ async function processMessage(Fishsticks, msg) {
             const number = Math.random() * (8192 - 1) + 1;
             if (number === 5 && msg.content.length <= 70) {
                 await handleShiny(msg);
+            }
+
+            //Karen Mode
+            const pMsg = cmd.msg.content.toLowerCase();
+            if ((pMsg.includes('speak to your manager')) && (pMsg.includes('fishsticks'))) {
+                cmd.channel.send({ content: `${Fishsticks.RANGER}, some nark wants to talk to you.` });
             }
         }
     }

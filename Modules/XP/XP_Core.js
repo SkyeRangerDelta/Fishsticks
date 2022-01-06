@@ -42,10 +42,6 @@ async function processXP(fishsticks, cmd) {
     //Valid message for XP?
     const msgTimeDiff = cmd.msg.createdAt - memberProf.lastMsg;
 
-    console.log(cmd.msg.createdAt);
-    console.log(memberProf.lastMsg);
-    console.log(msgTimeDiff);
-
     if (msgTimeDiff < 60000) {
         return log('info', '[XP-SYS] Message sent too soon since previous for XP.');
     }
@@ -63,9 +59,6 @@ async function doXP(fishsticks, cmd, memberProf) {
     let lvlTriggered = false;
     const currXP = memberProf.xp.RP;
     const xpForNxtLvl = Math.floor(66.1 * (Math.pow(currLvl + 1, 1.79)));
-
-    console.log(currXP);
-    console.log(xpForNxtLvl);
 
     if (currXP + xpGen >= xpForNxtLvl) {
         log('proc', '[XP-SYS] Level up! (+' + xpGen + ')');

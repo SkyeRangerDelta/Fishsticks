@@ -11,7 +11,6 @@ const { toTitleCase } = require('../../Modules/Utility/Utils_Aux');
 const { DuplicatedRoleException } = require('../../Modules/Errors/DuplicatedRoleException');
 const { InvalidParameterException } = require('../../Modules/Errors/InvalidParameterException');
 
-const dateMod = require('date-and-time');
 const { DateTime } = require('luxon');
 
 //Exports
@@ -26,6 +25,7 @@ module.exports = {
 let currentPool;
 let memberFSO;
 let params = null;
+const curMDN = DateTime.now().setZone('UTC-5');
 
 //Functions
 async function run(fishsticks, cmd) {
@@ -157,8 +157,7 @@ async function newRole(fishsticks, cmd) {
     //Assume !role -new -name -game -description
 
     const curFlexTime = flexTime();
-    const curMDN = new Date();
-    const roleTimeout = dateMod.addDays(curMDN, 14);
+    const roleTimeout = curMDN.plus({ 'weeks': 2 });
 
     //Create role Obj
     const newRoleObj = {
@@ -215,6 +214,7 @@ async function voteRole(fishsticks, cmd) {
         return cmd.reply('This role has already been officialized, assigning it instead...', 10);
     }
     else {
+        //Run through founders to prevent dupe
         for (const memID in roleObj.founders) {
             if (roleObj.founders[memID] === cmd.msg.author.id) {
                 return cmd.reply('You already voted for this role! Get outta here!', 10);
@@ -222,35 +222,32 @@ async function voteRole(fishsticks, cmd) {
         }
 
         //Determine new timeout in ms
-        const curMDN = new Date();
-        const timeDiffMS = dateMod.subtract(roleObj.created, curMDN).toMilliseconds();
-        const timeDiff = dateMod.addMilliseconds(roleObj.timeout, timeDiffMS);
-
-        if (isNaN(timeDiff) || !timeDiff) {
-            throw 'Failed to determine timeout difference.';
-        }
+        const timeDiff = curMDN.plus({ 'weeks': 2 });
 
         const updateObj = {
-            id: roleObj.id,
-            votes: roleObj.votes + 1,
-            founders: roleObj.founders,
-            timeout: timeDiff,
-            timeoutFriendly: flexTime(timeDiff)
+            $inc: {
+                votes: 1
+            },
+            $push: {
+                founders: cmd.msg.author.id
+            },
+            $set: {
+                timeout: timeDiff,
+                timeoutFriendly: timeDiff.toLocaleString(DateTime.DATETIME_MED)
+            }
         };
-
-        updateObj.founders.push(cmd.msg.author.id);
 
         if (updateObj.votes === 5) {
             await activateRole(fishsticks, cmd, updateObj);
         }
         else {
-            const updateRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'update', updateObj);
+            const updateRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'update', updateObj, { id: roleObj.id });
 
             if (updateRes.modifiedCount !== 1) {
                 throw 'Role update in FSO failed!';
             }
             else {
-                const missingVotes = 5 - updateObj.votes;
+                const missingVotes = 5 - roleObj.votes + 1;
 
                 cmd.reply(`Vote counted; ${roleObj.name} requires ${missingVotes} vote(s) before being activated!`, 10);
             }
@@ -364,7 +361,7 @@ async function listRoles(fishsticks, cmd, ext) {
             inactiveRoleList += `**${currentPool[role].name}**: ${currentPool[role].game}\n`;
         }
         else {
-            inactiveRoleList += `**${currentPool[role].name}**: ${currentPool[role].game} (*Requires ${5 - currentPool[role].votes} votes* before ${dateMod.format(currentPool[role].timeout, 'MM D YYYY @ HH:mm')})\n`;
+            inactiveRoleList += `**${currentPool[role].name}**: ${currentPool[role].game} (*Requires ${5 - currentPool[role].votes} votes* before ${currentPool[role].timeoutFriendly})\n`;
         }
     }
 
@@ -651,7 +648,6 @@ async function delRole(fishsticks, id) {
 //Mass update and callibrate days
 async function updateRoles(fishsticks, poolRes) {
     log('warn', '[ROLE-SYS] [MAINT] Conducting role updates and table maintenance');
-    const curMDN = new Date().setHours(0, 0, 0, 0);
 
     //Do pool gen
     currentPool = poolRes;
