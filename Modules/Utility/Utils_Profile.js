@@ -52,7 +52,7 @@ async function buildProfileBanner(fishsticks, cmd, profileEmbed) {
     //Level shift
     ctx.font = '70px Trebuchet MS';
     ctx.fillStyle = '#add8e6';
-    ctx.fillText(`${lvl}`, canvas.width / 2, canvas.height / 1.8);
+    ctx.fillText(`${lvl}`, canvas.width / 1.9, canvas.height / 1.8);
 
     log('info', '[XP-BANNER] Text applications finished...');
 
