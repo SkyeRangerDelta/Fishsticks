@@ -169,7 +169,7 @@ async function newRole(fishsticks, cmd) {
         createdFriendly: curFlexTime,
         activated: null,
         timeout: roleTimeout,
-        timeoutFriendly: flexTime(roleTimeout),
+        timeoutFriendly: roleTimeout.toLocaleString(DateTime.DATETIME_MED),
         pings: 0,
         votes: 1,
         founders: [cmd.msg.author.id],

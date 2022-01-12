@@ -12,6 +12,7 @@ const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const responseEmojis = require('../../Modules/Library/emojiList');
 const { MessageButton, MessageActionRow } = require('discord.js');
 const { fsoValidationException } = require('../../Modules/Errors/fsoValidationException');
+const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 
 //Exports
 module.exports = {
@@ -253,6 +254,14 @@ async function addResponse(fishsticks, pollObj, interaction) {
             'responses.recVotes': 1
         }
     });
+
+    const pollEmbed = new Discord.MessageEmbed()
+        .setTitle(pollObj.embed.title)
+        .setColor(pollObj.embed.color)
+        .setDescription(pollObj.d + '\nVotes: `' + (pollObj.responses.recVotes + 1) + '`.');
+
+    //TODO: Increment votes
+    interaction.message.edit({ embeds: [pollEmbed] });
 
     if (aRes.modifiedCount === 1) {
         interaction.reply({ content: 'Response noted.', ephemeral: true });

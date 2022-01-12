@@ -29,9 +29,14 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
     const ctx = canvas.getContext('2d');
 
     //Load BG
-    let background = await loadImage(forcedUser.bannerURL({ format: 'png', size: 4096 }));
-    if (!background) {
+    const bgURL = forcedUser.bannerURL({ format: 'png', size: 4096 });
+    let background;
+    console.log(bgURL);
+    if (!bgURL) {
         background = await loadImage('./Images/Utility/horvath-waves.jpg');
+    }
+    else {
+        background = await loadImage(bgURL);
     }
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
     log('info', '[XP-BANNER] Background loaded...');
@@ -45,7 +50,7 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
     //Level shift
     ctx.font = '70px Trebuchet MS';
     ctx.fillStyle = '#add8e6';
-    ctx.fillText(`${newLvl - 1} -> ${newLvl}`, canvas.width / 2, canvas.height / 1.8);
+    ctx.fillText(`${newLvl - 1} -> ${newLvl}`, canvas.width / 1.9, canvas.height / 1.8);
 
     //Lower title
     ctx.font = '26px Julius Sans One';
