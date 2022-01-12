@@ -37,6 +37,7 @@ async function processXP(fishsticks, cmd) {
             }
         };
     }
+
     await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', update, { id: cmd.msg.member.id });
 
     //Valid message for XP?
@@ -65,7 +66,12 @@ async function doXP(fishsticks, cmd, memberProf) {
         currLvl = currLvl + 1;
         lvlTriggered = true;
         //TODO: Canvas?
-        createLevelBanner(fishsticks, cmd, currLvl);
+        if (memberProf.notifications.xp) {
+            createLevelBanner(fishsticks, cmd, currLvl);
+        }
+    }
+    else {
+        log('proc', '[XP-SYS] Added ' + xpGen + ' XP.');
     }
 
     const updateProf = {
@@ -84,11 +90,13 @@ async function doXP(fishsticks, cmd, memberProf) {
 
     if (updateProfRes.modifiedCount === 1) {
         if (lvlTriggered) {
-            if (cmd.channel.id === discDen || cmd.channel.id === prReqs || cmd.channel.id === bStudy) {
-                fishsticks.CONSOLE.send(`${cmd.msg.member}, You've reached level ${currLvl}!`, 10000);
-            }
-            else {
-                cmd.reply(`You've reached level ${currLvl}!`, 10);
+            if (memberProf.notifications.xp) {
+                if (cmd.channel.id === discDen || cmd.channel.id === prReqs || cmd.channel.id === bStudy) {
+                    fishsticks.CONSOLE.send(`${cmd.msg.member}, You've reached level ${currLvl}!`, 10000);
+                }
+                else {
+                    cmd.reply(`You've reached level ${currLvl}!`, 10);
+                }
             }
         }
     }

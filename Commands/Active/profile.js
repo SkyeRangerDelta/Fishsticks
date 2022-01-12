@@ -24,6 +24,14 @@ async function run(fishsticks, cmd) {
         spentGoldfish = 0;
     }
 
+    //Process notification prefs
+    const notifPrefs = memberProf.notifications;
+    let notifVal = '';
+
+    for (const [key, val] of Object.entries(notifPrefs)) {
+        notifVal += `**${key}**: ${val}`;
+    }
+
     //Do embed
     const profileEmbed = {
         title: `o0o - ${cmd.msg.member.displayName}'s Profile - o0o`,
@@ -85,6 +93,11 @@ async function run(fishsticks, cmd) {
                 name: 'Vouched Member?',
                 value: memberProf.vouchedIn,
                 inline: true
+            },
+            {
+                name: 'Notification Preferences',
+                value: notifVal,
+                inline: false
             }
         ]
     };

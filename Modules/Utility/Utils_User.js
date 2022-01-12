@@ -31,10 +31,17 @@ function hasPerms(member, perms) {
 //Validate
 //Return the member record, create one if necessary
 async function fso_validate(Fishsticks, msg) {
-	const memberCheck = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: msg.author.id });
+	let memberCheck = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: msg.author.id });
 
 	if (memberCheck != null) {
 		log('info', '[MEMBER-STATS] Member record located.');
+		//TODO: Integrity check
+
+		if (!memberCheck.notifications) {
+			await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', { $set: { 'notifications.xp': true } }, { id: msg.author.id });
+			memberCheck = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: msg.author.id });
+		}
+
 		return memberCheck;
 	}
 	else {
@@ -71,7 +78,10 @@ async function fso_validate(Fishsticks, msg) {
 			},
 			roles: [],
 			vouches: [],
-			vouchedIn: `${vouchState}`
+			vouchedIn: `${vouchState}`,
+			notifications: {
+				xp: true
+			}
 		};
 
 
