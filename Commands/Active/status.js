@@ -4,6 +4,7 @@
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { convertMsFull } = require('../../Modules/Utility/Utils_Time');
+const { version } = require('../../package.json');
 
 //Exports
 module.exports = {
@@ -87,6 +88,12 @@ async function run(fishsticks, cmd) {
 
 	//Send embed
 	cmd.channel.send({ embeds: [embedBuilder(statusReport)] });
+
+	//Reet Status
+	await fishsticks.user.setPresence({
+		activities: [{ name: 'for !help | ' + version, type: 'WATCHING' }],
+		status: 'online'
+	});
 }
 
 function help() {

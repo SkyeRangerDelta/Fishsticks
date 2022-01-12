@@ -37,14 +37,11 @@ async function processXP(fishsticks, cmd) {
             }
         };
     }
+
     await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', update, { id: cmd.msg.member.id });
 
     //Valid message for XP?
     const msgTimeDiff = cmd.msg.createdAt - memberProf.lastMsg;
-
-    console.log(cmd.msg.createdAt);
-    console.log(memberProf.lastMsg);
-    console.log(msgTimeDiff);
 
     if (msgTimeDiff < 60000) {
         return log('info', '[XP-SYS] Message sent too soon since previous for XP.');
@@ -64,15 +61,17 @@ async function doXP(fishsticks, cmd, memberProf) {
     const currXP = memberProf.xp.RP;
     const xpForNxtLvl = Math.floor(66.1 * (Math.pow(currLvl + 1, 1.79)));
 
-    console.log(currXP);
-    console.log(xpForNxtLvl);
-
     if (currXP + xpGen >= xpForNxtLvl) {
         log('proc', '[XP-SYS] Level up! (+' + xpGen + ')');
         currLvl = currLvl + 1;
         lvlTriggered = true;
         //TODO: Canvas?
-        createLevelBanner(fishsticks, cmd, currLvl);
+        if (memberProf.notifications.xp) {
+            createLevelBanner(fishsticks, cmd, currLvl);
+        }
+    }
+    else {
+        log('proc', '[XP-SYS] Added ' + xpGen + ' XP.');
     }
 
     const updateProf = {
@@ -91,11 +90,13 @@ async function doXP(fishsticks, cmd, memberProf) {
 
     if (updateProfRes.modifiedCount === 1) {
         if (lvlTriggered) {
-            if (cmd.channel.id === discDen || cmd.channel.id === prReqs || cmd.channel.id === bStudy) {
-                fishsticks.CONSOLE.send(`${cmd.msg.member}, You've reached level ${currLvl}!`, 10000);
-            }
-            else {
-                cmd.reply(`You've reached level ${currLvl}!`, 10);
+            if (memberProf.notifications.xp) {
+                if (cmd.channel.id === discDen || cmd.channel.id === prReqs || cmd.channel.id === bStudy) {
+                    fishsticks.CONSOLE.send(`${cmd.msg.member}, You've reached level ${currLvl}!`, 10000);
+                }
+                else {
+                    cmd.reply(`You've reached level ${currLvl}!`, 10);
+                }
             }
         }
     }

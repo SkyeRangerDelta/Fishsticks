@@ -5,6 +5,7 @@
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { convertMsFull, timeSinceDate } = require('../../Modules/Utility/Utils_Time');
+const { buildProfileBanner } = require('../../Modules/Utility/Utils_Profile');
 
 //Exports
 module.exports = {
@@ -22,6 +23,14 @@ async function run(fishsticks, cmd) {
     let spentGoldfish = memberProf.xp.spentGoldfish;
     if(spentGoldfish === null) {
         spentGoldfish = 0;
+    }
+
+    //Process notification prefs
+    const notifPrefs = memberProf.notifications;
+    let notifVal = '';
+
+    for (const [key, val] of Object.entries(notifPrefs)) {
+        notifVal += `**${key}**: ${val}`;
     }
 
     //Do embed
@@ -62,11 +71,6 @@ async function run(fishsticks, cmd) {
                 inline: true
             },
             {
-                name: 'XP Level',
-                value: `${ memberProf.xp.level }`,
-                inline: true
-            },
-            {
                 name: 'Collected XP',
                 value: `${ memberProf.xp.RP }`,
                 inline: true
@@ -85,12 +89,16 @@ async function run(fishsticks, cmd) {
                 name: 'Vouched Member?',
                 value: memberProf.vouchedIn,
                 inline: true
+            },
+            {
+                name: 'Notification Preferences',
+                value: notifVal,
+                inline: false
             }
         ]
     };
 
-    return cmd.channel.send({ embeds: [embedBuilder(profileEmbed)] })
-        .then(s => { setTimeout(() => s.delete(), 60000); });
+    return await buildProfileBanner(fishsticks, cmd, profileEmbed);
 }
 
 function help() {

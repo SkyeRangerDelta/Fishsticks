@@ -25,15 +25,16 @@ async function run(fishsticks, cmd) {
     //Attempt suggestion send
     log('info', '[SUGGEST] Dispatching a request.');
     https.get(hookURL, (res) => {
-        log('info', '[SUGGEST] Status: ' + res.statusCode);
+        if (res.statusCode === 200) {
+            log('info', '[SUGGEST] Status: ' + res.statusCode);
+            cmd.reply('Suggestion posted.', 15);
+        }
     }).on('error', (eventGetError) => {
         console.log(eventGetError);
     });
 
     //FSO Sync Suggestions
     log('info', '[SUGGEST] Syncing member suggestions');
-
-    const currMemberData = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: cmd.msg.author.id });
 
     const updateData = {
         $inc: {

@@ -1,7 +1,6 @@
 // ---- Passive: Fire ----
 
 exports.run = (fishsticks, cmd) => {
-    cmd.msg.delete();
 
     const type = cmd.content[0];
 

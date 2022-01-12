@@ -14,10 +14,11 @@ module.exports = {
 
 async function execute(fishsticks, oldMsg, newMsg) {
     Logger({ type: 'Message Updated' });
+    const oldMem = await oldMsg.member;
 
     const qe = {
         title: '[INFO] [CLIENT] [MESSAGE UPDATED]',
-        description: `${oldMsg.member.displayName}'s message in ${oldMsg.channel.name} was updated.`
+        description: `${oldMem.displayName}'s message in ${oldMsg.channel.name} was updated.`
     };
 
     fishsticks.BOT_LOG.send({ content: `${systemTimestamp()}`, embeds: [quickEmbed(qe)] });

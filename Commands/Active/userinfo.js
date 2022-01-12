@@ -2,9 +2,10 @@
 
 //Imports
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
-const { systemTimestamp } = require('../../Modules/Utility/Utils_Time');
+const { systemTimestamp, flexTime, timeSinceDate } = require('../../Modules/Utility/Utils_Time');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { log } = require('../../Modules/Utility/Utils_Log');
+const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 
 //Export
 module.exports = {
@@ -57,8 +58,10 @@ async function run(fishsticks, cmd) {
     }
     else {
         targetUser = targetMember.user;
-        console.log(targetMember);
     }
+
+    log('info', '[USER-INFO] Pulling FSO profile for ' + targetUser.tag);
+    const memberProf = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: targetUser.id });
 
     const vState = await targetMember.voice;
     let vCh, vName;
@@ -85,23 +88,23 @@ async function run(fishsticks, cmd) {
         fields: [
             {
                 name: 'ID',
-                value: targetMember.id,
-                inline: true
+                value: `${targetMember.id}`,
+                inline: false
             },
             {
                 name: 'Username',
-                value: targetMember.user.username,
+                value: `${targetMember.user.username}`,
                 inline: true
             },
             {
-                name: 'Nickname',
-                value: targetMember.nickname,
+                name: 'Nickname (if applicable)',
+                value: `${targetMember.displayName}`,
                 inline: true
             },
             {
                 name: 'Join Date',
-                value: systemTimestamp(targetMember.joinedAt),
-                inline: true
+                value: `${memberProf.joinTimeFriendly} been a member for ${ timeSinceDate(memberProf.joinMs) }`,
+                inline: false
             },
             {
                 name: 'Membership Gate Status',
@@ -120,7 +123,7 @@ async function run(fishsticks, cmd) {
             },
             {
                 name: 'Tag',
-                value: targetUser.tag,
+                value: `${targetUser.tag}`,
                 inline: true
             }
         ]
