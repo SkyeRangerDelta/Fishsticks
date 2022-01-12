@@ -5,6 +5,7 @@
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { convertMsFull, timeSinceDate } = require('../../Modules/Utility/Utils_Time');
+const { buildProfileBanner } = require('../../Modules/Utility/Utils_Profile');
 
 //Exports
 module.exports = {
@@ -70,11 +71,6 @@ async function run(fishsticks, cmd) {
                 inline: true
             },
             {
-                name: 'XP Level',
-                value: `${ memberProf.xp.level }`,
-                inline: true
-            },
-            {
                 name: 'Collected XP',
                 value: `${ memberProf.xp.RP }`,
                 inline: true
@@ -102,8 +98,7 @@ async function run(fishsticks, cmd) {
         ]
     };
 
-    return cmd.channel.send({ embeds: [embedBuilder(profileEmbed)] })
-        .then(s => { setTimeout(() => s.delete(), 60000); });
+    return await buildProfileBanner(fishsticks, cmd, profileEmbed);
 }
 
 function help() {
