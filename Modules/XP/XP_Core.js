@@ -4,7 +4,7 @@
 //Imports
 const { fso_query } = require('../FSO/FSO_Utils');
 const { log } = require('../Utility/Utils_Log');
-const { discDen, prReqs, bStudy } = require('../Core/Core_ids.json');
+const { announcements, discDen, prReqs, bStudy } = require('../Core/Core_ids.json');
 const { createLevelBanner } = require('./XP_LevelUp');
 
 //Exports
@@ -91,8 +91,9 @@ async function doXP(fishsticks, cmd, memberProf) {
     if (updateProfRes.modifiedCount === 1) {
         if (lvlTriggered) {
             if (memberProf.notifications.xp) {
-                if (cmd.channel.id === discDen || cmd.channel.id === prReqs || cmd.channel.id === bStudy) {
-                    fishsticks.CONSOLE.send(`${cmd.msg.member}, You've reached level ${currLvl}!`, 10000);
+                if (cmd.channel.id === discDen || cmd.channel.id === prReqs || cmd.channel.id === bStudy || cmd.channel.id === announcements) {
+                    fishsticks.CONSOLE.send(`${cmd.msg.member}, You've reached level ${currLvl}!`)
+                        .then(sent => { setTimeout(() => { sent.delete(); }, 10000); });
                 }
                 else {
                     cmd.reply(`You've reached level ${currLvl}!`, 10);
