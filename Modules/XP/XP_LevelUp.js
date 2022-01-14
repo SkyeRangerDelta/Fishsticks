@@ -5,7 +5,7 @@
 const Discord = require('discord.js');
 const { createCanvas, registerFont, loadImage } = require('canvas');
 
-const { hangout, prReqs, announcements } = require('../Core/Core_ids.json');
+const { hangout, prReqs, announcements, discDen, bStudy } = require('../Core/Core_ids.json');
 const { log } = require('../Utility/Utils_Log');
 
 //Exports
@@ -88,7 +88,7 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
     log('info', '[NEW-MEM] Banner saved, pending dispatch');
     const xpBannerAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
 
-    if (cmd.channel.id === prReqs || cmd.channel.id === announcements) {
+    if (cmd.channel.id === prReqs || cmd.channel.id === announcements || cmd.channel.id === discDen || cmd.channel.id === bStudy) {
         //Redirect out of serious chats
         const hangoutCh = await fishsticks.channels.cache.get(hangout);
         hangoutCh.send({ content: 'Level up!', files: [xpBannerAttachment] });
