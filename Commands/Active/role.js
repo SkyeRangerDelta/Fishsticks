@@ -11,6 +11,7 @@ const { DuplicatedRoleException } = require('../../Modules/Errors/DuplicatedRole
 const { InvalidParameterException } = require('../../Modules/Errors/InvalidParameterException');
 
 const { DateTime } = require('luxon');
+const { hasPerms } = require('../../Modules/Utility/Utils_User');
 
 //Exports
 module.exports = {
@@ -218,7 +219,8 @@ async function voteRole(fishsticks, cmd, roleY) {
         throw 'That role doesnt exist!';
     }
     else if (roleObj.votes >= 5) {
-        return cmd.reply('This role has already been officialized, assigning it instead...', 10);
+        cmd.reply('This role has already been officialized, assigning it instead...', 10);
+        return joinRole(fishsticks, cmd, roleY);
     }
     else {
         //Run through founders to prevent dupe
@@ -262,9 +264,17 @@ async function voteRole(fishsticks, cmd, roleY) {
 }
 
 //Join a role
-async function joinRole(fishsticks, cmd) {
+async function joinRole(fishsticks, cmd, roleData) {
     //Check active
-    const roleX = await findRole();
+    let roleX;
+
+    if (roleData) {
+        //Redirect from vote
+        roleX = roleData;
+    }
+    else {
+        roleX = await findRole();
+    }
 
     if (roleX.active === false) {
         //Vote role override
@@ -274,6 +284,12 @@ async function joinRole(fishsticks, cmd) {
     else {
         //Get role and add
         const roleY = await cmd.msg.guild.roles.cache.find(role => role.name === `${roleX.name}`);
+
+        //Check if this person already has the role
+        if (hasPerms(cmd.msg.member, [`${roleX.name}`])) {
+            return cmd.reply('You already have this role!', 15);
+        }
+
         cmd.msg.member.roles.add(roleY).then(function() {
 
             //Update FSO with the new role list
@@ -309,6 +325,12 @@ async function leaveRole(fishsticks, cmd) {
     else {
         //Get role and remove
         const roleY = await cmd.msg.guild.roles.cache.find(role => role.name === `${roleX.name}`);
+
+        //Check if this person already has the role
+        if (!hasPerms(cmd.msg.member, [`${roleX.name}`])) {
+            return cmd.reply('You already have left this role!', 15);
+        }
+
         cmd.msg.member.roles.remove(roleY).then(function() {
 
             //Sort through founders and strikethrough if listed
