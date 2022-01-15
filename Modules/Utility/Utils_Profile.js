@@ -33,7 +33,6 @@ async function buildProfileBanner(fishsticks, cmd, profileEmbed) {
     //Load BG
     const bgURL = forcedUser.bannerURL({ format: 'png', size: 4096 });
     let background;
-    console.log(bgURL);
     if (!bgURL) {
         background = await loadImage('./Images/Utility/horvath-waves.jpg');
     }
@@ -43,16 +42,27 @@ async function buildProfileBanner(fishsticks, cmd, profileEmbed) {
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
     log('info', '[XP-BANNER] Background loaded...');
 
+    //Add a darkening overlay
+    ctx.globalAlpha = 0.4;
+    ctx.fillRect(0, 0, 700, 250);
+    ctx.globalAlpha = 1.0;
+
     //Apply text
     //Upper title
     ctx.font = '30px Julius Sans One';
     ctx.fillStyle = '#ffffff';
     ctx.fillText(`${cmd.msg.member.displayName}`, canvas.width / 2.5, canvas.height / 3.5);
 
-    //Level shift
+    //Level Detail
     ctx.font = '70px Trebuchet MS';
     ctx.fillStyle = '#add8e6';
     ctx.fillText(`${lvl}`, canvas.width / 1.9, canvas.height / 1.8);
+
+    //Quick Info
+    ctx.font = '25px Julius Sans One';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(`XP: ${memberProf.xp.RP}`, canvas.width / 2.5, canvas.height / 1.1);
+    ctx.fillText(`Goldfish: ${memberProf.xp.goldfish}`, canvas.width / 1.7, canvas.height / 1.1);
 
     log('info', '[XP-BANNER] Text applications finished...');
 
@@ -62,12 +72,14 @@ async function buildProfileBanner(fishsticks, cmd, profileEmbed) {
 
     //Do avatar container
     //Draw avatar outline container
+    /*
     ctx.beginPath();
     ctx.fillStyle = '#86c5DA';
     ctx.arc(125, 125, 105, 0, Math.PI * 2, true);
     ctx.fill();
     ctx.closePath();
     ctx.clip();
+     */
 
     //Build avatar container
     ctx.beginPath();
@@ -82,8 +94,14 @@ async function buildProfileBanner(fishsticks, cmd, profileEmbed) {
     //Save and send
     log('info', '[NEW-MEM] Banner saved, pending dispatch');
     const bannerAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
-    cmd.channel.send({ embeds: [embedBuilder(profileEmbed)], files: [bannerAttachment] })
-        .then(sent => { setTimeout(() => { sent.delete(); }, 60000); });
+    if (!profileEmbed) {
+        cmd.channel.send({ files: [bannerAttachment] })
+            .then(sent => { setTimeout(() => { sent.delete(); }, 60000); });
+    }
+    else {
+        cmd.channel.send({ embeds: [embedBuilder(profileEmbed)], files: [bannerAttachment] })
+            .then(sent => { setTimeout(() => { sent.delete(); }, 60000); });
+    }
 }
 
 
