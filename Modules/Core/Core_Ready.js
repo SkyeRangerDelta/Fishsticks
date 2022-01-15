@@ -44,6 +44,9 @@ async function startUp(Fishsticks) {
 	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch(ranger);
 	Fishsticks.MEMBER = await Fishsticks.CCG.members.fetch(fsID);
 
+	//Cache all members for ROLE-SYS checks
+	Fishsticks.CCG.members.fetch();
+
 	//Console confirmation
 	log('proc', '[CLIENT] Fishsticks is out of the oven.\n-------------------------------------------------------');
 

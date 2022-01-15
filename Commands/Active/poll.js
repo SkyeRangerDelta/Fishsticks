@@ -123,7 +123,7 @@ async function parseCmd(fishsticks, cmd) {
     };
 
     //Fill in desc
-    pollObj.d = 'A poll has been posted by a ' + memberType + '. To answer the poll, please click one **ONE** of the emoji reactions below this message that corresponds with your answer. Do not vote twice.\n\n';
+    pollObj.d = 'A poll has been posted by a ' + memberType + '. To answer the poll, please click one **ONE** of the answer buttons below this message that corresponds with your answer. Clicking a different response will update your answer.\n\n';
     pollObj.embed.title += pollObj.q;
 
     //Verify at least 2 answer choices

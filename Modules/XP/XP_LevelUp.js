@@ -41,6 +41,11 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
     log('info', '[XP-BANNER] Background loaded...');
 
+    //Add a darkening overlay
+    ctx.globalAlpha = 0.4;
+    ctx.fillRect(0, 0, 700, 250);
+    ctx.globalAlpha = 1.0;
+
     //Apply text
     //Upper title
     ctx.font = '30px Julius Sans One';
@@ -67,12 +72,14 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
 
     //Do avatar container
     //Draw avatar outline container
+    /*
     ctx.beginPath();
     ctx.fillStyle = '#86c5DA';
     ctx.arc(125, 125, 105, 0, Math.PI * 2, true);
     ctx.fill();
     ctx.closePath();
     ctx.clip();
+     */
 
     //Build avatar container
     ctx.beginPath();
