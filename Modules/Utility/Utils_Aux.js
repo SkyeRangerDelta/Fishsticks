@@ -57,9 +57,12 @@ async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 	for (const ID in fishsticks.debMsgIDs) {
 		log('info', '[DEBATER] Checking IDs for debater rules acceptance.');
 		if (addedReaction.message.id === fishsticks.debMsgIDs[ID]) {
-			const member = await fishsticks.CCG.members.cache.get(reactor.id);
+			const member = await fishsticks.CCG.members.fetch(reactor.id);
 			const debRole = await fishsticks.CCG.roles.cache.get(debater);
-			return await member.roles.add(debRole);
+			await member.roles.add(debRole)
+				.then(() => {
+					member.send('Debater role assigned!');
+				});
 			//TODO: Debator app start
 		}
 	}
