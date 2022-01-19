@@ -53,17 +53,21 @@ async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 		}
 	}
 
-	//Check for Debator apps
+	//Check for Debater apps
 	for (const ID in fishsticks.debMsgIDs) {
 		log('info', '[DEBATER] Checking IDs for debater rules acceptance.');
 		if (addedReaction.message.id === fishsticks.debMsgIDs[ID]) {
 			const member = await fishsticks.CCG.members.fetch(reactor.id);
-			const debRole = await fishsticks.CCG.roles.cache.get(debater);
-			await member.roles.add(debRole)
+			const debRole = await fishsticks.CCG.roles.fetch(debater);
+			return await member.roles.add(debRole)
 				.then(() => {
-					member.send('Debater role assigned!');
+					member.createDM()
+						.then((DMCh) => {
+							DMCh.send('Debater role assigned!').catch(console.error);
+						})
+						.catch(console.error);
 				});
-			//TODO: Debator app start
+			//TODO: Debater app start
 		}
 	}
 }
