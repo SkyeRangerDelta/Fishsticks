@@ -326,8 +326,7 @@ async function endPoll(fishsticks, pollObj, interaction) {
     }
 
     if(interaction.member.id !== pollObj.authId) {
-        return interaction.reply('Only the poll owner can end the poll')
-            .then(sent => { setTimeout(() => sent.delete(), 10000); });
+        return interaction.reply({ content: 'Only the poll owner can end the poll', ephemeral: true });
     }
 
     const res = getWinner(fishsticks, pollObj);
