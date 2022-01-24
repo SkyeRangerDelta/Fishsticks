@@ -1,5 +1,7 @@
 // ---- Why ----
 
 exports.run = (fishsticks, cmd) => {
-    cmd.channel.send({ files: ['./Images/Passives/why.gif'] });
+    if (cmd.msg.content === 'why') {
+        cmd.channel.send({ files: ['./Images/Passives/why.gif'] });
+    }
 };

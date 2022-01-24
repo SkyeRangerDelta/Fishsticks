@@ -12,6 +12,7 @@ const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const responseEmojis = require('../../Modules/Library/emojiList');
 const { MessageButton, MessageActionRow } = require('discord.js');
 const { fsoValidationException } = require('../../Modules/Errors/fsoValidationException');
+const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 
 //Exports
 module.exports = {
@@ -122,7 +123,7 @@ async function parseCmd(fishsticks, cmd) {
     };
 
     //Fill in desc
-    pollObj.d = 'A poll has been posted by a ' + memberType + '. To answer the poll, please click one **ONE** of the emoji reactions below this message that corresponds with your answer. Do not vote twice.\n\n';
+    pollObj.d = 'A poll has been posted by a ' + memberType + '. To answer the poll, please click one **ONE** of the answer buttons below this message that corresponds with your answer. Clicking a different response will update your answer.\n\n';
     pollObj.embed.title += pollObj.q;
 
     //Verify at least 2 answer choices
@@ -254,6 +255,14 @@ async function addResponse(fishsticks, pollObj, interaction) {
         }
     });
 
+    const pollEmbed = new Discord.MessageEmbed()
+        .setTitle(pollObj.embed.title)
+        .setColor(pollObj.embed.color)
+        .setDescription(pollObj.d + '\nVotes: `' + (pollObj.responses.recVotes + 1) + '`.');
+
+    //TODO: Increment votes
+    interaction.message.edit({ embeds: [pollEmbed] });
+
     if (aRes.modifiedCount === 1) {
         interaction.reply({ content: 'Response noted.', ephemeral: true });
     }
@@ -317,8 +326,7 @@ async function endPoll(fishsticks, pollObj, interaction) {
     }
 
     if(interaction.member.id !== pollObj.authId) {
-        return interaction.reply('Only the poll owner can end the poll')
-            .then(sent => { setTimeout(() => sent.delete(), 10000); });
+        return interaction.reply({ content: 'Only the poll owner can end the poll', ephemeral: true });
     }
 
     const res = getWinner(fishsticks, pollObj);

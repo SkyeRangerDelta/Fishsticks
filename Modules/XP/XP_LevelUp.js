@@ -5,7 +5,7 @@
 const Discord = require('discord.js');
 const { createCanvas, registerFont, loadImage } = require('canvas');
 
-const { hangout, prReqs, announcements } = require('../Core/Core_ids.json');
+const { hangout, prReqs, announcements, discDen, bStudy } = require('../Core/Core_ids.json');
 const { log } = require('../Utility/Utils_Log');
 
 //Exports
@@ -29,12 +29,22 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
     const ctx = canvas.getContext('2d');
 
     //Load BG
-    let background = await loadImage(forcedUser.bannerURL({ format: 'png', size: 4096 }));
-    if (!background) {
+    const bgURL = forcedUser.bannerURL({ format: 'png', size: 4096 });
+    let background;
+    console.log(bgURL);
+    if (!bgURL) {
         background = await loadImage('./Images/Utility/horvath-waves.jpg');
+    }
+    else {
+        background = await loadImage(bgURL);
     }
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
     log('info', '[XP-BANNER] Background loaded...');
+
+    //Add a darkening overlay
+    ctx.globalAlpha = 0.4;
+    ctx.fillRect(0, 0, 700, 250);
+    ctx.globalAlpha = 1.0;
 
     //Apply text
     //Upper title
@@ -45,7 +55,7 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
     //Level shift
     ctx.font = '70px Trebuchet MS';
     ctx.fillStyle = '#add8e6';
-    ctx.fillText(`${newLvl - 1} -> ${newLvl}`, canvas.width / 2, canvas.height / 1.8);
+    ctx.fillText(`${newLvl - 1} -> ${newLvl}`, canvas.width / 1.9, canvas.height / 1.8);
 
     //Lower title
     ctx.font = '26px Julius Sans One';
@@ -62,12 +72,14 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
 
     //Do avatar container
     //Draw avatar outline container
+    /*
     ctx.beginPath();
     ctx.fillStyle = '#86c5DA';
     ctx.arc(125, 125, 105, 0, Math.PI * 2, true);
     ctx.fill();
     ctx.closePath();
     ctx.clip();
+     */
 
     //Build avatar container
     ctx.beginPath();
@@ -83,7 +95,7 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
     log('info', '[NEW-MEM] Banner saved, pending dispatch');
     const xpBannerAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
 
-    if (cmd.channel.id === prReqs || cmd.channel.id === announcements) {
+    if (cmd.channel.id === prReqs || cmd.channel.id === announcements || cmd.channel.id === discDen || cmd.channel.id === bStudy) {
         //Redirect out of serious chats
         const hangoutCh = await fishsticks.channels.cache.get(hangout);
         hangoutCh.send({ content: 'Level up!', files: [xpBannerAttachment] });
