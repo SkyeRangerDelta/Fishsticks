@@ -38,6 +38,7 @@ const Fishsticks = new Discord.Client({ intents: intents });
 Fishsticks.FSO_CONNECTION = null;
 Fishsticks.FSO_STATE = null;
 Fishsticks.FSO_VALID = null;
+Fishsticks.CMDS = new Map();
 Fishsticks.session;
 Fishsticks.pollCache = 0;
 Fishsticks.appMsgIDs = [];

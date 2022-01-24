@@ -8,9 +8,13 @@ const { convertMsFull, systemTimestamp } = require('../Utility/Utils_Time');
 const { embedBuilder } = require('../Utility/Utils_EmbedBuilder');
 const { terminate } = require('../Utility/Utils_Terminate');
 
+const fs = require('fs');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+
 const { guild_CCG, fs_console, fsID, bLogger, ranger } = require('./Core_ids.json');
 const { version } = require('../../package.json');
-const { primary, emergency } = require('./Core_config.json').colors;
+const { primary, emergency, token } = require('./Core_config.json').colors;
 
 //Exports
 module.exports = {
@@ -104,6 +108,31 @@ async function startUp(Fishsticks) {
 	}
 	else {
 		log ('info', '[FSO] Status table update done.');
+	}
+
+	// Register slash commands
+	const commandObjs = [];
+	const commandData = fs.readdirSync('../../Commands/Active').filter(f => f.endsWith('.js'));
+
+	for (const cmdFile of commandData) {
+		const cmd = require(`../../Commands/Active/${cmdFile}`);
+		commandObjs.push(cmd.data.toJSON());
+		Fishsticks.CMDS.set(cmd.data.name, cmd);
+	}
+
+	const rest = new REST({ version: 9 }).setToken(token);
+	try {
+		await rest.put(
+			Routes.applicationGuildCommands(
+				fsID,
+				guild_CCG
+			),
+			{ body: commandObjs }
+		);
+		log('proc', '[CMD-HANDLER] Finsihed registering commands');
+	}
+	catch (e) {
+		log('err', '[CMD-HANDLER] Failed to finished registering commands!');
 	}
 
 	//Cache data

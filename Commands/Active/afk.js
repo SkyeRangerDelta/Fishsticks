@@ -3,12 +3,18 @@
 
 //Imports
 const chs = require('../../Modules/Core/Core_ids.json');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 //Exports
 module.exports = {
+    data,
 	run,
 	help
 };
+
+const data = new SlashCommandBuilder()
+    .setName('afk')
+    .setDescription('Changes the name of the AFK channel.');
 
 async function run(fishsticks, cmd) {
     cmd.msg.delete();
@@ -37,5 +43,5 @@ async function run(fishsticks, cmd) {
 }
 
 function help() {
-	return 'Changes the AFK channel name';
+    return 'Changes the AFK channel name';
 }

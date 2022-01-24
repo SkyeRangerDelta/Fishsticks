@@ -78,9 +78,10 @@ async function processMessage(Fishsticks, msg) {
 
     //Handle Active Commands
     if (msg.content.startsWith(prefix)) {
-        const channel = msg.channel;
+        //const channel = msg.channel;
 
         //Active Command
+        /*
         log('info', '[ACTIVE-CMD] Incoming active command: ' + cmd.ID);
 
         try {
@@ -142,6 +143,7 @@ async function processMessage(Fishsticks, msg) {
                 channel.send(generateErrorMsg() + '\nNot quite sure what to make of that. Looks like a crash. ' + Fishsticks.RANGER + ' please investigate.');
             }
         }
+         */
     }
     else {
         //Passive Command Handler
