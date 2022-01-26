@@ -1,21 +1,24 @@
 //----BaconMode----
 
-//Exports
-module.exports = {
-	run,
-	help
-};
+//Imports
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-function run(fishsticks, cmd) {
-    cmd.msg.delete();
+//Functions
+const data = new SlashCommandBuilder()
+    .setName('baconmode')
+    .setDescription('Slaps some bacon on all messages the target sends.');
 
+data.addUserOption(u => u.setName('bacon-target').setDescription('The person whom needs to have bacon slapped onto.'));
+
+function run(fishsticks, int) {
     //Collect target
-    const target = cmd.msg.mentions.members.first();
+    const target = int.options.getMember('bacon-target');
 
     //Validate
     if (!target) {
         console.log('[BAC-MODE] Target found to be null.');
-        cmd.reply('Cleared the bacon target.', 10);
+        int.reply('Cleared the bacon target.')
+            .then(sent => setTimeout(() => { sent.delete(); }, 10000));
 
         return fishsticks.baconTarget = null;
     }
@@ -28,10 +31,19 @@ function run(fishsticks, cmd) {
         throw 'Bacon mode failed to engage.';
     }
 
-    cmd.reply('Bacon mode engaged!', 10);
+    int.reply('Bacon mode engaged!')
+        .then(sent => setTimeout(() => { sent.delete(); }, 10000));
 
 }
 
 function help() {
 	return 'Enables BaconMode';
 }
+
+//Exports
+module.exports = {
+    name: 'baconmode',
+    data,
+    run,
+    help
+};

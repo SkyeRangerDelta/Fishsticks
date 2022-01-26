@@ -9,6 +9,7 @@ const { embedBuilder } = require('../Utility/Utils_EmbedBuilder');
 const { terminate } = require('../Utility/Utils_Terminate');
 
 const fs = require('fs');
+const path = require('path');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
@@ -112,14 +113,18 @@ async function startUp(Fishsticks) {
 
 	// Register slash commands
 	const commandObjs = [];
-	const commandData = fs.readdirSync('../../Commands/Active').filter(f => f.endsWith('.js'));
+	const cmdPath = path.join(__dirname, '../..', 'Commands/Active');
+	const commandData = fs.readdirSync(cmdPath).filter(f => f.endsWith('.js'));
 
 	for (const cmdFile of commandData) {
 		const cmd = require(`../../Commands/Active/${cmdFile}`);
+		console.log(commandData);
+		console.log(cmd.data);
 		commandObjs.push(cmd.data.toJSON());
 		Fishsticks.CMDS.set(cmd.data.name, cmd);
 	}
 
+	log('proc', '[CMD-HANDLER] Beginning command registration');
 	const rest = new REST({ version: 9 }).setToken(token);
 	try {
 		await rest.put(
@@ -129,7 +134,7 @@ async function startUp(Fishsticks) {
 			),
 			{ body: commandObjs }
 		);
-		log('proc', '[CMD-HANDLER] Finsihed registering commands');
+		log('proc', '[CMD-HANDLER] Finished registering commands');
 	}
 	catch (e) {
 		log('err', '[CMD-HANDLER] Failed to finished registering commands!');

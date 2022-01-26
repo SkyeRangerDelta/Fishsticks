@@ -6,38 +6,34 @@ const rollLib = require('roll');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 
 const { primary } = require('../../Modules/Core/Core_config.json');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const roll = new rollLib();
 
-//Exports
-module.exports = {
-	run,
-	help
-};
-
 //Functions
-function run(fishsticks, cmd) {
-    cmd.msg.delete();
+const data = new SlashCommandBuilder()
+    .setName('dice')
+    .setDescription('Compute complex dice calculations!');
 
-    //Validate
-    if (!cmd.content[0]) {
-        return cmd.reply('Specify a die type or calculation!', 10);
-    }
+data.addStringOption(o => o.setName('calculation').setDescription('The die calculation to be performed (d20, d6+5, d10+d4) OR the word `encounter`.')
+    .setRequired(true)
+    .addChoice('encounter', 'encounter'));
 
+function run(fishsticks, int) {
     //Command Breakup
-    const dieRoll = cmd.content[0];
-    const diceRolled = cmd.content[0].split('+');
+    const dieRoll = int.options.getString('calculation');
+    const diceRolled = dieRoll.split('+');
 
     //Check for encounter generator
-    if (cmd.content[0].toLowerCase() === 'encounter') {
-        return cmd.channel.send('Encounter type: ' + genEncounter());
+    if (dieRoll === 'encounter') {
+        return int.reply('Encounter type: ' + genEncounter());
     }
 
     //Validate
     const valid = roll.validate(dieRoll);
 
     if (!valid) {
-        return cmd.reply('That doesnt look like a valid roll, hit me again.', 10);
+        return int.reply('That doesnt look like a valid roll, hit me again.', 10);
     }
 
     //Handle Roll(s)
@@ -88,7 +84,7 @@ function run(fishsticks, cmd) {
 		]
 	};
 
-    cmd.channel.send({ embeds: [embedBuilder(rollPanel)] });
+    int.channel.send({ embeds: [embedBuilder(rollPanel)] });
 }
 
 function genEncounter() {
@@ -101,3 +97,11 @@ function genEncounter() {
 function help() {
 	return 'Performs dice calculations.';
 }
+
+//Exports
+module.exports = {
+    name: 'dice',
+    data,
+    run,
+    help
+};

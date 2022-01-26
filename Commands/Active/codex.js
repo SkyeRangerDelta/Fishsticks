@@ -3,40 +3,44 @@
 //Imports
 const fs = require('fs');
 const { log } = require('../../Modules/Utility/Utils_Log');
-
-//Exports
-module.exports = {
-	run,
-	help
-};
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 //Functions
-function run(fishsticks, cmd) {
-	cmd.msg.delete();
+const data = new SlashCommandBuilder()
+	.setName('codex')
+	.setDescription('Pulls up relevant information/how-to on a command.');
 
-	if (!cmd.content[0]) {
-		return cmd.reply('Codex doesnt work without a search query!', 10);
-	}
+data.addStringOption(o => o.setName('command-id').setDescription('The command ID (command name) to look up.').setRequired(true));
 
+function run(fishsticks, int) {
+	const cmdID = int.options.getString('command-id').toLowerCase();
 	const cmdList = fs.readdirSync('./Commands/Active').filter(dirItem => dirItem.endsWith('.js'));
 
 	log('info', '[CODEX] Attempting to find command.');
 
     for (const file in cmdList) {
 		const fileID = cmdList[file].substring(0, cmdList[file].length - 3);
-		if (fileID.toLowerCase() === cmd.content[0]) {
+		if (fileID.toLowerCase() === cmdID) {
 			const helpFile = require(`./${fileID}`);
 			const helpEntry = helpFile.help();
-			return cmd.channel.send(helpEntry + `\nThat entry can be found here: https://wiki.pldyn.net/fishsticks/command-listing#${fileID}`)
+			return int.reply(helpEntry + `\nThat entry can be found here: https://wiki.pldyn.net/fishsticks/command-listing#${fileID}`)
 			.then(sent => {
 				setTimeout(() => sent.delete(), 25000);
 			});
 		}
 	}
 
-	cmd.reply('There is no such command.', 10);
+	int.reply('There is no such command.');
 }
 
 function help() {
 	return 'Provides more detailed info on a specific command.';
 }
+
+//Exports
+module.exports = {
+	name: 'codex',
+	data,
+	run,
+	help
+};

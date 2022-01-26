@@ -7,19 +7,19 @@ const { dictKey, dictID } = require('../../Modules/Core/Core_keys.json');
 const Dictionary = require('oxford-dictionary');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { log } = require('../../Modules/Utility/Utils_Log');
-
-//Exports
-module.exports = {
-    run,
-    help
-};
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 //Functions
-async function run(fishticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
+const data = new SlashCommandBuilder()
+    .setName('define')
+    .setDescription('Pulls definitions for words from the Oxford University Dictionary.');
+
+data.addStringOption(o => o.setName('word').setDescription('The word to define.').setRequired(true));
+
+async function run(fishticks, int) {
 
     //Command Breakup
-    const word = cmd.content[0];
+    const word = int.options.getString('word');
 
     //Handle Dispatch
     const dictConf = {
@@ -28,7 +28,7 @@ async function run(fishticks, cmd) {
     };
 
     const dict = new Dictionary(dictConf);
-    const definitions = await getDefinitions(word, dict, cmd);
+    const definitions = await getDefinitions(word, dict);
 
     //Build response
     let emDesc = 'Definitions:\n';
@@ -54,10 +54,10 @@ async function run(fishticks, cmd) {
     };
 
     //Send Response
-    cmd.channel.send({ embeds: [embedBuilder(defEmbed)] });
+    int.reply({ embeds: [embedBuilder(defEmbed)] });
 }
 
-async function getDefinitions(word, dict, cmd) {
+async function getDefinitions(word, dict) {
     //Process defs
     const defs = [];
 
@@ -84,3 +84,11 @@ async function getDefinitions(word, dict, cmd) {
 function help() {
     return 'Returns definitions for a given word.';
 }
+
+//Exports
+module.exports = {
+    name: 'define',
+    data,
+    run,
+    help
+};

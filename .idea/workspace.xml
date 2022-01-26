@@ -2,15 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/afk.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/afk.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/apply.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/apply.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/baconmode.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/baconmode.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/bible.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/bible.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/channels.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/channels.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/codex.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/codex.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/creative.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/creative.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/define.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/define.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/dice.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/dice.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/docket.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/docket.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Events/interactionCreate.js" beforeDir="false" afterPath="$PROJECT_DIR$/Events/interactionCreate.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Message.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Message.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fishsticks.js" beforeDir="false" afterPath="$PROJECT_DIR$/fishsticks.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,6 +131,7 @@
       <workItem from="1642619039569" duration="5000" />
       <workItem from="1642636907449" duration="363000" />
       <workItem from="1643051885839" duration="2927000" />
+      <workItem from="1643149053312" duration="9391000" />
     </task>
     <servers />
   </component>

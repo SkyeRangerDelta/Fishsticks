@@ -8,22 +8,22 @@ const { log } = require('../../Modules/Utility/Utils_Log');
 const { systemTimestamp } = require('../../Modules/Utility/Utils_Time');
 const { council } = require('../../Modules/Core/Core_ids.json');
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
-
-//Exports
-module.exports = {
-	run,
-	help
-};
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 //Globals
 let flags = [];
 let pointDesc = null;
 let pointNum = null;
 
+const data = new SlashCommandBuilder()
+	.setName('docket')
+	.setDescription('Add, edit, and delete points for CC community meetings.');
+
 //Functions
-async function run(fishsticks, cmd) {
-	cmd.msg.delete({ timeout: 0 });
-	const params = cmd.content;
+async function run(fishsticks, int) {
+	const params = int.options;
+
+	//TODO: Finish refactoring for slash commands
 
 	console.log(params);
 
@@ -393,3 +393,11 @@ async function getDocketPointValidate(fishsticks, cmd) {
 
 	return dtPoint;
 }
+
+//Exports
+module.exports = {
+	name: 'docket',
+	data,
+	run,
+	help
+};

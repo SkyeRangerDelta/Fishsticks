@@ -5,43 +5,47 @@
 const chs = require('../../Modules/Core/Core_ids.json');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Exports
-module.exports = {
-    data,
-	run,
-	help
-};
-
+//Functions
 const data = new SlashCommandBuilder()
     .setName('afk')
     .setDescription('Changes the name of the AFK channel.');
 
-async function run(fishsticks, cmd) {
-    cmd.msg.delete();
+data.addStringOption(s => s.setName('a-starting-word').setDescription('Word that starts with A.').setRequired(true));
+data.addStringOption(s => s.setName('f-starting-word').setDescription('Word that starts with F.').setRequired(true));
+data.addStringOption(s => s.setName('k-starting-word').setDescription('Word that starts with K.').setRequired(true));
 
-    if (cmd.content.length !== 3) {
-        return cmd.reply('AFK has 3 words...', 10);
+async function run(fishsticks, int) {
+    if (int.options.length !== 3) {
+        return int.reply('AFK has 3 words...', 10);
     }
 
     let newName = '';
 
-    if (cmd.content[0].toLowerCase().charAt(0) !== 'a') {
-        return cmd.reply('(A)FK - The word needs to start with an A!', 7);
+    if (int.options[0].toLowerCase().charAt(0) !== 'a') {
+        return int.reply({ content: '(A)FK - The word needs to start with an A!', ephemeral: true });
 	}
-	else if (cmd.content[1].toLowerCase().charAt(0) !== 'f') {
-        return cmd.reply('A(F)K - The word needs to start with an F!', 7);
+	else if (int.options[1].toLowerCase().charAt(0) !== 'f') {
+        return int.reply({ content: 'A(F)K - The word needs to start with an F!', ephemeral: true });
 	}
-	else if (cmd.content[2].toLowerCase().charAt(0) !== 'k') {
-        return cmd.reply('AF(K) - The word needs to start with a K!', 7);
+	else if (int.options[2].toLowerCase().charAt(0) !== 'k') {
+        return int.reply({ content: 'AF(K) - The word needs to start with a K!', ephemeral: true });
     }
 
-    newName = 'AFK (' + cmd.content.join(' ') + ')';
+    newName = 'AFK (' + int.options.join(' ') + ')';
 
     const AFKChannel = await fishsticks.channels.cache.get(chs.afkChannel);
     AFKChannel.setName(newName, 'The AFK command was used!')
-        .then(cmd.reply('Done!', 10));
+        .then(int.reply({ content: 'Done!', ephemeral: true }));
 }
 
 function help() {
     return 'Changes the AFK channel name';
 }
+
+//Exports
+module.exports = {
+    name: 'afk',
+    data,
+    run,
+    help
+};

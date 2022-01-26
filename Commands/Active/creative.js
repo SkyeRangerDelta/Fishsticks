@@ -4,29 +4,34 @@
 //Imports
 const { creative } = require('../../Modules/Core/Core_ids.json');
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
-
-//Exports
-module.exports = {
-	run,
-	help
-};
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 //Functions
-async function run(fishsticks, cmd) {
-	cmd.msg.delete({ timeout: 0 });
+const data = new SlashCommandBuilder()
+	.setName('creative')
+	.setDescription('Toggles the Creative role assignment');
 
+async function run(fishsticks, int) {
 	const creativeRole = fishsticks.CCG.roles.cache.get(creative);
 
-	if (hasPerms(cmd.msg.member, ['Creative'])) {
-		cmd.msg.member.roles.remove(creativeRole, 'Toggled by command.');
-		cmd.reply('Removed.', 10);
+	if (hasPerms(int.member, ['Creative'])) {
+		int.member.roles.remove(creativeRole, 'Toggled by command.');
+		int.reply({ content: 'Removed.', ephemeral: true });
 	}
 	else {
-		cmd.msg.member.roles.add(creativeRole, 'Toggled by command.');
-		cmd.reply('Assigned.', 10);
+		int.member.roles.add(creativeRole, 'Toggled by command.');
+		int.reply({ content: 'Assigned.', ephemeral: true });
 	}
 }
 
 function help() {
 	return 'Toggles the assignment of the Creative role.';
 }
+
+//Exports
+module.exports = {
+	name: 'creative',
+	data,
+	run,
+	help
+};

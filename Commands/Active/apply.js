@@ -4,21 +4,18 @@
 //Imports
 const { introduction, formQuestions } = require('../../Modules/Library/appQuestions.json');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 const { primary } = require('../../Modules/Core/Core_config.json').colors;
 
-//Exports
-module.exports = {
-	run,
-	help,
-	startApp
-};
-
 //Functions
-function run(fishsticks, cmd) {
-	cmd.msg.delete();
+const data = new SlashCommandBuilder()
+	.setName('apply')
+	.setDescription('[WIP] Starts the (A)CC member application process.');
+
+function run(fishsticks, int) {
 
 	//Not done
-	return cmd.reply('This command aint done just yet. You can still apply for membership via this link: https://bit.ly/CCMemberApp');
+	return int.reply('This command aint done just yet. You can still apply for membership via this link: https://bit.ly/CCMemberApp');
 
 	//Dispatch introduction embed
 	const introPanel = {
@@ -28,17 +25,26 @@ function run(fishsticks, cmd) {
 		footer: 'If you did not issue this command, or no longer wish to continue; please type `stop` at any time.',
 	};
 
-	cmd.msg.author.send({ embeds: embedBuilder(introPanel) })
-	.then(cmd.msg.author.send('If you are ready to begin, please click the green check emoji to start.'))
-	.then(sent => {
-		sent.react('✅');
-		fishsticks.appMsgIDs.push(sent.id);
-	});
+	int.user.send({ embeds: embedBuilder(introPanel) })
+		.then(int.user.send('If you are ready to begin, please click the green check emoji to start.'))
+		.then(sent => {
+			sent.react('✅');
+			fishsticks.appMsgIDs.push(sent.id);
+		});
 }
 
 function help() {
 	return 'Starts the (A)CC application process.';
 }
+
+//Exports
+module.exports = {
+	name: 'apply',
+	data,
+	run,
+	help,
+	startApp
+};
 
 //Begin the application process
 function startApp(fishsticks, msg) {
