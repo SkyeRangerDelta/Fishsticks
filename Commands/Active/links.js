@@ -3,17 +3,15 @@
 
 //Imports
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Exports
-module.exports = {
-	run,
-	help
-};
+//Globals
+const data = new SlashCommandBuilder()
+	.setName('links')
+	.setDescription('Displays useful CC links.');
 
 //Functions
-function run(fishsticks, cmd) {
-    cmd.msg.delete();
-
+function run(fishsticks, int) {
 	const links = {
 		title: 'o0o - CC GAMING LINKS - o0o',
 		description: '[CC Gaming Website](https://www.ccgaming.com)\n' +
@@ -26,10 +24,17 @@ function run(fishsticks, cmd) {
 		delete: 20000
 	};
 
-    cmd.channel.send({ embeds: [embedBuilder(links)] })
-		.then(s => { setTimeout(() => s.delete(), 20000); });
+	int.reply({ embeds: [embedBuilder(links)], ephemeral: true });
 }
 
 function help() {
 	return 'Lists useful CC links.';
 }
+
+//Exports
+module.exports = {
+	name: 'links',
+	data,
+	run,
+	help
+};

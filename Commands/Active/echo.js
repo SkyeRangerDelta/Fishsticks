@@ -6,15 +6,27 @@ const { announcements } = require('../../Modules/Core/Core_ids.json');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { toTitleCase } = require('../../Modules/Utility/Utils_Aux');
 const { findRole } = require('./role');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 let annChannel;
 
-//Exports
-module.exports = {
-    run,
-    help
-};
+//Globals
+const data = new SlashCommandBuilder()
+    .setName('echo')
+    .setDescription('Posts a delayed announcement');
 
+data.addNumberOption(o => o.setName('wait-time').setDescription('The time to wait in minutes before posting the announcement.').setRequired(true));
+data.addStringOption(o =>
+    o
+        .setName('role-ping')
+        .setDescription('If pinging a role, name that role by name or game (as seen in !roles), pick a choice otherwise.')
+        .addChoice('everyone', 'everyone')
+        .addChoice('here', 'here')
+        .addChoice('soft', 'soft')
+);
+data.addStringOption(o => o.setName('announcement').setDescription('The announcement to post.').setRequired(true));
+
+//Functions
 async function run(fishsticks, cmd) {
     cmd.msg.delete();
 
@@ -140,3 +152,11 @@ async function doPingDispatch(fs, cmd, wait) {
         setTimeout(dispatchMsg, wait, sendMsg);
     }
 }
+
+//Exports
+module.exports = {
+    name: 'echo',
+    data,
+    run,
+    help
+};

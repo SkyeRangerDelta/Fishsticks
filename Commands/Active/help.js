@@ -5,20 +5,15 @@ const fs = require('fs');
 
 const { primary } = require('../../Modules/Core/Core_config.json');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Exports
-module.exports = {
-	run,
-	help
-};
+//Globals
+const data = new SlashCommandBuilder()
+	.setName('help')
+	.setDescription('Prints out the help list.');
 
 //Functions
-function run(fishsticks, cmd) {
-	cmd.msg.delete();
-
-	cmd.channel.send({ content: 'Building help menu...' })
-		.then(s => { setTimeout(() => s.delete(), 3000); });
-
+function run(fishsticks, int) {
 	const cmdList = fs.readdirSync('./Commands/Active').filter(cmdFile => cmdFile.endsWith('.js'));
 	let helpMenu = '';
 
@@ -30,7 +25,7 @@ function run(fishsticks, cmd) {
 			helpMenu = helpMenu.concat(`**${cmdFileID}**: ${helpTxt}\n`);
 		}
 		catch (helpListErr) {
-			cmd.reply('Wait. Stop. No, something is off. Like literally turned off. ' + fishsticks.RANGER + ' Hey can you check on this please.');
+			int.reply('Wait. Stop. No, something is off. Like literally turned off. ' + fishsticks.RANGER + ' Hey can you check on this please.');
 			throw `${cmdList[file]} has no help entry!\n${helpListErr}`;
 		}
 	}
@@ -46,10 +41,17 @@ function run(fishsticks, cmd) {
 		noThumbnail: true
 	};
 
-	cmd.channel.send({ embeds: [embedBuilder(helpPanel)] })
-		.then(s => { setTimeout(() => s.delete(), 60000); });
+	return int.reply({ embeds: [embedBuilder(helpPanel)], ephemeral: true });
 }
 
 function help() {
 	return 'Displays the help menu. Duh.';
 }
+
+//Exports
+module.exports = {
+	name: 'help',
+	data,
+	run,
+	help
+};

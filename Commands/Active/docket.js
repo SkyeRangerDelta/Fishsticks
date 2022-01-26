@@ -17,7 +17,29 @@ let pointNum = null;
 
 const data = new SlashCommandBuilder()
 	.setName('docket')
-	.setDescription('Add, edit, and delete points for CC community meetings.');
+	.setDescription('Add, edit, list, and delete points for CC community meetings.');
+
+data.addSubcommand(s => s
+	.setName('add')
+	.setDescription('Add a docket point.')
+	.addStringOption(o => o.setName('docket-topic').setDescription('The topic content/stuff that should be discussed.').setRequired(true))
+);
+
+data.addSubcommandGroup(g =>
+	g
+		.setName('add')
+		.setDescription('Add a docket point')
+		.addSubcommand(s =>
+			s
+				.setName('closed')
+				.setDescription('Set this point as closed (not visible publicly).')
+		)
+		.addSubcommand(s =>
+			s
+				.setName('sticky')
+				.setDescription('Set this point as sticky (will not be deleted unless specifically removed).')
+		)
+);
 
 //Functions
 async function run(fishsticks, int) {

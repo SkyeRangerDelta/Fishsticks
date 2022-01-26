@@ -3,17 +3,15 @@
 
 //Imports
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Exports
-module.exports = {
-	run,
-	help
-};
+//Globals
+const data = new SlashCommandBuilder()
+	.setName('ips')
+	.setDescription('Prints out all CCG game server sockets.');
 
 //Functions
-function run(fishsticks, cmd) {
-    cmd.msg.delete();
-
+function run(fishsticks, int) {
     const ips = {
 		title: 'o0o - THE FISH SERVERS - o0o',
 		description: 'CCG recognized servers and their IPS.',
@@ -36,9 +34,17 @@ function run(fishsticks, cmd) {
 		noThumbnail: true
 	};
 
-    cmd.channel.send({ embeds: [embedBuilder(ips)] }).then(s => { setTimeout(() => s.delete(), 60000); });
+    int.reply({ embeds: [embedBuilder(ips)], ephemeral: true });
 }
 
 function help() {
 	return 'Lists official CC game server IP addresses.';
 }
+
+//Exports
+module.exports = {
+	name: 'ips',
+	data,
+	run,
+	help
+};

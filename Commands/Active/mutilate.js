@@ -1,24 +1,19 @@
 //----MUTILATE----
 //Converts a message into tRiGgEr TeXt
 
-//Exports
-module.exports = {
-    run,
-    help
-};
+//Imports
+const { SlashCommandBuilder } = require('@discordjs/builders');
+
+//Globals
+const data = new SlashCommandBuilder()
+    .setName('mutilate')
+    .setDescription('Mutilate some text.');
+
+data.addStringOption(o => o.setName('text').setDescription('The text to mutilate.').setRequired(true));
 
 //Functions
-function run(fishsticks, cmd) {
-    cmd.msg.delete();
-
-    let msgRaw = '';
-
-    if(!cmd.content[0]) {
-        msgRaw = 'Looks like someone doesnt know how to run commands.';
-    }
-    else {
-        msgRaw = cmd.content[0];
-    }
+function run(fishsticks, int) {
+    const msgRaw = int.options.getString('text');
 
     const msgToMutilate = msgRaw.split('');
 
@@ -35,10 +30,19 @@ function run(fishsticks, cmd) {
 
     const output = outputArr.join('');
 
-    cmd.channel.send(output);
+    int.channel.send(output);
+    int.reply({ content: 'Sent!', ephemeral: true });
 
 }
 
 function help() {
     return 'Converts text into tRiGgEr TeXt.';
 }
+
+//Exports
+module.exports = {
+    name: 'mutilate',
+    data,
+    run,
+    help
+};
