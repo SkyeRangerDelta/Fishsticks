@@ -3,19 +3,27 @@
 
 //Imports
 const { rules } = require('../../Modules/Core/Core_ids.json');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-module.exports = {
-    run,
-    help
-};
+//Globals
+const data = new SlashCommandBuilder()
+    .setName('rules')
+    .setDescription('Links to #rules.');
 
-async function run(fishsticks, cmd) {
-    cmd.msg.delete();
-
+//Functions
+async function run(fishsticks, int) {
     const ruleCh = await fishsticks.channels.cache.get(rules);
-    cmd.reply(`See ${ruleCh}`, 10);
+    int.reply({ content: `See ${ruleCh}`, ephemeral: true });
 }
 
 function help() {
-    return 'Links to #rules';
+    return 'Links to #rules. Super useful right?';
 }
+
+//Exports
+module.exports = {
+    name: 'rules',
+    data,
+    run,
+    help
+};

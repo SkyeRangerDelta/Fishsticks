@@ -239,14 +239,14 @@ async function updateQuoteTick(fishsticks, tickNum) {
 }
 
 //Generate the random quote and return
-async function generateRandomQuote(fishsticks, cmd) {
+async function generateRandomQuote(fishsticks, int) {
     const quotes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_QuoteRef', 'selectAll');
 
     const quoteIndex = Math.floor(Math.random() * quotes.length);
     log('proc', `[R-QUOTE] New quote fired. Index ${quoteIndex}.`);
 
     //Send it
-    cmd.channel.send(`${quotes[quoteIndex].q}`);
+    int.channel.send(`${quotes[quoteIndex].q}`);
 }
 
 //Generate a new tick count

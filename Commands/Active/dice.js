@@ -19,7 +19,11 @@ data.addStringOption(o => o.setName('calculation').setDescription('The die calcu
     .setRequired(true)
     .addChoice('encounter', 'encounter'));
 
-function run(fishsticks, int) {
+function run(fishsticks, int, ext) {
+    if (!ext) {
+        int.deferReply();
+    }
+
     //Command Breakup
     const dieRoll = int.options.getString('calculation');
     const diceRolled = dieRoll.split('+');

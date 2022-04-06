@@ -4,37 +4,42 @@
 //Imports
 const { generateRandomQuote } = require('../../Modules/Core/Core_Message');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Exports
-module.exports = {
-	run,
-	help
-};
+//Globals
+const data = new SlashCommandBuilder()
+	.setName('quote')
+	.setDescription('Does quote things.');
+
+data.addStringOption(o => o.setName('quote-text').setDescription('The text to quote.'));
 
 //Functions
-async function run(fishsticks, cmd) {
-	cmd.msg.delete({ timeout: 0 });
+async function run(fishsticks, int) {
 
-	//Syntax
-	//!quote -[text]	: Inserts text as quote
+	//Syntax /quote text?
 
 	//TODO: ?
-	//@Fishsticks in the context of a message reply	: Inserts the message being replied to as a quote
-	//!quote -delete -[Index]	: Deletes the quote matching the index from the pool
+	//@Fishsticks quote in the context of a message reply	: Inserts the message being replied to as a quote
+	///quote -delete -[Index]	: Deletes the quote matching the index from the pool
 
 	//Process
-	if (cmd.content[0] === 'random' || !cmd.content[0]) {
+	int.deferReply();
+	const qText = int.options.getString('quote-text');
+	if (!qText) {
 		//Displays a random quote
-		return await generateRandomQuote(fishsticks, cmd);
+		const q = await generateRandomQuote(fishsticks, int);
+		await int.editReply({ content: q });
 	}
 	else {
 		//Takes content as quote
-		const quoteContent = cmd.content[0];
 		const quoteNum = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_QuoteRef', 'count');
-		const quoteRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_QuoteRef', 'insert', { id: quoteNum - 1, q: quoteContent });
+		const quoteRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_QuoteRef', 'insert', { id: quoteNum - 1, q: qText });
 
 		if (quoteRes.acknowledged === true) {
-			cmd.reply('Added! (Index ' + (quoteNum - 1) + ').');
+			int.reply({ content: 'Added! (Index ' + (quoteNum - 1) + ').', ephemeral: true });
+		}
+		else {
+			int.reply({ content: 'I dont know if that actually got added. Ping ' + fishsticks.RANGER });
 		}
 	}
 }
@@ -42,3 +47,11 @@ async function run(fishsticks, cmd) {
 function help() {
 	return 'Does quote things!';
 }
+
+//Exports
+module.exports = {
+	name: 'quote',
+	data,
+	run,
+	help
+};

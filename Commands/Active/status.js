@@ -5,16 +5,16 @@ const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { convertMsFull } = require('../../Modules/Utility/Utils_Time');
 const { version } = require('../../package.json');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Exports
-module.exports = {
-	run,
-	help
-};
+//Globals
+const data = new SlashCommandBuilder()
+	.setName('status')
+	.setDescription('Prints out Fishsticks system states.');
 
 //Functions
-async function run(fishsticks, cmd) {
-	cmd.msg.delete({ timeout: 0 });
+async function run(fishsticks, int) {
+	int.deferReply({ ephemeral: true });
 
 	//Get FSO status
 	const fsoStatus = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 });
@@ -86,14 +86,14 @@ async function run(fishsticks, cmd) {
 		footer: 'Status is subject to sudden changes.'
 	};
 
-	//Send embed
-	cmd.channel.send({ embeds: [embedBuilder(statusReport)] });
-
-	//Reet Status
+	//Reset Status
 	await fishsticks.user.setPresence({
 		activities: [{ name: 'for !help | ' + version, type: 'WATCHING' }],
 		status: 'online'
 	});
+
+	//Send embed
+	await int.reply({ embeds: [embedBuilder(statusReport)] });
 }
 
 function help() {
@@ -108,3 +108,11 @@ function toggle(t) {
 		return 'Offline';
 	}
 }
+
+//Exports
+module.exports = {
+	name: 'status',
+	data,
+	run,
+	help
+};

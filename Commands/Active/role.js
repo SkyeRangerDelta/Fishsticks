@@ -368,7 +368,7 @@ async function roleStats(fishsticks, cmd) {
 }
 
 //List all roles
-async function listRoles(fishsticks, cmd, ext) {
+async function listRoles(fishsticks, int, ext) {
 
     if (ext) { //External inquery, update role listing
         await updateRoles(fishsticks, await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'selectAll'));
@@ -411,12 +411,14 @@ async function listRoles(fishsticks, cmd, ext) {
         footer: 'Inactive role listings pulled from FSO.'
     };
 
-    cmd.channel.send({ embeds: [embedBuilder(roleListEmbed)] }).then(sent => {
+    int.channel.send({ embeds: [embedBuilder(roleListEmbed)] }).then(sent => {
         setTimeout(() => sent.delete(), 45000);
-        cmd.channel.send({ embeds: [embedBuilder(inactiveListEmbed)] }).then(sent2 => {
+        int.channel.send({ embeds: [embedBuilder(inactiveListEmbed)] }).then(sent2 => {
             setTimeout(() => sent2.delete(), 45000);
         });
     });
+
+    await int.editReply({ content: 'Done.', ephemeral: true });
 }
 
 //Print the stats for a single role

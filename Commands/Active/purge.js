@@ -36,7 +36,7 @@ async function run(fishsticks, int) {
         }
 
         if (count > 5) {
-            int.reply({ content: `Sit tight, this might take a minute. (Processing ${count} messages.)`, ephemeral: true });
+            int.deferReply();
         }
 
         const targetChannelMsgs = await targetChannel.messages.fetch({ limit: count });
@@ -44,6 +44,8 @@ async function run(fishsticks, int) {
         targetChannelMsgs.forEach(msgItem => {
             msgItem.delete();
         });
+
+        await int.editReply({ content: 'Ok done.', ephemeral: true });
     }
     else {
         log('info', '[PURGE] Possible user specified, initiating targeted deletion.');
@@ -56,17 +58,19 @@ async function run(fishsticks, int) {
             log('warn', '[PURGE] No count specified, deleting all messages?');
 
             const targetChannelMsgs = await targetChannel.messages.fetch().then(m => m.filter(a => a.author.id === targetMember.id));
-            int.reply({ content: 'Sit tight, this might take a *hot* minute.', ephemeral: true });
+            int.deferReply();
 
             for (const msgObj in targetChannelMsgs) {
                 await targetChannel.messages.fetch(targetChannelMsgs[msgObj]).then(msgColl => {
                     msgColl.delete();
                 });
             }
+
+            await int.editReply({ content: 'Ok done.', ephemeral: true });
         }
         else {
             if (count > 5) {
-                int.reply({ content: 'Sit tight, this might take a minute.', ephemeral: true });
+                int.deferReply({ content: 'Sit tight, this might take a minute.', ephemeral: true });
             }
 
             const targetChannelMsgs = await targetChannel.messages.fetch({ limit: count }).then(m => m.filter(a => a.author.id === targetMember.id));
@@ -76,10 +80,20 @@ async function run(fishsticks, int) {
                     msgColl.delete();
                 });
             }
+
+            await int.editReply({ content: 'Ok done.', ephemeral: true });
         }
     }
 }
 
 function help() {
     return 'Administrative command allowing bulk message deletion.';
+}
+
+//Exports
+module.exports = {
+    name: 'purge',
+    data,
+    run,
+    help
 }

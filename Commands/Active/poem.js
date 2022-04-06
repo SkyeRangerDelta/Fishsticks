@@ -20,7 +20,7 @@ const API_URL = 'https://poetrydb.org/';
 //Functions
 async function run(fishsticks, int) {
     const subCMD = int.options.getSubcommand();
-    int.reply('This may take a moment.');
+    int.deferReply();
 
     if (subCMD === 'random') {
         const poemToSend = await buildPoem();
