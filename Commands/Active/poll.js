@@ -13,32 +13,32 @@ const responseEmojis = require('../../Modules/Library/emojiList');
 const { MessageButton, MessageActionRow } = require('discord.js');
 const { fsoValidationException } = require('../../Modules/Errors/fsoValidationException');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
-
-//Exports
-module.exports = {
-    run,
-    handleInteraction,
-    help
-};
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 //Globals
-let memberType = 'CC Member';
+const data = new SlashCommandBuilder()
+    .setName('poll')
+    .setDescription('Allows you to post polls.')
+    .addStringOption(s => s.setName('question').setDescription('The question for the poll.').setRequired(true))
+    .addStringOption(s => s.setName('a1').setDescription('The first answer choice.').setRequired(true))
+    .addStringOption(s => s.setName('a2').setDescription('The second answer choice.').setRequired(true))
+    .addStringOption(s => s.setName('a3').setDescription('A third answer choice.'))
+    .addStringOption(s => s.setName('a4').setDescription('A fourth answer choice'));
 
 //Functions
-async function run(fishsticks, cmd) {
-    cmd.msg.delete();
-
-    //Init
-    await handleExecution(cmd);
-
-    //Parse
-    const pollData = await parseCmd(fishsticks, cmd);
-    if(pollData === -1) {
-        return;
+async function run(fishsticks, int) {
+    //Permissions
+    if (!hasPerms(int.member, ['CC Member', 'ACC Member'])) {
+        return int.reply({ content: 'Only members can post polls!', ephemeral: true });
     }
 
+    //Syntax: /poll question a1 a2 a3? a4?
+
+    //Parse
+    const pollData = await parseCmd(fishsticks, int);
+
     //Post the poll
-    const newPollData = await postPoll(cmd, pollData);
+    const newPollData = await postPoll(int, pollData);
 
     //Send and test res
     const postFSORes = await postFSO(fishsticks, newPollData);
@@ -54,63 +54,25 @@ function help() {
     return 'Allows you to post polls.';
 }
 
-//Parse Execution Data
-function handleExecution(cmd) {
-    //Process preliminary
-
-    //Permissions
-    if (!hasPerms(cmd.msg.member, ['CC Member', 'ACC Member'])) {
-        return cmd.reply('Only members can post polls!', 10);
-    }
-
-    //Member type
-    try {
-        if (hasPerms(cmd.msg.member, ['Council Member'])) {
-            memberType = 'Council Member';
-        }
-        else if (hasPerms(cmd.msg.member, ['Council Advisor'])) {
-            memberType = 'Council Advisor';
-        }
-        else if (hasPerms(cmd.msg.member, ['Staff Member'])) {
-            memberType = 'Staff Member';
-        }
-        else if (hasPerms(cmd.msg.member, ['Moderator'])) {
-            memberType = 'Moderator';
-        }
-    }
-    catch (roleFindErr) {
-        log('warn', '[POLL-SYS] I couldnt find the role of a member trying to post a poll!\n\n' + roleFindErr);
-    }
-}
-
 //Parse Command
-async function parseCmd(fishsticks, cmd) {
-    //Determine functional data
-
-    //For the sake of aesthetic
-    for (const parameter in cmd.content) {
-        cmd.content[parameter] = cmd.content[parameter].charAt(0).toUpperCase() + cmd.content[parameter].substring(1, cmd.content[parameter].length);
-    }
-
-    const cmdPoll = cmd.content;
-
+async function parseCmd(fishsticks, int) {
     /*
-    New Syntax: !poll [-Question] [-Ans 1] [-Ans 2] <-Ans 3 thru 5>
+    New Syntax: /poll question a1 a2 a3? a4?
     0: Question
     1: Ans 1
     2: Ans 2
-    3-5: Ans 3-5
+    3-4: Ans 3-4
      */
 
     //Setup poll object
     const pollObj = {
         id: null,
         intId: null,
-        chId: cmd.channel.id,
-        authId: cmd.msg.author.id,
+        chId: int.channel.id,
+        authId: int.member.id,
         active: true,
         tied: false,
-        q: cmdPoll[0],
+        q: int.options.getString('question'),
         d: null,
         responses: {
             recVotes: 0,
@@ -123,38 +85,39 @@ async function parseCmd(fishsticks, cmd) {
     };
 
     //Fill in desc
-    pollObj.d = 'A poll has been posted by a ' + memberType + '. To answer the poll, please click one **ONE** of the answer buttons below this message that corresponds with your answer. Clicking a different response will update your answer.\n\n';
+    pollObj.d = int.member.displayName + ' has asked a question. Click one of the buttons to answer. Clicking a different response will update your answer.\n\n';
     pollObj.embed.title += pollObj.q;
 
-    //Verify at least 2 answer choices
-    if (!cmdPoll[1] || !cmdPoll[2]) {
-        cmd.reply('There has to be at least 2 responses!', 10);
-        return -1;
-    }
-
     //Go through parameters filling in answers
-    try {
-        for (let i = 1; i < cmdPoll.length; i++) {
-            if (i < 5) {
-                //Ans is not the question
-                pollObj.d += `${responseEmojis[i]} ${cmdPoll[i]} \n`;
-                pollObj.responses.types.push({
-                    d: cmdPoll[i],
-                    cid: `POLL-${i - 1}`,
-                    ids: []
-                });
-            }
-            else {
-                return cmd.reply('A poll cannot have more than 4 responses!', 10);
-            }
-        }
-    }
-    catch (err) {
-        cmd.reply('Ive just caught a glitch in sector 5 of the neural net. I dont know what you did - but you probably should stop.\n' + err, 10);
+    pollObj.d += `${responseEmojis[1]} ${int.options.getString('a1')} \n${responseEmojis[2]} ${int.options.getString('a2')}`;
+    pollObj.responses.types.push({
+        d: int.options.getString('a1'),
+        cid: 'POLL-0',
+        ids: []
+    });
+    pollObj.responses.types.push({
+        d: int.options.getString('a2'),
+        cid: 'POLL-1',
+        ids: []
+    });
 
-        return log('warn', '[POLL-SYS] An unknown error has been caught somewhere in response construction.\n' + err);
+    if (int.options.getString('a3')) {
+        pollObj.responses.types.push({
+            d: int.options.getString('a3'),
+            cid: 'POLL-2',
+            ids: []
+        });
     }
 
+    if (int.options.getString('a4')) {
+        pollObj.responses.types.push({
+            d: int.options.getString('a4'),
+            cid: 'POLL-3',
+            ids: []
+        });
+    }
+
+    int.reply({ content: 'Data received, building and posting poll...', ephemeral: true });
     return pollObj;
 }
 
@@ -175,7 +138,7 @@ async function postFSO(fishsticks, pollData) {
 }
 
 //Post Message
-async function postPoll(cmd, pollObj) {
+async function postPoll(int, pollObj) {
     //Build embed
     const pollQuestion = new Discord.MessageEmbed()
         .setTitle(pollObj.embed.title)
@@ -206,7 +169,7 @@ async function postPoll(cmd, pollObj) {
     );
 
     //Dispatch message and set FSO obj id to msg
-    const pollMsg = await cmd.channel.send({ content: 'A question has been asked!', embeds: [pollQuestion], components: [resRow] });
+    const pollMsg = await int.channel.send({ content: 'A question has been asked!', embeds: [pollQuestion], components: [resRow] });
     pollObj.id = pollMsg.id;
 
     return pollObj;
@@ -232,10 +195,10 @@ async function handleInteraction(fishsticks, interaction) {
     const dupe = dupeCheck(pollRecord, interaction.member.id);
 
     if (dupe) {
-        updateResponse(fishsticks, pollRecord, interaction);
+        await updateResponse(fishsticks, pollRecord, interaction);
     }
     else {
-        addResponse(fishsticks, pollRecord, interaction);
+        await addResponse(fishsticks, pollRecord, interaction);
     }
 
 }
@@ -404,7 +367,7 @@ async function handleWinner(fishsticks, pollObj, interaction, results) {
                 new MessageButton()
                     .setCustomId(`POLL-${res}`)
                     .setStyle('SUCCESS')
-                    .setLabel(pollObj.responses.types[res].d)
+                    .setLabel(pollObj.responses.types[res].d + `(${pollObj.responses.types[res].ids.length})`)
                     .setEmoji('✨')
             );
         }
@@ -413,7 +376,7 @@ async function handleWinner(fishsticks, pollObj, interaction, results) {
                 new MessageButton()
                     .setCustomId(`POLL-${res}`)
                     .setStyle('PRIMARY')
-                    .setLabel(pollObj.responses.types[res].d)
+                    .setLabel(pollObj.responses.types[res].d + `(${pollObj.responses.types[res].ids.length})`)
             );
         }
     }
@@ -456,7 +419,7 @@ async function handleTie(fishsticks, pollObj, interaction, result) {
                     new MessageButton()
                         .setCustomId(`POLL-${i}`)
                         .setStyle('SUCCESS')
-                        .setLabel(pollObj.responses.types[i].d)
+                        .setLabel(pollObj.responses.types[res].d + `(${pollObj.responses.types[res].ids.length})`)
                         .setEmoji('✨')
                 );
             }
@@ -466,7 +429,7 @@ async function handleTie(fishsticks, pollObj, interaction, result) {
                     new MessageButton()
                         .setCustomId(`POLL-${i}`)
                         .setStyle('PRIMARY')
-                        .setLabel(pollObj.responses.types[i].d)
+                        .setLabel(pollObj.responses.types[res].d + `(${pollObj.responses.types[res].ids.length})`)
                 );
             }
         }
@@ -488,3 +451,12 @@ async function handleTie(fishsticks, pollObj, interaction, result) {
     interaction.message.edit({ content: 'Poll concluded!', components: [updatedRow] });
     interaction.reply({ content: tiePost });
 }
+
+//Exports
+module.exports = {
+    name: 'poll',
+    data,
+    run,
+    handleInteraction,
+    help
+};

@@ -5,18 +5,23 @@ const fs = require('fs');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
+const cmdList = fs.readdirSync('./Commands/Active').filter(dirItem => dirItem.endsWith('.js'));
+
 //Functions
 const data = new SlashCommandBuilder()
 	.setName('codex')
 	.setDescription('Pulls up relevant information/how-to on a command.');
 
-data.addStringOption(o => o.setName('command-id').setDescription('The command ID (command name) to look up.').setRequired(true));
+data.addStringOption(o => {
+	o.setName('command-id').setDescription('The command ID (command name) to look up.').setRequired(true);
+	for (const item in cmdList) {
+		o.addChoice(cmdList[item], cmdList[item]);
+	}
+});
 
 function run(fishsticks, int) {
-	const cmdID = int.options.getString('command-id').toLowerCase();
-	const cmdList = fs.readdirSync('./Commands/Active').filter(dirItem => dirItem.endsWith('.js'));
-
 	log('info', '[CODEX] Attempting to find command.');
+	const cmdID = int.options.getString('command-id').toLowerCase();
 
     for (const file in cmdList) {
 		const fileID = cmdList[file].substring(0, cmdList[file].length - 3);

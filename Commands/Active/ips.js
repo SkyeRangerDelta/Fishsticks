@@ -28,6 +28,10 @@ function run(fishsticks, int) {
 			{
 				name: 'Minecraft (Admin: Minecraft Ops)',
 				value: 'Socket: `ccgmc.pldyn.net` - Requires whitelisting'
+			},
+			{
+				name: 'CCG DST (Admin: Winged Scribe)',
+				value: 'Look up *CCG* in the server browser - Request password'
 			}
 		],
 		footer: 'If any IPs are bad, or missing - let a staff member know.',

@@ -6,33 +6,29 @@
 const https = require('https');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
-
-//Exports
-module.exports = {
-    run,
-    fetchDailyPoem,
-    buildPoem,
-    help
-};
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 //Globals
+const data = new SlashCommandBuilder()
+    .setName('poem')
+    .setDescription('Prints poems');
+
+data.addSubcommand(s => s.setName('random').setDescription('Prints a random poem.'));
+
 const API_URL = 'https://poetrydb.org/';
 
 //Functions
-async function run(fishsticks, cmd) {
-    cmd.msg.reply('This may take a moment.').then(async sent => {
-        if (cmd.content[0] === 'random') {
-            const poemToSend = await buildPoem();
-            cmd.channel.send({ embeds: [poemToSend] });
-        }
-        else {
-            cmd.reply('Nothing here yet. Be on your way.', 10);
-        }
+async function run(fishsticks, int) {
+    const subCMD = int.options.getSubcommand();
+    int.reply('This may take a moment.');
 
-
-        cmd.msg.delete();
-        sent.delete();
-    });
+    if (subCMD === 'random') {
+        const poemToSend = await buildPoem();
+        await int.editReply({ embeds: [poemToSend] });
+    }
+    else {
+        await int.editReply({ content: 'Nothing here yet. Be on your way.', ephemeral: true });
+    }
 }
 
 async function fetchDailyPoem() {
@@ -87,3 +83,13 @@ async function buildPoem() {
 function help() {
     return 'Prints poems.';
 }
+
+//Exports
+module.exports = {
+    name: 'poem',
+    data,
+    run,
+    fetchDailyPoem,
+    buildPoem,
+    help
+};

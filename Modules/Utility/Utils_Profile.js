@@ -14,11 +14,11 @@ module.exports = {
 };
 
 //Functions
-async function buildProfileBanner(fishsticks, cmd, profileEmbed) {
+async function buildProfileBanner(fishsticks, int, profileEmbed) {
     const memberProf = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: cmd.msg.author.id });
     const lvl = memberProf.xp.level;
 
-    const forcedUser = await cmd.msg.author.fetch(true);
+    const forcedUser = await int.member.user.fetch(true);
 
     //Create banner for newLvl
     log('info', '[XP-BANNER] Creating new profile banner.');
@@ -51,7 +51,7 @@ async function buildProfileBanner(fishsticks, cmd, profileEmbed) {
     //Upper title
     ctx.font = '30px Julius Sans One';
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(`${cmd.msg.member.displayName}`, canvas.width / 2.5, canvas.height / 3.5);
+    ctx.fillText(`${int.member.displayName}`, canvas.width / 2.5, canvas.height / 3.5);
 
     //Level Detail
     ctx.font = '70px Trebuchet MS';
@@ -88,18 +88,18 @@ async function buildProfileBanner(fishsticks, cmd, profileEmbed) {
     ctx.clip();
 
     //Draw avatar
-    const bannerAvatar = await loadImage(cmd.msg.author.displayAvatarURL({ format: 'png' }));
+    const bannerAvatar = await loadImage(forcedUser.displayAvatarURL({ format: 'png' }));
     ctx.drawImage(bannerAvatar, 25, 25, 200, 200);
 
     //Save and send
     log('info', '[NEW-MEM] Banner saved, pending dispatch');
     const bannerAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
     if (!profileEmbed) {
-        cmd.channel.send({ files: [bannerAttachment] })
+        int.channel.send({ files: [bannerAttachment] })
             .then(sent => { setTimeout(() => { sent.delete(); }, 60000); });
     }
     else {
-        cmd.channel.send({ embeds: [embedBuilder(profileEmbed)], files: [bannerAttachment] })
+        int.channel.send({ embeds: [embedBuilder(profileEmbed)], files: [bannerAttachment] })
             .then(sent => { setTimeout(() => { sent.delete(); }, 60000); });
     }
 }

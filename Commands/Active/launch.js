@@ -27,7 +27,7 @@ async function run(fishsticks, int) {
     //3-4, 3-5, 4-5
     const code = codeSet(fullkey);
 
-    const filterData = (res) => res.author.id === cmd.msg.author.id;
+    const filterData = (res) => res.author.id === int.member.id;
 
     int.reply('Input your launch code. You have 60 seconds.\nKeyset: ' + fullkey)
         .then(() => {
