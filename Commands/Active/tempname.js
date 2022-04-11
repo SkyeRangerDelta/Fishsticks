@@ -4,33 +4,32 @@
 //Imports
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { log } = require('../../Modules/Utility/Utils_Log');
-const { toTitleCase } = require('../../Modules/Utility/Utils_Aux');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Exports
-module.exports = {
-    run,
-    help
-};
+//Globals
+const data = new SlashCommandBuilder()
+    .setName('tempname')
+    .setDescription('Changes the name of a temporary channel.');
+
+data.addStringOption(o => o.setName('new-name').setDescription('The name to set the channel to.').setRequired(true));
 
 //Functions
-async function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
-
-    const currChannel = cmd.msg.member.voice.channel;
+async function run(fishsticks, int) {
+    const currChannel = int.member.voice.channel;
     if (!currChannel) {
-        return cmd.reply('But...youre not in a voice channel. Why?', 10);
+        return int.reply({ content: 'But...youre not in a voice channel. Why?', ephemeral: true });
     }
 
     const chRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'select', { id: currChannel.id });
     if (!chRes) {
-        return cmd.reply('Thats not a temp channel.', 10);
+        return int.reply({ content: 'Thats not a temp channel.', ephemeral: true });
     }
 
-    //Syntax: !tempname -[channelName]
-    const newTitle = toTitleCase(cmd.content[0]);
+    //Syntax: /tempname new-name
+    const newTitle = int.getString('new-name');
 
     if (!newTitle) {
-        return cmd.reply('You know, you only hurt yourself when you do this. I need the new channel name in order to change the current one.', 10);
+        return int.reply({ content: 'You know, you only hurt yourself when you do this. I need the new channel name in order to change the current one.', ephemeral: true });
     }
 
     await currChannel.setName(newTitle).then(async editCh => {
@@ -42,3 +41,11 @@ async function run(fishsticks, cmd) {
 function help() {
     return 'Changes the name of a temporary channel.';
 }
+
+//Exports
+module.exports = {
+    name: 'tempname',
+    data,
+    run,
+    help
+};

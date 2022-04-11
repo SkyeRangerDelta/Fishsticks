@@ -2,20 +2,26 @@
 //Issues a den strike to someone
 
 //Imports
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Exports
-module.exports = {
-    run,
-    help
-};
+//Globals
+const data = new SlashCommandBuilder()
+    .setName('strike')
+    .setDescription('Assigns a strike to a server member. [Mod+] [WIP]');
 
 //Functions
-function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 0 });
-    cmd.msg.reply({ content: '[WIP - V1.18.1] Nonono, not yet.' })
-        .then(sent => sent.delete({ timeout: 10000 }));
+function run(fishsticks, int) {
+    int.reply({ content: 'Nonono, not just yet.', ephemeral: true });
 }
 
 function help() {
     return 'Moderation command for den strikes.';
 }
+
+//Exports
+module.exports = {
+    name: 'strike',
+    data,
+    run,
+    help
+};

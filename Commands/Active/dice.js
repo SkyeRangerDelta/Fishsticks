@@ -67,7 +67,7 @@ function run(fishsticks, int, ext) {
 	const rollPanel = {
 		title: '🎲 Rolling the dice 🎲',
 		description: `**Total**: ${rollResult.result}`,
-		footer: `Random dice roller. Queried by ${cmd.msg.author.username}`,
+		footer: `Random dice roller. Queried by ${int.member.displayName}`,
 		color: primary,
 		fields: [
 			{

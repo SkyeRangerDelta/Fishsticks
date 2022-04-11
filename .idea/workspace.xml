@@ -4,18 +4,15 @@
     <list default="true" id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Commands/Active/dice.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/dice.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/poem.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/poem.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/purge.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/purge.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/quote.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/quote.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/remindme.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/remindme.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/role.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/role.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/roles.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/roles.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/roll.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/roll.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/rules.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/rules.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/scanurl.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/status.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/status.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/suggest.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/suggest.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Message.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Message.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/strike.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/strike.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/summon.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/summon.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/tempch.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/tempch.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/tempname.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/tempname.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/userinfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/userinfo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/version.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/version.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/vouch.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/vouch.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,6 +135,8 @@
       <workItem from="1647897575820" duration="103000" />
       <workItem from="1649174684384" duration="20444000" />
       <workItem from="1649266240007" duration="3319000" />
+      <workItem from="1649683058898" duration="6399000" />
+      <workItem from="1649690643143" duration="215000" />
     </task>
     <servers />
   </component>
