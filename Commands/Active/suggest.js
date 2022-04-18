@@ -13,17 +13,16 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 //Globals
 const data = new SlashCommandBuilder()
     .setName('suggest')
-    .setDescription('Posts a suggestion to the FS GitHub repository.');
-
-data.addStringOption(o => o
-    .setName('subject')
-    .setDescription('Title of your suggest, quick reference.')
-    .setRequired(true));
-
-data.addStringOption(o => o
-    .setName('content')
-    .setDescription('The actual content of the suggestion, details please.')
-    .setRequired(true));
+    .setDescription('Posts a suggestion to the FS GitHub repository.')
+    .addStringOption(o => o
+        .setName('subject')
+        .setDescription('Title of your suggest, quick reference.')
+        .setRequired(true))
+    .addStringOption(o => o
+        .setName('content')
+        .setDescription('The actual content of the suggestion, details please.')
+        .setRequired(true)
+    );
 
 async function run(fishsticks, int) {
     //Syntax: /suggest subject content

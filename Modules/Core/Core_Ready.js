@@ -15,7 +15,8 @@ const { Routes } = require('discord-api-types/v9');
 
 const { guild_CCG, fs_console, fsID, bLogger, ranger } = require('./Core_ids.json');
 const { version } = require('../../package.json');
-const { primary, emergency, token } = require('./Core_config.json').colors;
+const { primary, emergency } = require('./Core_config.json').colors;
+const { token } = require('./Core_config.json');
 
 //Exports
 module.exports = {
@@ -116,9 +117,10 @@ async function startUp(Fishsticks) {
 	const cmdPath = path.join(__dirname, '../..', 'Commands/Active');
 	const commandData = fs.readdirSync(cmdPath).filter(f => f.endsWith('.js'));
 
+	console.log(commandData);
+
 	for (const cmdFile of commandData) {
 		const cmd = require(`../../Commands/Active/${cmdFile}`);
-		console.log(commandData);
 		console.log(cmd.data);
 		commandObjs.push(cmd.data.toJSON());
 		Fishsticks.CMDS.set(cmd.data.name, cmd);
@@ -129,15 +131,19 @@ async function startUp(Fishsticks) {
 	try {
 		await rest.put(
 			Routes.applicationGuildCommands(
-				fsID,
-				guild_CCG
+				`${fsID}`,
+				`${guild_CCG}`
 			),
 			{ body: commandObjs }
 		);
+
 		log('proc', '[CMD-HANDLER] Finished registering commands');
 	}
 	catch (e) {
+		console.log(e);
 		log('err', '[CMD-HANDLER] Failed to finished registering commands!');
+		Fishsticks.destroy();
+		process.exit(1);
 	}
 
 	//Cache data

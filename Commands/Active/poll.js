@@ -12,18 +12,31 @@ const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const responseEmojis = require('../../Modules/Library/emojiList');
 const { MessageButton, MessageActionRow } = require('discord.js');
 const { fsoValidationException } = require('../../Modules/Errors/fsoValidationException');
-const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 //Globals
 const data = new SlashCommandBuilder()
     .setName('poll')
     .setDescription('Allows you to post polls.')
-    .addStringOption(s => s.setName('question').setDescription('The question for the poll.').setRequired(true))
-    .addStringOption(s => s.setName('a1').setDescription('The first answer choice.').setRequired(true))
-    .addStringOption(s => s.setName('a2').setDescription('The second answer choice.').setRequired(true))
-    .addStringOption(s => s.setName('a3').setDescription('A third answer choice.'))
-    .addStringOption(s => s.setName('a4').setDescription('A fourth answer choice'));
+    .addStringOption(s => s
+        .setName('question')
+        .setDescription('The question for the poll.')
+        .setRequired(true))
+    .addStringOption(s => s
+        .setName('a1')
+        .setDescription('The first answer choice.')
+        .setRequired(true))
+    .addStringOption(s => s
+        .setName('a2')
+        .setDescription('The second answer choice.')
+        .setRequired(true))
+    .addStringOption(s => s
+        .setName('a3')
+        .setDescription('A third answer choice.'))
+    .addStringOption(s => s
+        .setName('a4')
+        .setDescription('A fourth answer choice')
+    );
 
 //Functions
 async function run(fishsticks, int) {

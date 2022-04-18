@@ -20,7 +20,7 @@ async function run(fishsticks, int) {
 
     //Parse members without notifications
     if (!memberProf.notifications) {
-        await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', { $set: { 'notifications.xp': true } }, { id: cmd.msg.member.id });
+        await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', { $set: { 'notifications.xp': true } }, { id: int.member.id });
         memberNotifPrefs = {
             xp: true
         };
@@ -58,14 +58,7 @@ async function run(fishsticks, int) {
     );
 
     //Dispatch post
-    const notifMsg = await int.reply({ content: `${int.member.displayName}'s notification settings:`, components: [msgRow] });
-
-    setTimeout(() => {
-        fso_query(fishsticks.FSO_CONNECTION, 'FSO_Notifications', 'delete', { id: int.member.id });
-        notifMsg.delete().catch(() => {
-            log('warn', 'Notification interation post auto-delete failed; perhaps the message was deleted already?');
-        });
-    }, 75000);
+    const notifMsg = await int.reply({ content: `${int.member.displayName}'s notification settings:`, components: [msgRow], ephemeral: true });
 
     //Dispatch data to FSO
     const fsoData = {

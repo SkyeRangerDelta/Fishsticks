@@ -10,10 +10,15 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 //Globals
 const data = new SlashCommandBuilder()
     .setName('purge')
-    .setDescription('[Mod+] Clears a number of posts from a channel or from a specific user in a channel.');
-
-data.addIntegerOption(o => o.setName('post-count').setDescription('How many posts to delete.').setRequired(true));
-data.addUserOption(o => o.setName('target-user').setDescription('The user whose posts to delete.'));
+    .setDescription('[Mod+] Clears a number of posts from a channel or from a specific user in a channel.')
+    .addIntegerOption(o => o
+        .setName('post-count')
+        .setDescription('How many posts to delete.')
+        .setRequired(true))
+    .addUserOption(o => o
+        .setName('target-user')
+        .setDescription('The user whose posts to delete.')
+    );
 
 //Functions
 async function run(fishsticks, int) {

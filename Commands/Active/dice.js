@@ -13,31 +13,37 @@ const roll = new rollLib();
 //Functions
 const data = new SlashCommandBuilder()
     .setName('dice')
-    .setDescription('Compute complex dice calculations!');
+    .setDescription('Compute complex dice calculations!')
+    .addSubcommand(s => s
+        .setName('encounter')
+        .setDescription('Generate ONLY an counter type.'))
+    .addSubcommand(s => s
+        .setName('calculate')
+        .setDescription('Perform a dice calculation')
+        .addStringOption(o => o
+            .setName('calculation')
+            .setDescription('The die calculation to be performed (d20, d6+5, d10+d4) OR the word `encounter`.')
+            .setRequired(true))
+    );
 
-data.addStringOption(o => o.setName('calculation').setDescription('The die calculation to be performed (d20, d6+5, d10+d4) OR the word `encounter`.')
-    .setRequired(true)
-    .addChoice('encounter', 'encounter'));
+function run(fishsticks, int) {
 
-function run(fishsticks, int, ext) {
-    if (!ext) {
-        int.deferReply();
+    const subCMD = int.options.getSubcommand();
+
+    //Check for encounter generator
+    if (subCMD === 'encounter') {
+        return int.reply({ content: 'Encounter type: ' + genEncounter() });
     }
 
     //Command Breakup
     const dieRoll = int.options.getString('calculation');
     const diceRolled = dieRoll.split('+');
 
-    //Check for encounter generator
-    if (dieRoll === 'encounter') {
-        return int.reply('Encounter type: ' + genEncounter());
-    }
-
     //Validate
     const valid = roll.validate(dieRoll);
 
     if (!valid) {
-        return int.reply('That doesnt look like a valid roll, hit me again.', 10);
+        return int.reply({ content: 'That doesnt look like a valid roll, hit me again.' });
     }
 
     //Handle Roll(s)
@@ -88,7 +94,7 @@ function run(fishsticks, int, ext) {
 		]
 	};
 
-    int.channel.send({ embeds: [embedBuilder(rollPanel)] });
+    int.reply({ embeds: [embedBuilder(rollPanel)] });
 }
 
 function genEncounter() {

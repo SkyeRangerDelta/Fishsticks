@@ -16,7 +16,7 @@ const data = new SlashCommandBuilder()
 	.setName('bible')
 	.setDescription('Prints out Bible passages from the ESV bible.');
 
-data.addNumberOption(o => o.setName('book-number').setDescription('The book book number if applicable (1 Samuel).').setRequired(false));
+data.addNumberOption(o => o.setName('book-number').setDescription('The book book number; ie. 1 Samuel. (USE 0 IF THERE IS ONLY 1 BOOK).').setRequired(true));
 data.addStringOption(o => o.setName('book').setDescription('The book to pull from.').setRequired(true));
 data.addNumberOption(o => o.setName('chapter').setDescription('The chapter to pull (from).').setRequired(true));
 data.addNumberOption(o => o.setName('verse').setDescription('The verse to pull.').setRequired(true));
@@ -35,7 +35,7 @@ async function run(fishsticks, int) {
 
 	//Parameter Object
 	const params = {
-		bookNum: int.options.getNumber('book-number') || null,
+		bookNum: int.options.getNumber('book-number'),
 		book: int.options.getString('book') || 'John',
 		chapter: int.options.getNumber('chapter') || 3,
 		verse: int.options.getNumber('verse') || 16,
@@ -44,9 +44,10 @@ async function run(fishsticks, int) {
 		bookFirst: false
 	};
 
-	if (params.bookNum) {
-		params.bookFirst = true;
-	}
+    if (params.bookNum === 0) {
+        console.log('FIRED!');
+        params.bookFirst = true;
+    }
 
     await buildPayload(params, int);
 }
@@ -59,7 +60,7 @@ async function buildPayload(paramObj, int) {
 
     let args;
 
-    if (paramObj.bookFirst) {
+    if (paramObj.bookFirst === true) {
 		log('info', '[BIBLE] Book found first');
 
         if (paramObj.endverse == null) {
@@ -103,8 +104,14 @@ async function buildPayload(paramObj, int) {
         res.on('data', content => {
 
             const received = JSON.parse(content);
-            if (received.passages[0].length > 2048) {
-                return int.reply('The passage is too large! Try breaking it into smaller verses.', 15);
+            console.log(received);
+            console.log(received.passages);
+
+            if (!received.passages) {
+                return int.reply({ content: 'Couldnt find any passages!', ephemeral: true });
+            }
+            else if (received.passages[0].length > 2048) {
+                return int.reply({ content: 'The passage is too large! Try breaking it into smaller verses.', ephemeral: true });
             }
 
             const verseEmbed = {

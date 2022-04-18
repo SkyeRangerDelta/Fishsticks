@@ -12,159 +12,133 @@ const { InvalidParameterException } = require('../../Modules/Errors/InvalidParam
 
 const { DateTime } = require('luxon');
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
-
-//Exports
-module.exports = {
-    run,
-    help,
-    findRole,
-    listRoles
-};
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const { flexTime } = require('../../Modules/Utility/Utils_Time');
 
 //Globals
 let currentPool;
-let memberFSO;
-let params = null;
 const curMDN = DateTime.now().setZone('UTC-5');
 
-//Functions
-async function run(fishsticks, cmd) {
-    cmd.msg.delete({ timeout: 10000 });
+//Syntax: /role function data
+//Create: /role create roleName roleGame description
+//Join: /role join
+//Leave: /role leave
+//Vote: /role vote
+//Edit: /role edit
+//Detail: /role details
 
-    params = cmd.content;
+const data = new SlashCommandBuilder()
+    .setName('role')
+    .setDescription('Handles role-specific functions')
+    .addSubcommand(s => s
+        .setName('create')
+        .setDescription('Allows the creation of a new role.')
+        .addStringOption(o => o
+            .setName('role-name')
+            .setDescription('The name of the role (shown on ping).')
+            .setRequired(true))
+        .addStringOption(o => o
+            .setName('role-game')
+            .setDescription('The name of the game this role is associated with.')
+            .setRequired(true)
+        )
+        .addStringOption(o => o
+            .setName('role-desc')
+            .setDescription('A description of the game/role.')
+            .setRequired(true)
+        ))
+    .addSubcommand(s => s
+        .setName('join')
+        .setDescription('Joins a role'))
+    .addSubcommand(s => s
+        .setName('leave')
+        .setDescription('Leaves a role'))
+    .addSubcommand(s => s
+        .setName('vote')
+        .setDescription('Votes for a role'))
+    .addSubcommand(s => s
+        .setName('edit')
+        .setDescription('Edits a role'))
+    .addSubcommand(s => s
+        .setName('details')
+        .setDescription('Displays some details for a role')
+    );
+
+//Functions
+async function run(fishsticks, int) {
+    return int.reply({ content: 'This thing is mad busted right now...so just...dont try for now. Nothing works, Im sorry.', ephemeral: true });
+    //int.deferReply();
 
     //Obtain a current set of roles in array for future use
     const queryRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'selectAll');
-    memberFSO = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: `${cmd.msg.author.id}` });
 
     //Recalibrate time indexes and perform table maintenance
     await updateRoles(fishsticks, queryRes);
 
     //Parse the query
-    parseRequest(fishsticks, cmd, queryRes).catch(e => {
-        cmd.reply({ content: '*Ok but why.*\n' + e });
+    parseRequest(fishsticks, int, queryRes).catch(e => {
+        int.reply({ content: '*Ok but why.*\n' + e });
     });
 
-    //Possible syntax
-    //!role -[func] -[options] -[content]
-
-    /*
-    !role -new -name -game -description
-    !role -edit -ID -param -new value
-    !role -vote -name/game
-    !role -join -name/game
-    !role -leave -name/game
-    !role -stats -name/game
-    !role -list
-    !role -show -name/game
-    */
+    //Syntax: /role function data
+    //Create: /role create roleName roleGame description
+    //Join: /role join
+    //Leave: /role leave
+    //Vote: /role vote
+    //Edit: /role edit
+    //Detail: /role details
 
 }
-async function parseRequest(fishsticks, cmd) {
-    //Validate func
-    if (!params || !params[0] || params[0] === null) {
-        return cmd.reply('What am I going to do with you. You need to specify what your intentions are.', 10);
-    }
+async function parseRequest(fishsticks, int) {
+    const subCMD = int.options.getSubcommand();
 
-    if (params[0] === 'n' || params[0] === 'new') {
-        log('info', '[ROLE-SYS] Creating a new role.');
+    switch (subCMD) {
+        case 'create':
+            await newRole(fishsticks, int);
+            break;
 
-        //Validate all required parameters existence
-        if (!params[1] || params[1] === null) {
-            return cmd.reply('A capital choice. A new role with no name. Fantastic.');
-        }
-        if (!params[2] || params[2] === null) {
-            return cmd.reply('Why are you the way that you are? I need a game name to go with the role.');
-        }
-        if (!params[3] || params[3] === null) {
-            return cmd.reply('For the sake of knowing what people are getting into, perhaps it would be conducive to add a description to the new role.');
-        }
+        case 'join':
+            await joinRole(fishsticks, int);
+            break;
 
-        //Begin new role listing
-        console.log(params);
+        case 'leave':
+            await leaveRole(fishsticks, int);
+            break;
 
-        newRole(fishsticks, cmd).catch(e => {
-            log('warn', `[ROLE-SYS] ${e.name} : ${e.message}`);
-        });
-    }
-    else if (params[0] === 'e' || params[0] === 'edit') {
-        log('info', '[ROLE-SYS] Editing a role.');
+        case 'vote':
+            await voteRole(fishsticks, int);
+            break;
 
-        //!role -edit -ID -param -new value
+        case 'edit':
+            await editRole(fishsticks, int);
+            break;
 
-        return cmd.reply('Editing isnt done quite yet, check back later.', 10);
+        case 'details':
+            await detailsRole(fishsticks, int);
+            break;
 
-        //Validate all required parameters existence
-        //await editRole(fishsticks, cmd);
-    }
-    else if (params[0] === 'v' || params[0] === 'vote') {
-        log('info', '[ROLE-SYS] Voting for a role.');
-
-        if (!params[1]) {
-            return cmd.reply('Specify a role to vote for!');
-        }
-
-        voteRole(fishsticks, cmd).catch(e => {
-            log('warn', `[ROLE-SYS] ${e.message}`);
-        });
-    }
-    else if (params[0] === 'j' || params[0] === 'join') {
-        log('info', '[ROLE-SYS] Joining a role.');
-
-        if (!params[1]) {
-            return cmd.reply('Specify a role to join!');
-        }
-
-        await joinRole(fishsticks, cmd);
-    }
-    else if (params[0] === 'l' || params[0] === 'leave') {
-        log('info', '[ROLE-SYS] Leaving a role.');
-
-        if (!params[1]) {
-            return cmd.reply('Specify a role to leave!');
-        }
-
-        await leaveRole(fishsticks, cmd);
-    }
-    else if (params[0] === 's' || params[0] === 'stats') {
-        log('info', '[ROLE-SYS] Getting the statistics for a role.');
-
-        await roleStats(fishsticks, cmd);
-    }
-    else if (params[0] === 'list') {
-        log('info', '[ROLE-SYS] Listing roles.');
-
-        await listRoles(fishsticks, cmd);
-    }
-    else if (params[0] === 'show') {
-        log('info', '[ROLE-SYS] Showing the about for a role.');
-
-        await aboutRole(fishsticks, cmd);
-    }
-    else if (params[0] === 'sync') {
-        log('info', '[ROLE-SYS] Syncing Discord game roles to FSO.');
-
-        return cmd.reply('No need for this one, carry on.', 10);
-        //syncRoles(fishsticks, cmd);
-    }
-    else {
-        throw 'You need to state your intentions!';
+        default:
+            int.reply({ content: 'I honestly have no idea how you got here. Im impressed. Somehow you got around using a subcommand, please specify one.', ephemeral: true });
     }
 }
 
 //Create a new role
-async function newRole(fishsticks, cmd) {
+async function newRole(fishsticks, int) {
     //Assume !role -new -name -game -description
 
     const curFlexTime = flexTime();
     const roleTimeout = curMDN.plus({ 'weeks': 2 });
 
+    const rName = int.options.getString('role-name');
+    const rGame = int.options.getString('role-game');
+    const rDesc = int.options.getString('role-desc');
+
     //Create role Obj
     const newRoleObj = {
-        name: toTitleCase(params[1]),
-        creator: cmd.msg.member.displayName,
-        game: toTitleCase(params[2]),
-        description: params[3],
+        name: rName,
+        creator: int.member.displayName,
+        game: rGame,
+        description: rDesc,
         created: curMDN,
         createdFriendly: curFlexTime,
         activated: null,
@@ -172,7 +146,7 @@ async function newRole(fishsticks, cmd) {
         timeoutFriendly: roleTimeout.toLocaleString(DateTime.DATETIME_MED),
         pings: 0,
         votes: 1,
-        founders: [cmd.msg.author.id],
+        founders: [int.member.id],
         members: [],
         active: false,
         permanent: false,
@@ -180,7 +154,7 @@ async function newRole(fishsticks, cmd) {
     };
 
     //Verify not duplicate
-    const dupeCheck = checkDupes(newRoleObj, cmd);
+    const dupeCheck = checkDupes(newRoleObj, int);
     if (dupeCheck !== 1) {
         throw new DuplicatedRoleException(dupeCheck);
     }
@@ -188,7 +162,7 @@ async function newRole(fishsticks, cmd) {
     //Add role to the listings
     const addRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'insert', newRoleObj);
     if (addRes.acknowledged === true) {
-        cmd.reply('Role listed.');
+        int.reply({ content: 'Role listed.', ephemeral: true });
     }
     else {
         throw 'Something went wrong adding the role to the listings...';
@@ -196,37 +170,37 @@ async function newRole(fishsticks, cmd) {
 }
 
 //Edit a role
-async function editRole(fishsticks, cmd) {
-    cmd.channel.send({ content: 'Cant do this just yet!' }).then(sent => {
-        setTimeout(() => sent.delete(), 10000);
-    });
+async function editRole(fishsticks, int) {
+    int.reply({ content: 'WIP. Not ready yet.', ephemeral: true });
 }
 
 //Vote for a role
-async function voteRole(fishsticks, cmd, roleY) {
+async function voteRole(fishsticks, int, redirectData) {
 
     //If redirect from join, use already existing role process
     let roleObj;
 
-    if (!roleY) {
+    if (!redirectData) {
         roleObj = await findRole();
+
+        if (roleObj === -1) {
+            throw 'That role doesnt exist!';
+        }
     }
     else {
-        roleObj = roleY;
+        roleObj = redirectData;
     }
 
-    if (roleObj === -1) {
-        throw 'That role doesnt exist!';
-    }
-    else if (roleObj.votes >= 5) {
-        cmd.reply('This role has already been officialized, assigning it instead...', 10);
-        return joinRole(fishsticks, cmd, roleY);
+
+    if (roleObj.votes >= 5) {
+        int.reply({ content: 'This role has already been officialized, assigning it instead...', ephemeral: true });
+        return joinRole(fishsticks, int, roleObj);
     }
     else {
         //Run through founders to prevent dupe
         for (const memID in roleObj.founders) {
-            if (roleObj.founders[memID] === cmd.msg.author.id) {
-                return cmd.reply('You already voted for this role! Get outta here!', 10);
+            if (roleObj.founders[memID] === int.member.id) {
+                return int.reply({ content: 'You already voted for this role! Get outta here!', ephemeral: true });
             }
         }
 
@@ -238,7 +212,7 @@ async function voteRole(fishsticks, cmd, roleY) {
                 votes: 1
             },
             $push: {
-                founders: cmd.msg.author.id
+                founders: int.member.id
             },
             $set: {
                 timeout: timeDiff,
@@ -253,124 +227,111 @@ async function voteRole(fishsticks, cmd, roleY) {
         }
         else if (roleObj.votes + 1 >= 5) {
             log('info', '[ROLE-SYS] Role has 5 votes, activating...');
-            await activateRole(fishsticks, cmd, roleObj);
+            await activateRole(fishsticks, int, roleObj);
         }
         else {
             const missingVotes = 5 - roleObj.votes + 1;
 
-            cmd.reply(`Vote counted; ${roleObj.name} requires ${missingVotes} vote(s) before being activated!`, 10);
+            int.reply({ content: `Vote counted; ${roleObj.name} requires ${missingVotes} vote(s) before being activated!`, ephemeral: true });
         }
     }
 }
 
 //Join a role
-async function joinRole(fishsticks, cmd, roleData) {
+async function joinRole(fishsticks, int, redirectData) {
     //Check active
-    let roleX;
+    let roleObj;
 
-    if (roleData) {
+    if (!redirectData) {
         //Redirect from vote
-        roleX = roleData;
+        roleObj = await findRole();
     }
     else {
-        roleX = await findRole();
+        roleObj = redirectData;
     }
 
-    if (roleX.active === false) {
+    if (roleObj.active === false) {
         //Vote role override
-        cmd.reply('Role not active, voting for it instead.', 10);
-        return await voteRole(fishsticks, cmd, roleX);
+        int.reply({ content: 'Role not active, voting for it instead.', ephemeral: true });
+        return await voteRole(fishsticks, int, roleObj);
     }
     else {
         //Get role and add
-        const roleY = await cmd.msg.guild.roles.cache.find(role => role.name === `${roleX.name}`);
+        const roleY = await int.guild.roles.cache.find(role => role.name === `${roleObj.name}`);
 
         //Check if this person already has the role
-        if (hasPerms(cmd.msg.member, [`${roleX.name}`])) {
-            return cmd.reply('You already have this role!', 15);
+        if (hasPerms(int.member, [`${roleObj.name}`])) {
+            return int.reply({ content: 'You already have this role!', ephemeral: true });
         }
 
-        cmd.msg.member.roles.add(roleY).then(function() {
+        int.member.roles.add(roleY).then(function() {
 
             //Update FSO with the new role list
             const roleUpdate = {
                 $push: {
-                    members: cmd.msg.author.id
+                    members: int.member.id
                 }
             };
 
-            fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'update', roleUpdate, { id: roleX.id }).then(done => {
+            fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'update', roleUpdate, { id: roleObj.id }).then(done => {
                 if (done.modifiedCount === 1) {
-                    cmd.channel.send(`${cmd.msg.member} has joined ${roleY}!`);
+                    int.channel.send(`${int.member} has joined ${roleY}!`);
                 }
                 else {
-                    cmd.reply('Something is...incorrect. Have someone check your roles.');
+                    int.reply({ content: 'Something is...incorrect. Have someone check your roles.', ephemeral: true });
                 }
             });
         }).catch(err => {
-            cmd.reply('Something went wrong trying to add your role.\n' + err, 10);
+            int.reply({ content: 'Something went wrong trying to add your role.\n' + err, ephemeral: true });
         });
     }
 }
 //
 
 //Leave a role
-async function leaveRole(fishsticks, cmd) {
+async function leaveRole(fishsticks, int) {
     //Check active
     const roleX = await findRole();
     if (roleX.active === false) {
         //Vote role override
-        cmd.reply('No active role to leave!', 10);
+        int.reply({ content: 'No active role to leave!', ephemeral: true });
     }
     else {
         //Get role and remove
-        const roleY = await cmd.msg.guild.roles.cache.find(role => role.name === `${roleX.name}`);
+        const roleY = await int.guild.roles.cache.find(role => role.name === `${roleX.name}`);
 
-        //Check if this person already has the role
-        if (!hasPerms(cmd.msg.member, [`${roleX.name}`])) {
-            return cmd.reply('You already have left this role!', 15);
+        //Check if this person already has left the role
+        if (!hasPerms(int.member, [`${roleX.name}`])) {
+            return int.reply({ content: 'You already have left this role!', ephemeral: true });
         }
 
-        cmd.msg.member.roles.remove(roleY).then(function() {
+        int.member.roles.remove(roleY).then(function() {
 
-            //Sort through founders and strikethrough if listed
-            for (const i in roleX.founders) {
-
-            }
-
-            //Update FSO with the new role list
             const roleUpdate = {
-                $set: {
-                    roles: memberRolesList
+                $pull: {
+                    members: int.member.id
                 }
             };
 
-            fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'update', roleUpdate, { id: cmd.msg.author.id })
+            fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'update', roleUpdate, { id: int.member.id })
                 .then(done => {
                 if (done.modifiedCount === 1) {
-                    cmd.channel.send('Role removed.').then(sent => {
-                        setTimeout(() => sent.delete(), 10000);
-                    });
+                    return int.reply({ content: 'Role removed.', ephemeral: true });
                 }
                 else {
-                    cmd.reply('Something is...incorrect. Have someone check your roles.');
+                    return int.reply({ content: 'Something is...incorrect. Have someone check your roles.', ephemeral: true });
                 }
             });
         }).catch(err => {
-            cmd.reply('Something went wrong trying to remove your role.\n' + err, 10);
+            return int.reply({ content: 'Something went wrong trying to remove your role.\n' + err, ephemeral: true });
         });
     }
-}
-
-//Print the statistics for all roles
-async function roleStats(fishsticks, cmd) {
-    cmd.reply('Insert neat things here.', 10);
 }
 
 //List all roles
 async function listRoles(fishsticks, int, ext) {
 
-    if (ext) { //External inquery, update role listing
+    if (ext) { //External inquiry, update role listing
         await updateRoles(fishsticks, await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'selectAll'));
     }
 
@@ -422,11 +383,11 @@ async function listRoles(fishsticks, int, ext) {
 }
 
 //Print the stats for a single role
-async function aboutRole(fishsticks, cmd) {
+async function detailsRole(fishsticks, int) {
     const roleObj = await findRole();
 
     if(!roleObj || roleObj === -1) {
-        return cmd.reply('No role found!', 10);
+        return int.reply({ content: 'No role found!', ephemeral: true });
     }
 
     log('info', '[ROLE] Displaying about for ' + roleObj.name);
@@ -482,7 +443,7 @@ async function aboutRole(fishsticks, cmd) {
         title: `o0o - ${roleObj.name} Role Info - o0o`,
         description: roleObj.description,
         noThumbnail: true,
-        footer: `Footer summoned by ${cmd.msg.member.displayName}.`,
+        footer: `Footer summoned by ${int.member.displayName}.`,
         fields: [
             {
                 name: 'Creator',
@@ -539,13 +500,11 @@ async function aboutRole(fishsticks, cmd) {
         delete: 30000
     };
 
-    return cmd.channel.send({ content: 'Role info.', embeds: [embedBuilder(roleEmbed)] }).then(sent => {
-        setTimeout(() => sent.delete(), 30000);
-    });
+    return int.reply({ content: 'Role info.', embeds: [embedBuilder(roleEmbed)] });
 }
 
 //Activate the role
-async function activateRole(fishsticks, cmd, obj) {
+async function activateRole(fishsticks, int, obj) {
     log('info', '[ROLE-SYS] Preparing to activate role...');
 
     //Get refreshed role data
@@ -564,7 +523,7 @@ async function activateRole(fishsticks, cmd, obj) {
             reason: '[ROLE-SYS] Game role subroutine has created a new role based on the votes fo 5 different members.'
         }).then(async newRoleObj => {
             log('proc', `[ROLE-SYS] Created new role ${newRoleObj.name}`);
-            cmd.reply('Activation successful!', 10);
+            int.reply({ content: 'Activation successful!', ephemeral: true });
 
             const updateData = {
                 $set: {
@@ -586,14 +545,10 @@ async function activateRole(fishsticks, cmd, obj) {
                 console.log(`Adding ${newRoleObj.name} to ${memberItem.displayName}.`);
 
                 await memberItem.roles.add(newRoleObj, '[ROLE-SYS] Role added automatically after having voted for it.');
-                cmd.channel.send(`${memberItem.displayName} - you've been assigned ${roleData.name} because you voted for it!`).then(sent => {
+                int.channel.send(`${memberItem.displayName} - you've been assigned ${roleData.name} because you voted for it!`).then(sent => {
                     setTimeout(() => sent.delete(), 15000);
                 });
             }
-
-            //Send role ping to games
-
-
         });
     }
     catch (roleCreateErr) {
@@ -604,22 +559,22 @@ async function activateRole(fishsticks, cmd, obj) {
 //Util Funcs
 
 //Prevent duplicates
-function checkDupes(roleObj, cmd) {
+function checkDupes(roleObj, int) {
     for (const roleItem in currentPool) {
         if (currentPool[roleItem].name === roleObj.name) {
-            cmd.reply('This role already exists!', 10);
+            int.reply('This role already exists!');
             return -1;
         }
         else if (currentPool[roleItem].game === roleObj.name) {
-            cmd.reply('*Suspecting sus*; that role name already exists as a game in the listing.', 10);
+            int.reply({ content: '*Suspecting sus*; that role name already exists as a game in the listing.', ephemeral: true });
             return -2;
         }
         else if (currentPool[roleItem].name === roleObj.game) {
-            cmd.reply('There is a role with that game as its name already in the listing!', 10);
+            int.reply({ content: 'There is a role with that game as its name already in the listing!', ephemeral: true });
             return -3;
         }
         else if (currentPool[roleItem].game === roleObj.game) {
-            cmd.reply('A role with that game already exists!', 10);
+            int.reply({ content: 'A role with that game already exists!', ephemeral: true });
             return -4;
         }
     }
@@ -628,56 +583,49 @@ function checkDupes(roleObj, cmd) {
 }
 
 //Find a role
-async function findRole(fishsticks, extQuery) {
+async function findRole(fishsticks, int) {
+    log('info', '[ROLE-SYS] Returning role object.');
+    //Internal query
 
-    if (extQuery != null || extQuery !== undefined) {
-        log('info', '[ROLE-SYS] Returning role ID');
-        //Incoming query from a different command
-        await updateRoles(fishsticks, await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'selectAll'));
-
-        log('info', '[ROLE-SYS] Fetching role for external command.');
-
-        const query = toTitleCase(extQuery);
-
-        for (const roleItem in currentPool) {
-            if (query === currentPool[roleItem].name) {
-                log('proc', '[ROLE-SYS] Found a role.');
-                if (currentPool[roleItem].active) {
-                    return currentPool[roleItem].discordID;
-                }
-            }
-            else if (query === currentPool[roleItem].game) {
-                log('proc', '[ROLE-SYS] Found a role.');
-                if (currentPool[roleItem].active) {
-                    return currentPool[roleItem].discordID;
-                }
-            }
+    for (const roleItem in currentPool) {
+        if (query === currentPool[roleItem].name) {
+            log('proc', '[ROLE-SYS] Found a role.');
+            return currentPool[roleItem];
         }
-
-        return -1;
+        else if (query === currentPool[roleItem].game) {
+            log('proc', '[ROLE-SYS] Found a role.');
+            return currentPool[roleItem];
+        }
     }
-    else {
-        log('info', '[ROLE-SYS] Returning role object.');
-        //Internal query
-        if (!params[1] || params[1] === null) {
-            throw new InvalidParameterException('No name or game was supplied!');
-        }
 
-        const query = toTitleCase(params[1]);
+    return -1;
+}
 
-        for (const roleItem in currentPool) {
-            if (query === currentPool[roleItem].name) {
-                log('proc', '[ROLE-SYS] Found a role.');
-                return currentPool[roleItem];
+async function queryForRole(fishsticks, extQuery) {
+    log('info', '[ROLE-SYS] Returning role ID');
+    //Incoming query from a different command
+    await updateRoles(fishsticks, await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'selectAll'));
+
+    log('info', '[ROLE-SYS] Fetching role for external command.');
+
+    const query = toTitleCase(extQuery);
+
+    for (const roleItem in currentPool) {
+        if (query === currentPool[roleItem].name) {
+            log('proc', '[ROLE-SYS] Found a role.');
+            if (currentPool[roleItem].active) {
+                return currentPool[roleItem].discordID;
             }
-            else if (query === currentPool[roleItem].game) {
-                log('proc', '[ROLE-SYS] Found a role.');
-                return currentPool[roleItem];
+        }
+        else if (query === currentPool[roleItem].game) {
+            log('proc', '[ROLE-SYS] Found a role.');
+            if (currentPool[roleItem].active) {
+                return currentPool[roleItem].discordID;
             }
         }
-
-        return -1;
     }
+
+    return -1;
 }
 
 //Delete a role (SYSTEM ONLY)
@@ -713,74 +661,18 @@ async function updateRoles(fishsticks, poolRes) {
     }
 }
 
-//Sync game-roles in Discord to FSO
-async function syncRoles(fishsticks, cmd) {
-    const roleList = await populateRoleList(fishsticks);
-
-    const syncRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'insertMany', roleList);
-
-    if(syncRes.insertedCount !== roleList.length) {
-        cmd.reply('Not all roles were synced to FSO!');
-    }
-    else {
-        cmd.reply('All roles synced to FSO.', 15);
-    }
-
-}
-
-async function populateRoleList(fishsticks) {
-    const grColor = 10389358; //Decimal number of the hex color code: #9e876e
-    const roleList = [];
-    const roleCache = Array.from(fishsticks.CCG.roles.cache.values());
-
-    for (const roleIndex in roleCache) {
-        const role = roleCache[roleIndex];
-
-        if (role.color === grColor) {
-            const roleData = await processRole(role);
-            roleList.push(roleData);
-        }
-    }
-
-    log('info', '[ROLE-SYNC] Role listing to sync holds ' + roleList.length + ' roles.');
-    console.log(roleList);
-    return roleList;
-}
-
-async function processRole(role) {
-    const roleTimeout = DateTime.now().setZone('UTC-5').plus({ 'weeks': 2 });
-
-    log('info', '[ROLE-SYNC] Processing ' + role.name);
-    const newRoleObj = {
-        id: role.id,
-        name: role.name,
-        creator: 'Fishsticks',
-        game: 'Something Relevant',
-        description: 'Role created pre-V18, no info.',
-        created: role.createdAt,
-        createdFriendly: new DateTime(role.createdAt).toLocaleString(DateTime.DATETIME_MED),
-        activated: true,
-        timeout: roleTimeout,
-        timeoutFriendly: `${roleTimeout.toLocaleString(DateTime.DATETIME_MED)}`,
-        pings: 0,
-        votes: 5,
-        founds: [],
-        members: [],
-        active: true,
-        permanent: true,
-        activityFactor: 0
-    };
-
-    const memberList = Array.from(role.members.values());
-    for (const memberIndex in memberList) {
-        newRoleObj.members.push((memberList[memberIndex].user.id));
-    }
-
-    return newRoleObj;
-}
-
 
 //Help
 function help() {
     return 'Enables game role controls.';
 }
+
+//Exports
+module.exports = {
+    name: 'role',
+    data,
+    run,
+    help,
+    findRole,
+    listRoles
+};

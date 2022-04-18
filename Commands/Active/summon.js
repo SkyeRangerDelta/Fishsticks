@@ -7,20 +7,22 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 //Globals
 const data = new SlashCommandBuilder()
     .setName('summon')
-    .setDescription('Summons cards!');
-
-data.addSubcommand(s => s.setName('brodemode').setDescription('Enables/Disables summoning conditions [WIP].'));
-data.addStringOption(o => o.setName('card-name').setDescription('The name of the card to summon.').setRequired(true));
+    .setDescription('Summons cards!')
+    .addStringOption(o => o
+        .setName('card-name')
+        .setDescription('The name of the card to summon.')
+        .setRequired(true)
+        .addChoice('Brode Mode', 'brodemode')
+    );
 
 
 //Functions
 async function run(fishsticks, int) {
     //Set card name
-    const subCMD = int.getSubcommand();
     const cardName = int.getString('card-name');
 
     //BrodeMode Toggle
-    if (subCMD) {
+    if (cardName === 'brodemode') {
         fishsticks.SUMM_BRODEMODE = !fishsticks.SUMM_BRODEMODE;
 
         if (fishsticks.SUMM_BRODEMODE) {

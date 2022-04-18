@@ -13,7 +13,9 @@ const data = new SlashCommandBuilder()
     .setName('poem')
     .setDescription('Prints poems');
 
-data.addSubcommand(s => s.setName('random').setDescription('Prints a random poem.'));
+data.addSubcommand(s => s
+    .setName('random')
+    .setDescription('Prints a random poem.'));
 
 const API_URL = 'https://poetrydb.org/';
 

@@ -12,12 +12,11 @@ const data = new SlashCommandBuilder()
 	.setName('codex')
 	.setDescription('Pulls up relevant information/how-to on a command.');
 
-data.addStringOption(o => {
-	o.setName('command-id').setDescription('The command ID (command name) to look up.').setRequired(true);
-	for (const item in cmdList) {
-		o.addChoice(cmdList[item], cmdList[item]);
-	}
-});
+data.addStringOption(o => o
+	.setName('command-id')
+	.setDescription('The command ID (command name) to look up.')
+	.setRequired(true)
+);
 
 function run(fishsticks, int) {
 	log('info', '[CODEX] Attempting to find command.');
@@ -28,14 +27,11 @@ function run(fishsticks, int) {
 		if (fileID.toLowerCase() === cmdID) {
 			const helpFile = require(`./${fileID}`);
 			const helpEntry = helpFile.help();
-			return int.reply(helpEntry + `\nThat entry can be found here: https://wiki.pldyn.net/fishsticks/command-listing#${fileID}`)
-			.then(sent => {
-				setTimeout(() => sent.delete(), 25000);
-			});
+			return int.reply({ content: helpEntry + `\nThat entry can be found here: https://wiki.pldyn.net/fishsticks/command-listing#${fileID}`, ephemeral: true });
 		}
 	}
 
-	int.reply('There is no such command.');
+	int.reply({ content: 'There is no such command.', ephemeral: true });
 }
 
 function help() {

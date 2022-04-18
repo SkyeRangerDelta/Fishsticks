@@ -7,13 +7,14 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 //Globals
 const data = new SlashCommandBuilder()
     .setName('launch')
-    .setDescription('Launch a nuke.');
-
-data.addSubcommand(s =>
-    s
+    .setDescription('Launch a nuke.')
+    .addSubcommand(s => s
         .setName('rules')
-        .setDescription('Prints out the keyset rules.')
-);
+        .setDescription('Prints out the keyset rules.'))
+    .addSubcommand(s => s
+        .setName('generate')
+        .setDescription('Generate a keycode for missile launch.')
+    );
 
 //Functions
 async function run(fishsticks, int) {

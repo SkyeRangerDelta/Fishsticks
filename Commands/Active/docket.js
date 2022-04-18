@@ -57,6 +57,11 @@ data.addSubcommand(s => s
 	.setDescription('Clear the docket (except stickies) of docket points.')
 );
 
+data.addSubcommand(s => s
+	.setName('list')
+	.setDescription('Displays the docket.')
+);
+
 //Add, edit, delete, toggle sticky, toggle closed, clear, list(?)
 
 //Functions
@@ -84,7 +89,7 @@ async function run(fishsticks, int) {
 	else if (subCMD === 'clear') {
 		await clearDocket(fishsticks, int);
 	}
-	else {
+	else if (subCMD === 'list') {
 		await listPoints(fishsticks, int);
 	}
 }

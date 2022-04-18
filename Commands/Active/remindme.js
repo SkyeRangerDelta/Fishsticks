@@ -7,10 +7,16 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 //Globals
 const data = new SlashCommandBuilder()
     .setName('remindme')
-    .setDescription('Pings you with a message some amount of time later.');
-
-data.addIntegerOption(o => o.setName('wait-time').setDescription('The time in minutes to wait before sending the reminder.').setRequired(true));
-data.addStringOption(o => o.setName('reminder-text').setDescription('The actual reminder to ping you with.').setRequired(true));
+    .setDescription('Pings you with a message some amount of time later.')
+    .addIntegerOption(o => o
+        .setName('wait-time')
+        .setDescription('The time in minutes to wait before sending the reminder.')
+        .setRequired(true))
+    .addStringOption(o => o
+        .setName('reminder-text')
+        .setDescription('The actual reminder to ping you with.')
+        .setRequired(true)
+    );
 
 //Functions
 function run(fishsticks, int) {

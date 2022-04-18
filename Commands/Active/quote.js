@@ -9,9 +9,11 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 //Globals
 const data = new SlashCommandBuilder()
 	.setName('quote')
-	.setDescription('Does quote things.');
-
-data.addStringOption(o => o.setName('quote-text').setDescription('The text to quote.'));
+	.setDescription('Does quote things.')
+	.addStringOption(o => o
+		.setName('quote-text')
+		.setDescription('The text to quote.')
+	);
 
 //Functions
 async function run(fishsticks, int) {

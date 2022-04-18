@@ -18,6 +18,11 @@ data.addNumberOption(o => o
     .setDescription('The time to wait in minutes before posting the announcement.')
     .setRequired(true));
 
+data.addStringOption(o => o
+    .setName('announcement')
+    .setDescription('The announcement to post.')
+    .setRequired(true));
+
 data.addRoleOption(o => o
     .setName('role-ping')
     .setDescription('What game role should be pinged? (ONLY WORKS FOR GAME ROLES)'));
@@ -29,7 +34,6 @@ data.addStringOption(o => o
     .addChoice('here', 'here')
     .addChoice('soft', 'soft')
 );
-data.addStringOption(o => o.setName('announcement').setDescription('The announcement to post.').setRequired(true));
 
 //Functions
 async function run(fishsticks, int) {
@@ -45,7 +49,7 @@ async function run(fishsticks, int) {
         return int.reply({ content: 'Why do I waste my time here. You cant dispatch an announcement with nothing in the message.', ephemeral: true });
     }
 
-    let waitTime = int.options.getInteger('wait-time');
+    let waitTime = int.options.getNumber('wait-time');
     if (waitTime <= 0) {
         return int.reply({ content: 'Thought you could pull a fast one huh? Right, if you dont want a delay, post it yourself.', ephemeral: true });
     }
@@ -65,14 +69,20 @@ async function run(fishsticks, int) {
             return int.reply({ content: 'Did you ping a valid game role?', ephemeral: true });
         }
         else {
+            int.reply({ content: 'Timeout set, waiting' + waitTime + ' minutes before deploying.', ephemeral: true });
             setTimeout(dispatchMsg, waitTime, role + ', ' + int.options.getString('announcement'));
         }
     }
     else if (!int.options.getRole('role-ping')) {
         //Check ping type (ensure a choice selection)
         const pingType = int.options.getString('ping-type');
-        if (pingType === 'here' || pingType === 'everyone' || pingType === 'soft') {
+        if (pingType === 'here' || pingType === 'everyone') {
+            int.reply({ content: 'Timeout set, waiting' + waitTime + ' minutes before deploying.', ephemeral: true });
             setTimeout(dispatchMsg, waitTime, `@${pingType}, ` + int.options.getString('announcement'));
+        }
+        else if (pingType === 'soft') {
+            int.reply({ content: 'Timeout set, waiting' + waitTime + ' minutes before deploying.', ephemeral: true });
+            setTimeout(dispatchMsg, waitTime, int.options.getString('announcement'));
         }
         else {
             return int.reply({ content: 'Invalid ping type! Im not out here to make random announcements.', ephemeral: true });

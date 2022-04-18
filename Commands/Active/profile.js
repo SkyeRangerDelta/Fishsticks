@@ -12,7 +12,9 @@ const data = new SlashCommandBuilder()
     .setName('profile')
     .setDescription('Displays your FSO profile,');
 
-data.addSubcommand(s => s.setName('detailed').setDescription('Displays full FSO profile.'));
+data.addSubcommand(s => s
+    .setName('detailed')
+    .setDescription('Displays full FSO profile.'));
 
 //Functions
 async function run(fishsticks, int) {

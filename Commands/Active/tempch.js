@@ -15,8 +15,8 @@ const data = new SlashCommandBuilder()
     .setName('tempch')
     .setDescription('Creates temporary voice channels.');
 
-data.addIntegerOption(o => o.setName('max-users').setDescription('How many voice connections to limit this chat to.'));
 data.addStringOption(o => o.setName('channel-name').setDescription('The name of the channel.').setRequired(true));
+data.addIntegerOption(o => o.setName('max-users').setDescription('How many voice connections to limit this chat to.'));
 
 //Functions
 async function run(Fishsticks, int) {

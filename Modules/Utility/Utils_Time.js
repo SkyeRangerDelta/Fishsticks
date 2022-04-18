@@ -43,12 +43,12 @@ function systemTimestamp(date) {
 //Returns a 'date-and-time' date obj
 function flexTime(date) {
 	if (!date) {
-		const newFlex = DateTime.now().toLocaleString(DateTime.DATETIME_MED);
+		const newFlex = DateTime.now().setZone('UTC-5').toLocaleString(DateTime.DATETIME_MED);
 
 		return newFlex;
 	}
 	else {
-		const newFlex = new DateTime(date.toISOString()).toLocaleString(DateTime.DATETIME_MED);
+		const newFlex = new DateTime(date.toISOString(), { zone: 'UTC-5' }).toLocaleString(DateTime.DATETIME_MED);
 
 		return newFlex;
 	}

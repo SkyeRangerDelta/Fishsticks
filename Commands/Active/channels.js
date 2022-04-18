@@ -33,6 +33,7 @@ function run(fishsticks, int) {
 					'**Lounge**: General Chat  2\n' +
 					'**Memes**: For memes, duh.\n' +
 					'**Hall of Aptitude**: Channel for posting art and creative media.\n' +
+					'🔇 **The Greenhouse**: Channel for gardening and planting discussion.\n' +
 					'🔇 **Hall of Spontaneity**: Chat channel for those without mics.\n' +
 					'**Tech Chat**: Discuss technical stuff.\n' +
 					'**Production Studio**: Discuss content and media creation.\n' +
