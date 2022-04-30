@@ -2,31 +2,33 @@
 
 //Imports
 const { log } = require('../../Modules/Utility/Utils_Log.js');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Exports
-module.exports = {
-    run,
-    help
-};
+//Globals
+const data = new SlashCommandBuilder()
+    .setName('summon')
+    .setDescription('Summons cards!')
+    .addStringOption(o => o
+        .setName('card-name')
+        .setDescription('The name of the card to summon.')
+        .setRequired(true)
+    );
+
 
 //Functions
-async function run(fishsticks, cmd) {
-    cmd.msg.delete();
-
+async function run(fishsticks, int) {
     //Set card name
-    const cardName = cmd.content[0]; //Process card name from command
+    const cardName = int.options.getString('card-name');
 
     //BrodeMode Toggle
     if (cardName === 'brodemode') {
         fishsticks.SUMM_BRODEMODE = !fishsticks.SUMM_BRODEMODE;
 
         if (fishsticks.SUMM_BRODEMODE) {
-            return cmd.channel.send('Brodemode is now on! Play by the rules or get out of my server.')
-                .then(s => { setTimeout(() => s.delete(), 15000); });
+            return int.reply('Brodemode is now on! Play by the rules or get out of my server.');
         }
         else {
-            return cmd.channel.send('Brodemode is now off! *Brode Laughter* Ben drowned on his own spit laughing.')
-                .then(s => { setTimeout(() => s.delete(), 60000); });
+            return int.reply('Brodemode is now off! *Brode Laughter* Ben drowned on his own spit laughing.');
         }
     }
 
@@ -47,17 +49,25 @@ async function run(fishsticks, cmd) {
 
     try { //Attempt to summon/execute
         if (fishsticks.SUMM_BRODEMODE === false) {
-            await cmd.channel.send({ files: [{
+            await int.reply({ files: [{
                     attachment: `./Commands/Active/Summons/${cardName}.png`
                 }] });
         }
     }
     catch (summonErr) {
         log('info', '[SUMMON] Summon Err\n' + summonErr);
-        return cmd.reply('*You failed to summon that, perhaps you have no mana?*', 10); //Friendly response on failure
+        return int.reply({ content: '*You failed to summon that, perhaps you have no mana?*', ephemeral: true }); //Friendly response on failure
     }
 }
 
 function help() {
     return 'Summons cards!';
 }
+
+//Exports
+module.exports = {
+    name: 'summon',
+    data,
+    run,
+    help
+};

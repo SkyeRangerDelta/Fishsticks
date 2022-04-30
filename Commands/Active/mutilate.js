@@ -29,9 +29,7 @@ function run(fishsticks, int) {
     }
 
     const output = outputArr.join('');
-
-    int.channel.send(output);
-    int.reply({ content: 'Sent!', ephemeral: true });
+    int.reply({ content: 'Copy and Paste this:\n' + output, ephemeral: true });
 
 }
 

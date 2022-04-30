@@ -2,38 +2,43 @@
 
 //Imports
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
-const { systemTimestamp, flexTime, timeSinceDate } = require('../../Modules/Utility/Utils_Time');
+const { timeSinceDate } = require('../../Modules/Utility/Utils_Time');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Export
-module.exports = {
-    run,
-    help
-};
+//Globals
+const data = new SlashCommandBuilder()
+    .setName('userinfo')
+    .setDescription('Displays user details. [Mod+]')
+    .addSubcommand(s => s
+        .setName('by-username')
+        .setDescription('Pull up user information by their username.')
+        .addStringOption(o => o
+            .setName('username')
+            .setDescription('The users handle, display name, or username.')
+            .setRequired(true)))
+    .addSubcommand(s => s
+        .setName('by-ping')
+        .setDescription('Pull up user information by a mention.')
+        .addUserOption(o => o
+            .setName('user')
+            .setDescription('The user to pull up info on.')
+            .setRequired(true))
+    );
 
-async function run(fishsticks, cmd) {
-    cmd.msg.delete();
-
-    if (!hasPerms(cmd.msg.member, ['Moderator', 'Council Member'])) {
-        return cmd.reply('You lack the permissions to do this!');
+async function run(fishsticks, int) {
+    if (!hasPerms(int.member, ['Moderator', 'Council Member'])) {
+        return int.reply('You lack the permissions to do this!');
     }
 
-    let username = null;
+    const subCMD = int.options.getSubcommand();
 
-    if(!cmd.content[0]) {
-        username = cmd.msg.member.displayName;
-    }
-    else {
-        username = cmd.msg.content.split('-')[1];
-        username = username.trim();
-    }
-
-
-    //Syntax: !userinfo [userName]
-    let targetUser, targetMember;
-    if (!cmd.msg.mentions.members.first()) {
+    //Syntax: /userinfo userName? userMention?
+    let targetMember;
+    if (subCMD === 'by-username') {
+        const username = int.options.getString('username');
         log('info', `[USER-INFO] Pulling report from text input (${username}).`);
         targetMember = await fishsticks.CCG.members.cache.find(u => u.user.username === `${username}`);
 
@@ -49,16 +54,15 @@ async function run(fishsticks, cmd) {
     }
     else {
         log('info', '[USER-INFO] Pulling report from mention.');
-        targetMember = await cmd.msg.mentions.members.first();
+        targetMember = int.options.getMember('user');
     }
 
     if (!targetMember) {
         log('warn', '[USER-INFO] Couldnt id a user.');
-        return cmd.reply('Couldnt identify a user!', 10);
+        return int.reply({ content: 'Couldnt identify a user!', ephemeral: true });
     }
-    else {
-        targetUser = targetMember.user;
-    }
+
+    const targetUser = targetMember.user;
 
     log('info', '[USER-INFO] Pulling FSO profile for ' + targetUser.tag);
     const memberProf = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: targetUser.id });
@@ -83,7 +87,7 @@ async function run(fishsticks, cmd) {
     const embed = {
         title: `[Intelligence Profile] ${targetMember.displayName}`,
         description: 'Heres that report you asked for...',
-        footer: `Report summoned by ${cmd.msg.member.displayName}`,
+        footer: `Report summoned by ${int.member.displayName}`,
         thumbnail: targetMember.displayAvatarURL(),
         fields: [
             {
@@ -129,9 +133,17 @@ async function run(fishsticks, cmd) {
         ]
     };
 
-    cmd.channel.send({ content: 'Doing some snooping...', embeds: [embedBuilder(embed)] });
+    int.reply({ content: 'Doing some snooping...', embeds: [embedBuilder(embed)] });
 }
 
 function help() {
     return '[Mod+] Displays some user details.';
 }
+
+//Exports
+module.exports = {
+    name: 'userinfo',
+    data,
+    run,
+    help
+};

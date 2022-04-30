@@ -7,13 +7,14 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 //Globals
 const data = new SlashCommandBuilder()
     .setName('launch')
-    .setDescription('Launch a nuke.');
-
-data.addSubcommand(s =>
-    s
+    .setDescription('Launch a nuke.')
+    .addSubcommand(s => s
         .setName('rules')
-        .setDescription('Prints out the keyset rules.')
-);
+        .setDescription('Prints out the keyset rules.'))
+    .addSubcommand(s => s
+        .setName('generate')
+        .setDescription('Generate a keycode for missile launch.')
+    );
 
 //Functions
 async function run(fishsticks, int) {
@@ -27,7 +28,7 @@ async function run(fishsticks, int) {
     //3-4, 3-5, 4-5
     const code = codeSet(fullkey);
 
-    const filterData = (res) => res.author.id === cmd.msg.author.id;
+    const filterData = (res) => res.author.id === int.member.id;
 
     int.reply('Input your launch code. You have 60 seconds.\nKeyset: ' + fullkey)
         .then(() => {

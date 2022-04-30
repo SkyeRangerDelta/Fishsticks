@@ -95,13 +95,15 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
     log('info', '[NEW-MEM] Banner saved, pending dispatch');
     const xpBannerAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
 
-    if (cmd.channel.id === prReqs || cmd.channel.id === announcements || cmd.channel.id === discDen || cmd.channel.id === bStudy) {
+    if (cmd.channel.id === announcements || cmd.channel.id === discDen || cmd.channel.id === bStudy) {
         //Redirect out of serious chats
         const hangoutCh = await fishsticks.channels.cache.get(hangout);
-        hangoutCh.send({ content: 'Level up!', files: [xpBannerAttachment] });
+        hangoutCh.send({ content: 'Level up!', files: [xpBannerAttachment] })
+            .then(sent => { setTimeout(() => { sent.delete(); }, 60000); });
     }
     else {
-        cmd.channel.send({ content: 'Level up!', files: [xpBannerAttachment] });
+        cmd.channel.send({ content: 'Level up!', files: [xpBannerAttachment] })
+            .then(sent => { setTimeout(() => { sent.delete(); }, 60000); });
     }
 }
 

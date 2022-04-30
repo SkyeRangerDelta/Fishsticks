@@ -8,18 +8,30 @@ const { fsSuggestionHook } = require('../../Modules/Core/Core_keys.json');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 
 const { log } = require('../../Modules/Utility/Utils_Log');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Exports
-module.exports = {
-    run,
-    help
-};
+//Globals
+const data = new SlashCommandBuilder()
+    .setName('suggest')
+    .setDescription('Posts a suggestion to the FS GitHub repository.')
+    .addStringOption(o => o
+        .setName('subject')
+        .setDescription('Title of your suggest, quick reference.')
+        .setRequired(true))
+    .addStringOption(o => o
+        .setName('content')
+        .setDescription('The actual content of the suggestion, details please.')
+        .setRequired(true)
+    );
 
-async function run(fishsticks, cmd) {
-    cmd.msg.delete();
+async function run(fishsticks, int) {
+    //Syntax: /suggest subject content
+    int.deferReply({ ephemeral: true });
 
-    //Syntax: !suggest -title -body
-    let hookURL = fsSuggestionHook.concat(`?sender=${cmd.msg.author.username}&suggTitle=${cmd.content[0]}&suggBody=${cmd.content[1]}`);
+    const title = int.options.getString('subject');
+    const content = int.options.getString('content');
+
+    let hookURL = fsSuggestionHook.concat(`?sender=${int.member.displayName}&suggTitle=${title}&suggBody=${content}`);
     hookURL = encodeURI(hookURL);
 
     //Attempt suggestion send
@@ -27,7 +39,7 @@ async function run(fishsticks, cmd) {
     https.get(hookURL, (res) => {
         if (res.statusCode === 200) {
             log('info', '[SUGGEST] Status: ' + res.statusCode);
-            cmd.reply('Suggestion posted.', 15);
+            int.editReply({ content: 'Suggestion posted.', ephemeral: true });
         }
     }).on('error', (eventGetError) => {
         console.log(eventGetError);
@@ -42,16 +54,24 @@ async function run(fishsticks, cmd) {
         }
     };
 
-    const updatedMember = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', updateData, { id: cmd.msg.author.id });
+    const updatedMember = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', updateData, { id: int.member.id });
 
     if (updatedMember.modifiedCount === 1) {
         log('proc', '[SUGGEST] Synced.');
     }
     else {
-        return cmd.reply('Something went wrong. Ask Skye to investigate.');
+        return int.editReply({ content: 'Something went wrong. Ask Skye to investigate.' });
     }
 }
 
 function help() {
     return 'Posts a GitHub issue to the Fishsticks repository.';
 }
+
+//Exports
+module.exports = {
+    name: 'suggest',
+    data,
+    run,
+    help
+};

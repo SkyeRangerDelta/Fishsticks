@@ -3,20 +3,18 @@
 //Imports
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const config = require('../../Modules/Core/Core_config.json');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 const packageVer = require('../../package.json').version;
 
-//Exports
-module.exports = {
-	run,
-	help
-};
+//Globals
+const data = new SlashCommandBuilder()
+	.setName('version')
+	.setDescription('Displays general FS information.');
 
 //Functions
-function run(fishsticks, cmd) {
-	cmd.msg.delete();
-
+function run(fishsticks, int) {
 	let branch = 'Master';
-	if(fishsticks.TESTMODE) {
+	if (fishsticks.TESTMODE) {
 		branch = 'Experimental';
 	}
 
@@ -24,7 +22,7 @@ function run(fishsticks, cmd) {
 		title: 'o0o - Fishsticks Version/About - o0o',
 		description: 'This contains general info about Fishsticks.',
 		color: config.colors.primary,
-		footer: `Panel was summoned by ${cmd.msg.author.username}. This message will delete itself in 30 seconds.`,
+		footer: `Panel was summoned by ${int.member.displayName}. This message will delete itself in 30 seconds.`,
 		timeout: 30000,
 		fields: [
 			{
@@ -46,10 +44,17 @@ function run(fishsticks, cmd) {
 		]
 	};
 
-    cmd.channel.send({ embeds: [embedBuilder(versionPanel)] })
-		.then(s => { setTimeout(() => s.delete(), 30000); });
+    int.reply({ embeds: [embedBuilder(versionPanel)], ephemeral: true });
 }
 
 function help() {
 	return 'Displays general Fishsticks information.';
 }
+
+//Exports
+module.exports = {
+	name: 'version',
+	data,
+	run,
+	help
+};

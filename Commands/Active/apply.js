@@ -15,7 +15,7 @@ const data = new SlashCommandBuilder()
 function run(fishsticks, int) {
 
 	//Not done
-	return int.reply('This command aint done just yet. You can still apply for membership via this link: https://bit.ly/CCMemberApp');
+	return int.reply({ content: 'This command aint done just yet. You can still apply for membership via this link: https://bit.ly/CCMemberApp', ephemeral: true });
 
 	//Dispatch introduction embed
 	const introPanel = {

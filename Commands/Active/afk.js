@@ -15,23 +15,23 @@ data.addStringOption(s => s.setName('f-starting-word').setDescription('Word that
 data.addStringOption(s => s.setName('k-starting-word').setDescription('Word that starts with K.').setRequired(true));
 
 async function run(fishsticks, int) {
-    if (int.options.length !== 3) {
-        return int.reply('AFK has 3 words...', 10);
-    }
-
     let newName = '';
 
-    if (int.options[0].toLowerCase().charAt(0) !== 'a') {
+    const a = int.options.getString('a-starting-word');
+    const f = int.options.getString('f-starting-word');
+    const k = int.options.getString('k-starting-word');
+
+    if (a.charAt(0) !== 'a') {
         return int.reply({ content: '(A)FK - The word needs to start with an A!', ephemeral: true });
 	}
-	else if (int.options[1].toLowerCase().charAt(0) !== 'f') {
+	else if (f.charAt(0) !== 'f') {
         return int.reply({ content: 'A(F)K - The word needs to start with an F!', ephemeral: true });
 	}
-	else if (int.options[2].toLowerCase().charAt(0) !== 'k') {
+	else if (k.charAt(0) !== 'k') {
         return int.reply({ content: 'AF(K) - The word needs to start with a K!', ephemeral: true });
     }
 
-    newName = 'AFK (' + int.options.join(' ') + ')';
+    newName = `AFK (${a} ${f} ${k})`;
 
     const AFKChannel = await fishsticks.channels.cache.get(chs.afkChannel);
     AFKChannel.setName(newName, 'The AFK command was used!')

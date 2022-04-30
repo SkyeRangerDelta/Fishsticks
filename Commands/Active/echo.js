@@ -3,8 +3,6 @@
 
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
 const { announcements } = require('../../Modules/Core/Core_ids.json');
-const { log } = require('../../Modules/Utility/Utils_Log');
-const { toTitleCase } = require('../../Modules/Utility/Utils_Aux');
 const { findRole } = require('./role');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
@@ -15,96 +13,83 @@ const data = new SlashCommandBuilder()
     .setName('echo')
     .setDescription('Posts a delayed announcement');
 
-data.addNumberOption(o => o.setName('wait-time').setDescription('The time to wait in minutes before posting the announcement.').setRequired(true));
-data.addStringOption(o =>
-    o
-        .setName('role-ping')
-        .setDescription('If pinging a role, name that role by name or game (as seen in !roles), pick a choice otherwise.')
-        .addChoice('everyone', 'everyone')
-        .addChoice('here', 'here')
-        .addChoice('soft', 'soft')
+data.addNumberOption(o => o
+    .setName('wait-time')
+    .setDescription('The time to wait in minutes before posting the announcement.')
+    .setRequired(true));
+
+data.addStringOption(o => o
+    .setName('announcement')
+    .setDescription('The announcement to post.')
+    .setRequired(true));
+
+data.addRoleOption(o => o
+    .setName('role-ping')
+    .setDescription('What game role should be pinged? (ONLY WORKS FOR GAME ROLES)'));
+
+data.addStringOption(o => o
+    .setName('ping-type')
+    .setDescription('If pinging a role, name that role by name or game (as seen in !roles), pick a choice otherwise.')
+    .addChoice('everyone', 'everyone')
+    .addChoice('here', 'here')
+    .addChoice('soft', 'soft')
 );
-data.addStringOption(o => o.setName('announcement').setDescription('The announcement to post.').setRequired(true));
 
 //Functions
-async function run(fishsticks, cmd) {
-    cmd.msg.delete();
-
+async function run(fishsticks, int) {
     annChannel = await fishsticks.channels.cache.get(announcements);
 
-    if (!hasPerms(cmd.msg.member, ['Event Coordinator', 'Moderator', 'Council Member', 'Council Advisor'])) {
-        return cmd.reply('Hey, hey there; not so fast. You need permissions to run that command.', 15);
+    if (!hasPerms(int.member, ['Event Coordinator', 'Moderator', 'Council Member', 'Council Advisor'])) {
+        return int.reply({ content: 'Hey, hey there; not so fast. You need permissions to run that command.', ephemeral: true });
     }
 
-    //Syntax: !echo <waitTimeInMinutes> [pingType] [messageToSend]
-    //!echo -10 -Blah                       sends blah in 10 minutes to everyone
-    //!echo -10 -wzfiretime -blah           sends blah in 10 minutes to wzfireteam
-    //!echo -wzfireteam -blah               sends blah to wzfireteam instantly
+    //Syntax: echo wait-time role-ping(?) ping-type(?) announcement
 
-    //Accepted ping types: e, everyone, h, here, game role, game name
-
-    if (!cmd.content[0]) {
-        cmd.reply('Why do I waste my time here. You cant dispatch an announcement with nothing in the message.', 10);
+    if (!int.options.getString('announcement')) {
+        return int.reply({ content: 'Why do I waste my time here. You cant dispatch an announcement with nothing in the message.', ephemeral: true });
     }
 
-    let waitTime;
-    try {
-        waitTime = (parseInt(cmd.content[0]) * 60) * 1000;
+    let waitTime = int.options.getNumber('wait-time');
+    if (waitTime <= 0) {
+        return int.reply({ content: 'Thought you could pull a fast one huh? Right, if you dont want a delay, post it yourself.', ephemeral: true });
     }
-    catch (e) {
-        waitTime = -1;
+    else {
+        waitTime = waitTime * 60 * 1000;
     }
 
-    if (waitTime === -1 || isNaN(waitTime)) {
-        log('info', '[ECHO] Announcement has no wait time, immediate post.');
-        //First param is not a number, check ping type or message
+    if (!int.options.getRole('role-ping') && !int.options.getString('ping-type')) {
+        return int.reply({ content: 'My goodness, you are quite the obnoxious one arent you? You need to specify a ping type or role ping!', ephemeral: true });
+    }
+    else if (!int.options.getString('ping-type')) {
+        //Check role
+        const role = int.options.getRole('role-ping');
+        const roleObj = await findRole(fishsticks, role.name);
 
-        const disMsg = toTitleCase(cmd.content[1]);
-
-        switch (cmd.content[0]) {
-            case 'e':
-            case 'everyone':
-                setTimeout(dispatchMsg, 0, '@everyone ' + disMsg);
-                break;
-            case 'h':
-            case 'here':
-                setTimeout(dispatchMsg, 0, '@here ' + disMsg);
-                break;
-            case 'n':
-            case 's':
-            case 'soft':
-            case 'none':
-                setTimeout(dispatchMsg, 0, disMsg);
-                break;
-            default:
-                await doPingDispatch(fishsticks, cmd);
+        if (!roleObj || roleObj === -1) {
+            return int.reply({ content: 'Did you ping a valid game role?', ephemeral: true });
+        }
+        else {
+            int.reply({ content: 'Timeout set, waiting ' + int.options.getNumber('wait-time') + ' minutes before deploying.', ephemeral: true });
+            setTimeout(dispatchMsg, waitTime, role + ', ' + int.options.getString('announcement'));
+        }
+    }
+    else if (!int.options.getRole('role-ping')) {
+        //Check ping type (ensure a choice selection)
+        const pingType = int.options.getString('ping-type');
+        if (pingType === 'here' || pingType === 'everyone') {
+            int.reply({ content: 'Timeout set, waiting ' + int.options.getNumber('wait-time') + ' minutes before deploying.', ephemeral: true });
+            setTimeout(dispatchMsg, waitTime, `@${pingType}, ` + int.options.getString('announcement'));
+        }
+        else if (pingType === 'soft') {
+            int.reply({ content: 'Timeout set, waiting ' + int.options.getNumber('wait-time') + ' minutes before deploying.', ephemeral: true });
+            setTimeout(dispatchMsg, waitTime, int.options.getString('announcement'));
+        }
+        else {
+            return int.reply({ content: 'Invalid ping type! Im not out here to make random announcements.', ephemeral: true });
         }
     }
     else {
-        log('info', `[ECHO] Announcement has ${waitTime} minute wait time.`);
-
-        cmd.reply(`Roger that, waiting ${cmd.content[0]} minute(s) to post.`, 10);
-
-        const disMsg = toTitleCase(cmd.content[2]);
-
-        switch (cmd.content[1]) {
-            case 'e':
-            case 'everyone':
-                setTimeout(dispatchMsg, waitTime, '@everyone ' + disMsg);
-                break;
-            case 'h':
-            case 'here':
-                setTimeout(dispatchMsg, waitTime, '@here ' + disMsg);
-                break;
-            case 'n':
-            case 's':
-            case 'soft':
-            case 'none':
-                setTimeout(dispatchMsg, waitTime, disMsg);
-                break;
-            default:
-                await doPingDispatch(fishsticks, cmd, waitTime);
-        }
+        return int.reply({ content: 'Looks like you found a way to befuddle me. Still wont make the announcement though - recheck your ping types.', ephemeral: true });
     }
 }
 
@@ -114,43 +99,6 @@ function help() {
 
 function dispatchMsg(msg) {
     annChannel.send({ content: msg });
-}
-
-async function getRolePing(fishsticks, cmd, role) {
-    let rolePing;
-
-    if (!cmd.msg.mentions.roles.first()) {
-        //No ping - returns DiscordID
-        const roleObj = await findRole(fishsticks, role);
-        rolePing = roleObj.discordID;
-    }
-    else {
-        //Returns role OBJ
-        const rolePingObj = cmd.msg.mentions.roles.first();
-        rolePing = rolePingObj.id;
-    }
-
-    if (!rolePing) {
-        return '@everyone';
-    }
-    else {
-        const roleToPing = fishsticks.CCG.roles.cache.get(rolePing);
-        return `${roleToPing} `;
-    }
-}
-
-async function doPingDispatch(fs, cmd, wait) {
-
-    if (!wait) {
-        const disMsg = await toTitleCase(cmd.content[1]);
-        const sendMsg = await getRolePing(fs, cmd, cmd.content[0]) + disMsg;
-        setTimeout(dispatchMsg, 0, sendMsg);
-    }
-    else {
-        const disMsg = await toTitleCase(cmd.content[2]);
-        const sendMsg = await getRolePing(fs, cmd, cmd.content[1]) + disMsg;
-        setTimeout(dispatchMsg, wait, sendMsg);
-    }
 }
 
 //Exports

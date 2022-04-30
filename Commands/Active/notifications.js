@@ -5,25 +5,22 @@
 const { MessageActionRow, MessageSelectMenu } = require('discord.js');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { log } = require('../../Modules/Utility/Utils_Log');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Exports
-module.exports = {
-    run,
-    help,
-    handleNotificationToggle
-};
+//Globals
+const data = new SlashCommandBuilder()
+    .setName('notifications')
+    .setDescription('Allows various notifications to be toggled on or off.');
 
 //Functions
-async function run(fishsticks, cmd) {
-    cmd.msg.delete();
-
+async function run(fishsticks, int) {
     //Grab notification preferences
-    const memberProf = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: cmd.msg.member.id });
+    const memberProf = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: int.member.id });
     let memberNotifPrefs;
 
     //Parse members without notifications
     if (!memberProf.notifications) {
-        await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', { $set: { 'notifications.xp': true } }, { id: cmd.msg.member.id });
+        await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', { $set: { 'notifications.xp': true } }, { id: int.member.id });
         memberNotifPrefs = {
             xp: true
         };
@@ -61,27 +58,7 @@ async function run(fishsticks, cmd) {
     );
 
     //Dispatch post
-    const notifMsg = await cmd.channel.send({ content: `${cmd.msg.member.displayName}'s notification settings:`, components: [msgRow] });
-
-    setTimeout(() => {
-        fso_query(fishsticks.FSO_CONNECTION, 'FSO_Notifications', 'delete', { id: cmd.msg.member.id });
-        notifMsg.delete().catch(() => {
-            log('warn', 'Notification interation post auto-delete failed; perhaps the message was deleted already?');
-        });
-    }, 75000);
-
-    //Dispatch data to FSO
-    const fsoData = {
-        id: cmd.msg.author.id,
-        notifMsgId: notifMsg.id
-    };
-
-    const settingsRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Notifications', 'insert', fsoData);
-
-    if (!settingsRes.acknowledged) {
-        notifMsg.delete();
-        cmd.reply('An error occurred on the backend, try that one again please.');
-    }
+    return int.reply({ content: `${int.member.displayName}'s notification settings:`, components: [msgRow], ephemeral: true });
 }
 
 function help() {
@@ -91,12 +68,7 @@ function help() {
 async function handleNotificationToggle(fishsticks, interaction) {
     //Get the notification record from FSO
     const memberProf = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: interaction.member.id });
-    const notifRecord = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Notifications', 'select', { id: interaction.member.id });
     const changedVals = interaction.values;
-
-    if (!notifRecord) {
-        return interaction.reply({ content: 'These are not your notification settings! Begone!', ephemeral: true });
-    }
 
     //Sift through changed values and update FSO
     let updates = 0;
@@ -112,8 +84,14 @@ async function handleNotificationToggle(fishsticks, interaction) {
             }
         }
     }
-
-    fso_query(fishsticks.FSO_CONNECTION, 'FSO_Notifications', 'delete', { id: interaction.member.id });
-    await interaction.message.delete();
     return interaction.reply({ content: `Updated ${updates} setting(s).`, ephemeral: true });
 }
+
+//Exports
+module.exports = {
+    name: 'notifications',
+    data,
+    run,
+    help,
+    handleNotificationToggle
+};

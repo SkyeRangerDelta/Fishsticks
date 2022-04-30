@@ -10,11 +10,9 @@ const { council } = require('../../Modules/Core/Core_ids.json');
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
-//Globals
-let flags = [];
-let pointDesc = null;
-let pointNum = null;
+//TODO: Conduct tests on multi-option commands
 
+//Data
 const data = new SlashCommandBuilder()
 	.setName('docket')
 	.setDescription('Add, edit, list, and delete points for CC community meetings.');
@@ -23,126 +21,117 @@ data.addSubcommand(s => s
 	.setName('add')
 	.setDescription('Add a docket point.')
 	.addStringOption(o => o.setName('docket-topic').setDescription('The topic content/stuff that should be discussed.').setRequired(true))
+	.addBooleanOption(b => b.setName('sticky').setDescription('Is this a sticky (persistent) topic?').setRequired(false))
+	.addBooleanOption(b => b.setName('closed').setDescription('Is this a closed (council only) topic?').setRequired(false))
 );
 
-data.addSubcommandGroup(g =>
-	g
-		.setName('add')
-		.setDescription('Add a docket point')
-		.addSubcommand(s =>
-			s
-				.setName('closed')
-				.setDescription('Set this point as closed (not visible publicly).')
-		)
-		.addSubcommand(s =>
-			s
-				.setName('sticky')
-				.setDescription('Set this point as sticky (will not be deleted unless specifically removed).')
-		)
+data.addSubcommand(s => s
+	.setName('delete')
+	.setDescription('Delete a docket point.')
+	.addIntegerOption(o => o.setName('point-id').setDescription('The ID of the docket point to delete.').setRequired(true))
 );
+
+data.addSubcommand(s => s
+	.setName('edit')
+	.setDescription('Edit a docket point.')
+	.addIntegerOption(o => o.setName('point-id').setDescription('The ID of the docket point to edit.').setRequired(true))
+	.addStringOption(o => o.setName('docket-topic').setDescription('Revised topic to assign to the docket point.').setRequired(true))
+	.addBooleanOption(b => b.setName('sticky').setDescription('Convert this to a sticky (persistent) topic?').setRequired(false))
+	.addBooleanOption(b => b.setName('closed').setDescription('Convert this to a closed (council only) topic?').setRequired(false))
+);
+
+data.addSubcommand(s => s
+	.setName('toggle-sticky')
+	.setDescription('Toggle a docket points sticky state.')
+	.addIntegerOption(o => o.setName('point-id').setDescription('The ID of the docket point to toggle sticky for.').setRequired(true))
+);
+
+data.addSubcommand(s => s
+	.setName('toggle-closed')
+	.setDescription('Toggle a docket points closed state.')
+	.addIntegerOption(o => o.setName('point-id').setDescription('The ID of the docket point to toggle closed for.').setRequired(true))
+);
+
+data.addSubcommand(s => s
+	.setName('clear')
+	.setDescription('Clear the docket (except stickies) of docket points.')
+);
+
+data.addSubcommand(s => s
+	.setName('list')
+	.setDescription('Displays the docket.')
+);
+
+//Add, edit, delete, toggle sticky, toggle closed, clear, list(?)
 
 //Functions
 async function run(fishsticks, int) {
-	const params = int.options;
-
 	//TODO: Finish refactoring for slash commands
 
-	console.log(params);
+	console.log(int.options);
+	const subCMD = int.options.getSubcommand();
 
-	//!docket
-	//!docket -[func] -<flags> -[point/number]
-
-	if (params[0] === 'a' || params[0] === 'add') {
-		validateParams('add', params, cmd);
-
-		log('info', '[DOCKET] Adding a point.');
-		await addPoint(fishsticks, cmd);
+	if (subCMD === 'add') {
+		await addPoint(fishsticks, int);
 	}
-	else if (params[0] === 'e' || params[0] === 'edit') {
-		validateParams('edit', params, cmd);
-
-		log('info', '[DOCKET] Editing a point.');
-		await editPoint(fishsticks, cmd);
+	else if (subCMD === 'delete') {
+		await deletePoint(fishsticks, int);
 	}
-	else if (params[0] === 'd' || params[0] === 'delete') {
-		validateParams('delete', params, cmd);
-
-		log('info', '[DOCKET] Deleting a point.');
-		await deletePoint(fishsticks, cmd);
+	else if (subCMD === 'edit') {
+		await editPoint(fishsticks, int);
 	}
-	else if (params[0] === 's' || params[0] === 'sticky') {
-		validateParams('toggle', params, cmd);
-
-		log('info', '[DOCKET] Setting a point to sticky.');
-		await toggleStickyPoint(fishsticks, cmd);
+	else if (subCMD === 'toggle-sticky') {
+		await toggleStickyPoint(fishsticks, int);
 	}
-	else if (params[0] === 'c' || params[0] === 'closed') {
-		validateParams('toggle', params, cmd);
-
-		log('info', '[DOCKET] Setting a point to closed.');
-		await toggleClosedPoint(fishsticks, cmd);
+	else if (subCMD === 'toggle-closed') {
+		await toggleClosedPoint(fishsticks, int);
 	}
-	else if (params[0] === 'clear') {
-		log('info', '[DOCKET] Clearing the docket.');
-		await clearDocket(fishsticks, cmd);
+	else if (subCMD === 'clear') {
+		await clearDocket(fishsticks, int);
 	}
-	else {
-		log('info', '[DOCKET] Listing points.');
-		await listPoints(fishsticks, cmd);
+	else if (subCMD === 'list') {
+		await listPoints(fishsticks, int);
 	}
 }
 
 //Add
-async function addPoint(fishsticks, cmd) {
-	//!docket -[a | add] -<sc> -[point]
+async function addPoint(fishsticks, int) {
+	//docket add docket-topic sticky closed
 
 	//Object
 	const newDocketPoint = {
-		author: cmd.msg.member.displayName,
-		pointDesc: pointDesc,
-		sticky: false,
-		closed: false,
+		author: int.member.displayName,
+		pointDesc: int.options.getString('docket-topic'),
+		sticky: int.options.getBoolean('sticky'),
+		closed: int.options.getBoolean('closed'),
 		timestamp: systemTimestamp(),
 		pointID: genPointID()
 	};
-
-	//Set flags
-	for (const flag in flags) {
-		if (flags[flag] === 's') {
-			log('info', '[DOCKET] New point is sticky.');
-			newDocketPoint.sticky = true;
-		}
-		else if (flags[flag] === 'c') {
-			log('info', '[DOCKET] New point is closed.');
-			newDocketPoint.closed = true;
-		}
-	}
 
 	//Add the point and verify
 	const docketAddResponse = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'insert', newDocketPoint);
 
 	if (docketAddResponse.acknowledged === true) {
-		cmd.reply('Docket point added!', 10);
+		int.reply({ content: 'Docket point added!', ephemeral: true });
 	}
 	else {
-		cmd.reply('Mmmmm, adding that had some unexpected repercussions. Might wanna check on that. ' + fishsticks.RANGER);
+		int.reply({ content: 'Mmmmm, adding that had some unexpected repercussions. Might wanna check on that. ' + fishsticks.RANGER, ephemeral: true });
 	}
-
-	//Clear global
-	flags = [];
 }
 
 //Edit
-async function editPoint(fishsticks, cmd) {
-	//!docket -[e | edit] -[pointNum] -[newPoint]
+async function editPoint(fishsticks, int) {
+	//!docket edit point-id docket-topic sticky closed
 
 	//Try to collect point in question
-	const docketPt = await getDocketPointValidate(fishsticks, cmd);
+	const docketPt = await getDocketPointValidate(fishsticks, int);
 
 	//Create update object
 	const editedPoint = {
 		$set: {
-			pointDesc: pointDesc,
+			pointDesc: int.options.getString('docket-topic'),
+			sticky: int.options.getBoolean('sticky'),
+			closed: int.options.getBoolean('closed'),
 			timestamp: systemTimestamp(),
 		}
 	};
@@ -154,20 +143,20 @@ async function editPoint(fishsticks, cmd) {
 
 	//Check response
 	if (editDispatch.modifiedCount === 1) {
-		return cmd.reply('Point updated!', 10);
+		return int.reply({ content: 'Point updated!', ephemeral: true });
 	}
 	else {
-		return cmd.reply('Not sure what happened in here but something likely needs to be looked at. Someone ping Delta.', 10);
+		return int.reply({ content: 'Not sure what happened in here but something likely needs to be looked at. Please ping Delta.', ephemeral: true });
 	}
 
 }
 
 //Delete
-async function deletePoint(fishsticks, cmd) {
-	//!docket -[d | delete] -[pointNum]
+async function deletePoint(fishsticks, int) {
+	//!docket delete point-id
 
 	//Try to collect point in question
-	const docketPt = await getDocketPointValidate(fishsticks, cmd);
+	const docketPt = await getDocketPointValidate(fishsticks, int);
 
 	//Do delete
 	const delDispatch = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'delete', { pointID: docketPt.pointID });
@@ -177,15 +166,15 @@ async function deletePoint(fishsticks, cmd) {
 		throw 'Deletion error!';
 	}
 	else {
-		return cmd.reply('Point deleted!', 10);
+		return int.reply({ content: 'Point deleted!', ephemeral: true });
 	}
 
 }
 
 //Toggle Sticky
-async function toggleStickyPoint(fishsticks, cmd) {
+async function toggleStickyPoint(fishsticks, int) {
 	//Try to collect point in question
-	const docketPoint = await getDocketPointValidate(fishsticks, cmd);
+	const docketPoint = await getDocketPointValidate(fishsticks, int);
 
 	//Do toggle
 	const newObj = {
@@ -203,14 +192,14 @@ async function toggleStickyPoint(fishsticks, cmd) {
 		throw 'Update error!';
 	}
 	else {
-		return cmd.reply('Sticky toggled!', 10);
+		return int.reply({ content: 'Sticky toggled!', ephemeral: true });
 	}
 }
 
 //Toggle Closed
-async function toggleClosedPoint(fishsticks, cmd) {
+async function toggleClosedPoint(fishsticks, int) {
 	//Try to collect point in question
-	const docketPoint = await getDocketPointValidate(fishsticks, cmd);
+	const docketPoint = await getDocketPointValidate(fishsticks, int);
 
 	//Do toggle
 	const newObj = {
@@ -226,21 +215,21 @@ async function toggleClosedPoint(fishsticks, cmd) {
 		throw 'Update error!';
 	}
 	else {
-		return cmd.reply('Closed toggled!', 10);
+		return int.reply({ content: 'Closed toggled!', ephemeral: true });
 	}
 }
 
 //Clear
-async function clearDocket(fishsticks, cmd) {
-	if(!hasPerms(cmd.message.member, ['Moderator', 'Council Member', 'Council Advisor'])) {
-		return cmd.reply('You lack the permissions to clear the docket!', 10);
+async function clearDocket(fishsticks, int) {
+	if(!hasPerms(int.member, ['Moderator', 'Council Member', 'Council Advisor'])) {
+		return int.reply({ content: 'You lack the permissions to clear the docket!', ephemeral: true });
 	}
 
 	const docketListing = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'selectAll');
 
 	if (!docketListing) {
 		log('info', '[DOCKET] No points found.');
-		return cmd.reply('Docket is already clear!', 10);
+		return int.reply({ content: 'Docket is already clear!', ephemeral: true });
 	}
 
 	for (const point in docketListing) {
@@ -249,19 +238,19 @@ async function clearDocket(fishsticks, cmd) {
 			const delRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'delete', { pointID: docketListing[point].pointID });
 
 			if (delRes.deletedCount !== 1) {
-				return cmd.reply('Clearing halted - point deletion attempt failed.');
+				return int.reply({ content: 'Clearing halted - point deletion attempt failed.', ephemeral: true });
 			}
 		}
 	}
 
-	return cmd.reply('Docket cleared!', 10);
+	return int.reply({ content: 'Docket cleared!', ephemeral: true });
 }
 
 //List
-async function listPoints(fishsticks, cmd) {
+async function listPoints(fishsticks, int) {
 	const docketListing = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'selectAll');
 
-	let pointListing = null;
+	let pointListing;
 
 	//Check empty
 	if (!docketListing) {
@@ -275,13 +264,13 @@ async function listPoints(fishsticks, cmd) {
 	const listEmbed = {
 		title: 'o0o - Docket - o0o',
 		description: 'A listing of all the current docket points.',
-		footer: `Latest pull from FSO by ${cmd.msg.member.displayName}.`,
+		footer: `Latest pull from FSO by ${int.member.displayName}.`,
 		fields: []
 	};
 
 	//Process fields
 	//If council
-	if (cmd.channel.id === council) {
+	if (int.channel.id === council) {
 		for (const point in pointListing) {
 			listEmbed.fields.push({
 				name: getTitle(pointListing[point]),
@@ -302,73 +291,11 @@ async function listPoints(fishsticks, cmd) {
 		}
 	}
 
-	await cmd.channel.send({ embeds: [embedBuilder(listEmbed)] });
+	await int.reply({ embeds: [embedBuilder(listEmbed)] });
 }
 
 function help() {
 	return 'Add, edit, or delete points for community meetings.';
-}
-
-function validateParams(mode, params, cmd) {
-	//Validate flags
-
-	//If adding a point...
-	if (mode === 'add') {
-
-		if (!params[1]) {
-			throw 'Looks like something was missing here boss. Check the docs?';
-		}
-
-		switch (params[1]) {
-			case 's':
-				flags.push('s');
-				pointDesc = params[2];
-				break;
-			case 'c':
-				flags.push('c');
-				pointDesc = params[2];
-				break;
-			case 'sc':
-				flags.push('c');
-				flags.push('s');
-				pointDesc = params[2];
-				break;
-			case 'cs':
-				flags.push('c');
-				flags.push('s');
-				pointDesc = params[2];
-				break;
-			default: //Assume no flags
-				pointDesc = params[1];
-		}
-	}
-	else if (mode === 'edit') {
-		//If editing a point
-		if (isNaN(params[1])) { //Check if not a number for second param
-			return cmd.reply('I cant edit a nonexistent point!', 10);
-		}
-
-		if (!params[2]) { //If no edit was found
-			throw 'There was no edit to be made!';
-		}
-
-		pointDesc = params[2];
-		pointNum = parseInt(params[1]);
-	}
-	else if (mode === 'delete' || mode === 'toggle') {
-		//If deleting a point
-		if (isNaN(params[1])) {
-			return cmd.reply('The point number must be a number!', 10);
-		}
-		else if(!params[1]) {
-			return cmd.reply('Theres a disconnect here. Like, you didnt even throw me a bone on this one. Give me a point number.', 10);
-		}
-
-		pointNum = parseInt(params[1]);
-	}
-	else {
-		throw 'Invalid parameter mode state.';
-	}
 }
 
 function getTitle(docketPoint) {
@@ -391,26 +318,19 @@ function genPointID() {
 	return Math.floor(Math.random() * (999 - 100) + 100);
 }
 
-async function getDocketPoint(fishsticks, cmd) {
-	const editVerify = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'selectAll', { pointID: pointNum });
-
-	//Validate
-	if (!editVerify) {
-		return cmd.reply('Couldnt find that docket point. Check the listings to make sure its there?', 10);
-	}
-
-	return editVerify;
-}
-
-async function getDocketPointValidate(fishsticks, cmd) {
+async function getDocketPointValidate(fishsticks, int) {
+	const pointNum = int.options.getInteger('point-id');
 	const dtPoint = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'select', { pointID: pointNum });
 
 	//Validate
 	if (!dtPoint) {
-		return cmd.reply('Couldnt find that docket point. Check the listings to make sure its there?', 10);
+		return int.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?', ephemeral: true });
+	}
+	else if (!dtPoint.pointID) {
+		return int.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?', ephemeral: true });
 	}
 	else if (dtPoint.pointID !== pointNum) {
-		return cmd.reply('Couldnt find that docket point. Check the listings to make sure its there?', 10);
+		return int.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?', ephemeral: true });
 	}
 
 	return dtPoint;
