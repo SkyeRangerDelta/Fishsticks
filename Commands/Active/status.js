@@ -14,7 +14,7 @@ const data = new SlashCommandBuilder()
 
 //Functions
 async function run(fishsticks, int) {
-	int.deferReply({ ephemeral: true });
+	await int.deferReply({ ephemeral: true });
 
 	//Get FSO status
 	const fsoStatus = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 });
