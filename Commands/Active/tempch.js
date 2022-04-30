@@ -6,7 +6,6 @@ const { chSpawner } = require('../../Modules/Core/Core_ids.json');
 
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
-const { toTitleCase } = require('../../Modules/Utility/Utils_Aux');
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
@@ -20,6 +19,8 @@ data.addIntegerOption(o => o.setName('max-users').setDescription('How many voice
 
 //Functions
 async function run(Fishsticks, int) {
+    int.deferReply({ ephemeral: true });
+
     if(!hasPerms(int.member, ['CC Member', 'ACC Member'])) {
         return int.reply({ content: 'Only (A)CC Members can create temporary channels!', ephemeral: true });
     }
@@ -40,8 +41,8 @@ function help() {
 async function createCh(Fishsticks, int) {
 
     const chSpawnerChannel = int.guild.channels.cache.get(chSpawner);
-    const maxUsers = int.getInteger('max-users');
-    const chName = int.getString('channel-name');
+    const maxUsers = int.options.getInteger('max-users');
+    const chName = int.options.getString('channel-name');
 
     //No Limit
     if (isNaN(maxUsers) || !maxUsers) {
@@ -58,6 +59,11 @@ async function createCh(Fishsticks, int) {
             await int.member.voice.setChannel(clonedCh);
 
             await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: clonedCh.id, name: chName });
+
+            return int.editReply({
+                content: 'Done!',
+                ephemeral: true
+            });
         });
     }
     else { //Has limit
@@ -75,6 +81,11 @@ async function createCh(Fishsticks, int) {
             await int.member.voice.setChannel(clonedCh);
 
             await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'insert', { id: clonedCh.id, name: chName });
+
+            return int.editReply({
+                content: 'Done!',
+                ephemeral: true
+            });
         });
     }
 }

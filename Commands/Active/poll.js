@@ -380,7 +380,7 @@ async function handleWinner(fishsticks, pollObj, interaction, results) {
                 new MessageButton()
                     .setCustomId(`POLL-${res}`)
                     .setStyle('SUCCESS')
-                    .setLabel(pollObj.responses.types[res].d + `(${pollObj.responses.types[res].ids.length})`)
+                    .setLabel(pollObj.responses.types[res].d + ` (${pollObj.responses.types[res].ids.length})`)
                     .setEmoji('✨')
             );
         }
@@ -389,7 +389,7 @@ async function handleWinner(fishsticks, pollObj, interaction, results) {
                 new MessageButton()
                     .setCustomId(`POLL-${res}`)
                     .setStyle('PRIMARY')
-                    .setLabel(pollObj.responses.types[res].d + `(${pollObj.responses.types[res].ids.length})`)
+                    .setLabel(pollObj.responses.types[res].d + ` (${pollObj.responses.types[res].ids.length})`)
             );
         }
     }

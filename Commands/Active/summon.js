@@ -12,26 +12,23 @@ const data = new SlashCommandBuilder()
         .setName('card-name')
         .setDescription('The name of the card to summon.')
         .setRequired(true)
-        .addChoice('Brode Mode', 'brodemode')
     );
 
 
 //Functions
 async function run(fishsticks, int) {
     //Set card name
-    const cardName = int.getString('card-name');
+    const cardName = int.options.getString('card-name');
 
     //BrodeMode Toggle
     if (cardName === 'brodemode') {
         fishsticks.SUMM_BRODEMODE = !fishsticks.SUMM_BRODEMODE;
 
         if (fishsticks.SUMM_BRODEMODE) {
-            return int.reply('Brodemode is now on! Play by the rules or get out of my server.')
-                .then(s => { setTimeout(() => s.delete(), 15000); });
+            return int.reply('Brodemode is now on! Play by the rules or get out of my server.');
         }
         else {
-            return int.reply('Brodemode is now off! *Brode Laughter* Ben drowned on his own spit laughing.')
-                .then(s => { setTimeout(() => s.delete(), 60000); });
+            return int.reply('Brodemode is now off! *Brode Laughter* Ben drowned on his own spit laughing.');
         }
     }
 

@@ -64,7 +64,7 @@ async function execute(fishsticks, interaction) {
                 return;
             }
             else if (interaction.deferred || interaction.replied) {
-                await interaction.followUp('IM ON BLOODY FIRE!');
+                await interaction.followUp('IM ON BLOODY FIRE!\n' + cmdErr);
                 log('err', '[INTERACTION] AAAAAAAHHHHHHHHHHHHHH - DO SOMETHING.');
             }
             else {

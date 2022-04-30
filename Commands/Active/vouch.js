@@ -30,8 +30,8 @@ async function run(fishsticks, int) {
     recognizedRole = await int.guild.roles.fetch(recognized);
 
     //Interpret vouch
-    const vouchee = int.getUser('vouchee');
-    const referral = int.getBoolean('referral');
+    const vouchee = int.options.getMember('vouchee');
+    const referral = int.options.getBoolean('referral');
 
     if (vouchee.id === fishsticks.user.id) {
         //Prevent Fs vouches

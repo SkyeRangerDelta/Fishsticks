@@ -31,7 +31,7 @@ function embedBuilder(embed) {
 		constructedEmbed.setFooter(embed.footer);
 	}
 	else {
-		constructedEmbed.setFooter(embed.footer + ` Panel will auto-delete in ${embed.delete / 1000} seconds.`);
+		constructedEmbed.setFooter(embed.footer);
 	}
 
 	if (embed.thumbnail === undefined && (embed.noThumbnail === false || embed.noThumbnail === undefined)) {

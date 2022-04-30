@@ -19,7 +19,8 @@ function run(fishsticks, int) {
 					'[Official CCTV Twitch Stream](https://twitch.tv/christiancrewtv)\n' +
 					'[Official CC YouTube Channel](https://www.youtube.com/user/ChristianCrewGaming)\n\n' +
 					'[LCARS Database: Fishsticks](https://wiki.pldyn.net/en/fishsticks)\n' +
-					'[LCARS Database: Guide to Fishsticks](https://wiki.pldyn.net/en/fishsticks/general-guide)',
+					'[LCARS Database: Guide to Fishsticks](https://wiki.pldyn.net/en/fishsticks/general-guide)\n' +
+					'[LCARS Database: Command Listing/Help](https://wiki.pldyn.net/en/fishsticks/command-listing)',
 		footer: 'Please report bad links.',
 		delete: 20000
 	};

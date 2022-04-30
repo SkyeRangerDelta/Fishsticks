@@ -31,7 +31,7 @@ async function handleSelectInteraction(fishsticks, interaction) {
     switch (intID) {
         case 'NOTI':
             log('info', '[INT] [NOTI] Handling new selection interaction');
-            return handleNotificationToggle(fishsticks, interaction, null);
+            return handleNotificationToggle(fishsticks, interaction);
 
         default:
             return log('warn', '[INT] No applicable selection handler ID');

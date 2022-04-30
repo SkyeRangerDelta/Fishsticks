@@ -58,7 +58,7 @@ async function run(fishsticks, int) {
     }
 
     if (!int.options.getRole('role-ping') && !int.options.getString('ping-type')) {
-        return int.reply({ content: 'My goodness, you are quite the obnoxious one arent you? You need to specify a ping type!', ephemeral: true });
+        return int.reply({ content: 'My goodness, you are quite the obnoxious one arent you? You need to specify a ping type or role ping!', ephemeral: true });
     }
     else if (!int.options.getString('ping-type')) {
         //Check role
@@ -69,7 +69,7 @@ async function run(fishsticks, int) {
             return int.reply({ content: 'Did you ping a valid game role?', ephemeral: true });
         }
         else {
-            int.reply({ content: 'Timeout set, waiting' + waitTime + ' minutes before deploying.', ephemeral: true });
+            int.reply({ content: 'Timeout set, waiting ' + int.options.getNumber('wait-time') + ' minutes before deploying.', ephemeral: true });
             setTimeout(dispatchMsg, waitTime, role + ', ' + int.options.getString('announcement'));
         }
     }
@@ -77,11 +77,11 @@ async function run(fishsticks, int) {
         //Check ping type (ensure a choice selection)
         const pingType = int.options.getString('ping-type');
         if (pingType === 'here' || pingType === 'everyone') {
-            int.reply({ content: 'Timeout set, waiting' + waitTime + ' minutes before deploying.', ephemeral: true });
+            int.reply({ content: 'Timeout set, waiting ' + int.options.getNumber('wait-time') + ' minutes before deploying.', ephemeral: true });
             setTimeout(dispatchMsg, waitTime, `@${pingType}, ` + int.options.getString('announcement'));
         }
         else if (pingType === 'soft') {
-            int.reply({ content: 'Timeout set, waiting' + waitTime + ' minutes before deploying.', ephemeral: true });
+            int.reply({ content: 'Timeout set, waiting ' + int.options.getNumber('wait-time') + ' minutes before deploying.', ephemeral: true });
             setTimeout(dispatchMsg, waitTime, int.options.getString('announcement'));
         }
         else {

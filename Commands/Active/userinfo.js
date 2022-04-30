@@ -11,22 +11,34 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 //Globals
 const data = new SlashCommandBuilder()
     .setName('userinfo')
-    .setDescription('Displays user details. [Mod+]');
-
-data.addStringOption(o => o.setName('username').setDescription('The name of the user to find details for.'));
-data.addUserOption(o => o.setName('user-mention').setDescription('The PING of the user to find details for.'));
+    .setDescription('Displays user details. [Mod+]')
+    .addSubcommand(s => s
+        .setName('by-username')
+        .setDescription('Pull up user information by their username.')
+        .addStringOption(o => o
+            .setName('username')
+            .setDescription('The users handle, display name, or username.')
+            .setRequired(true)))
+    .addSubcommand(s => s
+        .setName('by-ping')
+        .setDescription('Pull up user information by a mention.')
+        .addUserOption(o => o
+            .setName('user')
+            .setDescription('The user to pull up info on.')
+            .setRequired(true))
+    );
 
 async function run(fishsticks, int) {
     if (!hasPerms(int.member, ['Moderator', 'Council Member'])) {
         return int.reply('You lack the permissions to do this!');
     }
 
-    const username = int.getString('username');
-    const userping = int.getUser('user-mention');
+    const subCMD = int.options.getSubcommand();
 
     //Syntax: /userinfo userName? userMention?
     let targetMember;
-    if (!username) {
+    if (subCMD === 'by-username') {
+        const username = int.options.getString('username');
         log('info', `[USER-INFO] Pulling report from text input (${username}).`);
         targetMember = await fishsticks.CCG.members.cache.find(u => u.user.username === `${username}`);
 
@@ -42,7 +54,7 @@ async function run(fishsticks, int) {
     }
     else {
         log('info', '[USER-INFO] Pulling report from mention.');
-        targetMember = userping;
+        targetMember = int.options.getMember('user');
     }
 
     if (!targetMember) {

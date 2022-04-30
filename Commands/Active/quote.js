@@ -10,14 +10,17 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const data = new SlashCommandBuilder()
 	.setName('quote')
 	.setDescription('Does quote things.')
-	.addStringOption(o => o
-		.setName('quote-text')
-		.setDescription('The text to quote.')
+	.addSubcommand(s => s
+		.setName('random')
+		.setDescription('Displays a random quote.'))
+	.addSubcommand(s => s
+		.setName('add')
+		.setDescription('[WIP] Add a new quote to the pool.')
 	);
 
 //Functions
 async function run(fishsticks, int) {
-
+	const subCMD = int.options.getSubcommand();
 	//Syntax /quote text?
 
 	//TODO: ?
@@ -25,24 +28,29 @@ async function run(fishsticks, int) {
 	///quote -delete -[Index]	: Deletes the quote matching the index from the pool
 
 	//Process
-	int.deferReply();
-	const qText = int.options.getString('quote-text');
-	if (!qText) {
+	if (subCMD === 'random') {
 		//Displays a random quote
 		const q = await generateRandomQuote(fishsticks, int);
-		await int.editReply({ content: q });
+		return int.reply({ content: q });
 	}
 	else {
+		return int.reply({
+			content: 'WIP!',
+			ephemeral: true
+		});
+		/*
 		//Takes content as quote
 		const quoteNum = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_QuoteRef', 'count');
 		const quoteRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_QuoteRef', 'insert', { id: quoteNum - 1, q: qText });
 
 		if (quoteRes.acknowledged === true) {
-			int.reply({ content: 'Added! (Index ' + (quoteNum - 1) + ').', ephemeral: true });
+			return int.reply({ content: 'Added! (Index ' + (quoteNum - 1) + ').', ephemeral: true });
 		}
 		else {
-			int.reply({ content: 'I dont know if that actually got added. Ping ' + fishsticks.RANGER });
+			return int.reply({ content: 'I dont know if that actually got added. Ping ' + fishsticks.RANGER});
 		}
+
+		 */
 	}
 }
 

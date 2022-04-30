@@ -8,7 +8,6 @@ const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { toTitleCase } = require('../../Modules/Utility/Utils_Aux');
 
 const { DuplicatedRoleException } = require('../../Modules/Errors/DuplicatedRoleException');
-const { InvalidParameterException } = require('../../Modules/Errors/InvalidParameterException');
 
 const { DateTime } = require('luxon');
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
@@ -18,6 +17,8 @@ const { flexTime } = require('../../Modules/Utility/Utils_Time');
 //Globals
 let currentPool;
 const curMDN = DateTime.now().setZone('UTC-5');
+let roleTitle = null;
+let subCMD;
 
 //Syntax: /role function data
 //Create: /role create roleName roleGame description
@@ -49,25 +50,46 @@ const data = new SlashCommandBuilder()
         ))
     .addSubcommand(s => s
         .setName('join')
-        .setDescription('Joins a role'))
+        .setDescription('Joins a role')
+        .addRoleOption(o => o
+            .setName('role')
+            .setDescription('The role to join.')
+            .setRequired(true)))
     .addSubcommand(s => s
         .setName('leave')
-        .setDescription('Leaves a role'))
+        .setDescription('Leaves a role')
+        .addRoleOption(o => o
+            .setName('role')
+            .setDescription('The role to leave.')
+            .setRequired(true)))
     .addSubcommand(s => s
         .setName('vote')
-        .setDescription('Votes for a role'))
+        .setDescription('Votes for a role')
+        .addStringOption(o => o
+            .setName('role')
+            .setDescription('The name or the game of the role to vote for.')
+            .setRequired(true)))
     .addSubcommand(s => s
         .setName('edit')
         .setDescription('Edits a role'))
     .addSubcommand(s => s
         .setName('details')
         .setDescription('Displays some details for a role')
+        .addRoleOption(o => o
+            .setName('role')
+            .setDescription('The role to pull up details for.')
+            .setRequired(true)))
+    .addSubcommand(s => s
+        .setName('list')
+        .setDescription('Lists all game roles.')
     );
 
 //Functions
 async function run(fishsticks, int) {
-    return int.reply({ content: 'This thing is mad busted right now...so just...dont try for now. Nothing works, Im sorry.', ephemeral: true });
+    //return int.reply({ content: 'This thing is mad busted right now...so just...dont try for now. Nothing works, Im sorry.', ephemeral: true });
     //int.deferReply();
+
+    subCMD = int.options.getSubcommand();
 
     //Obtain a current set of roles in array for future use
     const queryRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'selectAll');
@@ -90,7 +112,6 @@ async function run(fishsticks, int) {
 
 }
 async function parseRequest(fishsticks, int) {
-    const subCMD = int.options.getSubcommand();
 
     switch (subCMD) {
         case 'create':
@@ -115,6 +136,10 @@ async function parseRequest(fishsticks, int) {
 
         case 'details':
             await detailsRole(fishsticks, int);
+            break;
+
+        case 'list':
+            await listRoles(fishsticks, int);
             break;
 
         default:
@@ -181,7 +206,7 @@ async function voteRole(fishsticks, int, redirectData) {
     let roleObj;
 
     if (!redirectData) {
-        roleObj = await findRole();
+        roleObj = await findRole(fishsticks, int);
 
         if (roleObj === -1) {
             throw 'That role doesnt exist!';
@@ -230,7 +255,8 @@ async function voteRole(fishsticks, int, redirectData) {
             await activateRole(fishsticks, int, roleObj);
         }
         else {
-            const missingVotes = 5 - roleObj.votes + 1;
+            const secondUpdate = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'select', { name: roleObj.name });
+            const missingVotes = 5 - secondUpdate.votes;
 
             int.reply({ content: `Vote counted; ${roleObj.name} requires ${missingVotes} vote(s) before being activated!`, ephemeral: true });
         }
@@ -244,54 +270,50 @@ async function joinRole(fishsticks, int, redirectData) {
 
     if (!redirectData) {
         //Redirect from vote
-        roleObj = await findRole();
+        roleObj = await findRole(fishsticks, int);
     }
     else {
         roleObj = redirectData;
     }
 
-    if (roleObj.active === false) {
-        //Vote role override
-        int.reply({ content: 'Role not active, voting for it instead.', ephemeral: true });
-        return await voteRole(fishsticks, int, roleObj);
+    //Get role and add
+    const roleY = await int.guild.roles.cache.find(role => role.name === `${roleObj.name}`);
+
+    //Check if this person already has the role
+    if (hasPerms(int.member, [`${roleObj.name}`])) {
+        return int.reply({ content: 'You already have this role!', ephemeral: true });
     }
-    else {
-        //Get role and add
-        const roleY = await int.guild.roles.cache.find(role => role.name === `${roleObj.name}`);
 
-        //Check if this person already has the role
-        if (hasPerms(int.member, [`${roleObj.name}`])) {
-            return int.reply({ content: 'You already have this role!', ephemeral: true });
-        }
+    await int.member.roles.add(roleY).then(function() {
 
-        int.member.roles.add(roleY).then(function() {
+        /*
+        //Update FSO with the new role list
+        const roleUpdate = {
+            $push: {
+                members: int.member.id
+            }
+        };
 
-            //Update FSO with the new role list
-            const roleUpdate = {
-                $push: {
-                    members: int.member.id
-                }
-            };
-
-            fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'update', roleUpdate, { id: roleObj.id }).then(done => {
-                if (done.modifiedCount === 1) {
-                    int.channel.send(`${int.member} has joined ${roleY}!`);
-                }
-                else {
-                    int.reply({ content: 'Something is...incorrect. Have someone check your roles.', ephemeral: true });
-                }
-            });
-        }).catch(err => {
-            int.reply({ content: 'Something went wrong trying to add your role.\n' + err, ephemeral: true });
+        fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'update', roleUpdate, { id: roleObj.id }).then(done => {
+            if (done.modifiedCount === 1) {
+                int.channel.send(`${int.member} has joined ${roleY}!`);
+            }
+            else {
+                int.reply({ content: 'Something is...incorrect. Have someone check your roles.', ephemeral: true });
+            }
         });
-    }
+         */
+        return int.reply(`${int.member} has joined ${roleY}!`);
+    }).catch(err => {
+        return int.reply({ content: 'Something went wrong trying to add your role.\n' + err, ephemeral: true });
+    });
 }
 //
 
 //Leave a role
 async function leaveRole(fishsticks, int) {
     //Check active
-    const roleX = await findRole();
+    const roleX = await findRole(fishsticks, int);
     if (roleX.active === false) {
         //Vote role override
         int.reply({ content: 'No active role to leave!', ephemeral: true });
@@ -307,9 +329,10 @@ async function leaveRole(fishsticks, int) {
 
         int.member.roles.remove(roleY).then(function() {
 
+            /*
             const roleUpdate = {
                 $pull: {
-                    members: int.member.id
+                    members: `${int.member.id}`
                 }
             };
 
@@ -322,6 +345,8 @@ async function leaveRole(fishsticks, int) {
                     return int.reply({ content: 'Something is...incorrect. Have someone check your roles.', ephemeral: true });
                 }
             });
+             */
+            return int.reply({ content: 'Role removed.', ephemeral: true });
         }).catch(err => {
             return int.reply({ content: 'Something went wrong trying to remove your role.\n' + err, ephemeral: true });
         });
@@ -379,12 +404,18 @@ async function listRoles(fishsticks, int, ext) {
         });
     });
 
-    await int.editReply({ content: 'Done.', ephemeral: true });
+    if (ext) {
+        return int.editReply({ content: 'Done.', ephemeral: true });
+    }
+    else {
+        return int.reply({ content: 'Done.', ephemeral: true });
+    }
 }
 
 //Print the stats for a single role
 async function detailsRole(fishsticks, int) {
-    const roleObj = await findRole();
+    return int.reply({ content: 'WIP. Not ready yet.', ephemeral: true });
+    const roleObj = await findRole(fishsticks, int);
 
     if(!roleObj || roleObj === -1) {
         return int.reply({ content: 'No role found!', ephemeral: true });
@@ -586,15 +617,32 @@ function checkDupes(roleObj, int) {
 async function findRole(fishsticks, int) {
     log('info', '[ROLE-SYS] Returning role object.');
     //Internal query
+    if (subCMD === 'vote') {
+        roleTitle = int.options.getString('role').toLowerCase();
 
-    for (const roleItem in currentPool) {
-        if (query === currentPool[roleItem].name) {
-            log('proc', '[ROLE-SYS] Found a role.');
-            return currentPool[roleItem];
+        for (const roleItem in currentPool) {
+            if (roleTitle === currentPool[roleItem].name.toLowerCase()) {
+                log('proc', '[ROLE-SYS] Found a role.');
+                return currentPool[roleItem];
+            }
+            else if (roleTitle === currentPool[roleItem].game.toLowerCase()) {
+                log('proc', '[ROLE-SYS] Found a role.');
+                return currentPool[roleItem];
+            }
         }
-        else if (query === currentPool[roleItem].game) {
-            log('proc', '[ROLE-SYS] Found a role.');
-            return currentPool[roleItem];
+    }
+    else {
+        roleTitle = int.options.getRole('role').name;
+
+        for (const roleItem in currentPool) {
+            if (roleTitle === currentPool[roleItem].name) {
+                log('proc', '[ROLE-SYS] Found a role.');
+                return currentPool[roleItem];
+            }
+            else if (roleTitle === currentPool[roleItem].game) {
+                log('proc', '[ROLE-SYS] Found a role.');
+                return currentPool[roleItem];
+            }
         }
     }
 

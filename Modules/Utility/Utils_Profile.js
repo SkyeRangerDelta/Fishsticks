@@ -15,7 +15,7 @@ module.exports = {
 
 //Functions
 async function buildProfileBanner(fishsticks, int, profileEmbed) {
-    const memberProf = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: cmd.msg.author.id });
+    const memberProf = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: int.member.id });
     const lvl = memberProf.xp.level;
 
     const forcedUser = await int.member.user.fetch(true);

@@ -326,6 +326,9 @@ async function getDocketPointValidate(fishsticks, int) {
 	if (!dtPoint) {
 		return int.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?', ephemeral: true });
 	}
+	else if (!dtPoint.pointID) {
+		return int.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?', ephemeral: true });
+	}
 	else if (dtPoint.pointID !== pointNum) {
 		return int.reply({ content: 'Couldnt find that docket point. Check the listings to make sure its there?', ephemeral: true });
 	}

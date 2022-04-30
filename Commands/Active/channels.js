@@ -67,12 +67,12 @@ function run(fishsticks, int) {
 			{
 				name: 'Games Chatter Voice',
 				value:
-					'**Games Room #1** (Same for #2): General games voicee chat.\n' +
+					'**Games Room #1** (Same for #2): General games voice chat.\n' +
 					'Games listed below the game rooms are game-topic specific but do not require roles to join.'
 			},
 			{
 				name: 'Temp Channels',
-				value: 'Need a channel but dont see one to fit your needs? Make your own! See `!codex tempch`.'
+				value: 'Need a channel but dont see one to fit your needs? Make your own! See `/codex tempch`.'
 			},
 			{
 				name: 'Misc',
@@ -93,10 +93,7 @@ function run(fishsticks, int) {
 		]
 	};
 
-	int.reply({ embeds: [embedBuilder(channelsPanel)], ephemeral: true })
-		.then(sent => {
-			setTimeout(() => sent.delete(), 30000);
-		});
+	int.reply({ embeds: [embedBuilder(channelsPanel)], ephemeral: true });
 }
 
 function help() {

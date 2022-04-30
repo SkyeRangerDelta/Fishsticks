@@ -117,11 +117,8 @@ async function startUp(Fishsticks) {
 	const cmdPath = path.join(__dirname, '../..', 'Commands/Active');
 	const commandData = fs.readdirSync(cmdPath).filter(f => f.endsWith('.js'));
 
-	console.log(commandData);
-
 	for (const cmdFile of commandData) {
 		const cmd = require(`../../Commands/Active/${cmdFile}`);
-		console.log(cmd.data);
 		commandObjs.push(cmd.data.toJSON());
 		Fishsticks.CMDS.set(cmd.data.name, cmd);
 	}

@@ -26,7 +26,7 @@ async function run(fishsticks, int) {
     }
 
     //Syntax: /tempname new-name
-    const newTitle = int.getString('new-name');
+    const newTitle = int.options.getString('new-name');
 
     if (!newTitle) {
         return int.reply({ content: 'You know, you only hurt yourself when you do this. I need the new channel name in order to change the current one.', ephemeral: true });
@@ -35,6 +35,11 @@ async function run(fishsticks, int) {
     await currChannel.setName(newTitle).then(async editCh => {
         log('info', '[TEMP-NAME] Channel name changed to ' + newTitle);
         await fso_query(fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'update', { $set: { name: newTitle } }, { id: editCh.id });
+
+        return int.reply({
+            content: 'Done!',
+            ephemeral: true
+        });
     });
 }
 

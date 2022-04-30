@@ -44,8 +44,7 @@ function run(fishsticks, int) {
 		]
 	};
 
-    int.reply({ embeds: [embedBuilder(versionPanel)] })
-		.then(s => { setTimeout(() => s.delete(), 30000); });
+    int.reply({ embeds: [embedBuilder(versionPanel)], ephemeral: true });
 }
 
 function help() {

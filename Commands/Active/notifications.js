@@ -58,20 +58,7 @@ async function run(fishsticks, int) {
     );
 
     //Dispatch post
-    const notifMsg = await int.reply({ content: `${int.member.displayName}'s notification settings:`, components: [msgRow], ephemeral: true });
-
-    //Dispatch data to FSO
-    const fsoData = {
-        id: int.member.id,
-        notifMsgId: notifMsg.id
-    };
-
-    const settingsRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Notifications', 'insert', fsoData);
-
-    if (!settingsRes.acknowledged) {
-        notifMsg.delete();
-        int.reply({ content: 'An error occurred on the backend, try that one again please.', ephemeral: true });
-    }
+    return int.reply({ content: `${int.member.displayName}'s notification settings:`, components: [msgRow], ephemeral: true });
 }
 
 function help() {
@@ -81,12 +68,7 @@ function help() {
 async function handleNotificationToggle(fishsticks, interaction) {
     //Get the notification record from FSO
     const memberProf = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: interaction.member.id });
-    const notifRecord = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Notifications', 'select', { id: interaction.member.id });
     const changedVals = interaction.values;
-
-    if (!notifRecord) {
-        return interaction.reply({ content: 'These are not your notification settings! Begone!', ephemeral: true });
-    }
 
     //Sift through changed values and update FSO
     let updates = 0;
@@ -102,9 +84,6 @@ async function handleNotificationToggle(fishsticks, interaction) {
             }
         }
     }
-
-    fso_query(fishsticks.FSO_CONNECTION, 'FSO_Notifications', 'delete', { id: interaction.member.id });
-    await interaction.message.delete();
     return interaction.reply({ content: `Updated ${updates} setting(s).`, ephemeral: true });
 }
 

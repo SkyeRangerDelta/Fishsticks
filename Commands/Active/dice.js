@@ -43,7 +43,7 @@ function run(fishsticks, int) {
     const valid = roll.validate(dieRoll);
 
     if (!valid) {
-        return int.reply({ content: 'That doesnt look like a valid roll, hit me again.' });
+        return int.reply({ content: 'That doesnt look like a valid roll, hit me again.', ephemeral: true });
     }
 
     //Handle Roll(s)
