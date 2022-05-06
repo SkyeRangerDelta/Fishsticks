@@ -39,10 +39,14 @@ async function run(fishsticks, int) {
     https.get(hookURL, (res) => {
         if (res.statusCode === 200) {
             log('info', '[SUGGEST] Status: ' + res.statusCode);
-            int.editReply({ content: 'Suggestion posted.', ephemeral: true });
+            return int.editReply({ content: 'Suggestion posted.', ephemeral: true });
         }
     }).on('error', (eventGetError) => {
         console.log(eventGetError);
+        return int.editReply({
+            content: 'Something isnt working.',
+            ephemeral: true
+        });
     });
 
     //FSO Sync Suggestions
@@ -60,7 +64,7 @@ async function run(fishsticks, int) {
         log('proc', '[SUGGEST] Synced.');
     }
     else {
-        return int.editReply({ content: 'Something went wrong. Ask Skye to investigate.' });
+        return int.followUp({ content: 'Something went wrong. Ask Skye to investigate.' });
     }
 }
 

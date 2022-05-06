@@ -16,8 +16,7 @@ const data = new SlashCommandBuilder()
 	.setName('bible')
 	.setDescription('Prints out Bible passages from the ESV bible.');
 
-data.addNumberOption(o => o.setName('book-number').setDescription('The book book number; ie. 1 Samuel. (USE 0 IF THERE IS ONLY 1 BOOK).').setRequired(true));
-data.addStringOption(o => o.setName('book-name').setDescription('The book to pull from.').setRequired(true));
+data.addStringOption(o => o.setName('book').setDescription('The book to pull from.').setRequired(true));
 data.addNumberOption(o => o.setName('chapter').setDescription('The chapter to pull (from).').setRequired(true));
 data.addNumberOption(o => o.setName('verse').setDescription('The verse to pull.').setRequired(true));
 data.addNumberOption(o => o.setName('end-verse').setDescription('The verse to end with.').setRequired(false));
@@ -35,8 +34,8 @@ async function run(fishsticks, int) {
 
 	//Parameter Object
 	const params = {
-		bookNum: int.options.getNumber('book-number'),
-		book: int.options.getString('book-name') || 'John',
+		bookNum: null,
+		book: 'John',
 		chapter: int.options.getNumber('chapter') || 3,
 		verse: int.options.getNumber('verse') || 16,
 		endverse: int.options.getNumber('end-verse') || null,
@@ -44,9 +43,15 @@ async function run(fishsticks, int) {
 		bookFirst: false
 	};
 
-    if (params.bookNum === 0) {
-        console.log('FIRED!');
+    const parseBook = int.options.getNumber('book-number').split(' ');
+    if (isNaN(parseBook[0]) || !parseInt(parseBook[0])) {
         params.bookFirst = true;
+        params.bookNum = 0;
+        params.books = parseBook[0];
+    }
+    else {
+        params.bookNum = parseBook[0];
+        params.book = parseBook[1];
     }
 
     await buildPayload(params, int);

@@ -117,6 +117,10 @@ async function addVouch(fishsticks, int, memberFSORecord) {
 
         if (addVouchRes.modifiedCount === 1) {
             int.channel.send({ content: `${memberFSORecord.username} has been vouched for and has been granted Recognized!` });
+            int.reply({
+                content: 'Done!',
+                ephemeral: true
+            });
             return handleNewMember(fishsticks, vouchee); //Handle member welcome graphic
         }
         else {
