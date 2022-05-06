@@ -47,7 +47,7 @@ async function run(fishsticks, int) {
     if (isNaN(parseBook[0]) || !parseInt(parseBook[0])) {
         params.bookFirst = true;
         params.bookNum = 0;
-        params.books = parseBook[0];
+        params.book = parseBook[0];
     }
     else {
         params.bookNum = parseBook[0];
