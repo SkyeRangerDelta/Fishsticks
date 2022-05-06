@@ -43,7 +43,7 @@ async function run(fishsticks, int) {
 		bookFirst: false
 	};
 
-    const parseBook = int.options.getNumber('book').split(' ');
+    const parseBook = int.options.getString('book').split(' ');
     if (isNaN(parseBook[0]) || !parseInt(parseBook[0])) {
         params.bookFirst = true;
         params.bookNum = 0;
