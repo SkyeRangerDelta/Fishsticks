@@ -3,13 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/docket.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/docket.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/poll.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/poll.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/role.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/role.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/tempname.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/tempname.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Core/Core_Ready.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fishsticks.js" beforeDir="false" afterPath="$PROJECT_DIR$/fishsticks.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,7 +136,7 @@
       <workItem from="1651295685610" duration="382000" />
       <workItem from="1651935512020" duration="842000" />
       <workItem from="1652050203233" duration="63000" />
-      <workItem from="1656014093690" duration="4786000" />
+      <workItem from="1656014093690" duration="5273000" />
     </task>
     <servers />
   </component>
