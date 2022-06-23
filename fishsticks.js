@@ -46,6 +46,7 @@ Fishsticks.debMsgIDs = [];
 Fishsticks.TESTMODE = false;
 Fishsticks.NODEARGS = [];
 Fishsticks.SUMM_BRODEMODE = false;
+Fishsticks.DOCKET_PIN = null;
 
 //=============================================
 //				EVENTS INDEX

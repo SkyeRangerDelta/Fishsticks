@@ -297,8 +297,7 @@ async function updateResponse(fishsticks, pollObj, interaction) {
 //End Poll
 async function endPoll(fishsticks, pollObj, interaction) {
     if (pollObj.responses.recVotes === 0) {
-        return interaction.reply('No responses were submitted!')
-            .then(sent => { setTimeout(() => sent.delete(), 10000); });
+        return interaction.reply('No responses were submitted!');
     }
 
     if(interaction.member.id !== pollObj.authId) {

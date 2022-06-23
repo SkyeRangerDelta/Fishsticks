@@ -90,6 +90,7 @@ async function startUp(Fishsticks) {
 
 	Fishsticks.session = ++statusPreUpdate.Session;
 	Fishsticks.lastSystemStart = convertMsFull(statusPreUpdate.StartupTime - timeNow);
+	Fishsticks.DOCKET_PIN = statusPreUpdate.docketPinID || 0;
 
 	const filterDoc = {
 		id: 1

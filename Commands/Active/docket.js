@@ -6,7 +6,7 @@ const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { systemTimestamp } = require('../../Modules/Utility/Utils_Time');
-const { council } = require('../../Modules/Core/Core_ids.json');
+const { council, meetingHall } = require('../../Modules/Core/Core_ids.json');
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
@@ -62,6 +62,11 @@ data.addSubcommand(s => s
 	.setDescription('Displays the docket.')
 );
 
+data.addSubcommand(s => s
+	.setName('pin')
+	.setDescription('Pins the docket list to the channel (if none exists).')
+);
+
 //Add, edit, delete, toggle sticky, toggle closed, clear, list(?)
 
 //Functions
@@ -92,6 +97,9 @@ async function run(fishsticks, int) {
 	else if (subCMD === 'list') {
 		await listPoints(fishsticks, int);
 	}
+	else if (subCMD === 'pin') {
+		await pinList(fishsticks, int);
+	}
 }
 
 //Add
@@ -107,6 +115,16 @@ async function addPoint(fishsticks, int) {
 		timestamp: systemTimestamp(),
 		pointID: genPointID()
 	};
+
+	//Check closed perms if closed
+	if (newDocketPoint.closed) {
+		if (!hasPerms(int.member, ['Council Member'])) {
+			return int.reply({
+				content: 'You must be a council member to toggle or create closed points!',
+				ephemeral: true
+			});
+		}
+	}
 
 	//Add the point and verify
 	const docketAddResponse = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'insert', newDocketPoint);
@@ -198,6 +216,14 @@ async function toggleStickyPoint(fishsticks, int) {
 
 //Toggle Closed
 async function toggleClosedPoint(fishsticks, int) {
+	//Do they have PERMISSIONS!?
+	if (!hasPerms(int.member, ['Council Member'])) {
+		return int.reply({
+			content: 'You must be a council member to toggle or create closed points!',
+			ephemeral: true
+		});
+	}
+
 	//Try to collect point in question
 	const docketPoint = await getDocketPointValidate(fishsticks, int);
 
@@ -247,7 +273,7 @@ async function clearDocket(fishsticks, int) {
 }
 
 //List
-async function listPoints(fishsticks, int) {
+async function listPoints(fishsticks, int, ext) {
 	const docketListing = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Docket', 'selectAll');
 
 	let pointListing;
@@ -291,7 +317,76 @@ async function listPoints(fishsticks, int) {
 		}
 	}
 
-	await int.reply({ embeds: [embedBuilder(listEmbed)] });
+	if (ext) {
+		return int.channel.send({ embeds: [embedBuilder(listEmbed)] });
+	}
+	else {
+		await int.reply({ embeds: [embedBuilder(listEmbed)] });
+	}
+}
+
+//Pin List
+async function pinList(fishsticks, int) {
+	//Check channel
+	if (int.channel.id !== meetingHall) {
+		return int.reply({
+			content: 'You can only pin the docket in the Meeting Hall!',
+			ephemeral: true
+		});
+	}
+
+	//Check for existing pin and process accordingly
+	if (fishsticks.DOCKET_PIN === 0) {
+		log('info', 'FS is unaware of any pin, creating a new one.');
+		//No pin ID
+		const docketList = await listPoints(fishsticks, int, true);
+
+		log('info', 'Setting a new pin ID.');
+		fishsticks.DOCKET_PIN = docketList.id;
+
+		await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', {
+			$set: {
+				docketPinID: fishsticks.DOCKET_PIN
+			}
+		}, { id: 1 });
+
+		docketList.pin();
+		return int.reply({
+			content: 'Pinned!',
+			ephemeral: true
+		});
+	}
+	else {
+		log('info', 'FS is aware of a pin, resetting it to the top.');
+		//Try to get pin
+		try {
+			const docketMsg = await int.channel.messages.fetch(fishsticks.DOCKET_PIN);
+
+			if (!docketMsg) throw 'Failed to get pinned message';
+
+			await docketMsg.unpin().then(() => docketMsg.pin());
+
+			return int.reply({
+				content: 'Pinned!',
+				ephemeral: true
+			});
+		}
+		catch (e) {
+			log('error', 'Failed to extract the pinned message.\n' + e);
+
+			fishsticks.DOCKET_PIN = 0;
+			await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', {
+				$set: {
+					docketPinID: 0
+				}
+			}, { id: 1 });
+
+			return int.reply({
+				content: 'Failed to get the pinned message, you should re-run `/docket pin`',
+				ephemeral: true
+			});
+		}
+	}
 }
 
 function help() {
