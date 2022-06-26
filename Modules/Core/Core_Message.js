@@ -61,7 +61,7 @@ async function processMessage(Fishsticks, msg) {
 
     //Check Debater
     if (msg.channel.id === discDen) {
-        await handleDenMsg(msg, Fishsticks);
+        await handleDenMsg(cmd, Fishsticks);
     }
 
     //Determine 'Shiny'
@@ -76,76 +76,8 @@ async function processMessage(Fishsticks, msg) {
     //Do Random Quote
     await processQuote(Fishsticks, cmd);
 
-    //Handle Active Commands
-    if (msg.content.startsWith(prefix)) {
-        //const channel = msg.channel;
-
-        //Active Command
-        /*
-        log('info', '[ACTIVE-CMD] Incoming active command: ' + cmd.ID);
-
-        try {
-            const cmdFile = require(`../../Commands/Active/${cmd.ID}`);
-            await cmdFile.run(Fishsticks, cmd);
-
-            //Success here
-            log('info', '[ACTIVE-CMD] Executed successfully.');
-            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', {
-                $inc: {
-                    acAttempts: 1,
-                    acSuccess: 1
-                }
-            }, { id: msg.author.id });
-            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', {
-                $inc: {
-                    cmdQueriesSucc: 1
-                }
-            }, { id: 1 });
-        }
-        catch (activeCmdErr) {
-            //Fail here
-            const upVal = {
-                $inc: {
-                    acAttempts: 1
-                }
-            };
-
-            log('warn', '[ACTIVE-CMD] Execution failed.\n' + activeCmdErr);
-            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', upVal, { id: msg.author.id });
-            await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', {
-                $inc: {
-                    cmdQueriesFail: 1
-                }
-            }, { id: 1 });
-
-            //Handle common error responses
-            try {
-                if (activeCmdErr.message.includes('../../Commands/Active/')) {
-                    channel.send({ content: generateErrorMsg() + '\nI dont know the command: `' + cmd.ID + '` (did you miss a hyphen parameter?)' });
-                }
-                else if (activeCmdErr.message.includes('../../Modules')) {
-                    channel.send({ content: generateErrorMsg() + `\nLooks like Im missing some major config somewhere and Im on the edge of losing it.\nPing ${Fishsticks.RANGER}` });
-                }
-                else if (activeCmdErr.message.includes('Test mode')) {
-                    channel.send({ content: generateErrorMsg() + `\nThis is a test mode only command. It won't run unless ${Fishsticks.RANGER} is up to no good.` });
-                }
-                else if (activeCmdErr.message.includes('No permissions')) {
-                    channel.send({ content: generateErrorMsg() + '\nLooks like you lack to necessary permissions to run this one.' });
-                }
-                else if (Fishsticks.TESTMODE) {
-                    channel.send({ content: '**Test Mode Log**:\n' + generateErrorMsg() + '\n' + activeCmdErr.message + '\n' + activeCmdErr.stack });
-                }
-                else {
-                    channel.send({ content: generateErrorMsg() + '\n' + activeCmdErr.message });
-                }
-            }
-            catch (cErr) {
-                channel.send(generateErrorMsg() + '\nNot quite sure what to make of that. Looks like a crash. ' + Fishsticks.RANGER + ' please investigate.');
-            }
-        }
-         */
-    }
-    else {
+    //Message handling
+    if (!msg.content.startsWith(prefix)) {
         //Passive Command Handler
 
         const passiveID = msg.content.trim().toLowerCase().split(' ')[0];
@@ -158,21 +90,6 @@ async function processMessage(Fishsticks, msg) {
         }
         finally {
             //Attempt possible unique messages
-
-            /*
-            //TODO: Re-enable later
-            //URL Scan Framework
-            if (cmd.msg.content.includes('http://') || cmd.msg.content.includes('https://')) {
-                log('info', 'URL scanner triggered.');
-                //Link included in message; check poster perms
-                if (!hasPerms(cmd.msg.member, ['Moderator', 'Event Coordinator', 'Council Advisor', 'Council Member'])) {
-                    //Not a staff member, check link
-                    const urls = extractUrls(cmd.msg.content);
-                    await validateURL(cmd.msg, urls);
-                }
-            }
-             */
-
             if (cmd.msg.content.includes('https://twitch.tv/')) {
                 if (!hasPerms(cmd.msg.member, ['The Nod']) && !hasPerms(cmd.msg.member, ['Moderator', 'Council Member', 'Council Advisor'])) {
                     cmd.reply('You need the nod to post Twitch links!');

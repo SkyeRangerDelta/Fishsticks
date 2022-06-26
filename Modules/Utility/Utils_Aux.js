@@ -36,6 +36,10 @@ function generateErrorMsg() {
 }
 
 async function validateAddedReaction(fishsticks, addedReaction, reactor) {
+	//Void reactions from FS
+	if (reactor === fishsticks.user) return;
+	if (reactor.id === fishsticks.id) return;
+
 	//Sort through all known ID checks and find which one is in question
 
 	//Check for poll response
@@ -206,10 +210,10 @@ function toTitleCase(toConvert) {
 }
 
 //Handle Den Permissions
-async function handleDenMsg(msg, fishsticks) {
-	if (!hasPerms(msg.member, ['Debater'])) {
-		const msgDeleted = msg.content;
-		msg.delete();
+async function handleDenMsg(cmd, fishsticks) {
+	if (!hasPerms(cmd.msg.member, ['Debater'])) {
+		const msgDeleted = cmd.msg.content;
+		cmd.msg.delete();
 
 		const denMsg = {
 			title: 'o0o - Discussion Den Rules - o0o',
@@ -217,16 +221,25 @@ async function handleDenMsg(msg, fishsticks) {
 			description: discussionDenRules
 		};
 
-		await msg.author.send({ embeds: [embedBuilder(denMsg)] }).then(sent => {
-			sent.react('✅');
-			fishsticks.debMsgIDs.push(sent.id);
-		});
+		await cmd.msg.author.send({ embeds: [embedBuilder(denMsg)] })
+			.then(sent => {
+				sent.react('✅');
+				fishsticks.debMsgIDs.push(sent.id);
+			})
+			.catch(e => {
+				console.log('HERE!\n' + e);
+				return cmd.reply('Looks like you have your DMs disabled for me! Please look into your privacy settings!', 15);
+			});
 
 		const conMsg = 'For your convenience; below is the message you attempted to send to the den (posts are deleted):\n```' + msgDeleted + '```';
 
-		await msg.author.send(conMsg);
+		await cmd.msg.author.send(conMsg)
+			.then(console.log('Sent!'))
+			.catch(e => {
+				console.log('API maybe?\n' + e);
+			});
 
-		return msg.channel.send(msg.member.displayName + ', you need to agree to the den rules before posting here! Check your DMs!')
-			.then(sent => { setTimeout(() => sent.delete(), 15000); });
+		return cmd.reply('You need to agree to the den rules before posting here! Check your DMs!', 20);
+		//182291777275822090
 	}
 }
