@@ -72,7 +72,7 @@ async function run(fishsticks, int) {
 
     if (memberVouches.length < 2) {
         //clear, do vouch
-        await addVouch(fishsticks, int, vouchQuery);
+        await addVouch(fishsticks, int, vouchQuery, referral);
     }
     else {
         //Not clear
@@ -81,27 +81,11 @@ async function run(fishsticks, int) {
 
 }
 
-async function addVouch(fishsticks, int, memberFSORecord) {
+async function addVouch(fishsticks, int, memberFSORecord, ref) {
 
-    if (memberFSORecord.vouches.length === 0) {
-        //None on record, add new record
-        const recordUpdate = {
-            $push: {
-                vouches: int.member.id
-            }
-        };
-
-        const addVouchRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', recordUpdate, { id: memberFSORecord.id });
-
-        if (addVouchRes.modifiedCount === 1) {
-            return int.reply({ content: `${memberFSORecord.username} has been vouched for and needs only one more vouch.`, ephemeral: true });
-        }
-        else {
-            return int.reply({ content: 'Mmmmmmmm, something is wrong and the vouch may have not been tallied correctly.', ephemeral: true });
-        }
-    }
-    else {
-        //1 vouch on record, update and add Recognized
+    if ((memberFSORecord.vouches.length === 1) || ref) {
+        if (ref) log('info', '[VOUCH] Incoming referral, instant add Recognized.');
+        //1 vouch on record OR referred, update and add Recognized
         const recordUpdate = {
             $push: {
                 vouches: int.member.id
@@ -122,6 +106,23 @@ async function addVouch(fishsticks, int, memberFSORecord) {
                 ephemeral: true
             });
             return handleNewMember(fishsticks, vouchee); //Handle member welcome graphic
+        }
+        else {
+            return int.reply({ content: 'Mmmmmmmm, something is wrong and the vouch may have not been tallied correctly.', ephemeral: true });
+        }
+    }
+    else {
+        //None on record, add new record
+        const recordUpdate = {
+            $push: {
+                vouches: int.member.id
+            }
+        };
+
+        const addVouchRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', recordUpdate, { id: memberFSORecord.id });
+
+        if (addVouchRes.modifiedCount === 1) {
+            return int.reply({ content: `${memberFSORecord.username} has been vouched for and needs only one more vouch.`, ephemeral: true });
         }
         else {
             return int.reply({ content: 'Mmmmmmmm, something is wrong and the vouch may have not been tallied correctly.', ephemeral: true });
