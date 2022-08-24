@@ -678,14 +678,33 @@ async function queryForRole(fishsticks, extQuery) {
 }
 
 //Delete a role (SYSTEM ONLY)
-async function delRole(fishsticks, id) {
-    const delRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'delete', id);
+async function delRole(fishsticks, id, expired) {
+    let delRes;
+    if (expired) {
+        delRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'delete', {
+            name: id
+        });
 
-    if (delRes.deleted !== 1) {
-        log('err', '[ROLE-SYS] Failed to delete role.');
+        if (delRes.deletedCount !== 1) {
+            log('err', '[ROLE-SYS] Failed to delete role.');
+        }
+        else {
+            log('proc', '[ROLE-SYS] Deleted role with name: ' + id);
+            const queryResA = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'selectAll');
+            await updateRoles(fishsticks, queryResA);
+        }
     }
     else {
-        log('proc', '[ROLE-SYS] Deleted role with id: ' + id);
+        delRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'delete', id);
+
+        if (delRes.deletedCount !== 1) {
+            log('err', '[ROLE-SYS] Failed to delete role.');
+        }
+        else {
+            log('proc', '[ROLE-SYS] Deleted role with id: ' + id);
+            const queryResA = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'selectAll');
+            await updateRoles(fishsticks, queryResA);
+        }
     }
 }
 
@@ -704,7 +723,7 @@ async function updateRoles(fishsticks, poolRes) {
         if (!currentPool[roleObj].permanent) {
             if (curMDN > currentPool[roleObj].timeout) {
                 log('warn', '[ROLE-SYS] Deleting role (inactivity): ' + currentPool[roleObj].name);
-                await delRole(fishsticks, currentPool[roleObj].id);
+                await delRole(fishsticks, currentPool[roleObj].name, true);
             }
         }
     }
