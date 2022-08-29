@@ -228,7 +228,7 @@ async function startUp(Fishsticks) {
 
 		//Set Status
 		await Fishsticks.user.setPresence({
-			activities: [{ name: 'for !help | ' + version, type: 'WATCHING' }],
+			activities: [{ name: 'for /help | ' + version, type: 'WATCHING' }],
 			status: 'online'
 		});
 	}
