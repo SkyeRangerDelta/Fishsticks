@@ -115,18 +115,37 @@ async function startUp(Fishsticks) {
 
 	// Register slash commands
 	const commandObjs = [];
+	const globalCmdObjs = [];
 	const cmdPath = path.join(__dirname, '../..', 'Commands/Active');
 	const commandData = fs.readdirSync(cmdPath).filter(f => f.endsWith('.js'));
 
 	for (const cmdFile of commandData) {
 		const cmd = require(`../../Commands/Active/${cmdFile}`);
-		commandObjs.push(cmd.data.toJSON());
+
+		//Register commands separately.
+		if (cmd.global) {
+			globalCmdObjs.push(cmd.data.toJSON());
+		}
+		else {
+			commandObjs.push(cmd.data.toJSON());
+		}
+
 		Fishsticks.CMDS.set(cmd.data.name, cmd);
 	}
 
 	log('proc', '[CMD-HANDLER] Beginning command registration');
 	const rest = new REST({ version: 9 }).setToken(token);
 	try {
+
+		log('proc', '[CMD-HANDLER] Doing global registration...');
+		await rest.put(
+			Routes.applicationCommands(
+				`${fsID}`
+			),
+			{ body: globalCmdObjs }
+		);
+
+		log('proc', '[CMD-HANDLER] Doing guild registration');
 		await rest.put(
 			Routes.applicationGuildCommands(
 				`${fsID}`,
@@ -209,7 +228,7 @@ async function startUp(Fishsticks) {
 
 		//Set Status
 		await Fishsticks.user.setPresence({
-			activities: [{ name: 'for !help | ' + version, type: 'WATCHING' }],
+			activities: [{ name: 'for /help | ' + version, type: 'WATCHING' }],
 			status: 'online'
 		});
 	}

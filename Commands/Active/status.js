@@ -113,6 +113,7 @@ function toggle(t) {
 module.exports = {
 	name: 'status',
 	data,
+	global: true,
 	run,
 	help
 };
