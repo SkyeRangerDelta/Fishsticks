@@ -67,9 +67,11 @@ for (const eventFile in eventsIndex) {
 //				   UTILITY
 //=============================================
 //Schedule Crons
+/*
 schedule.scheduleJob('8 * * *', function() {
 	doDailyPost(Fishsticks);
 });
+ */
 
 process.on('unhandledRejection', e => {
 	console.log('[WARN] ' + e);
