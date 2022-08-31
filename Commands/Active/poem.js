@@ -93,7 +93,5 @@ module.exports = {
     name: 'poem',
     data,
     run,
-    fetchDailyPoem,
-    buildPoem,
     help
 };

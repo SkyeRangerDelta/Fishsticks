@@ -6,7 +6,7 @@ const { hangout, debater } = require('../../Modules/Core/Core_ids.json');
 const { urlscanIO } = require('../Core/Core_keys.json');
 const { discussionDenRules } = require('../Library/systemResponses.json');
 
-const { buildPoem } = require('../../Commands/Active/poem');
+//const { buildPoem } = require('../../Commands/Active/poem');
 const { startApp } = require('../../Commands/Active/apply');
 const { hasPerms } = require('./Utils_User');
 const { embedBuilder } = require('./Utils_EmbedBuilder');
@@ -20,7 +20,6 @@ const axios = require('axios');
 module.exports = {
 	generateErrorMsg,
 	validateAddedReaction,
-	doDailyPost,
 	validateURL,
 	toTitleCase,
 	handleDenMsg
@@ -76,10 +75,12 @@ async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 	}
 }
 
+/* Literally comment out the code to make it stop
 function doDailyPost(fishsticks) {
 	const hangoutCH = fishsticks.CCG.channels.cache.get(hangout);
 	hangoutCH.send({ embeds: [buildPoem()] });
 }
+ */
 
 //Root func for URL scans
 async function validateURL(msg, urlArr) {
