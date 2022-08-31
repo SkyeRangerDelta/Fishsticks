@@ -1,5 +1,6 @@
 #General
 /node_modules
+/Deploy
 
 #Core
 /Modules/Core/Core_ids.json
