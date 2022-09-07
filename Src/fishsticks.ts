@@ -19,7 +19,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 //Modules
+import { Fishsticks } from "./Modules/Core/SysClient";
 import { Collection } from "discord.js";
+
 
 // === INIT ===
 //Event Handling

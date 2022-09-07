@@ -12,7 +12,7 @@ async function terminate(fishsticks) {
     }
 
     if (fishsticks) {
-        await fishsticks.CONSOLE.send('[Auxiliary Override] Controller terminating.');
+        await fishsticks.CONSOLE.send('[Utility Override] Controller terminating.');
         fishsticks.destroy();
     }
     process.exit(1);
