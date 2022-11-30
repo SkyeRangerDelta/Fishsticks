@@ -60,8 +60,14 @@ async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 	for (const ID in fishsticks.debMsgIDs) {
 		log('info', '[DEBATER] Checking IDs for debater rules acceptance.');
 		if (addedReaction.message.id === fishsticks.debMsgIDs[ID]) {
-			const member = await fishsticks.CCG.members.fetch(reactor.id);
-			const debRole = await fishsticks.CCG.roles.fetch(debater);
+			const member = await fishsticks.CCG.members.fetch(reactor.id)
+				.catch(e => {
+					console.error(`Debator logger could'nt find a member!\n${e}`);
+				});
+			const debRole = await fishsticks.CCG.roles.fetch(debater)
+				.catch(e => {
+					console.error(`Debator logger could'nt find the debator role!\n${e}`);
+				});
 			return await member.roles.add(debRole)
 				.then(() => {
 					member.createDM()

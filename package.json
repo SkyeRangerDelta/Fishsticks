@@ -1,6 +1,6 @@
 {
   "name": "fishsticks",
-  "version": "1.19.0.8",
+  "version": "1.19.0.9",
   "description": "The official CCG Discord bot",
   "main": "fishsticks.js",
   "scripts": {
@@ -31,7 +31,7 @@
     "luxon": "^2.2.0",
     "mongodb": "^4.2.1",
     "node-schedule": "^2.0.0",
-    "npm": "^7.24.2",
+    "npm": "^9.1.2",
     "oxford-dictionary": "^1.6.0",
     "roll": "^1.2.0",
     "urlscan-api": "^0.0.4"
