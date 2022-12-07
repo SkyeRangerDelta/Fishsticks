@@ -2,8 +2,8 @@
 
 //Imports
 const errorMsgPool = require('../Library/errorMsgs.json');
-const { hangout, debater } = require('../../Modules/Core/Core_ids.json');
-const { urlscanIO } = require('../Core/Core_keys.json');
+const { debater } = require('../../Modules/Core/Core_ids.json');
+//const { urlscanIO } = require('../Core/Core_keys.json');
 const { discussionDenRules } = require('../Library/systemResponses.json');
 
 //const { buildPoem } = require('../../Commands/Active/poem');
@@ -14,19 +14,19 @@ const { log } = require('../Utility/Utils_Log');
 const { fso_query } = require('../FSO/FSO_Utils');
 const { handleAddedReaction } = require('../../Commands/Active/poll');
 
-const axios = require('axios');
+//const axios = require('axios');
 
 //Exports
 module.exports = {
 	generateErrorMsg,
 	validateAddedReaction,
-	validateURL,
+	//validateURL,
 	toTitleCase,
 	handleDenMsg
 };
 
 //Globals
-const urlTests = [];
+//const urlTests = [];
 
 //Functions
 function generateErrorMsg() {
@@ -60,8 +60,14 @@ async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 	for (const ID in fishsticks.debMsgIDs) {
 		log('info', '[DEBATER] Checking IDs for debater rules acceptance.');
 		if (addedReaction.message.id === fishsticks.debMsgIDs[ID]) {
-			const member = await fishsticks.CCG.members.fetch(reactor.id);
-			const debRole = await fishsticks.CCG.roles.fetch(debater);
+			const member = await fishsticks.CCG.members.fetch(reactor)
+				.catch(e => {
+					console.error(`Debator logger could'nt find a member!\n${e}`);
+				});
+			const debRole = await fishsticks.CCG.roles.fetch(debater)
+				.catch(e => {
+					console.error(`Debator logger could'nt find the debator role!\n${e}`);
+				});
 			return await member.roles.add(debRole)
 				.then(() => {
 					member.createDM()
@@ -83,6 +89,7 @@ function doDailyPost(fishsticks) {
  */
 
 //Root func for URL scans
+/*
 async function validateURL(msg, urlArr) {
 	const testResMsg = 'Running a quick test for any malicious content...\n';
 
@@ -193,6 +200,8 @@ async function processURLReport(testNotice, msg, scanResult, urlObj) {
 		}
 	}
 }
+
+*/
 
 //Convert to title case
 function toTitleCase(toConvert) {

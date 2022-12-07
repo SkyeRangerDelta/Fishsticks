@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Src/Modules/Core/CmdHandler.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Src/Modules/Core/SysIDs.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Src/Modules/Utility/Logger.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_Terminate.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_Terminate.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Src/fishsticks.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Src/fishsticks.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,8 +17,6 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
-        <option value="tsconfig.json" />
-        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -53,9 +48,10 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/run/media/skyerangerdelta/GitHub Repos/Fishsticks/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -146,8 +142,9 @@
       <workItem from="1661798866425" duration="334000" />
       <workItem from="1661799226669" duration="85000" />
       <workItem from="1661965755820" duration="186000" />
-      <workItem from="1661967520427" duration="1534000" />
-      <workItem from="1662577186677" duration="2836000" />
+      <workItem from="1669842574990" duration="1647000" />
+      <workItem from="1669844266801" duration="32000" />
+      <workItem from="1670444714659" duration="1359000" />
     </task>
     <servers />
   </component>
