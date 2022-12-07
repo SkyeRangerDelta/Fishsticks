@@ -4,9 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="">
+    <list default="true" id="9f4bd818-58cf-48d2-9882-680c0df77342" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/jsLinters/eslint.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Src/Commands/Active/status.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Src/Modules/FSO/FSO_Utilities.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/Utility/Utils_Aux.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Src/Modules/Core/CmdHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Src/Modules/Core/CmdHandler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Src/Modules/Utility/Logger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/Src/Modules/Utility/Logger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,25 +22,17 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitSEFilterConfiguration">
-    <file-type-list>
-      <filtered-out-file-type name="LOCAL_BRANCH" />
-      <filtered-out-file-type name="REMOTE_BRANCH" />
-      <filtered-out-file-type name="TAG" />
-      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
-    </file-type-list>
-  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="1yKqONZfTTsIM3V3llyZ2osQwvd" />
+  <component name="ProjectId" id="2IbPw0NAlNBztpdHOhg3gwWXN3M" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
@@ -42,131 +40,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "ts.external.directory.path": "/run/media/skyerangerdelta/GitHub Repos/Fishsticks/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/Commands/Active" />
-    </key>
-  </component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="" />
-      <created>1632010595422</created>
+      <changelist id="9f4bd818-58cf-48d2-9882-680c0df77342" name="Changes" comment="" />
+      <created>1670447062829</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1632010595422</updated>
-      <workItem from="1632010597842" duration="147000" />
-      <workItem from="1632010758033" duration="1448000" />
-      <workItem from="1632251760083" duration="12132000" />
-      <workItem from="1632349583536" duration="4695000" />
-      <workItem from="1632442076632" duration="4552000" />
-      <workItem from="1632510534132" duration="17397000" />
-      <workItem from="1632763819751" duration="17932000" />
-      <workItem from="1633793410803" duration="346000" />
-      <workItem from="1633981114907" duration="2004000" />
-      <workItem from="1633984279278" duration="3818000" />
-      <workItem from="1633988143462" duration="618000" />
-      <workItem from="1634941311157" duration="15000" />
-      <workItem from="1635006263383" duration="6330000" />
-      <workItem from="1635024110001" duration="13777000" />
-      <workItem from="1635089499775" duration="2750000" />
-      <workItem from="1635093213374" duration="7773000" />
-      <workItem from="1639316231380" duration="5044000" />
-      <workItem from="1639681975199" duration="11863000" />
-      <workItem from="1639948967900" duration="7883000" />
-      <workItem from="1640213936787" duration="150000" />
-      <workItem from="1640237589944" duration="8561000" />
-      <workItem from="1640246749386" duration="3958000" />
-      <workItem from="1640307058783" duration="2308000" />
-      <workItem from="1640319960792" duration="4700000" />
-      <workItem from="1640376587812" duration="22896000" />
-      <workItem from="1640444276020" duration="12935000" />
-      <workItem from="1640475284375" duration="7536000" />
-      <workItem from="1640821381370" duration="26971000" />
-      <workItem from="1640876416631" duration="23792000" />
-      <workItem from="1640917410686" duration="670000" />
-      <workItem from="1641009790215" duration="2010000" />
-      <workItem from="1641013434469" duration="471000" />
-      <workItem from="1641062477186" duration="1986000" />
-      <workItem from="1641065384198" duration="617000" />
-      <workItem from="1641148178352" duration="4029000" />
-      <workItem from="1641177721228" duration="875000" />
-      <workItem from="1641418596055" duration="9961000" />
-      <workItem from="1641491986218" duration="152000" />
-      <workItem from="1641494751192" duration="432000" />
-      <workItem from="1641936201008" duration="18425000" />
-      <workItem from="1642025398181" duration="1598000" />
-      <workItem from="1642181195881" duration="1087000" />
-      <workItem from="1642195480360" duration="14492000" />
-      <workItem from="1642275587524" duration="759000" />
-      <workItem from="1642487052404" duration="16000" />
-      <workItem from="1642615921120" duration="460000" />
-      <workItem from="1642617120394" duration="1764000" />
-      <workItem from="1642619039569" duration="5000" />
-      <workItem from="1642636907449" duration="363000" />
-      <workItem from="1643051885839" duration="2927000" />
-      <workItem from="1643149053312" duration="9391000" />
-      <workItem from="1643232512138" duration="4581000" />
-      <workItem from="1646861447241" duration="1223000" />
-      <workItem from="1647897575820" duration="103000" />
-      <workItem from="1649174684384" duration="20444000" />
-      <workItem from="1649266240007" duration="3319000" />
-      <workItem from="1649683058898" duration="6399000" />
-      <workItem from="1649690643143" duration="215000" />
-      <workItem from="1650299803179" duration="12728000" />
-      <workItem from="1650312663291" duration="128000" />
-      <workItem from="1650312821290" duration="5940000" />
-      <workItem from="1650652566404" duration="19000" />
-      <workItem from="1651281707846" duration="13398000" />
-      <workItem from="1651295685610" duration="382000" />
-      <workItem from="1651935512020" duration="842000" />
-      <workItem from="1652050203233" duration="63000" />
-      <workItem from="1656014093690" duration="5273000" />
-      <workItem from="1656019422201" duration="331000" />
-      <workItem from="1656268486605" duration="3890000" />
-      <workItem from="1656272527124" duration="10000" />
-      <workItem from="1658095140781" duration="326000" />
-      <workItem from="1661798866425" duration="334000" />
-      <workItem from="1661799226669" duration="85000" />
-      <workItem from="1661965755820" duration="186000" />
-      <workItem from="1669842574990" duration="1647000" />
-      <workItem from="1669844266801" duration="32000" />
-      <workItem from="1670444714659" duration="1359000" />
+      <updated>1670447062829</updated>
+      <workItem from="1670447065901" duration="477000" />
+      <workItem from="1670447546131" duration="1649000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-  </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
   </component>
 </project>

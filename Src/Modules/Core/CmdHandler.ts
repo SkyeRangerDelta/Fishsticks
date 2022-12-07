@@ -17,6 +17,9 @@ const cmdIndexer = {
 
 export default cmdIndexer;
 
+//Data
+const LOCALE = 'CMD-HANDLER';
+
 //Functions
 async function indexCommands(Fishsticks: FishsticksClient): Promise<void> {
     const cmdJSON: object[] = [];
@@ -27,13 +30,13 @@ async function indexCommands(Fishsticks: FishsticksClient): Promise<void> {
         const cPath = `../../Commands/Active/${command}`;
         await import (cPath).then(c => {
             const cmd = c.default;
-            logger.log('info', `[CMD-INDEXER] Indexing ${cmd.name}`);
+            logger.log(LOCALE, 'info', `[CMD-INDEXER] Indexing ${cmd.name}`);
             cmdJSON.push(cmd.data.toJSON());
             Fishsticks.CMD_INDEX.set(cmd.data.name, cmd);
         })
     }
 
-    logger.log('info', '[CMD-INDEXER] Beginning command registration...');
+    logger.log(LOCALE, 'info', '[CMD-INDEXER] Beginning command registration...');
     const rest = new REST({ version: '10' }).setToken(process.env.TOKEN as string);
     try {
         await rest.put(
@@ -43,10 +46,10 @@ async function indexCommands(Fishsticks: FishsticksClient): Promise<void> {
             ),
             { body: cmdJSON }
         );
-        logger.log('proc', '[CMD-INDEXER] Command registration finished.');
+        logger.log(LOCALE, 'proc', '[CMD-INDEXER] Command registration finished.');
     }
     catch (cmdRegistrationError) {
-        logger.log('err', '[CMD-INDEXER] ERROR UPDATING/REGISTERING COMMANDS.\n' + cmdRegistrationError);
+        logger.log(LOCALE, 'err', '[CMD-INDEXER] ERROR UPDATING/REGISTERING COMMANDS.\n' + cmdRegistrationError);
         Fishsticks.destroy();
         process.exit();
     }

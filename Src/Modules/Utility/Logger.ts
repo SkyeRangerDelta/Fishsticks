@@ -5,19 +5,19 @@ import colors from "colors/safe";
 
 //Exports
 export default {
-    log(level: string, msg: string) {
+    log(locale: string, level: string, msg: string) {
         switch (level) {
             case 'proc':
-                console.log(colors.green(`[PROC] ${msg}`));
+                console.log(colors.green(`[${locale}][PROC] ${msg}`));
                 break;
             case 'info':
-                console.info(`[INFO] ${msg}`);
+                console.info(`[${locale}][INFO] ${msg}`);
                 break;
             case 'warn':
-                console.warn(colors.yellow(`[WARN] ${msg}`));
+                console.warn(colors.yellow(`[${locale}][WARN] ${msg}`));
                 break;
             case 'err':
-                console.error(colors.red(`[ERR] ${msg}`));
+                console.error(colors.red(`[${locale}][ERR] ${msg}`));
                 break;
             default:
                 console.warn(`[LOGGER] Message was thrown without level:\n${msg}`);

@@ -33,7 +33,7 @@
     "luxon": "^2.2.0",
     "mongodb": "^4.2.1",
     "node-schedule": "^2.0.0",
-    "npm": "^9.1.2",
+    "npm": "^9.1.3",
     "oxford-dictionary": "^1.6.0",
     "roll": "^1.2.0",
     "ts-node": "^10.9.1",
