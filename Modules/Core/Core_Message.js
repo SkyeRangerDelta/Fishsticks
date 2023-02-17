@@ -12,7 +12,7 @@ const { handleShiny } = require('../Utility/Utils_Shiny');
 const { worst } = require('../../Commands/Passive/the');
 
 const { prefix } = require('../Core/Core_config.json');
-const { discDen } = require('../Core/Core_ids.json');
+const { discDen, prReqs } = require('../Core/Core_ids.json');
 
 const extractUrls = require('extract-urls');
 
@@ -83,6 +83,9 @@ async function processMessage(Fishsticks, msg) {
         const passiveID = msg.content.trim().toLowerCase().split(' ')[0];
         try {
             const passiveCmd = require(`../../Commands/Passive/${passiveID}.js`);
+
+            if (cmd.channel.id === prReqs) return;
+
             passiveCmd.run(Fishsticks, cmd);
         }
         catch (passiveCmdErr) {

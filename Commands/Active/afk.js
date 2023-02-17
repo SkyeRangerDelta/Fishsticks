@@ -17,9 +17,9 @@ data.addStringOption(s => s.setName('k-starting-word').setDescription('Word that
 async function run(fishsticks, int) {
     let newName = '';
 
-    const a = int.options.getString('a-starting-word');
-    const f = int.options.getString('f-starting-word');
-    const k = int.options.getString('k-starting-word');
+    const a = int.options.getString('a-starting-word').toLowerCase();
+    const f = int.options.getString('f-starting-word').toLowerCase();
+    const k = int.options.getString('k-starting-word').toLowerCase();
 
     if (a.charAt(0) !== 'a') {
         return int.reply({ content: '(A)FK - The word needs to start with an A!', ephemeral: true });
