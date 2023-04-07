@@ -269,15 +269,16 @@ async function joinRole(fishsticks, int, redirectData) {
     let roleObj;
 
     if (!redirectData) {
-        //Redirect from vote
         roleObj = await findRole(fishsticks, int);
     }
     else {
+        //Redirect from vote
         roleObj = redirectData;
     }
 
     //Get role and add
-    const roleY = await int.guild.roles.cache.find(role => role.name === `${roleObj.name}`);
+    const intRole = int.options.getRole('role');
+    const roleY = await int.guild.roles.cache.find(role => role.name === `${intRole.name}`);
 
     //Check if this person already has the role
     if (hasPerms(int.member, [`${roleObj.name}`])) {
@@ -305,6 +306,7 @@ async function joinRole(fishsticks, int, redirectData) {
          */
         return int.reply(`${int.member} has joined ${roleY}!`);
     }).catch(err => {
+        log('err', '[ROLE-SYS] [JOIN] Error:\n' + err.stack);
         return int.reply({ content: 'Something went wrong trying to add your role.\n' + err, ephemeral: true });
     });
 }
