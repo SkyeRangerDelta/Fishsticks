@@ -315,7 +315,7 @@ async function joinRole(fishsticks, int, redirectData) {
 //Leave a role
 async function leaveRole(fishsticks, int) {
     //Check active
-    const roleX = await findRole(fishsticks, int);
+    const roleX = int.options.getRole('role');
     if (roleX.active === false) {
         //Vote role override
         int.reply({ content: 'No active role to leave!', ephemeral: true });
