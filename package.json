@@ -1,6 +1,6 @@
 {
   "name": "fishsticks",
-  "version": "1.19.0.12",
+  "version": "1.19.0.13",
   "description": "The official CCG Discord bot",
   "main": "fishsticks.js",
   "scripts": {

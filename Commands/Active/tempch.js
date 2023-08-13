@@ -21,7 +21,7 @@ data.addIntegerOption(o => o.setName('max-users').setDescription('How many voice
 async function run(Fishsticks, int) {
     int.deferReply({ ephemeral: true });
 
-    if(!hasPerms(int.member, ['CC Member', 'ACC Member'])) {
+    if(!hasPerms(int.member, ['CC Member', 'ACC Member', 'Event Coordinator'])) {
         return int.reply({ content: 'Only (A)CC Members can create temporary channels!', ephemeral: true });
     }
 
