@@ -1,6 +1,6 @@
 {
   "name": "fishsticks",
-  "version": "1.19.0.13",
+  "version": "1.19.1",
   "description": "The official CCG Discord bot",
   "main": "fishsticks.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/SkyeRangerDelta/Fishsticks#readme",
   "dependencies": {
-    "@discordjs/builders": "^0.12.0",
+    "@discordjs/builders": "^1.6.5",
     "@discordjs/rest": "^0.3.0",
     "axios": "^0.24.0",
     "canvas": "^2.7.0",
