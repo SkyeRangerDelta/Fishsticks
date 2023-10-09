@@ -2,7 +2,10 @@
 
 //Imports
 const { log } = require('../Modules/Utility/Utils_Log');
-const { handleButtonInteraction, handleSelectInteraction } = require('../Modules/Utility/Utils_Interactions');
+const {
+    handleButtonInteraction,
+    handleSelectInteraction,
+    handleModalInteraction } = require('../Modules/Utility/Utils_Interactions');
 const { generateErrorMsg } = require('../Modules/Utility/Utils_Aux');
 const { fso_query } = require('../Modules/FSO/FSO_Utils');
 
@@ -16,6 +19,9 @@ async function execute(fishsticks, interaction) {
     log('info', `[CLIENT] New interaction created by ${interaction.member.displayName}. ID: ${interaction.id}`);
     if (interaction.isButton()) {
         await handleButtonInteraction(fishsticks, interaction);
+    }
+    else if (interaction.isModalSubmit()) {
+        await handleModalInteraction(fishsticks, interaction);
     }
     else if (interaction.isSelectMenu()) {
         await handleSelectInteraction(fishsticks, interaction);
