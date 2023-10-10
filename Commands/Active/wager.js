@@ -4,7 +4,8 @@
 const { SlashCommandBuilder, MessageActionRow, MessageSelectMenu } = require('discord.js');
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
-const { ModalBuilder } = require('@discordjs/builders');
+const { ModalBuilder, TextInputBuilder } = require('@discordjs/builders');
+const { TextInputStyles } = require('discord.js/typings/enums');
 
 //Functions
 const data = new SlashCommandBuilder()
@@ -34,18 +35,17 @@ async function run(fishsticks, int) {
 }
 
 async function buy(fishsticks, int, acceptedLotteries) {
-    //TODO: Implement buying a ticket/entering
     //Select lottery first
     const availLotteries = [];
     for (const lottery of acceptedLotteries) {
-        availLotteries.push(`${lottery.name} [${lottery.ticketPrice}g]`);
+        availLotteries.push(`${lottery.name} [${lottery.lotCode}]`);
     }
     const msgRow = new MessageActionRow()
         .addComponents(
             new MessageSelectMenu()
                 .setCustomId('LOT-BuyM')
                 .setPlaceholder('Cancel')
-                .setMaxValues(1)
+                .setMaxValues(5)
                 .setMinValues(1)
                 .addOptions(availLotteries)
         );
@@ -53,10 +53,38 @@ async function buy(fishsticks, int, acceptedLotteries) {
     return int.reply({ content: 'Choose a lottery to buy a ticket from.', components: [msgRow], ephemeral: true });
 }
 
-function buyMoal(fishsticks, int) {
+async function buyModal(fishsticks, int) {
     const buyForm = new ModalBuilder()
         .setCustomId('LOT-Buy')
         .setTitle('Buy a Lottery Ticket');
+
+    //Determine lottery type
+    const changedVals = int.values;
+    const compArr = [];
+    for (const selectedLottery of changedVals) {
+        const lotCode = selectedLottery.substring(selectedLottery.length - 5, selectedLottery.length());
+        const lotteryData = await fso_query(fishsticks.FSO_CONNECTION,
+            'FSO_Lotteries', 'select', { lotCode: lotCode });
+
+        compArr.push(fetchLotComp(lotCode, lotteryData));
+    }
+}
+
+function fetchLotComp(lotCode, lotteryObj) {
+    const comps = {
+        'CCEB': new TextInputBuilder()
+            .setLabel(`[CC Events Bowl] Enter a submission.`)
+            .setStyle(TextInputStyles.SHORT)
+            .setRequired(false)
+            .setPlaceholder('Random Text - but usernames work fine.'),
+        'GFDA': new TextInputBuilder()
+            .setLabel(),
+        'GFWE': new TextInputBuilder(),
+        'AFHR': new TextInputBuilder(),
+        'DETH': new TextInputBuilder()
+    };
+
+    return comps[lotCode];
 }
 
 async function close(fishsticks, int, lotteries) {
@@ -78,7 +106,7 @@ async function doLotteryInit(fishsticks, int) {
             riskFactor: 1.0,
             jackpot: 0,
             tickets: [],
-            ticketPrice: 10
+            ticketPrice: 0
         },
         {
             name: 'Goldfish 24',
@@ -132,7 +160,7 @@ async function doLotteryInit(fishsticks, int) {
 }
 
 function handleLotteryModal(fishsticks, int) {
-
+    //TODO: Implement actually buying the ticket(s)
 }
 
 function help() {
@@ -146,5 +174,6 @@ module.exports = {
     data,
     run,
     help,
-    handleLotteryModal
+    handleLotteryModal,
+    buyModal
 };
