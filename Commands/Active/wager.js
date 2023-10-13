@@ -73,12 +73,15 @@ async function buyModal(fishsticks, int) {
 function fetchLotComp(lotCode, lotteryObj) {
     const comps = {
         'CCEB': new TextInputBuilder()
-            .setLabel(`[CC Events Bowl] Enter a submission.`)
+            .setLabel(`[CC Events Bowl] Enter a submission. (Price: ${lotteryObj.ticketPrice})`)
             .setStyle(TextInputStyles.SHORT)
             .setRequired(false)
             .setPlaceholder('Random Text - but usernames work fine.'),
         'GFDA': new TextInputBuilder()
-            .setLabel(),
+            .setLabel(`[Goldfish 24] Enter the number of tickets to buy. ${lotteryObj.ticketPrice}`)
+            .setStyle(TextInputStyles.SHORT)
+            .setRequired(false)
+            .setPlaceholder('Number of tickets to purchase.'),
         'GFWE': new TextInputBuilder(),
         'AFHR': new TextInputBuilder(),
         'DETH': new TextInputBuilder()
