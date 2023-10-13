@@ -1,7 +1,7 @@
 // ---- Embed Builder ----
 
 //Imports
-const Discord = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const config = require('../../Modules/Core/Core_config.json');
 
 //Exports
@@ -11,7 +11,7 @@ module.exports = {
 };
 
 function embedBuilder(embed) {
-	const constructedEmbed = new Discord.MessageEmbed();
+	const constructedEmbed = new EmbedBuilder();
 
 	constructedEmbed.setTitle(embed.title);
 	constructedEmbed.setDescription(embed.description);
@@ -28,10 +28,10 @@ function embedBuilder(embed) {
 	}
 
 	if (embed.delete === undefined) {
-		constructedEmbed.setFooter(embed.footer);
+		constructedEmbed.setFooter({ text: embed.footer });
 	}
 	else {
-		constructedEmbed.setFooter(embed.footer);
+		constructedEmbed.setFooter({ text: embed.footer });
 	}
 
 	if (embed.thumbnail === undefined && (embed.noThumbnail === false || embed.noThumbnail === undefined)) {
@@ -43,14 +43,14 @@ function embedBuilder(embed) {
 
 	//Set fields
 	if (embed.fields) {
-		constructedEmbed.setFields(embed.fields);
+		constructedEmbed.addFields(embed.fields);
 	}
 
 	return constructedEmbed;
 }
 
 function quickEmbed(data) {
-	const qe = new Discord.MessageEmbed();
+	const qe = new EmbedBuilder();
 	qe.setTitle(data.title);
 	qe.setDescription(data.description);
 	qe.setColor(config.colors.primary);

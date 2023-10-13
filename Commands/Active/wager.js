@@ -1,11 +1,17 @@
 // ---- Wager ----
 
 //Imports
-const { SlashCommandBuilder, MessageActionRow, MessageSelectMenu } = require('discord.js');
+const {
+    SlashCommandBuilder,
+    ActionRowBuilder,
+    StringSelectMenuBuilder,
+    TextInputBuilder,
+    TextInputStyle,
+    ModalBuilder,
+} = require('discord.js');
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
-const { ModalBuilder, TextInputBuilder } = require('@discordjs/builders');
-const { TextInputStyles } = require('discord.js/typings/enums');
+const { log } = require('../../Modules/Utility/Utils_Log');
 
 //Functions
 const data = new SlashCommandBuilder()
@@ -38,11 +44,14 @@ async function buy(fishsticks, int, acceptedLotteries) {
     //Select lottery first
     const availLotteries = [];
     for (const lottery of acceptedLotteries) {
-        availLotteries.push(`${lottery.name} [${lottery.lotCode}]`);
+        availLotteries.push({
+            label: `${lottery.name} [${lottery.lotCode}]`,
+            value: `${lottery.lotCode}`
+        });
     }
-    const msgRow = new MessageActionRow()
+    const msgRow = new ActionRowBuilder()
         .addComponents(
-            new MessageSelectMenu()
+            new StringSelectMenuBuilder()
                 .setCustomId('LOT-BuyM')
                 .setPlaceholder('Cancel')
                 .setMaxValues(5)
@@ -62,29 +71,44 @@ async function buyModal(fishsticks, int) {
     const changedVals = int.values;
     const compArr = [];
     for (const selectedLottery of changedVals) {
-        const lotCode = selectedLottery.substring(selectedLottery.length - 5, selectedLottery.length());
         const lotteryData = await fso_query(fishsticks.FSO_CONNECTION,
-            'FSO_Lotteries', 'select', { lotCode: lotCode });
+            'FSO_Lotteries', 'select', { lotCode: selectedLottery });
 
-        compArr.push(fetchLotComp(lotCode, lotteryData));
+        compArr.push(new ActionRowBuilder().addComponents(fetchLotComp(selectedLottery, lotteryData)));
     }
+
+    buyForm.addComponents(compArr);
+
+    await int.showModal(buyForm);
 }
 
 function fetchLotComp(lotCode, lotteryObj) {
     const comps = {
         'CCEB': new TextInputBuilder()
-            .setLabel(`[CC Events Bowl] Enter a submission. (Price: ${lotteryObj.ticketPrice})`)
-            .setStyle(TextInputStyles.SHORT)
+            .setLabel(`[CC Events Bowl] Price: ${lotteryObj.ticketPrice}`)
+            .setStyle(TextInputStyle.Short)
             .setRequired(false)
             .setPlaceholder('Random Text - but usernames work fine.'),
         'GFDA': new TextInputBuilder()
-            .setLabel(`[Goldfish 24] Enter the number of tickets to buy. ${lotteryObj.ticketPrice}`)
-            .setStyle(TextInputStyles.SHORT)
+            .setLabel(`[Goldfish 24] Price: ${lotteryObj.ticketPrice}`)
+            .setStyle(TextInputStyle.Short)
             .setRequired(false)
             .setPlaceholder('Number of tickets to purchase.'),
-        'GFWE': new TextInputBuilder(),
-        'AFHR': new TextInputBuilder(),
+        'GFWE': new TextInputBuilder()
+            .setLabel(`[Goldfish 168] Price: ${lotteryObj.ticketPrice}`)
+            .setStyle(TextInputStyle.Short)
+            .setRequired(false)
+            .setPlaceholder('Number of tickets to purchase.'),
+        'AFHR': new TextInputBuilder()
+            .setLabel(`[After Hours] Price: ${lotteryObj.ticketPrice}`)
+            .setStyle(TextInputStyle.Short)
+            .setRequired(false)
+            .setPlaceholder('Number of tickets to purchase.'),
         'DETH': new TextInputBuilder()
+            .setLabel(`[Delta Thunderbowl] Price: ${lotteryObj.ticketPrice}`)
+            .setStyle(TextInputStyle.Short)
+            .setRequired(false)
+            .setPlaceholder('Pick 4 numbers and a letter (in that order: 1234A).')
     };
 
     return comps[lotCode];
@@ -164,6 +188,7 @@ async function doLotteryInit(fishsticks, int) {
 
 function handleLotteryModal(fishsticks, int) {
     //TODO: Implement actually buying the ticket(s)
+    log('info', 'Modal submission here.');
 }
 
 function help() {

@@ -2,7 +2,7 @@
 // Allows notifications to be toggled
 
 //Imports
-const { MessageActionRow, MessageSelectMenu } = require('discord.js');
+const { ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { SlashCommandBuilder } = require('@discordjs/builders');
@@ -30,7 +30,7 @@ async function run(fishsticks, int) {
     }
 
     //Build interaction post
-    const msgRow = new MessageActionRow();
+    const msgRow = new ActionRowBuilder();
     const notifValues = [];
 
     if (memberNotifPrefs.xp) {
@@ -49,7 +49,7 @@ async function run(fishsticks, int) {
     }
 
     msgRow.addComponents(
-        new MessageSelectMenu()
+        new StringSelectMenuBuilder()
             .setCustomId('NOTI-M')
             .setPlaceholder('Select something?')
             .setMaxValues(1)

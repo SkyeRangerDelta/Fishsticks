@@ -7,6 +7,6 @@ const { log } = require('../Modules/Utility/Utils_Log');
 module.exports = {
     name: 'error',
     execute(fishsticks, err) {
-        log('err', `[CLIENT] ${err}`);
+        log('err', `[CLIENT] ${err}\n${err.stack}`);
     }
 };

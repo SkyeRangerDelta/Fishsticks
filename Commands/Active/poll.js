@@ -10,7 +10,7 @@ const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 
 //Variables
 const responseEmojis = require('../../Modules/Library/emojiList');
-const { MessageButton, MessageActionRow } = require('discord.js');
+const { ButtonBuilder, ActionRowBuilder } = require('discord.js');
 const { fsoValidationException } = require('../../Modules/Errors/fsoValidationException');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
@@ -159,12 +159,12 @@ async function postPoll(int, pollObj) {
         .setDescription(pollObj.d);
 
     //Compose action row
-    const resRow = new MessageActionRow();
+    const resRow = new ActionRowBuilder();
 
     //Response buttons
     for (let r = 0; r <= pollObj.responses.types.length - 1; r++) {
         resRow.addComponents(
-            new MessageButton()
+            new ButtonBuilder()
                 .setCustomId(`POLL-${r}`)
                 .setStyle('PRIMARY')
                 .setLabel(pollObj.responses.types[r].d)
@@ -174,7 +174,7 @@ async function postPoll(int, pollObj) {
 
     //End poll button
     resRow.addComponents(
-        new MessageButton()
+        new ButtonBuilder()
             .setCustomId('POLL-A')
             .setStyle('DANGER')
             .setLabel('End Poll')
@@ -370,13 +370,13 @@ function getWinner(fishsticks, pollObj) {
 async function handleWinner(fishsticks, pollObj, interaction, results) {
     console.log('Poll has clear winner.');
     //Update message with winner
-    const updatedRow = new Discord.MessageActionRow();
+    const updatedRow = new ActionRowBuilder();
 
     for (const res in pollObj.responses.types) {
         if (pollObj.responses.types[res].d === results.currWinner) {
             //Add winner button
             updatedRow.addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                     .setCustomId(`POLL-${res}`)
                     .setStyle('SUCCESS')
                     .setLabel(pollObj.responses.types[res].d + ` (${pollObj.responses.types[res].ids.length})`)
@@ -385,7 +385,7 @@ async function handleWinner(fishsticks, pollObj, interaction, results) {
         }
         else {
             updatedRow.addComponents(
-                new MessageButton()
+                new ButtonBuilder()
                     .setCustomId(`POLL-${res}`)
                     .setStyle('PRIMARY')
                     .setLabel(pollObj.responses.types[res].d + ` (${pollObj.responses.types[res].ids.length})`)
@@ -419,7 +419,7 @@ async function verifyTie(fishsticks, interaction, results) {
 async function handleTie(fishsticks, pollObj, interaction, result) {
     console.log('Poll tied.');
 
-    const updatedRow = new MessageActionRow();
+    const updatedRow = new ActionRowBuilder();
 
     //Iterate through responses
     for (const i in pollObj.responses.types) {
@@ -428,7 +428,7 @@ async function handleTie(fishsticks, pollObj, interaction, result) {
             if (pollObj.responses.types[i].d === result.ties[y] || pollObj.responses.types[i].d === result.currWinner) {
                 //Is a tied response
                 updatedRow.addComponents(
-                    new MessageButton()
+                    new ButtonBuilder()
                         .setCustomId(`POLL-${i}`)
                         .setStyle('SUCCESS')
                         .setLabel(pollObj.responses.types[res].d + `(${pollObj.responses.types[res].ids.length})`)
@@ -438,7 +438,7 @@ async function handleTie(fishsticks, pollObj, interaction, result) {
             else {
                 //Not a tied response
                 updatedRow.addComponents(
-                    new MessageButton()
+                    new ButtonBuilder()
                         .setCustomId(`POLL-${i}`)
                         .setStyle('PRIMARY')
                         .setLabel(pollObj.responses.types[res].d + `(${pollObj.responses.types[res].ids.length})`)

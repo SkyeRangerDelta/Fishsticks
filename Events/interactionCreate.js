@@ -23,7 +23,7 @@ async function execute(fishsticks, interaction) {
     else if (interaction.isModalSubmit()) {
         await handleModalInteraction(fishsticks, interaction);
     }
-    else if (interaction.isSelectMenu()) {
+    else if (interaction.isStringSelectMenu()) {
         await handleSelectInteraction(fishsticks, interaction);
     }
     else if (interaction.isCommand()) {
@@ -58,7 +58,7 @@ async function execute(fishsticks, interaction) {
                 }
             };
 
-            log('warn', '[ACTIVE-CMD] Execution failed.\n' + cmdErr);
+            log('warn', '[ACTIVE-CMD] Execution failed.\n' + cmdErr + '\n' + cmdErr.stack);
             await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', upVal, { id: interaction.member.id });
             await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', {
                 $inc: {

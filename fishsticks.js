@@ -16,7 +16,7 @@
 //				DEPENDENCIES
 //=============================================
 //Libraries
-const Discord = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 const schedule = require('node-schedule');
 const fs = require('fs');
 
@@ -24,7 +24,7 @@ const fs = require('fs');
 const { doDailyPost } = require('./Modules/Utility/Utils_Aux');
 
 //Configs
-const { token, intents } = require('./Modules/Core/Core_config.json');
+const { token } = require('./Modules/Core/Core_config.json');
 
 
 //=============================================
@@ -32,7 +32,17 @@ const { token, intents } = require('./Modules/Core/Core_config.json');
 //=============================================
 
 //Client
-const Fishsticks = new Discord.Client({ intents: intents });
+const Fishsticks = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildVoiceStates,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.DirectMessages,
+		GatewayIntentBits.DirectMessageReactions
+	]
+});
 
 //Client Variables
 Fishsticks.FSO_CONNECTION = null;

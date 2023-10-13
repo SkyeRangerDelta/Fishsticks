@@ -30,9 +30,20 @@ data.addRoleOption(o => o
 data.addStringOption(o => o
     .setName('ping-type')
     .setDescription('If pinging a role, name that role by name or game (as seen in !roles), pick a choice otherwise.')
-    .addChoice('everyone', 'everyone')
-    .addChoice('here', 'here')
-    .addChoice('soft', 'soft')
+    .addChoices(
+        {
+            name: 'everyone',
+            value: 'everyone'
+        },
+        {
+            name: 'here',
+            value: 'here'
+        },
+        {
+            name: 'soft',
+            value: 'soft'
+        }
+    )
 );
 
 //Functions
