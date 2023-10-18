@@ -114,7 +114,7 @@ function fetchLotComp(lotCode, lotteryObj) {
     return comps[lotCode];
 }
 
-async function close(fishsticks, int, lotteries) {
+async function close(fishsticks, int, lotteriesArr) {
     if (!hasPerms(int.member, ['Event Coordinator'])) {
         int.reply({ content: 'Only ECs can close the running lottery!', ephemeral: true });
     }
