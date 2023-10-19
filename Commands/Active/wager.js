@@ -63,53 +63,70 @@ async function buy(fishsticks, int, acceptedLotteries) {
 }
 
 async function buyModal(fishsticks, int) {
+    log('info', '[LOT] Building modal');
     const buyForm = new ModalBuilder()
         .setCustomId('LOT-Buy')
         .setTitle('Buy a Lottery Ticket');
 
     //Determine lottery type
     const changedVals = int.values;
+    log('info', `[LOT] Transaction is handling ${changedVals.length} lotteries.`);
     const compArr = [];
     for (const selectedLottery of changedVals) {
         const lotteryData = await fso_query(fishsticks.FSO_CONNECTION,
             'FSO_Lotteries', 'select', { lotCode: selectedLottery });
 
+        console.log(lotteryData);
+
         compArr.push(new ActionRowBuilder().addComponents(fetchLotComp(selectedLottery, lotteryData)));
     }
 
-    buyForm.addComponents(compArr);
+    if (!compArr || compArr.length === 0) int.reply({ content: 'Cancelled.', ephemeral: true });
 
+    buyForm.addComponents(compArr);
     await int.showModal(buyForm);
 }
 
 function fetchLotComp(lotCode, lotteryObj) {
     const comps = {
         'CCEB': new TextInputBuilder()
+            .setCustomId('LOT-F-CCEB')
             .setLabel(`[CC Events Bowl] Price: ${lotteryObj.ticketPrice}`)
             .setStyle(TextInputStyle.Short)
             .setRequired(false)
+            .setValue('CCEB')
             .setPlaceholder('Random Text - but usernames work fine.'),
         'GFDA': new TextInputBuilder()
+            .setCustomId('LOT-F-GFDA')
             .setLabel(`[Goldfish 24] Price: ${lotteryObj.ticketPrice}`)
             .setStyle(TextInputStyle.Short)
             .setRequired(false)
+            .setValue('GFDA')
             .setPlaceholder('Number of tickets to purchase.'),
         'GFWE': new TextInputBuilder()
+            .setCustomId('LOT-F-GFWE')
             .setLabel(`[Goldfish 168] Price: ${lotteryObj.ticketPrice}`)
             .setStyle(TextInputStyle.Short)
             .setRequired(false)
+            .setValue('GFWE')
             .setPlaceholder('Number of tickets to purchase.'),
         'AFHR': new TextInputBuilder()
+            .setCustomId('LOT-F-AFHR')
             .setLabel(`[After Hours] Price: ${lotteryObj.ticketPrice}`)
             .setStyle(TextInputStyle.Short)
             .setRequired(false)
+            .setValue('AFHR')
             .setPlaceholder('Number of tickets to purchase.'),
         'DETH': new TextInputBuilder()
+            .setCustomId('LOT-F-DETH')
             .setLabel(`[Delta Thunderbowl] Price: ${lotteryObj.ticketPrice}`)
             .setStyle(TextInputStyle.Short)
             .setRequired(false)
+            .setValue('DETH')
             .setPlaceholder('Pick 4 numbers and a letter (in that order: 1234A).')
     };
+
+    console.log(comps[lotCode]);
 
     return comps[lotCode];
 }
@@ -189,6 +206,8 @@ async function doLotteryInit(fishsticks, int) {
 function handleLotteryModal(fishsticks, int) {
     //TODO: Implement actually buying the ticket(s)
     log('info', 'Modal submission here.');
+    console.log(int.fields);
+    int.reply({ content: `Tickets bought? ${int.fields}`, ephemeral: true });
 }
 
 function help() {
