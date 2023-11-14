@@ -21,7 +21,7 @@ data.addBooleanOption(o => o
 //Functions
 function run(fishsticks, int) {
     if (!hasPerms(int.member, ['Server Manager'])) {
-        int.reply({ content: `You can't do this!`, ephemeral: true });
+        return int.reply({ content: `You can't do this!`, ephemeral: true });
     }
 
     const verboseLog = int.options.getBoolean('show-log') || false;
