@@ -76,6 +76,10 @@ for (const eventFile in eventsIndex) {
 //=============================================
 //				   UTILITY
 //=============================================
+
+//Load ENV
+require('dotenv').config();
+
 //Schedule Crons
 /*
 schedule.scheduleJob('8 * * *', function() {

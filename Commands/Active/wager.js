@@ -31,6 +31,8 @@ data.addSubcommand(s => s
 let lotteries = [];
 
 async function run(fishsticks, int) {
+    return int.reply('Soon™');
+
     const cmdExecuted = int.options.getSubcommand();
 
     lotteries = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Lotteries', 'selectAll');
