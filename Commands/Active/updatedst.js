@@ -15,22 +15,22 @@ const data = new SlashCommandBuilder()
 function run(fishsticks, int) {
     const shell_conn = new Client();
 
-    shell_conn.on('ready', () => {
+    shell_conn.on('ready', async () => {
         log('info', '[UPDATE-DST] Shell connection online.');
         int.deferReply();
-        fishsticks.CONSOLE.send('```[Update DST] Starting an update.```');
+        await updateLog(fishsticks, '', true);
         shell_conn.exec('./updatedst.sh', (err, stream) => {
             if (err) throw err;
-            stream.on('close', (code, signal) => {
+            stream.on('close', async (code, signal) => {
                 log('info', `Stream Closed (Code: ${code}) - ${signal}`);
-                fishsticks.CONSOLE.send(`\`\`\`[Sys-Shell] [UDST] Stream Closed. (${code} - ${signal})\`\`\``);
+                await updateLog(fishsticks, `[Sys-Shell] [UDST] Stream Closed. (${code} - ${signal})\n`);
                 shell_conn.end();
-            }).on('data', (str_data) => {
+            }).on('data', async (str_data) => {
                 log('info', `Console Out: ${str_data}`);
-                fishsticks.CONSOLE.send(`\`\`\`[Sys-Shell] [UDST] Out: ${str_data}\`\`\``);
-            }).stderr.on('data', (ste_data) => {
+                await updateLog(fishsticks, `${str_data}\n`);
+            }).stderr.on('data', async (ste_data) => {
                 log('info', `Console Err: ${ste_data}`);
-                fishsticks.CONSOLE.send(`\`\`\`[Sys-Shell] [UDST] Err: ${ste_data}\`\`\``);
+                await updateLog(fishsticks, `${ste_data}\n`);
             });
         });
     }).connect({
@@ -45,6 +45,26 @@ function run(fishsticks, int) {
     }).on('error', (err) => {
         return int.editReply({ content: `Job errored: ${err}`, ephemeral: true });
     });
+}
+
+let logMessage;
+let logMsgContent;
+
+async function updateLog(fishsticks, logdata, first) {
+    if (first) {
+        logMsgContent = '[Update DST] Starting an update.\n\n';
+        await fishsticks.CONSOLE.send('```[Update DST] Starting an update.```')
+            .then(msg => { logMessage = msg; });
+    }
+
+    logMsgContent += logdata;
+    logMessage.edit(`\`\`\`${logMsgContent}\`\`\``);
+
+    if (logMsgContent.length >= 900) {
+        await fishsticks.CONSOLE.send('--')
+            .then(msg => { logMessage = msg; });
+        logMsgContent = '';
+    }
 }
 
 function help() {

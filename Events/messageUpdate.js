@@ -13,8 +13,10 @@ module.exports = {
 };
 
 async function execute(fishsticks, oldMsg, newMsg) {
-    Logger({ type: 'Message Updated' });
     const oldMem = await oldMsg.member;
+    if (oldMem === fishsticks.member || oldMem.id === fishsticks.id || oldMem.bot) return;
+
+    Logger({ type: 'Message Updated' });
 
     const qe = {
         title: '[INFO] [CLIENT] [MESSAGE UPDATED]',
