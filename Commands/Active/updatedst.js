@@ -6,6 +6,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Client } = require('ssh2');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { v } = require('../../Modules/Library/emojiList');
+const { hasPerms } = require('../../Modules/Utility/Utils_User');
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -19,6 +20,10 @@ data.addBooleanOption(o => o
 
 //Functions
 function run(fishsticks, int) {
+    if (!hasPerms(int.member, ['Server Manager'])) {
+        int.reply({ content: `You can't do this!`, ephemeral: true });
+    }
+
     const verboseLog = int.options.getBoolean('show-log') || false;
     const shell_conn = new Client();
 
