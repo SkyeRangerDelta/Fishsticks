@@ -14,7 +14,7 @@ module.exports = {
 
 async function execute(fishsticks, oldMsg, newMsg) {
     const oldMem = await oldMsg.member;
-    if (oldMem === fishsticks.member || oldMem.id === fishsticks.id || oldMem.bot) return;
+    if (oldMem === fishsticks.member || oldMem.id === fishsticks.user.id || oldMsg.user.bot) return;
 
     Logger({ type: 'Message Updated' });
 
