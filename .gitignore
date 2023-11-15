@@ -1,5 +1,7 @@
 #General
 /node_modules
+.idea/workspace.xml
+.env
 
 #Core
 /Modules/Core/Core_ids.json
@@ -9,7 +11,6 @@ Modules/Core/Core_keys.json
 
 #FSO
 /Modules/FSO/FSO_assets.json
-.idea/workspace.xml
 
 #Library - Declutter
 /Modules/Library/prayerReqs.json
