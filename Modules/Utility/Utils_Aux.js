@@ -60,10 +60,10 @@ async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 	for (const ID in fishsticks.debMsgIDs) {
 		log('info', '[DEBATER] Checking IDs for debater rules acceptance.');
 		if (addedReaction.message.id === fishsticks.debMsgIDs[ID]) {
-			const member = await fishsticks.CCG.members.cache.find(mem => mem.id === reactor.id);
+			const member = await fishsticks.CCG.members.fetch(reactor.id);
 			if (!member) throw 'Couldnt validate the member!';
 
-			const debRole = await fishsticks.CCG.roles.cache.find(role => role.id === debater);
+			const debRole = await fishsticks.CCG.roles.fetch(debater);
 			if (!debRole) throw 'Couldnt validate the debater role!';
 
 			return await member.roles.add(debRole)
@@ -241,11 +241,7 @@ async function handleDenMsg(cmd, fishsticks) {
 
 		const conMsg = 'For your convenience; below is the message you attempted to send to the den (posts are deleted):\n```' + msgDeleted + '```';
 
-		await cmd.msg.author.send(conMsg)
-			.then(console.log('Sent!'))
-			.catch(e => {
-				console.log('API maybe?\n' + e);
-			});
+		await cmd.msg.author.send(conMsg);
 
 		return cmd.reply('You need to agree to the den rules before posting here! Check your DMs!', 20);
 		//182291777275822090

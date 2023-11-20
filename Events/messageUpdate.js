@@ -13,14 +13,23 @@ module.exports = {
 };
 
 async function execute(fishsticks, oldMsg, newMsg) {
-    const oldMem = await oldMsg.member;
-    if (oldMem === fishsticks.member || oldMem.id === fishsticks.user.id || oldMsg.user.bot) return;
+
+    let msgMem;
+    if (oldMsg.partial) {
+        await newMsg.fetch();
+        msgMem = newMsg.member.fetch();
+    }
+    else {
+        msgMem = oldMsg.member.fetch();
+    }
+
+    if (msgMem === fishsticks.member || msgMem.id === fishsticks.user.id || msgMem.user.bot) return;
 
     Logger({ type: 'Message Updated' });
 
     const qe = {
         title: '[INFO] [CLIENT] [MESSAGE UPDATED]',
-        description: `${oldMem.displayName}'s message in ${oldMsg.channel.name} was updated.`
+        description: `${msgMem.displayName}'s message in ${oldMsg.channel.name} was updated.`
     };
 
     fishsticks.BOT_LOG.send({ content: `${systemTimestamp()}`, embeds: [quickEmbed(qe)] });
