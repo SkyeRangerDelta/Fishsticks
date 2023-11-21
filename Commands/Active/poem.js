@@ -21,18 +21,18 @@ const API_URL = 'https://poetrydb.org/';
 
 //Functions
 async function run(fishsticks, int) {
+    int.deferReply();
     const subCMD = int.options.getSubcommand();
 
     if (subCMD === 'random') {
-        const poemToSend = await buildPoem();
-        await int.editReply({ embeds: [poemToSend] });
+        await buildPoem(int);
     }
     else {
         await int.editReply({ content: 'Nothing here yet. Be on your way.', ephemeral: true });
     }
 }
 
-async function fetchDailyPoem() {
+async function fetchPoem() {
     const payloadURL = `${API_URL}random`;
 
     let poemObj = '';
@@ -47,7 +47,7 @@ async function fetchDailyPoem() {
             });
 
             done.on('end', function() {
-                resolve(JSON.parse(poemObj));
+                resolve(JSON.parse(poemObj)[0]);
             });
 
             done.on('error', err => {
@@ -57,28 +57,32 @@ async function fetchDailyPoem() {
     });
 }
 
-async function buildPoem() {
-    let poemObj = '';
+async function buildPoem(int) {
+    let poemObj;
     let poemTxt = '';
-    const maxSize = 2048;
-    let limit = 0;
 
-    do {
-        log('info', `[POEM] (${limit}) Obtaining a suitable poem.`);
-        poemObj = await fetchDailyPoem();
-        poemTxt = poemObj[0].lines.join('\n');
-        limit++;
+    for (let l = 1; l < 11; l++) {
+        log('info', `[POEM] (${l}) Obtaining a suitable poem.`);
+        poemObj = await fetchPoem();
+
+        console.log(poemObj);
+
+        //Make this easy and keep it to a small line count
+        if (parseInt(poemObj.linecount) <= '20') break;
     }
-    while (poemTxt.length >= maxSize && limit < 11);
+
+    poemTxt = poemObj.lines.join('\n');
+
+    if (poemTxt === '' || poemTxt.length > 2048) return int.editReply({ content: 'Failed to find a suitable poem!' });
 
 	const poemEmbed = {
-		title: `[From the Fishsticks Poetry Archive] ${poemObj[0].title}`,
+		title: `*${poemObj.title}* - ${poemObj.author}`,
 		description: `${poemTxt}`,
-        footer: `${poemObj[0].title} by ${poemObj[0].author} provided by PoetryDB.`,
+        footer: 'API provided by PoetryDB.',
         noThumbnail: true
     };
 
-	return embedBuilder(poemEmbed);
+	return int.editReply({ embeds: [embedBuilder(poemEmbed)] });
 }
 
 function help() {

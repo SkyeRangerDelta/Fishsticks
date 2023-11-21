@@ -11,7 +11,7 @@ const { terminate } = require('../Utility/Utils_Terminate');
 const fs = require('fs');
 const path = require('path');
 const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
+const { Routes, ActivityType } = require('discord-api-types/v9');
 
 const { guild_CCG, fs_console, fsID, bLogger, ranger } = require('./Core_ids.json');
 const { version } = require('../../package.json');
@@ -200,7 +200,7 @@ async function startUp(Fishsticks) {
 
 		//Set Status
 		await Fishsticks.user.setPresence({
-			activities: [{ name: version + ' | TEST MODE', type: 'PLAYING' }],
+			activities: [{ name: version + ' | TEST MODE', type: ActivityType.Listening }],
 			status: 'online'
 		});
 	}
@@ -229,7 +229,7 @@ async function startUp(Fishsticks) {
 
 		//Set Status
 		await Fishsticks.user.setPresence({
-			activities: [{ name: 'for /help | ' + version, type: 'WATCHING' }],
+			activities: [{ name: 'for /help | ' + version, type: ActivityType.Watching }],
 			status: 'online'
 		});
 	}

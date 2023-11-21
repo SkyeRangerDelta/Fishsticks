@@ -13,6 +13,7 @@ module.exports = {
 };
 
 async function execute(fishsticks, oldMsg, newMsg) {
+    if (oldMsg.partial || newMsg.partial) console.log('Partial!');
 
     let msgMem;
     if (oldMsg.partial) {
