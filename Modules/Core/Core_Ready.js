@@ -195,7 +195,8 @@ async function startUp(Fishsticks) {
 			]
 		};
 
-		Fishsticks.CONSOLE.send({ embeds: [embedBuilder(startupMessage)] });
+		const startupEmbed = embedBuilder(startupMessage);
+		Fishsticks.CONSOLE.send({ embeds: [startupEmbed] });
 
 		//Set Status
 		await Fishsticks.user.setPresence({

@@ -22,9 +22,6 @@ const API_URL = 'https://poetrydb.org/';
 //Functions
 async function run(fishsticks, int) {
     const subCMD = int.options.getSubcommand();
-    return int.reply({
-        content: 'The API used by FS to pull poems is disabled for some unknown reason. This command will resume functionality when API access has been restored.'
-    });
 
     if (subCMD === 'random') {
         const poemToSend = await buildPoem();

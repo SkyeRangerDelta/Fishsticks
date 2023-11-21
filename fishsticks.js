@@ -39,6 +39,7 @@ const Fishsticks = new Client({
 		GatewayIntentBits.GuildVoiceStates,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.GuildPresences,
 		GatewayIntentBits.DirectMessages,
 		GatewayIntentBits.DirectMessageReactions
 	],
@@ -92,11 +93,11 @@ for (const eventFile in eventsIndex) {
 require('dotenv').config();
 
 //Schedule Crons
-/*
-schedule.scheduleJob('8 * * *', function() {
+const dailyRule = new schedule.RecurrenceRule();
+dailyRule.hour = 8;
+schedule.scheduleJob(dailyRule, function() {
 	doDailyPost(Fishsticks);
 });
- */
 
 process.on('unhandledRejection', e => {
 	console.log('[WARN] ' + e);
