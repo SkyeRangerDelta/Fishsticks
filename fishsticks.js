@@ -95,6 +95,8 @@ require('dotenv').config();
 //Schedule Crons
 const dailyRule = new schedule.RecurrenceRule();
 dailyRule.hour = 8;
+dailyRule.minute = 0;
+dailyRule.tz = 'America/New_York';
 schedule.scheduleJob(dailyRule, function() {
 	doDailyPost(Fishsticks);
 });
