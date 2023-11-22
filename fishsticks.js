@@ -100,7 +100,7 @@ schedule.scheduleJob(dailyRule, function() {
 });
 
 process.on('unhandledRejection', e => {
-	console.log('[WARN] ' + e);
+	console.log('[ERR] ' + e);
 });
 
 //==============================================

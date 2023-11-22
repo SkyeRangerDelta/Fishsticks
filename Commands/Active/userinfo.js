@@ -87,7 +87,9 @@ async function run(fishsticks, int) {
     const embed = {
         title: `[Intelligence Profile] ${targetMember.displayName}`,
         description: 'Heres that report you asked for...',
-        footer: `Report summoned by ${int.member.displayName}`,
+        footer: {
+            text: `Report summoned by ${int.member.displayName}`
+        },
         thumbnail: targetMember.displayAvatarURL(),
         fields: [
             {

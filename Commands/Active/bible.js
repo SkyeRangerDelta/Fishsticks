@@ -124,7 +124,9 @@ async function buildPayload(paramObj, int) {
 				title: 'o0o - Bible (ESV) - o0o',
 				color: primary,
 				description: received.passages.toString(),
-				footer: 'ESV Bible provided by Crossway Publishers; licensed to Fishsticks.'
+				footer: {
+                    text: 'ESV Bible provided by Crossway Publishers; licensed to Fishsticks.'
+                }
 			};
 
             int.reply({ embeds: [embedBuilder(verseEmbed)] });

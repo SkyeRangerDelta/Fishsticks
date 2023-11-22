@@ -17,7 +17,9 @@ module.exports = {
             title: '[Command Created] ' + appCmd.name,
             description: 'A new application command was created.',
             noThumbnail: true,
-            footer: `Created at ${systemTimestamp(appCmd.createdAt)}`,
+            footer: {
+                text: `Created at ${systemTimestamp(appCmd.createdAt)}`
+            },
             fields: [
                 {
                     name: 'Description',

@@ -42,7 +42,9 @@ async function run(fishsticks, int) {
         profileEmbed = {
             title: `o0o - ${int.member.displayName}'s Profile - o0o`,
             description: 'A synopsis of your FSO profile and XP data.',
-            footer: 'FSO data may be slightly inaccurate depending on activity surrounding when this command was executed.',
+            footer: {
+                text: 'FSO data may be slightly inaccurate depending on activity surrounding when this command was executed.'
+            },
             delete: 60000,
             fields: [
                 {

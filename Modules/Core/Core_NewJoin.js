@@ -20,7 +20,9 @@ function handleNewJoin(fishsticks, newJoin) {
 	const cPadEmbedPanel = {
 		title: `o0o - Welcome, ${newJoin.displayName}!`,
 		description: `${welcomeBlurb1} ${fishsticks.RANGER} ${welcomeBlurb2}`,
-		footer: `${newJoin.displayName} joined at ${systemTimestamp}.`,
+		footer: {
+			text: `${newJoin.displayName} joined at ${systemTimestamp}.`
+		},
 		thumbnail: `${newJoin.displayAvatarURL()}`,
 		fields: [
 			{

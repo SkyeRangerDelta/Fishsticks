@@ -1,7 +1,6 @@
 // ---- Aux Utils ----
 
 //Imports
-const errorMsgPool = require('../Library/errorMsgs.json');
 const { debater } = require('../../Modules/Core/Core_ids.json');
 //const { urlscanIO } = require('../Core/Core_keys.json');
 const { discussionDenRules } = require('../Library/systemResponses.json');
@@ -18,7 +17,6 @@ const { handleAddedReaction } = require('../../Commands/Active/poll');
 
 //Exports
 module.exports = {
-	generateErrorMsg,
 	validateAddedReaction,
 	//validateURL,
 	toTitleCase,
@@ -29,11 +27,6 @@ module.exports = {
 //const urlTests = [];
 
 //Functions
-function generateErrorMsg() {
-	const msgNum = Math.floor(Math.random() * errorMsgPool.length);
-	return '*' + errorMsgPool[msgNum] + '* ';
-}
-
 async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 	//Void reactions from FS
 	if (reactor === fishsticks.user) return;
@@ -225,7 +218,9 @@ async function handleDenMsg(cmd, fishsticks) {
 
 		const denMsg = {
 			title: 'o0o - Discussion Den Rules - o0o',
-			footer: 'You were sent this message because you posted in the Discussion Den without accepting the rules.',
+			footer: {
+				text: 'You were sent this message because you posted in the Discussion Den without accepting the rules.'
+			},
 			description: discussionDenRules
 		};
 

@@ -22,7 +22,9 @@ function run(fishsticks, int) {
 		title: 'o0o - Fishsticks Version/About - o0o',
 		description: 'This contains general info about Fishsticks.',
 		color: config.colors.primary,
-		footer: `Panel was summoned by ${int.member.displayName}. This message will delete itself in 30 seconds.`,
+		footer: {
+			text: `Panel was summoned by ${int.member.displayName}. This message will delete itself in 30 seconds.`
+		},
 		timeout: 30000,
 		fields: [
 			{

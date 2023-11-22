@@ -181,11 +181,14 @@ async function startUp(Fishsticks) {
 	if (Fishsticks.TESTMODE) {
 		log('warn', '[FISHSTICKS] Fs has been booted into Test mode!');
 
-		const startupMessage = {
+		const startupEmbed = {
 			title: 'Test Mode Boot',
 			description: version + ' feels undercooked. Test mode time.',
 			color: emergency,
-			footer: 'Sequence initiated at ' + systemTimestamp(timestamp),
+			noThumbnail: true,
+			footer: {
+				text: 'Sequence initiated at ' + systemTimestamp(timestamp)
+			},
 			fields: [
 				{
 					name: 'Last startup time',
@@ -195,8 +198,7 @@ async function startUp(Fishsticks) {
 			]
 		};
 
-		const startupEmbed = embedBuilder(startupMessage);
-		Fishsticks.CONSOLE.send({ embeds: [startupEmbed] });
+		Fishsticks.CONSOLE.send({ embeds: [embedBuilder(startupEmbed)] });
 
 		//Set Status
 		await Fishsticks.user.setPresence({
@@ -209,7 +211,9 @@ async function startUp(Fishsticks) {
 			title: 'o0o - Fishsticks Startup - o0o',
 			description: 'Dipping in flour...\nBaking at 400°...\nFishticks ' + version + ' is ready to go!',
 			color: primary,
-			footer: 'Sequence initiated at ' + systemTimestamp(timestamp),
+			footer: {
+				text: 'Sequence initiated at ' + systemTimestamp(timestamp)
+			},
 			fields: [
 				{
 					name: 'Last startup time',

@@ -36,7 +36,9 @@ function run(fishsticks, int) {
 						'------------------------------------\n' +
 						helpMenu,
 		color: primary,
-		footer: 'Full Reference: https://wiki.pldyn.net/en/fishsticks/command-listing.',
+		footer: {
+			text: 'Full Reference: https://wiki.pldyn.net/en/fishsticks/command-listing.'
+		},
 		delete: 60000,
 		noThumbnail: true
 	};

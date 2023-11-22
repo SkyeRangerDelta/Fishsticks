@@ -390,14 +390,18 @@ async function listRoles(fishsticks, int, ext) {
         title: 'o0o - Role Listing [Active] - o0o',
         description: activeRoleList,
         delete: 45000,
-        footer: 'Active role listings pulled from FSO.'
+        footer: {
+            text: 'Active role listings pulled from FSO.'
+        }
     };
 
     const inactiveListEmbed = {
         title: 'o0o - Role Listing [Inactive] - o0o',
         description: inactiveRoleList,
         delete: 45000,
-        footer: 'Inactive role listings pulled from FSO.'
+        footer: {
+            text: 'Inactive role listings pulled from FSO.'
+        }
     };
 
     await int.channel.send({ embeds: [embedBuilder(roleListEmbed)] }).then(sent => {
@@ -477,7 +481,9 @@ async function detailsRole(fishsticks, int) {
         title: `o0o - ${roleObj.name} Role Info - o0o`,
         description: roleObj.description,
         noThumbnail: true,
-        footer: `Footer summoned by ${int.member.displayName}.`,
+        footer: {
+            text: `Summoned by ${int.member.displayName}.`
+        },
         fields: [
             {
                 name: 'Creator',

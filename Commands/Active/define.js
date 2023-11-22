@@ -49,7 +49,9 @@ async function run(fishticks, int) {
     const defEmbed = {
         title: 'o0o - Dictionary [' + word + '] - o0o',
         description: `${ emDesc }`,
-        footer: 'Powered by the Oxford University Press Dictionary API.',
+        footer: {
+            text: 'Powered by the Oxford University Press Dictionary API.'
+        },
         noThumbnail: true
     };
 

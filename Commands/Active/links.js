@@ -21,7 +21,9 @@ function run(fishsticks, int) {
 					'[LCARS Database: Fishsticks](https://wiki.pldyn.net/en/fishsticks)\n' +
 					'[LCARS Database: Guide to Fishsticks](https://wiki.pldyn.net/en/fishsticks/general-guide)\n' +
 					'[LCARS Database: Command Listing/Help](https://wiki.pldyn.net/en/fishsticks/command-listing)',
-		footer: 'Please report bad links.',
+		footer: {
+			text: 'Please report bad links.'
+		},
 		delete: 20000
 	};
 

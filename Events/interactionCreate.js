@@ -6,7 +6,7 @@ const {
     handleButtonInteraction,
     handleSelectInteraction,
     handleModalInteraction } = require('../Modules/Utility/Utils_Interactions');
-const { generateErrorMsg } = require('../Modules/Utility/Utils_Aux');
+const { generateErrorMsg } = require('../Modules/Utility/Utils_MessageGenerators');
 const { fso_query } = require('../Modules/FSO/FSO_Utils');
 
 //Export
@@ -74,7 +74,7 @@ async function execute(fishsticks, interaction) {
                 log('err', '[INTERACTION] AAAAAAAHHHHHHHHHHHHHH - DO SOMETHING.');
             }
             else {
-                await interaction.reply('Looks like weve got a very serious situation on our hands.\n' + generateErrorMsg() + '\n' + cmdErr);
+                await interaction.editReply('Looks like weve got a very serious situation on our hands.\n' + generateErrorMsg() + '\n' + cmdErr);
             }
         }
     }

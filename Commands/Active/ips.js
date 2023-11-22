@@ -34,7 +34,9 @@ function run(fishsticks, int) {
 				value: 'Look up *CCG* in the server browser - Request password'
 			}
 		],
-		footer: 'If any IPs are bad, or missing - let a staff member know.',
+		footer: {
+			text: 'If any IPs are bad, or missing - let a staff member know.'
+		},
 		noThumbnail: true
 	};
 

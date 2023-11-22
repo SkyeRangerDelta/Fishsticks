@@ -7,6 +7,7 @@ const https = require('https');
 const { log } = require('../../Modules/Utility/Utils_Log');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { EmbedBuilder } = require('discord.js');
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -21,14 +22,10 @@ const API_URL = 'https://poetrydb.org/';
 
 //Functions
 async function run(fishsticks, int) {
-    int.deferReply();
     const subCMD = int.options.getSubcommand();
 
     if (subCMD === 'random') {
         await buildPoem(int);
-    }
-    else {
-        await int.editReply({ content: 'Nothing here yet. Be on your way.', ephemeral: true });
     }
 }
 
@@ -61,28 +58,30 @@ async function buildPoem(int) {
     let poemObj;
     let poemTxt = '';
 
-    for (let l = 1; l < 11; l++) {
+    for (let l = 1; l < 6; l++) {
         log('info', `[POEM] (${l}) Obtaining a suitable poem.`);
         poemObj = await fetchPoem();
-
-        console.log(poemObj);
 
         //Make this easy and keep it to a small line count
         if (parseInt(poemObj.linecount) <= '20') break;
     }
 
+    if (poemObj.lines.length > 20) int.reply('Failed to find a suitable poem.');
+
     poemTxt = poemObj.lines.join('\n');
 
-    if (poemTxt === '' || poemTxt.length > 2048) return int.editReply({ content: 'Failed to find a suitable poem!' });
+    if (poemTxt === '' || poemTxt.length > 2048) {
+        return int.reply({ content: 'Failed to find a suitable poem!' });
+    }
 
-	const poemEmbed = {
-		title: `*${poemObj.title}* - ${poemObj.author}`,
-		description: `${poemTxt}`,
-        footer: 'API provided by PoetryDB.',
-        noThumbnail: true
-    };
+    const poemEmbed = new EmbedBuilder()
+        .setTitle(`*${poemObj.title}* - ${poemObj.author}`)
+        .setDescription(`${poemTxt}`)
+        .setFooter({
+            text: 'API provided by PoetryDB.'
+        });
 
-	return int.editReply({ embeds: [embedBuilder(poemEmbed)] });
+	return int.reply({ embeds: [poemEmbed] });
 }
 
 function help() {
