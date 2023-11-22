@@ -4,7 +4,7 @@
 //Imports
 const Discord = require('discord.js');
 
-const { createCanvas, registerFont, loadImage } = require('canvas');
+const { createCanvas, loadImage } = require('@napi-rs/canvas');
 const { log } = require('./Utils_Log');
 
 //Exports
@@ -32,7 +32,6 @@ async function handleShiny(msg) {
 	msg.delete({ timeout: 0 });
 
 	//Register and create canvas
-	registerFont('./Fonts/JuliusSansOne-Regular.ttf', { family: 'Julius Sans One' });
 	const canvas = createCanvas(700, 250);
 	const ctx = canvas.getContext('2d');
 

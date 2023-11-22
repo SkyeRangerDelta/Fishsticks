@@ -1,6 +1,6 @@
 {
   "name": "fishsticks",
-  "version": "1.19.3",
+  "version": "1.19.4",
   "description": "The official CCG Discord bot",
   "main": "fishsticks.js",
   "scripts": {
@@ -19,8 +19,8 @@
   "dependencies": {
     "@discordjs/builders": "^1.6.5",
     "@discordjs/rest": "^0.3.0",
+    "@napi-rs/canvas": "^0.1.44",
     "axios": "^0.24.0",
-    "canvas": "^2.7.0",
     "colors": "^1.4.0",
     "date-and-time": "^2.0.0",
     "discord-api-types": "^0.26.1",
