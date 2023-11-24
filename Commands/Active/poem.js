@@ -5,8 +5,6 @@
 //Imports
 const https = require('https');
 const { log } = require('../../Modules/Utility/Utils_Log');
-const { lounge } = require('./Core_ids.json');
-const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder } = require('discord.js');
 
