@@ -5,6 +5,7 @@
 //Imports
 const https = require('https');
 const { log } = require('../../Modules/Utility/Utils_Log');
+const { lounge } = require('./Core_ids.json');
 const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder } = require('discord.js');
@@ -70,7 +71,7 @@ async function buildPoem(int) {
 
     poemTxt = poemObj.lines.join('\n');
 
-    if (poemTxt === '' || poemTxt.length > 2048) {
+    if (poemTxt === '' || poemTxt.length > 2048 && int) {
         return int.reply({ content: 'Failed to find a suitable poem!' });
     }
 
@@ -81,7 +82,11 @@ async function buildPoem(int) {
             text: 'API provided by PoetryDB.'
         });
 
-	return int.reply({ embeds: [poemEmbed] });
+	if (!int) { //doDailyPost
+        return poemEmbed;
+    }
+
+    return int.reply({ embeds: [poemEmbed] });
 }
 
 function help() {
@@ -93,5 +98,6 @@ module.exports = {
     name: 'poem',
     data,
     run,
-    help
+    help,
+    buildPoem
 };
