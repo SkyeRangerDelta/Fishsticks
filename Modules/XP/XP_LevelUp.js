@@ -2,11 +2,11 @@
 // Handles banner creation
 
 //Imports
-const Discord = require('discord.js');
 const { createCanvas, loadImage } = require('@napi-rs/canvas');
 
 const { hangout, prReqs, announcements, discDen, bStudy } = require('../Core/Core_ids.json');
 const { log } = require('../Utility/Utils_Log');
+const { AttachmentBuilder } = require('discord.js');
 
 //Exports
 module.exports = {
@@ -90,9 +90,11 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
 
     //Save and send
     log('info', '[NEW-MEM] Banner saved, pending dispatch');
-    const xpBannerAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
+    const xpBannerAttachment = new AttachmentBuilder(await canvas.encode('png'),
+        { name: 'welcome-banner.png' });
 
-    if (cmd.channel.id === announcements || cmd.channel.id === discDen || cmd.channel.id === bStudy) {
+    if (cmd.channel.id === announcements || cmd.channel.id === discDen ||
+        cmd.channel.id === bStudy || cmd.channel.id === prReqs) {
         //Redirect out of serious chats
         const hangoutCh = await fishsticks.channels.cache.get(hangout);
         hangoutCh.send({ content: 'Level up!', files: [xpBannerAttachment] })

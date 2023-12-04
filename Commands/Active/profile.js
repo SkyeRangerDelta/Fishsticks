@@ -23,6 +23,7 @@ data.addSubcommand(s => s
 
 //Functions
 async function run(fishsticks, int) {
+    await int.deferReply();
     const subCMD = int.options.getSubcommand();
     let profileEmbed = null;
 
@@ -109,11 +110,11 @@ async function run(fishsticks, int) {
     };
 
     if (subCMD === 'detailed') {
-        await int.reply({ content: 'Its coming right up, baking in the oven...' });
+        await int.editReply({ content: 'Its coming right up, baking in the oven...', ephemeral: true });
         return await buildProfileBanner(fishsticks, int, profileEmbed);
     }
     else {
-        await int.reply({ embeds: [embedBuilder(profileEmbed)] });
+        await int.editReply({ embeds: [embedBuilder(profileEmbed)] });
     }
 }
 

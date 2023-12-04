@@ -7,6 +7,7 @@ const { createCanvas, loadImage } = require('@napi-rs/canvas');
 const { log } = require('../Utility/Utils_Log');
 
 const chs = require('./Core_ids.json');
+const { AttachmentBuilder } = require('discord.js');
 
 //Exports
 module.exports = {
@@ -77,6 +78,7 @@ async function handleNewMember(fishsticks, newMember) {
     ctx.drawImage(bannerAvatar, 25, 25, 200, 200);
 
     //Save and fire off
-    const welcomeAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
+    const welcomeAttachment = new AttachmentBuilder(await canvas.encode('png'),
+        { name: 'welcome-banner.png' });
     dispatchChannel.send({ content: `Welcome ${newMember} to the server!`, files: [welcomeAttachment] });
 }

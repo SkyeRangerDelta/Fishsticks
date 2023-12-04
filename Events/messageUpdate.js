@@ -19,10 +19,10 @@ async function execute(fishsticks, oldMsg, newMsg) {
     let msgMem;
     if (oldMsg.partial) {
         await newMsg.fetch();
-        msgMem = newMsg.member.fetch();
+        msgMem = await newMsg.member.fetch();
     }
     else {
-        msgMem = oldMsg.member.fetch();
+        msgMem = await oldMsg.member.fetch();
     }
 
     if (msgMem === fishsticks.member || msgMem.id === fishsticks.user.id || msgMem.user.bot) return;

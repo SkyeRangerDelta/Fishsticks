@@ -1,8 +1,6 @@
 // ---- Build Profile Banner ----
 
 //Imports
-
-const Discord = require('discord.js');
 const Canvas = require('@napi-rs/canvas');
 const { log } = require('../Utility/Utils_Log');
 const { fso_query } = require('../FSO/FSO_Utils');
