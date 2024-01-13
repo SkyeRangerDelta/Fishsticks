@@ -52,10 +52,10 @@ function run(fishsticks, int) {
         password: process.env.SSH_PASS_HOLO
     }).on('close', () => {
         fishsticks.CONSOLE.send('```[Update DST] Update done. (Console closed)```');
-        return int.editReply({ content: 'Jobs done.', ephemeral: true });
+        return int.editReply({ content: `Job's done.`, ephemeral: true });
     }).on('end', () => {
         fishsticks.CONSOLE.send('```[Update DST] Update done. (Shell exited)```');
-        return int.editReply({ content: 'Jobs completed.', ephemeral: true });
+        return int.editReply({ content: `Job's completed.`, ephemeral: true });
     }).on('error', (err) => {
         fishsticks.CONSOLE.send('```[Update DST] Update errored! (Console error reported)```');
         return int.editReply({ content: `Job errored: ${err}`, ephemeral: true });
