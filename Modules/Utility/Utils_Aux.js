@@ -63,7 +63,6 @@ async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 						})
 						.catch(console.error);
 				});
-			//TODO: Debater app start
 		}
 	}
 }

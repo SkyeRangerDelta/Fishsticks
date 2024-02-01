@@ -16,7 +16,7 @@
 //				DEPENDENCIES
 //=============================================
 //Libraries
-const { Client, GatewayIntentBits, Partials } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 const schedule = require('node-schedule');
 const fs = require('fs');
 
@@ -41,12 +41,8 @@ const Fishsticks = new Client({
 		GatewayIntentBits.GuildMessageReactions,
 		GatewayIntentBits.GuildPresences,
 		GatewayIntentBits.DirectMessages,
-		GatewayIntentBits.DirectMessageReactions
-	],
-	partials: [
-		Partials.Message,
-		Partials.Reaction,
-		Partials.Channel
+		GatewayIntentBits.DirectMessageReactions,
+		GatewayIntentBits.MessageContent
 	],
 	allowedMentions: {
 		parse: [
