@@ -37,7 +37,6 @@ Designed and based primarily on JavaScript (Discord.js)
 - NPM (7.24.0)
 - Oxford-Dictionary (1.6.0)
 - Roll (1.2.0)
-- URLScan-API (0.0.4)
 
 ## Privacy?
 IDs and data are handled purely for data processing such as user permission checks, data validation, and statistics controls. Users can view how their information is handled via the Fishsticks Online (FSO) control panel and under the PlDyn Privacy statament online (https://pldyn.net).
