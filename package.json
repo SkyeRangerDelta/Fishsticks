@@ -1,6 +1,6 @@
 {
   "name": "fishsticks",
-  "version": "1.19.6",
+  "version": "1.19.6.1",
   "description": "The official CCG Discord bot",
   "main": "fishsticks.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "@discordjs/builders": "^1.6.5",
     "@discordjs/rest": "^0.3.0",
     "@napi-rs/canvas": "^0.1.44",
-    "axios": "^0.24.0",
+    "axios": "^1.6.7",
     "colors": "^1.4.0",
     "date-and-time": "^2.0.0",
     "discord-api-types": "^0.26.1",
@@ -31,10 +31,9 @@
     "luxon": "^2.2.0",
     "mongodb": "^4.2.1",
     "node-schedule": "^2.0.0",
-    "npm": "^9.1.2",
+    "npm": "^10.4.0",
     "oxford-dictionary": "^1.6.0",
     "roll": "^1.2.0",
-    "ssh2": "^1.14.0",
-    "urlscan-api": "^0.0.4"
+    "ssh2": "^1.14.0"
   }
 }
