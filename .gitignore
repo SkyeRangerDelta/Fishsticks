@@ -1,6 +1,6 @@
 #General
 /node_modules
-.idea/workspace.xml
+.idea/
 .env
 
 #Core
