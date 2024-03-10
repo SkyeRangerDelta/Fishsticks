@@ -65,7 +65,14 @@ async function buildPoem(int) {
         if (parseInt(poemObj.linecount) <= '20') break;
     }
 
-    if (poemObj.lines.length > 20) int.reply('Failed to find a suitable poem.');
+    if (poemObj.lines.length > 20) {
+        if (int) {
+            return int.reply('Failed to find a suitable poem.');
+        }
+        else {
+            return log('info', 'Failed to find a suitable poem.');
+        }
+    }
 
     poemTxt = poemObj.lines.join('\n');
 

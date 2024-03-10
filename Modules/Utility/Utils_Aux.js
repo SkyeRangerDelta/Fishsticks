@@ -55,14 +55,17 @@ async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 			const debRole = await fishsticks.CCG.roles.fetch(debater);
 			if (!debRole) throw 'Couldnt validate the debater role!';
 
-			return await member.roles.add(debRole)
-				.then(() => {
-					member.createDM()
-						.then((DMCh) => {
-							DMCh.send({ content: 'Debater role assigned!' }).catch(console.error);
-						})
-						.catch(console.error);
-				});
+			try {
+				await member.roles.add(debRole);
+				member.createDM()
+					.then((DMCh) => {
+						DMCh.send({ content: 'Debater role assigned!' }).catch(console.error);
+					})
+					.catch(console.error);
+			}
+			catch (e) {
+				log('error', '[DEBATER] Error assigning debater role: ' + e);
+			}
 		}
 	}
 }
