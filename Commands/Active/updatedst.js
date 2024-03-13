@@ -49,7 +49,8 @@ function run(fishsticks, int) {
         host: process.env.SSH_HOST_HOLO,
         port: process.env.SSH_PORT_HOLO,
         username: process.env.SSH_USER_HOLO,
-        password: process.env.SSH_PASS_HOLO
+        password: process.env.SSH_PASS_HOLO,
+        privateKey: process.env.SSH_PKEY_HOLO
     }).on('close', () => {
         fishsticks.CONSOLE.send('```[Update DST] Update done. (Console closed)```');
         return int.editReply({ content: `Job's done.`, ephemeral: true });
