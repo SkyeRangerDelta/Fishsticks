@@ -15,7 +15,9 @@ function run(fishsticks, int) {
 		description: 'A list of all the channels in CC and a brief description.\n' +
 						'Note the following key:\n🔇: You should mute channels with this icon.\n🔒: Channels with this require extra permissions.',
 		color: primary,
-		footer: 'Ask staff for more info.',
+		footer: {
+			text: 'Ask staff for more info.'
+		},
 		delete: 60000,
 		fields: [
 			{

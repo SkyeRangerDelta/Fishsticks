@@ -2,11 +2,11 @@
 // Handles banner creation
 
 //Imports
-const Discord = require('discord.js');
-const { createCanvas, registerFont, loadImage } = require('canvas');
+const { createCanvas, loadImage } = require('@napi-rs/canvas');
 
 const { hangout, prReqs, announcements, discDen, bStudy } = require('../Core/Core_ids.json');
 const { log } = require('../Utility/Utils_Log');
+const { AttachmentBuilder } = require('discord.js');
 
 //Exports
 module.exports = {
@@ -20,9 +20,6 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
 
     //Get forced user in the event of custom banner
     const forcedUser = await cmd.msg.author.fetch(true);
-
-    //Register font
-    registerFont('./Fonts/JuliusSansOne-Regular.ttf', { family: 'Julius Sans One' });
 
     //Create canvas context
     const canvas = createCanvas(700, 250);
@@ -48,17 +45,17 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
 
     //Apply text
     //Upper title
-    ctx.font = '30px Julius Sans One';
+    ctx.font = '30px Trebuchet MS';
     ctx.fillStyle = '#ffffff';
     ctx.fillText(`${cmd.msg.member.displayName}`, canvas.width / 2.5, canvas.height / 3.5);
 
     //Level shift
-    ctx.font = '70px Trebuchet MS';
+    ctx.font = '70px Verdana';
     ctx.fillStyle = '#add8e6';
     ctx.fillText(`${newLvl - 1} -> ${newLvl}`, canvas.width / 1.9, canvas.height / 1.8);
 
     //Lower title
-    ctx.font = '26px Julius Sans One';
+    ctx.font = '26px Trebuchet MS';
     ctx.fillStyle = '#ffffff';
     ctx.fillText('Congrats on your work!', canvas.width / 2.5, canvas.height / 1.1);
 
@@ -93,9 +90,11 @@ async function createLevelBanner(fishsticks, cmd, newLvl) {
 
     //Save and send
     log('info', '[NEW-MEM] Banner saved, pending dispatch');
-    const xpBannerAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
+    const xpBannerAttachment = new AttachmentBuilder(await canvas.encode('png'),
+        { name: 'welcome-banner.png' });
 
-    if (cmd.channel.id === announcements || cmd.channel.id === discDen || cmd.channel.id === bStudy) {
+    if (cmd.channel.id === announcements || cmd.channel.id === discDen ||
+        cmd.channel.id === bStudy || cmd.channel.id === prReqs) {
         //Redirect out of serious chats
         const hangoutCh = await fishsticks.channels.cache.get(hangout);
         hangoutCh.send({ content: 'Level up!', files: [xpBannerAttachment] })
@@ -116,5 +115,14 @@ function getLevelBadgePath(num) {
     }
     else if (num <= 54) {
         return `./Images/Utility/Ranks/37-54/${num}.png`;
+    }
+    else if (num <= 72) {
+        return `./Images/Utility/Ranks/55-72/${num}.png`;
+    }
+    else if (num <= 90) {
+        return `./Images/Utility/Ranks/73-90/${num}.png`;
+    }
+    else if (num <= 108) {
+        return `./Images/Utility/Ranks/91-108/${num}.png`;
     }
 }

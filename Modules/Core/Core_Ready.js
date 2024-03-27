@@ -11,7 +11,7 @@ const { terminate } = require('../Utility/Utils_Terminate');
 const fs = require('fs');
 const path = require('path');
 const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
+const { Routes, ActivityType } = require('discord-api-types/v9');
 
 const { guild_CCG, fs_console, fsID, bLogger, ranger } = require('./Core_ids.json');
 const { version } = require('../../package.json');
@@ -181,11 +181,14 @@ async function startUp(Fishsticks) {
 	if (Fishsticks.TESTMODE) {
 		log('warn', '[FISHSTICKS] Fs has been booted into Test mode!');
 
-		const startupMessage = {
+		const startupEmbed = {
 			title: 'Test Mode Boot',
 			description: version + ' feels undercooked. Test mode time.',
 			color: emergency,
-			footer: 'Sequence initiated at ' + systemTimestamp(timestamp),
+			noThumbnail: true,
+			footer: {
+				text: 'Sequence initiated at ' + systemTimestamp(timestamp)
+			},
 			fields: [
 				{
 					name: 'Last startup time',
@@ -195,11 +198,11 @@ async function startUp(Fishsticks) {
 			]
 		};
 
-		Fishsticks.CONSOLE.send({ embeds: [embedBuilder(startupMessage)] });
+		Fishsticks.CONSOLE.send({ embeds: [embedBuilder(startupEmbed)] });
 
 		//Set Status
 		await Fishsticks.user.setPresence({
-			activities: [{ name: version + ' | TEST MODE', type: 'PLAYING' }],
+			activities: [{ name: version + ' | TEST MODE', type: ActivityType.Listening }],
 			status: 'online'
 		});
 	}
@@ -208,7 +211,9 @@ async function startUp(Fishsticks) {
 			title: 'o0o - Fishsticks Startup - o0o',
 			description: 'Dipping in flour...\nBaking at 400°...\nFishticks ' + version + ' is ready to go!',
 			color: primary,
-			footer: 'Sequence initiated at ' + systemTimestamp(timestamp),
+			footer: {
+				text: 'Sequence initiated at ' + systemTimestamp(timestamp)
+			},
 			fields: [
 				{
 					name: 'Last startup time',
@@ -228,7 +233,7 @@ async function startUp(Fishsticks) {
 
 		//Set Status
 		await Fishsticks.user.setPresence({
-			activities: [{ name: 'for /help | ' + version, type: 'WATCHING' }],
+			activities: [{ name: 'for /help | ' + version, type: ActivityType.Watching }],
 			status: 'online'
 		});
 	}

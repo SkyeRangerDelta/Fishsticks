@@ -3,10 +3,11 @@
 //Imports
 const Discord = require('discord.js');
 
-const { createCanvas, registerFont, loadImage } = require('canvas');
+const { createCanvas, loadImage } = require('@napi-rs/canvas');
 const { log } = require('../Utility/Utils_Log');
 
 const chs = require('./Core_ids.json');
+const { AttachmentBuilder } = require('discord.js');
 
 //Exports
 module.exports = {
@@ -28,7 +29,6 @@ const applyText = (canvas, text) => {
 
 //Process generating a graphic and sending it
 async function handleNewMember(fishsticks, newMember) {
-    registerFont('./Fonts/JuliusSansOne-Regular.ttf', { family: 'Julius Sans One' });
     const canvas = createCanvas(700, 250);
     const ctx = canvas.getContext('2d');
 
@@ -48,12 +48,12 @@ async function handleNewMember(fishsticks, newMember) {
     ctx.fillText(`${newMember.displayName}`, canvas.width / 2.5, canvas.height / 1.8);
 
     //--> Welcome
-    ctx.font = '30px Julius Sans One';
+    ctx.font = '30px Trebuchet MS';
     ctx.fillStyle = '#ffffff';
     ctx.fillText('Please welcome, ', canvas.width / 2.5, canvas.height / 3.5);
 
     //--> Subheading
-    ctx.font = '26px Julius Sans One';
+    ctx.font = '26px Trebuchet MS';
     ctx.fillStyle = '#ffffff';
     ctx.fillText('Stick around for some fish!', canvas.width / 2.5, canvas.height / 1.1);
     log('info', '[NEW-MEM] Text applications done.');
@@ -78,6 +78,7 @@ async function handleNewMember(fishsticks, newMember) {
     ctx.drawImage(bannerAvatar, 25, 25, 200, 200);
 
     //Save and fire off
-    const welcomeAttachment = new Discord.MessageAttachment(canvas.toBuffer(), 'welcome-banner.png');
+    const welcomeAttachment = new AttachmentBuilder(await canvas.encode('png'),
+        { name: 'welcome-banner.png' });
     dispatchChannel.send({ content: `Welcome ${newMember} to the server!`, files: [welcomeAttachment] });
 }

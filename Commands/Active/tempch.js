@@ -8,6 +8,7 @@ const { log } = require('../../Modules/Utility/Utils_Log');
 const { fso_query } = require('../../Modules/FSO/FSO_Utils');
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { ChannelType } = require('discord-api-types/v9');
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -21,7 +22,7 @@ data.addIntegerOption(o => o.setName('max-users').setDescription('How many voice
 async function run(Fishsticks, int) {
     int.deferReply({ ephemeral: true });
 
-    if(!hasPerms(int.member, ['CC Member', 'ACC Member'])) {
+    if(!hasPerms(int.member, ['CC Member', 'ACC Member', 'Event Coordinator'])) {
         return int.reply({ content: 'Only (A)CC Members can create temporary channels!', ephemeral: true });
     }
 
@@ -50,7 +51,7 @@ async function createCh(Fishsticks, int) {
 
         const chData = {
             name: `${chName}`,
-            type: 'GUILD_VOICE',
+            type: ChannelType.GuildVoice,
             reason: '[TEMP-CH] System channel creation.',
             position: chSpawnerChannel.rawPosition + 1
         };
@@ -71,7 +72,7 @@ async function createCh(Fishsticks, int) {
 
         const chData = {
             name: `${chName}`,
-            type: 'GUILD_VOICE',
+            type: ChannelType.GuildVoice,
             userLimit: maxUsers,
             reason: '[TEMP-CH] System channel creation.',
             position: chSpawnerChannel.rawPosition + 1

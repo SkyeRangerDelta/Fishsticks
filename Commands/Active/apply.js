@@ -22,7 +22,9 @@ function run(fishsticks, int) {
 		title: 'o0o - Christian Crew Membership Application - o0o',
 		description: introduction,
 		color: primary,
-		footer: 'If you did not issue this command, or no longer wish to continue; please type `stop` at any time.',
+		footer: {
+			text: 'If you did not issue this command, or no longer wish to continue; please type `stop` at any time.'
+		},
 	};
 
 	int.user.send({ embeds: embedBuilder(introPanel) })

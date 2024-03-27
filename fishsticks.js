@@ -16,7 +16,7 @@
 //				DEPENDENCIES
 //=============================================
 //Libraries
-const Discord = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 const schedule = require('node-schedule');
 const fs = require('fs');
 
@@ -24,7 +24,7 @@ const fs = require('fs');
 const { doDailyPost } = require('./Modules/Utility/Utils_Aux');
 
 //Configs
-const { token, intents } = require('./Modules/Core/Core_config.json');
+const { token } = require('./Modules/Core/Core_config.json');
 
 
 //=============================================
@@ -32,7 +32,25 @@ const { token, intents } = require('./Modules/Core/Core_config.json');
 //=============================================
 
 //Client
-const Fishsticks = new Discord.Client({ intents: intents });
+const Fishsticks = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildVoiceStates,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.GuildPresences,
+		GatewayIntentBits.DirectMessages,
+		GatewayIntentBits.DirectMessageReactions,
+		GatewayIntentBits.MessageContent
+	],
+	allowedMentions: {
+		parse: [
+			'users',
+			'roles'
+		]
+	}
+});
 
 //Client Variables
 Fishsticks.FSO_CONNECTION = null;
@@ -66,15 +84,21 @@ for (const eventFile in eventsIndex) {
 //=============================================
 //				   UTILITY
 //=============================================
+
+//Load ENV
+require('dotenv').config();
+
 //Schedule Crons
-/*
-schedule.scheduleJob('8 * * *', function() {
+const dailyRule = new schedule.RecurrenceRule();
+dailyRule.hour = 8;
+dailyRule.minute = 0;
+dailyRule.tz = 'America/New_York';
+schedule.scheduleJob(dailyRule, function() {
 	doDailyPost(Fishsticks);
 });
- */
 
 process.on('unhandledRejection', e => {
-	console.log('[WARN] ' + e);
+	console.log('[ERR] ' + e);
 });
 
 //==============================================

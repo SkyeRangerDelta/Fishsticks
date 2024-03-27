@@ -269,15 +269,16 @@ async function joinRole(fishsticks, int, redirectData) {
     let roleObj;
 
     if (!redirectData) {
-        //Redirect from vote
         roleObj = await findRole(fishsticks, int);
     }
     else {
+        //Redirect from vote
         roleObj = redirectData;
     }
 
     //Get role and add
-    const roleY = await int.guild.roles.cache.find(role => role.name === `${roleObj.name}`);
+    const intRole = int.options.getRole('role');
+    const roleY = await int.guild.roles.cache.find(role => role.name === `${intRole.name}`);
 
     //Check if this person already has the role
     if (hasPerms(int.member, [`${roleObj.name}`])) {
@@ -305,6 +306,7 @@ async function joinRole(fishsticks, int, redirectData) {
          */
         return int.reply(`${int.member} has joined ${roleY}!`);
     }).catch(err => {
+        log('err', '[ROLE-SYS] [JOIN] Error:\n' + err.stack);
         return int.reply({ content: 'Something went wrong trying to add your role.\n' + err, ephemeral: true });
     });
 }
@@ -313,7 +315,7 @@ async function joinRole(fishsticks, int, redirectData) {
 //Leave a role
 async function leaveRole(fishsticks, int) {
     //Check active
-    const roleX = await findRole(fishsticks, int);
+    const roleX = int.options.getRole('role');
     if (roleX.active === false) {
         //Vote role override
         int.reply({ content: 'No active role to leave!', ephemeral: true });
@@ -388,14 +390,18 @@ async function listRoles(fishsticks, int, ext) {
         title: 'o0o - Role Listing [Active] - o0o',
         description: activeRoleList,
         delete: 45000,
-        footer: 'Active role listings pulled from FSO.'
+        footer: {
+            text: 'Active role listings pulled from FSO.'
+        }
     };
 
     const inactiveListEmbed = {
         title: 'o0o - Role Listing [Inactive] - o0o',
         description: inactiveRoleList,
         delete: 45000,
-        footer: 'Inactive role listings pulled from FSO.'
+        footer: {
+            text: 'Inactive role listings pulled from FSO.'
+        }
     };
 
     await int.channel.send({ embeds: [embedBuilder(roleListEmbed)] }).then(sent => {
@@ -475,7 +481,9 @@ async function detailsRole(fishsticks, int) {
         title: `o0o - ${roleObj.name} Role Info - o0o`,
         description: roleObj.description,
         noThumbnail: true,
-        footer: `Footer summoned by ${int.member.displayName}.`,
+        footer: {
+            text: `Summoned by ${int.member.displayName}.`
+        },
         fields: [
             {
                 name: 'Creator',

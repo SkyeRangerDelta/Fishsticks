@@ -83,7 +83,9 @@ async function run(fishsticks, int) {
 				inline: true
 			}
 		],
-		footer: 'Status is subject to sudden changes.'
+		footer: {
+			text: 'Status is subject to sudden changes.'
+		}
 	};
 
 	//Reset Status

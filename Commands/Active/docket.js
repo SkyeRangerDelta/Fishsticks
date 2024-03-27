@@ -290,7 +290,9 @@ async function listPoints(fishsticks, int, ext) {
 	const listEmbed = {
 		title: 'o0o - Docket - o0o',
 		description: 'A listing of all the current docket points.',
-		footer: `Latest pull from FSO by ${int.member.displayName}.`,
+		footer: {
+			text: `Latest pull from FSO by ${int.member.displayName}.`
+		},
 		fields: []
 	};
 

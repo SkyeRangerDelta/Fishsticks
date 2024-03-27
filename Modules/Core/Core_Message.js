@@ -6,15 +6,12 @@
 const { log } = require('../Utility/Utils_Log');
 const { fso_validate, hasPerms } = require('../Utility/Utils_User');
 const { fso_query } = require('../FSO/FSO_Utils');
-const { generateErrorMsg, validateURL, handleDenMsg } = require('../Utility/Utils_Aux');
+const { handleDenMsg } = require('../Utility/Utils_Aux');
 const { processXP } = require('../XP/XP_Core');
 const { handleShiny } = require('../Utility/Utils_Shiny');
-const { worst } = require('../../Commands/Passive/the');
 
 const { prefix } = require('../Core/Core_config.json');
-const { discDen } = require('../Core/Core_ids.json');
-
-const extractUrls = require('extract-urls');
+const { discDen, prReqs } = require('../Core/Core_ids.json');
 
 //Exports
 module.exports = {
@@ -83,6 +80,9 @@ async function processMessage(Fishsticks, msg) {
         const passiveID = msg.content.trim().toLowerCase().split(' ')[0];
         try {
             const passiveCmd = require(`../../Commands/Passive/${passiveID}.js`);
+
+            if (cmd.channel.id === prReqs) return;
+
             passiveCmd.run(Fishsticks, cmd);
         }
         catch (passiveCmdErr) {

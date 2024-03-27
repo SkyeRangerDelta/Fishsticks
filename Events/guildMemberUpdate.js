@@ -17,7 +17,7 @@ async function execute(fishsticks, oldMem, newMem) {
 
     const qe = {
         title: '[INFO] [CLIENT] [MEMBER UPDATED]',
-        description: `${oldMem.displayName} was updated.`
+        description: `${oldMem ? oldMem.displayName : newMem.displayName} was updated.`
     };
 
     fishsticks.BOT_LOG.send({ content: `${systemTimestamp()}`, embeds: [quickEmbed(qe)] });

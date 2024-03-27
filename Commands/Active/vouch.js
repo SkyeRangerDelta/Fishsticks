@@ -67,7 +67,7 @@ async function run(fishsticks, int) {
     const memberVouches = vouchQuery.vouches;
 
     if(memberVouches.includes(int.member.id)) {
-        return int.reply({ content: `You've already vouched for ${vouchee.displayName}!`, ephemeral: true });
+        return await int.reply({ content: `You've already vouched for ${vouchee.displayName}!`, ephemeral: true });
     }
 
     if (memberVouches.length < 2) {
@@ -100,8 +100,8 @@ async function addVouch(fishsticks, int, memberFSORecord, ref) {
         await vouchee.roles.add(recognizedRole, '[VOUCH] Granted recognized on due to reaching 2 vouches.');
 
         if (addVouchRes.modifiedCount === 1) {
-            int.channel.send({ content: `${memberFSORecord.username} has been vouched for and has been granted Recognized!` });
-            int.reply({
+            await int.channel.send({ content: `${memberFSORecord.username} has been vouched for and has been granted Recognized!` });
+            await int.reply({
                 content: 'Done!',
                 ephemeral: true
             });
