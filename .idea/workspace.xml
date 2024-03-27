@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f44dac04-36b8-4d02-a96c-74c5b2f4b727" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Modules/Core/Core_GPT.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Commands/Active/updatedst.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/updatedst.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Commands/Active/define.js" beforeDir="false" afterPath="$PROJECT_DIR$/Commands/Active/define.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -57,8 +60,8 @@
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "experimental",
     "ignore.virus.scanning.warn.message": "true",
-    "javascript.nodejs.core.library.configured.version": "21.6.2",
-    "javascript.nodejs.core.library.typings.version": "20.11.27",
+    "javascript.nodejs.core.library.configured.version": "18.19.0",
+    "javascript.nodejs.core.library.typings.version": "18.19.26",
     "last_opened_file_path": "G:/GitHub Repos/Constellation-Archives",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -66,7 +69,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "discord-application",
-    "ts.external.directory.path": "C:\\Users\\Skye\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
+    "ts.external.directory.path": "C:\\Users\\WilliamHutchison\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -200,6 +203,7 @@
       <workItem from="1710332584049" duration="31000" />
       <workItem from="1710332625338" duration="1415000" />
       <workItem from="1710374227099" duration="782000" />
+      <workItem from="1711575516091" duration="5487000" />
     </task>
     <servers />
   </component>
