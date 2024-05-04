@@ -1,11 +1,16 @@
 {
   "name": "fishsticks",
-  "version": "1.19.7",
+  "version": "1.0.0-Experimental.1",
   "description": "The official CCG Discord bot",
   "main": "fishsticks.js",
   "scripts": {
     "start": "node fishsticks.js",
-    "test": "node fishsticks.js -test"
+    "test": "node fishsticks.js -test",
+    "dev": "nodemon fishsticks.js",
+    "docker-build": "docker build -t fishsticks .",
+    "docker-run": "docker run -d fishsticks",
+    "docker-stop": "docker stop $(docker ps -q --filter ancestor=fishsticks)",
+    "docker-build-run": "npm run docker-build && npm run docker-run"
   },
   "repository": {
     "type": "git",
@@ -36,5 +41,14 @@
     "openai": "^4.29.2",
     "roll": "^1.2.0",
     "ssh2": "^1.14.0"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "conventional-changelog-eslint": "^5.0.0",
+    "semantic-release": "^23.0.8"
+  },
+  "engines": {
+    "node": ">=18.20"
   }
 }

@@ -1,0 +1,57 @@
+{
+  "branches": [
+    "master",
+    {
+      "name": "Experimental",
+      "prerelease": true,
+      "channel": "exp"
+    }
+  ],
+  "plugins": [
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "eslint",
+        "types": [
+          { "type": "Test", "hidden": true },
+          { "type": "Perf", "section": "Performance Changes" },
+          { "type": "Refactor", "section": "Misc." }
+        ]
+      }
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "preset": "eslint"
+      }
+
+    ],
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogTitle": "|| ${version} Changelog ||"
+      }
+    ],
+    [
+      "@semantic-release/npm",
+      {
+        "npmPublish": false
+      }
+    ],
+    ["@semantic-release/git", {
+      "assets": [
+        "package.json",
+        "package-lock.json",
+        "README.md",
+        "CHANGELOG.md"
+      ],
+      "message": "Chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+    }],
+    "@semantic-release/github"
+  ],
+  "tagFormat": "${version}",
+  "GIT_AUTHOR_NAME": "SkyeRangerDelta",
+  "GIT_AUTHOR_EMAIL": "skyerangerdelta@pldyn.net",
+  "GIT_COMMITTER_NAME": "SkyeRangerDelta",
+  "GIT_COMMITTER_EMAIL": "skyerangerdelta@pldyn.net"
+}
