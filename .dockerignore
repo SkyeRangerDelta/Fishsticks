@@ -1,2 +1,3 @@
 node_modules
 .idea
+Modules/Core/SSH/fs_id_rsa

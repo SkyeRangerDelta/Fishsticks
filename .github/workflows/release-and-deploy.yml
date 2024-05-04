@@ -4,6 +4,13 @@ on:
   push:
     branches: [ "master", "Experimental" ]
 
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'Experimental'
+
 env:
   REGISTRY: "ghcr.io"
   IMAGE_NAME: "SkyeRangerDelta/Fishsticks"
