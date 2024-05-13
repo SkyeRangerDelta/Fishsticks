@@ -9,8 +9,6 @@ const { startApp } = require('../../Commands/Active/apply');
 const { hasPerms } = require('./Utils_User');
 const { embedBuilder } = require('./Utils_EmbedBuilder');
 const { log } = require('../Utility/Utils_Log');
-const { fso_query } = require('../FSO/FSO_Utils');
-const { handleAddedReaction } = require('../../Commands/Active/poll');
 
 //const axios = require('axios');
 
@@ -29,14 +27,6 @@ async function validateAddedReaction(fishsticks, addedReaction, reactor) {
 	if (reactor.id === fishsticks.id) return;
 
 	//Sort through all known ID checks and find which one is in question
-
-	//Check for poll response
-	const polls = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Polls', 'selectAll');
-	for (const id in polls) {
-		if (addedReaction.message.id === polls[id].id) {
-			return handleAddedReaction(fishsticks, addedReaction, reactor, polls[id]);
-		}
-	}
 
 	//Check CCG Membership Apps
 	for (const ID in fishsticks.appMsgIDs) {
