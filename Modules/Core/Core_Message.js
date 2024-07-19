@@ -89,12 +89,19 @@ async function processMessage(Fishsticks, msg) {
             log('info', '[PASSIVE-CMD] Attempt failed.');
         }
         finally {
-            //Attempt possible unique messages
-            if (cmd.msg.content.includes('https://twitch.tv/')) {
+            // Sort The Nod
+            const twitchURL = 'https://twitch.tv/';
+            if (findURL(twitchURL, msg.content)) {
                 if (!hasPerms(cmd.msg.member, ['The Nod']) && !hasPerms(cmd.msg.member, ['Moderator', 'Council Member', 'Council Advisor'])) {
                     cmd.reply('You need the nod to post Twitch links!');
                 }
             }
+
+            // if (cmd.msg.content.includes('https://twitch.tv/')) {
+            //     if (!hasPerms(cmd.msg.member, ['The Nod']) && !hasPerms(cmd.msg.member, ['Moderator', 'Council Member', 'Council Advisor'])) {
+            //         cmd.reply('You need the nod to post Twitch links!');
+            //     }
+            // }
 
             //Shiny?
             const number = Math.random() * (8192 - 1) + 1;
@@ -169,4 +176,12 @@ async function generateRandomQuote(fishsticks, int) {
 //Generate a new tick count
 function newTick() {
     return Math.round(Math.random() * (1000 - 25) + 25);
+}
+
+// Find a matching URL
+function findURL(url, str) {
+    const escapedUrl = url.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const pattern = new RegExp(escapedUrl);
+
+    return pattern.test(str);
 }

@@ -1,12 +1,12 @@
 {
   "name": "fishsticks",
-  "version": "1.19.8",
+  "version": "1.19.9",
   "description": "The official CCG Discord bot",
   "main": "fishsticks.js",
   "scripts": {
     "start": "node fishsticks.js",
     "test": "node fishsticks.js -test",
-    "dev": "nodemon fishsticks.js",
+    "dev": "nodemon fishsticks.js -test",
     "docker-build": "docker build -t fishsticks .",
     "docker-run": "docker run -d fishsticks",
     "docker-stop": "docker stop $(docker ps -q --filter ancestor=fishsticks)",
@@ -37,7 +37,7 @@
     "luxon": "^2.2.0",
     "mongodb": "^4.2.1",
     "node-schedule": "^2.0.0",
-    "npm": "^10.4.0",
+    "npm": "^10.8.2",
     "openai": "^4.29.2",
     "roll": "^1.2.0",
     "ssh2": "^1.14.0"
