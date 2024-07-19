@@ -5,7 +5,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Client } = require('ssh2');
 const { log } = require('../../Modules/Utility/Utils_Log');
-const { v } = require('../../Modules/Library/emojiList');
 const { hasPerms } = require('../../Modules/Utility/Utils_User');
 const { readFileSync } = require('fs');
 
@@ -22,7 +21,7 @@ data.addBooleanOption(o => o
 //Functions
 function run(fishsticks, int) {
     if (!hasPerms(int.member, ['Server Manager'])) {
-        return int.reply({ content: `You can't do this!`, ephemeral: true });
+        return int.reply({ content: 'You can\'t do this!', ephemeral: true });
     }
 
     const verboseLog = int.options.getBoolean('show-log') || false;
@@ -54,10 +53,10 @@ function run(fishsticks, int) {
         passphrase: process.env.SSH_PASS_HOLO
     }).on('close', () => {
         fishsticks.CONSOLE.send('```[Update DST] Update done. (Console closed)```');
-        return int.editReply({ content: `Job's done.`, ephemeral: true });
+        return int.editReply({ content: 'Job\'s done.', ephemeral: true });
     }).on('end', () => {
         fishsticks.CONSOLE.send('```[Update DST] Update done. (Shell exited)```');
-        return int.editReply({ content: `Job's completed.`, ephemeral: true });
+        return int.editReply({ content: 'Job\'s completed.', ephemeral: true });
     }).on('error', (err) => {
         fishsticks.CONSOLE.send('```[Update DST] Update errored! (Console error reported)```');
         return int.editReply({ content: `Job errored: ${err}`, ephemeral: true });

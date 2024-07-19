@@ -3,13 +3,10 @@
 //Imports
 const { MongoClient } = require('mongodb');
 
-//const { fsoValidationException } = require('../Errors/fsoValidationException');
 const { log } = require('../Utility/Utils_Log');
 const { terminate } = require('../Utility/Utils_Terminate');
 
 const { fsoValidationException } = require('../Errors/fsoValidationException');
-
-const { uri } = require('./FSO_assets.json');
 
 //Exports
 module.exports = {
@@ -20,8 +17,8 @@ module.exports = {
 };
 
 //Functions
-
-const client = new MongoClient(uri);
+const rds_uri = process.env.RDS;
+const client = new MongoClient(rds_uri);
 
 async function fso_connect() {
 	log('info', '[FSO] Pending Connection...');

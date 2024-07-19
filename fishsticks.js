@@ -19,12 +19,14 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const schedule = require('node-schedule');
 const fs = require('fs');
+const { config } = require('dotenv');
+
+//Configs
+config();
+const token = process.env.TOKEN;
 
 //Modules
 const { doDailyPost } = require('./Modules/Utility/Utils_Aux');
-
-//Configs
-const { token } = require('./Modules/Core/Core_config.json');
 
 
 //=============================================
@@ -85,9 +87,6 @@ for (const eventFile in eventsIndex) {
 //				   UTILITY
 //=============================================
 
-//Load ENV
-require('dotenv').config();
-
 //Schedule Crons
 const dailyRule = new schedule.RecurrenceRule();
 dailyRule.hour = 8;
@@ -104,4 +103,6 @@ process.on('unhandledRejection', e => {
 //==============================================
 // Login
 
-Fishsticks.login(token);
+Fishsticks.login(token).then(() => {
+	console.log('Fishsticks is online!');
+});
