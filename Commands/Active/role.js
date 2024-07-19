@@ -293,7 +293,7 @@ async function joinRole(fishsticks, int, redirectData) {
   }
 
   // Check if this is a game role
-  if (roleY.color === '#9e876e') {
+  if (roleY.color !== '#9e876e' || roleObj.color !== '#9e876e') {
     return int.reply({ content: 'This isn\'t a game role, you can\'t join it!' });
   }
 
