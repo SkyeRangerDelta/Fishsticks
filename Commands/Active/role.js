@@ -292,6 +292,11 @@ async function joinRole(fishsticks, int, redirectData) {
     return int.reply({ content: 'You already have this role!', ephemeral: true });
   }
 
+  // Check if this is a game role
+  if (roleY.color === '#9e876e') {
+    return int.reply({ content: 'This isn\'t a game role, you can\'t join it!' });
+  }
+
   await int.member.roles.add(roleY).then(function() {
 
     /*
