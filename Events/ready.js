@@ -1,7 +1,7 @@
 // ---- READY EVENT ----
 
 //Imports
-const { startUp } = require('../Modules/Core/Core_Ready');
+const { startUp } = require( '../Modules/Core/Core_Ready' );
 
 //Export
 module.exports = {
@@ -10,6 +10,6 @@ module.exports = {
     execute
 };
 
-async function execute(fishsticks) {
-    await startUp(fishsticks);
+async function execute( fishsticks ) {
+    await startUp( fishsticks );
 }

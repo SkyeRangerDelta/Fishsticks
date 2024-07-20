@@ -1,7 +1,7 @@
 // ---- MESSAGE REACTION REMOVE EVENT ----
 
 //Imports
-const { log } = require('../Modules/Utility/Utils_Log');
+const { log } = require( '../Modules/Utility/Utils_Log' );
 
 //Export
 module.exports = {
@@ -9,6 +9,6 @@ module.exports = {
     execute
 };
 
-async function execute(fishsticks, removedReaction, reactor) {
-    log('info', `[CLIENT] Reaction Remove - ${removedReaction.emoji} : ${reactor.username}`);
+async function execute( fishsticks, removedReaction, reactor ) {
+    log( 'info', `[CLIENT] Reaction Remove - ${removedReaction.emoji} : ${reactor.username}` );
 }

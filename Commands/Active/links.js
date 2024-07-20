@@ -2,16 +2,16 @@
 // Displays useful CC related links
 
 //Imports
-const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Globals
 const data = new SlashCommandBuilder()
-	.setName('links')
-	.setDescription('Displays useful CC links.');
+	.setName( 'links' )
+	.setDescription( 'Displays useful CC links.' );
 
 //Functions
-function run(fishsticks, int) {
+function run( fishsticks, int ) {
 	const links = {
 		title: 'o0o - CC GAMING LINKS - o0o',
 		description: '[CC Gaming Website](https://www.ccgaming.com)\n' +
@@ -27,7 +27,7 @@ function run(fishsticks, int) {
 		delete: 20000
 	};
 
-	int.reply({ embeds: [embedBuilder(links)], ephemeral: true });
+	int.reply( { embeds: [embedBuilder( links )], ephemeral: true } );
 }
 
 function help() {
