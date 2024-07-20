@@ -3,28 +3,28 @@
 //Does things related to poetry
 
 //Imports
-const https = require('https');
-const { log } = require('../../Modules/Utility/Utils_Log');
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { EmbedBuilder } = require('discord.js');
+const https = require( 'https' );
+const { log } = require( '../../Modules/Utility/Utils_Log' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { EmbedBuilder } = require( 'discord.js' );
 
 //Globals
 const data = new SlashCommandBuilder()
-    .setName('poem')
-    .setDescription('Prints poems');
+    .setName( 'poem' )
+    .setDescription( 'Prints poems' );
 
-data.addSubcommand(s => s
-    .setName('random')
-    .setDescription('Prints a random poem.'));
+data.addSubcommand( s => s
+    .setName( 'random' )
+    .setDescription( 'Prints a random poem.' ) );
 
 const API_URL = 'https://poetrydb.org/';
 
 //Functions
-async function run(fishsticks, int) {
+async function run( fishsticks, int ) {
     const subCMD = int.options.getSubcommand();
 
-    if (subCMD === 'random') {
-        await buildPoem(int);
+    if ( subCMD === 'random' ) {
+        await buildPoem( int );
     }
 }
 
@@ -33,65 +33,65 @@ async function fetchPoem() {
 
     let poemObj = '';
 
-    return new Promise(function(resolve, reject) {
-        https.get(payloadURL, (done) => {
+    return new Promise( function( resolve, reject ) {
+        https.get( payloadURL, ( done ) => {
 
-            log('info', '[POEM] [RANDOM] Status: ' + done.statusCode);
+            log( 'info', '[POEM] [RANDOM] Status: ' + done.statusCode );
 
-            done.on('data', (content) => {
+            done.on( 'data', ( content ) => {
                 poemObj += content;
-            });
+            } );
 
-            done.on('end', function() {
-                resolve(JSON.parse(poemObj)[0]);
-            });
+            done.on( 'end', function() {
+                resolve( JSON.parse( poemObj )[0] );
+            } );
 
-            done.on('error', err => {
-                reject(err);
-            });
-        });
-    });
+            done.on( 'error', err => {
+                reject( err );
+            } );
+        } );
+    } );
 }
 
-async function buildPoem(int) {
+async function buildPoem( int ) {
     let poemObj;
     let poemTxt = '';
 
-    for (let l = 1; l < 6; l++) {
-        log('info', `[POEM] (${l}) Obtaining a suitable poem.`);
+    for ( let l = 1; l < 6; l++ ) {
+        log( 'info', `[POEM] (${l}) Obtaining a suitable poem.` );
         poemObj = await fetchPoem();
 
         //Make this easy and keep it to a small line count
-        if (parseInt(poemObj.linecount) <= '20') break;
+        if ( parseInt( poemObj.linecount ) <= '20' ) break;
     }
 
-    if (poemObj.lines.length > 20) {
-        if (int) {
-            return int.reply('Failed to find a suitable poem.');
+    if ( poemObj.lines.length > 20 ) {
+        if ( int ) {
+            return int.reply( 'Failed to find a suitable poem.' );
         }
         else {
-            return log('info', 'Failed to find a suitable poem.');
+            return log( 'info', 'Failed to find a suitable poem.' );
         }
     }
 
-    poemTxt = poemObj.lines.join('\n');
+    poemTxt = poemObj.lines.join( '\n' );
 
-    if (poemTxt === '' || poemTxt.length > 2048 && int) {
-        return int.reply({ content: 'Failed to find a suitable poem!' });
+    if ( poemTxt === '' || poemTxt.length > 2048 && int ) {
+        return int.reply( { content: 'Failed to find a suitable poem!' } );
     }
 
     const poemEmbed = new EmbedBuilder()
-        .setTitle(`*${poemObj.title}* - ${poemObj.author}`)
-        .setDescription(`${poemTxt}`)
-        .setFooter({
+        .setTitle( `*${poemObj.title}* - ${poemObj.author}` )
+        .setDescription( `${poemTxt}` )
+        .setFooter( {
             text: 'API provided by PoetryDB.'
-        });
+        } );
 
-	if (!int) { //doDailyPost
+	if ( !int ) { //doDailyPost
         return poemEmbed;
     }
 
-    return int.reply({ embeds: [poemEmbed] });
+    return int.reply( { embeds: [poemEmbed] } );
 }
 
 function help() {

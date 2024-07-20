@@ -4,24 +4,24 @@
 //the respective passage
 
 //Imports
-const https = require('https');
-const { log } = require('../../Modules/Utility/Utils_Log');
-const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+const https = require( 'https' );
+const { log } = require( '../../Modules/Utility/Utils_Log' );
+const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 
-const { bibleAPI } = require('../../Modules/Core/Core_keys.json');
-const { primary } = require('../../Modules/Core/Core_config.json');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { bibleAPI } = require( '../../Modules/Core/Core_keys.json' );
+const { primary } = require( '../../Modules/Core/Core_config.json' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 const data = new SlashCommandBuilder()
-	.setName('bible')
-	.setDescription('Prints out Bible passages from the ESV bible.');
+	.setName( 'bible' )
+	.setDescription( 'Prints out Bible passages from the ESV bible.' );
 
-data.addStringOption(o => o.setName('book').setDescription('The book to pull from.').setRequired(true));
-data.addNumberOption(o => o.setName('chapter').setDescription('The chapter to pull (from).').setRequired(true));
-data.addNumberOption(o => o.setName('verse').setDescription('The verse to pull.').setRequired(true));
-data.addNumberOption(o => o.setName('end-verse').setDescription('The verse to end with.').setRequired(false));
+data.addStringOption( o => o.setName( 'book' ).setDescription( 'The book to pull from.' ).setRequired( true ) );
+data.addNumberOption( o => o.setName( 'chapter' ).setDescription( 'The chapter to pull (from).' ).setRequired( true ) );
+data.addNumberOption( o => o.setName( 'verse' ).setDescription( 'The verse to pull.' ).setRequired( true ) );
+data.addNumberOption( o => o.setName( 'end-verse' ).setDescription( 'The verse to end with.' ).setRequired( false ) );
 
-async function run(fishsticks, int) {
+async function run( fishsticks, int ) {
 
     //Command breakup
     /*
@@ -36,15 +36,15 @@ async function run(fishsticks, int) {
 	const params = {
 		bookNum: null,
 		book: 'John',
-		chapter: int.options.getNumber('chapter') || 3,
-		verse: int.options.getNumber('verse') || 16,
-		endverse: int.options.getNumber('end-verse') || null,
+		chapter: int.options.getNumber( 'chapter' ) || 3,
+		verse: int.options.getNumber( 'verse' ) || 16,
+		endverse: int.options.getNumber( 'end-verse' ) || null,
 		contCount: 1,
 		bookFirst: false
 	};
 
-    const parseBook = int.options.getString('book').split(' ');
-    if (isNaN(parseBook[0]) || !parseInt(parseBook[0])) {
+    const parseBook = int.options.getString( 'book' ).split( ' ' );
+    if ( isNaN( parseBook[0] ) || !parseInt( parseBook[0] ) ) {
         params.bookFirst = true;
         params.bookNum = 0;
         params.book = parseBook[0];
@@ -54,21 +54,21 @@ async function run(fishsticks, int) {
         params.book = parseBook[1];
     }
 
-    await buildPayload(params, int);
+    await buildPayload( params, int );
 }
 
 //Construct a payload to be shipped off
-async function buildPayload(paramObj, int) {
-    console.log('Attempting to build a payload request.');
+async function buildPayload( paramObj, int ) {
+    console.log( 'Attempting to build a payload request.' );
 
     const API_URL = 'https://api.esv.org/v3/passage/text/';
 
     let args;
 
-    if (paramObj.bookFirst === true) {
-		log('info', '[BIBLE] Book found first');
+    if ( paramObj.bookFirst === true ) {
+		log( 'info', '[BIBLE] Book found first' );
 
-        if (paramObj.endverse == null) {
+        if ( paramObj.endverse == null ) {
             args = {
                 'q': `${paramObj.book}+${paramObj.chapter}:${paramObj.verse}`
             };
@@ -80,9 +80,9 @@ async function buildPayload(paramObj, int) {
         }
 	}
 	else {
-		log('info', '[BIBLE] Book not found first');
+		log( 'info', '[BIBLE] Book not found first' );
 
-        if (paramObj.endverse == null) {
+        if ( paramObj.endverse == null ) {
             args = {
                 'q': `${paramObj.bookNum}+${paramObj.book}+${paramObj.chapter}:${paramObj.verse}`
             };
@@ -103,21 +103,21 @@ async function buildPayload(paramObj, int) {
         }
     };
 
-    console.log('Dispatching payload:\n' + dispatchURL);
+    console.log( 'Dispatching payload:\n' + dispatchURL );
 
-    https.get(dispatchURL, options, async (res) => {
-        res.on('data', content => {
+    https.get( dispatchURL, options, async ( res ) => {
+        res.on( 'data', content => {
 
-            const received = JSON.parse(content);
+            const received = JSON.parse( content );
 
-            if (!received.passages) {
-                return int.reply({ content: 'Couldnt find any passages!', ephemeral: true });
+            if ( !received.passages ) {
+                return int.reply( { content: 'Couldnt find any passages!', ephemeral: true } );
             }
-            else if (!received.passages[0]) {
-                return int.reply({ content: 'Are you sure what you put in there was meant to be there? Check to make sure your parameters are correct.', ephemeral: true });
+            else if ( !received.passages[0] ) {
+                return int.reply( { content: 'Are you sure what you put in there was meant to be there? Check to make sure your parameters are correct.', ephemeral: true } );
             }
-            else if (received.passages[0].length > 2048) {
-                return int.reply({ content: 'The passage is too large! Try breaking it into smaller verses.', ephemeral: true });
+            else if ( received.passages[0].length > 2048 ) {
+                return int.reply( { content: 'The passage is too large! Try breaking it into smaller verses.', ephemeral: true } );
             }
 
             const verseEmbed = {
@@ -129,9 +129,9 @@ async function buildPayload(paramObj, int) {
                 }
 			};
 
-            int.reply({ embeds: [embedBuilder(verseEmbed)] });
-        });
-    });
+            int.reply( { embeds: [embedBuilder( verseEmbed )] } );
+        } );
+    } );
 }
 
 function help() {

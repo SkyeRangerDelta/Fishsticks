@@ -1,20 +1,20 @@
 // ---- Version ----
 
 //Imports
-const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
-const config = require('../../Modules/Core/Core_config.json');
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const packageVer = require('../../package.json').version;
+const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
+const config = require( '../../Modules/Core/Core_config.json' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const packageVer = require( '../../package.json' ).version;
 
 //Globals
 const data = new SlashCommandBuilder()
-	.setName('version')
-	.setDescription('Displays general FS information.');
+	.setName( 'version' )
+	.setDescription( 'Displays general FS information.' );
 
 //Functions
-function run(fishsticks, int) {
+function run( fishsticks, int ) {
 	let branch = 'Master';
-	if (fishsticks.TESTMODE) {
+	if ( fishsticks.TESTMODE ) {
 		branch = 'Experimental';
 	}
 
@@ -46,7 +46,7 @@ function run(fishsticks, int) {
 		]
 	};
 
-    int.reply({ embeds: [embedBuilder(versionPanel)], ephemeral: true });
+    int.reply( { embeds: [embedBuilder( versionPanel )], ephemeral: true } );
 }
 
 function help() {

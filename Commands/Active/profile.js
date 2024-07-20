@@ -2,36 +2,36 @@
 // XP profile
 
 //Imports
-const { fso_query } = require('../../Modules/FSO/FSO_Utils');
-const { timeSinceDate } = require('../../Modules/Utility/Utils_Time');
-const { buildProfileBanner } = require('../../Modules/Utility/Utils_Profile');
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
+const { timeSinceDate } = require( '../../Modules/Utility/Utils_Time' );
+const { buildProfileBanner } = require( '../../Modules/Utility/Utils_Profile' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 
 //Globals
 const data = new SlashCommandBuilder()
-    .setName('profile')
-    .setDescription('Displays your FSO profile,');
+    .setName( 'profile' )
+    .setDescription( 'Displays your FSO profile,' );
 
-data.addSubcommand(s => s
-    .setName('detailed')
-    .setDescription('Displays full FSO profile.'));
+data.addSubcommand( s => s
+    .setName( 'detailed' )
+    .setDescription( 'Displays full FSO profile.' ) );
 
-data.addSubcommand(s => s
-    .setName('lite')
-    .setDescription('Displays FSO profile without a banner.'));
+data.addSubcommand( s => s
+    .setName( 'lite' )
+    .setDescription( 'Displays FSO profile without a banner.' ) );
 
 //Functions
-async function run(fishsticks, int) {
+async function run( fishsticks, int ) {
     await int.deferReply();
     const subCMD = int.options.getSubcommand();
     let profileEmbed = null;
 
     //Get FSO record
-    const memberProf = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: int.member.id });
+    const memberProf = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: int.member.id } );
 
     let spentGoldfish = memberProf.xp.spentGoldfish;
-    if(spentGoldfish === null) {
+    if( spentGoldfish === null ) {
         spentGoldfish = 0;
     }
 
@@ -39,7 +39,7 @@ async function run(fishsticks, int) {
     const notifPrefs = memberProf.notifications;
     let notifVal = '';
 
-    for (const [key, val] of Object.entries(notifPrefs)) {
+    for ( const [key, val] of Object.entries( notifPrefs ) ) {
         notifVal += `**${key}**: ${val}`;
     }
 
@@ -53,7 +53,7 @@ async function run(fishsticks, int) {
         fields: [
             {
                 name: 'Join Date',
-                value: memberProf.joinTimeFriendly + ' (Been a member for ' + timeSinceDate(memberProf.joinMs) + ').',
+                value: memberProf.joinTimeFriendly + ' (Been a member for ' + timeSinceDate( memberProf.joinMs ) + ').',
                 inline: false
             },
             {
@@ -109,12 +109,12 @@ async function run(fishsticks, int) {
         ]
     };
 
-    if (subCMD === 'detailed') {
-        await int.editReply({ content: 'Its coming right up, baking in the oven...', ephemeral: true });
-        return await buildProfileBanner(fishsticks, int, profileEmbed);
+    if ( subCMD === 'detailed' ) {
+        await int.editReply( { content: 'Its coming right up, baking in the oven...', ephemeral: true } );
+        return await buildProfileBanner( fishsticks, int, profileEmbed );
     }
     else {
-        await int.editReply({ embeds: [embedBuilder(profileEmbed)] });
+        await int.editReply( { embeds: [embedBuilder( profileEmbed )] } );
     }
 }
 

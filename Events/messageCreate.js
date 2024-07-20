@@ -1,7 +1,7 @@
 // ---- MESSAGE EVENT ----
 
 //Imports
-const { processMessage } = require('../Modules/Core/Core_Message');
+const { processMessage } = require( '../Modules/Core/Core_Message' );
 
 //Export
 module.exports = {
@@ -9,9 +9,9 @@ module.exports = {
     execute
 };
 
-async function execute(fishsticks, msg) {
-    if (msg.author === fishsticks.user) return;
-    if (msg.author.bot) return;
+async function execute( fishsticks, msg ) {
+    if ( msg.author === fishsticks.user ) return;
+    if ( msg.author.bot ) return;
 
-    processMessage(fishsticks, msg);
+    processMessage( fishsticks, msg );
 }

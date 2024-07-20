@@ -2,24 +2,24 @@
 // Adds a quote to FS quote pool
 
 //Imports
-const { generateRandomQuote } = require('../../Modules/Core/Core_Message');
-const { fso_query } = require('../../Modules/FSO/FSO_Utils');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { generateRandomQuote } = require( '../../Modules/Core/Core_Message' );
+// const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Globals
 const data = new SlashCommandBuilder()
-	.setName('quote')
-	.setDescription('Does quote things.')
-	.addSubcommand(s => s
-		.setName('random')
-		.setDescription('Displays a random quote.'))
-	.addSubcommand(s => s
-		.setName('add')
-		.setDescription('[WIP] Add a new quote to the pool.')
+	.setName( 'quote' )
+	.setDescription( 'Does quote things.' )
+	.addSubcommand( s => s
+		.setName( 'random' )
+		.setDescription( 'Displays a random quote.' ) )
+	.addSubcommand( s => s
+		.setName( 'add' )
+		.setDescription( '[WIP] Add a new quote to the pool.' )
 	);
 
 //Functions
-async function run(fishsticks, int) {
+async function run( fishsticks, int ) {
 	const subCMD = int.options.getSubcommand();
 	//Syntax /quote text?
 
@@ -28,16 +28,16 @@ async function run(fishsticks, int) {
 	///quote -delete -[Index]	: Deletes the quote matching the index from the pool
 
 	//Process
-	if (subCMD === 'random') {
+	if ( subCMD === 'random' ) {
 		//Displays a random quote
-		const q = await generateRandomQuote(fishsticks, int);
-		return int.reply({ content: q });
+		const q = await generateRandomQuote( fishsticks, int );
+		return int.reply( { content: q } );
 	}
 	else {
-		return int.reply({
+		return int.reply( {
 			content: 'WIP!',
 			ephemeral: true
-		});
+		} );
 		/*
 		//Takes content as quote
 		const quoteNum = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_QuoteRef', 'count');

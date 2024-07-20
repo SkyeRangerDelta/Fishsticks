@@ -1,13 +1,13 @@
 // ---- INTERACTION CREATE EVENT ----
 
 //Imports
-const { log } = require('../Modules/Utility/Utils_Log');
+const { log } = require( '../Modules/Utility/Utils_Log' );
 const {
     handleButtonInteraction,
     handleSelectInteraction,
-    handleModalInteraction } = require('../Modules/Utility/Utils_Interactions');
-const { generateErrorMsg } = require('../Modules/Utility/Utils_MessageGenerators');
-const { fso_query } = require('../Modules/FSO/FSO_Utils');
+    handleModalInteraction } = require( '../Modules/Utility/Utils_Interactions' );
+const { generateErrorMsg } = require( '../Modules/Utility/Utils_MessageGenerators' );
+const { fso_query } = require( '../Modules/FSO/FSO_Utils' );
 
 //Export
 module.exports = {
@@ -15,41 +15,41 @@ module.exports = {
     execute
 };
 
-async function execute(fishsticks, interaction) {
-    log('info', `[CLIENT] New interaction created by ${interaction.member.displayName}. ID: ${interaction.id}`);
-    if (interaction.isButton()) {
-        await handleButtonInteraction(fishsticks, interaction);
+async function execute( fishsticks, interaction ) {
+    log( 'info', `[CLIENT] New interaction created by ${interaction.member.displayName}. ID: ${interaction.id}` );
+    if ( interaction.isButton() ) {
+        await handleButtonInteraction( fishsticks, interaction );
     }
-    else if (interaction.isModalSubmit()) {
-        await handleModalInteraction(fishsticks, interaction);
+    else if ( interaction.isModalSubmit() ) {
+        await handleModalInteraction( fishsticks, interaction );
     }
-    else if (interaction.isStringSelectMenu()) {
-        await handleSelectInteraction(fishsticks, interaction);
+    else if ( interaction.isStringSelectMenu() ) {
+        await handleSelectInteraction( fishsticks, interaction );
     }
-    else if (interaction.isCommand()) {
-        const cmd = fishsticks.CMDS.get(interaction.commandName);
-        if (!cmd) {
-            return interaction.reply(generateErrorMsg() + '\nI couldnt find that command!');
+    else if ( interaction.isCommand() ) {
+        const cmd = fishsticks.CMDS.get( interaction.commandName );
+        if ( !cmd ) {
+            return interaction.reply( generateErrorMsg() + '\nI couldnt find that command!' );
         }
 
         try {
-            await cmd.run(fishsticks, interaction);
+            await cmd.run( fishsticks, interaction );
 
             //Success here
-            log('info', '[ACTIVE-CMD] Executed successfully.');
-            await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', {
+            log( 'info', '[ACTIVE-CMD] Executed successfully.' );
+            await fso_query( fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', {
                 $inc: {
                     acAttempts: 1,
                     acSuccess: 1
                 }
-            }, { id: interaction.member.id });
-            await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', {
+            }, { id: interaction.member.id } );
+            await fso_query( fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', {
                 $inc: {
                     cmdQueriesSucc: 1
                 }
-            }, { id: 1 });
+            }, { id: 1 } );
         }
-        catch (cmdErr) {
+        catch ( cmdErr ) {
 
             //Fail here
             const upVal = {
@@ -58,23 +58,23 @@ async function execute(fishsticks, interaction) {
                 }
             };
 
-            log('warn', '[ACTIVE-CMD] Execution failed.\n' + cmdErr + '\n' + cmdErr.stack);
-            await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', upVal, { id: interaction.member.id });
-            await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', {
+            log( 'warn', '[ACTIVE-CMD] Execution failed.\n' + cmdErr + '\n' + cmdErr.stack );
+            await fso_query( fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', upVal, { id: interaction.member.id } );
+            await fso_query( fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', {
                 $inc: {
                     cmdQueriesFail: 1
                 }
-            }, { id: 1 });
+            }, { id: 1 } );
 
-            if (!interaction) {
+            if ( !interaction ) {
                 return;
             }
-            else if (interaction.deferred || interaction.replied) {
-                await interaction.followUp('IM ON BLOODY FIRE!\n' + cmdErr);
-                log('err', '[INTERACTION] AAAAAAAHHHHHHHHHHHHHH - DO SOMETHING.');
+            else if ( interaction.deferred || interaction.replied ) {
+                await interaction.followUp( 'IM ON BLOODY FIRE!\n' + cmdErr );
+                log( 'err', '[INTERACTION] AAAAAAAHHHHHHHHHHHHHH - DO SOMETHING.' );
             }
             else {
-                await interaction.editReply('Looks like weve got a very serious situation on our hands.\n' + generateErrorMsg() + '\n' + cmdErr);
+                await interaction.editReply( 'Looks like weve got a very serious situation on our hands.\n' + generateErrorMsg() + '\n' + cmdErr );
             }
         }
     }

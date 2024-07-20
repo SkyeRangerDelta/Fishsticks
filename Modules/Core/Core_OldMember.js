@@ -2,7 +2,7 @@
 // Handles member departure
 
 //Imports
-const { clearRecord } = require('../Utility/Utils_User');
+const { clearRecord } = require( '../Utility/Utils_User' );
 
 //Exports
 module.exports = {
@@ -10,6 +10,6 @@ module.exports = {
 };
 
 //Functions
-async function handleOldMember(fishsticks, oldMember) {
-    await clearRecord(fishsticks, oldMember); //Clear member's record
+async function handleOldMember( fishsticks, oldMember ) {
+    await clearRecord( fishsticks, oldMember ); //Clear member's record
 }

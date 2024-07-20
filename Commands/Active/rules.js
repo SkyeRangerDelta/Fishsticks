@@ -2,18 +2,18 @@
 // Links to the rules channel
 
 //Imports
-const { rules } = require('../../Modules/Core/Core_ids.json');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { rules } = require( '../../Modules/Core/Core_ids.json' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Globals
 const data = new SlashCommandBuilder()
-    .setName('rules')
-    .setDescription('Links to #rules.');
+    .setName( 'rules' )
+    .setDescription( 'Links to #rules.' );
 
 //Functions
-async function run(fishsticks, int) {
-    const ruleCh = await fishsticks.channels.cache.get(rules);
-    int.reply({ content: `See ${ruleCh}`, ephemeral: true });
+async function run( fishsticks, int ) {
+    const ruleCh = await fishsticks.channels.cache.get( rules );
+    int.reply( { content: `See ${ruleCh}`, ephemeral: true } );
 }
 
 function help() {

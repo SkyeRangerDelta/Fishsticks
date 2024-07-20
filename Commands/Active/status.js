@@ -1,24 +1,24 @@
 //----STATUS----
 // Generates a status report on Fs systems
 
-const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
-const { fso_query } = require('../../Modules/FSO/FSO_Utils');
-const { convertMsFull } = require('../../Modules/Utility/Utils_Time');
-const { version } = require('../../package.json');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
+const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
+const { convertMsFull } = require( '../../Modules/Utility/Utils_Time' );
+const { version } = require( '../../package.json' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Globals
 const data = new SlashCommandBuilder()
-	.setName('status')
-	.setDescription('Prints out Fishsticks system states.');
+	.setName( 'status' )
+	.setDescription( 'Prints out Fishsticks system states.' );
 
 //Functions
-async function run(fishsticks, int) {
-	await int.deferReply({ ephemeral: true });
+async function run( fishsticks, int ) {
+	await int.deferReply( { ephemeral: true } );
 
 	//Get FSO status
-	const fsoStatus = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 });
-	const memberStats = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'count');
+	const fsoStatus = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 } );
+	const memberStats = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'count' );
 
 	const timeNow = Date.now();
 
@@ -29,7 +29,7 @@ async function run(fishsticks, int) {
 		fields: [
 			{
 				name: 'Application State',
-				value: toggle(fsoStatus.Online),
+				value: toggle( fsoStatus.Online ),
 				inline: true
 			},
 			{
@@ -64,7 +64,7 @@ async function run(fishsticks, int) {
 			},
 			{
 				name: 'Uptime',
-				value: convertMsFull(fsoStatus.StartupUTC - timeNow),
+				value: convertMsFull( fsoStatus.StartupUTC - timeNow ),
 				inline: true
 			},
 			{
@@ -89,21 +89,21 @@ async function run(fishsticks, int) {
 	};
 
 	//Reset Status
-	await fishsticks.user.setPresence({
+	await fishsticks.user.setPresence( {
 		activities: [{ name: 'for !help | ' + version, type: 'WATCHING' }],
 		status: 'online'
-	});
+	} );
 
 	//Send embed
-	await int.editReply({ embeds: [embedBuilder(statusReport)] });
+	await int.editReply( { embeds: [embedBuilder( statusReport )] } );
 }
 
 function help() {
 	return 'Displays a list of all Fishsticks system states.';
 }
 
-function toggle(t) {
-	if (t) {
+function toggle( t ) {
+	if ( t ) {
 		return 'Online';
 	}
 	else {

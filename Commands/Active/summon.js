@@ -1,38 +1,38 @@
 //----SUMMON----
 
 //Imports
-const { log } = require('../../Modules/Utility/Utils_Log.js');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { log } = require( '../../Modules/Utility/Utils_Log.js' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Globals
 const data = new SlashCommandBuilder()
-    .setName('summon')
-    .setDescription('Summons cards!')
-    .addStringOption(o => o
-        .setName('card-name')
-        .setDescription('The name of the card to summon.')
-        .setRequired(true)
+    .setName( 'summon' )
+    .setDescription( 'Summons cards!' )
+    .addStringOption( o => o
+        .setName( 'card-name' )
+        .setDescription( 'The name of the card to summon.' )
+        .setRequired( true )
     );
 
 
 //Functions
-async function run(fishsticks, int) {
+async function run( fishsticks, int ) {
     //Set card name
-    const cardName = int.options.getString('card-name');
+    const cardName = int.options.getString( 'card-name' );
 
     //BrodeMode Toggle
-    if (cardName === 'brodemode') {
+    if ( cardName === 'brodemode' ) {
         fishsticks.SUMM_BRODEMODE = !fishsticks.SUMM_BRODEMODE;
 
-        if (fishsticks.SUMM_BRODEMODE) {
-            return int.reply('Brodemode is now on! Play by the rules or get out of my server.');
+        if ( fishsticks.SUMM_BRODEMODE ) {
+            return int.reply( 'Brodemode is now on! Play by the rules or get out of my server.' );
         }
         else {
-            return int.reply('Brodemode is now off! *Brode Laughter* Ben drowned on his own spit laughing.');
+            return int.reply( 'Brodemode is now off! *Brode Laughter* Ben drowned on his own spit laughing.' );
         }
     }
 
-    log('info', '[SUMMON] Attempting to summon a card.');
+    log( 'info', '[SUMMON] Attempting to summon a card.' );
 
     /*
     --> Not implemented yet.
@@ -48,15 +48,15 @@ async function run(fishsticks, int) {
     */
 
     try { //Attempt to summon/execute
-        if (fishsticks.SUMM_BRODEMODE === false) {
-            await int.reply({ files: [{
+        if ( fishsticks.SUMM_BRODEMODE === false ) {
+            await int.reply( { files: [{
                     attachment: `./Commands/Active/Summons/${cardName}.png`
-                }] });
+                }] } );
         }
     }
-    catch (summonErr) {
-        log('info', '[SUMMON] Summon Err\n' + summonErr);
-        return int.reply({ content: '*You failed to summon that, perhaps you have no mana?*', ephemeral: true }); //Friendly response on failure
+    catch ( summonErr ) {
+        log( 'info', '[SUMMON] Summon Err\n' + summonErr );
+        return int.reply( { content: '*You failed to summon that, perhaps you have no mana?*', ephemeral: true } ); //Friendly response on failure
     }
 }
 
