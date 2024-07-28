@@ -180,8 +180,12 @@ function newTick() {
 
 // Find a matching URL
 function findURL( url, str ) {
-    const escapedUrl = url.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' );
-    const pattern = new RegExp( escapedUrl );
+    const escapedUrl = sanitize( url );
+    const pattern = new RegExp( escapedUrl, 'i' );
 
     return pattern.test( str );
+}
+
+function sanitize( str ) {
+    return str.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' );
 }

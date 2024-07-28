@@ -60,9 +60,9 @@ async function validateAddedReaction( fishsticks, addedReaction, reactor ) {
 	}
 }
 
-function doDailyPost( fishsticks ) {
+async function doDailyPost( fishsticks ) {
 	const hangoutCH = fishsticks.CCG.channels.cache.get( hangout );
-	hangoutCH.send( { embeds: [buildPoem()] } );
+	hangoutCH.send( { embeds: [ await buildPoem()] } );
 }
 
 //Convert to title case
