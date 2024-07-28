@@ -18,7 +18,15 @@ async function execute( fishsticks, oldMsg, newMsg ) {
 
     let msgMem;
     if ( oldMsg.partial ) {
-        await newMsg.fetch();
+
+        try {
+            await newMsg.fetch();
+        }
+        catch ( e ) {
+            console.log( e );
+            return;
+        }
+
         msgMem = await newMsg.member.fetch();
     }
     else {
