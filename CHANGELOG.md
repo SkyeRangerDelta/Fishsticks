@@ -1,5 +1,36 @@
 || ${version} Changelog ||
 
+# [3.0.0-Experimental.2](https://github.com/SkyeRangerDelta/Fishsticks/compare/v3.0.0-Experimental.1...v3.0.0-Experimental.2) (2024-07-30)
+
+
+### CI
+
+* Changed job name to release ([91e33fd](https://github.com/SkyeRangerDelta/Fishsticks/commit/91e33fd010ec2af92b2bd28325b92f5402b916fe))
+* Fixed release job ([94ee831](https://github.com/SkyeRangerDelta/Fishsticks/commit/94ee831290c54b258c9bf57cb1f28ef15fbb7512))
+
+### New
+
+* Added poem search features ([a1d4aef](https://github.com/SkyeRangerDelta/Fishsticks/commit/a1d4aef7b3393221282d3b3705ca6678ff877e66)), closes [#64](https://github.com/SkyeRangerDelta/Fishsticks/issues/64)
+
+# [3.0.0-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v2.0.0...v3.0.0-Experimental.1) (2024-07-30)
+
+
+### Breaking
+
+* Upgraded ESLint ([8c56520](https://github.com/SkyeRangerDelta/Fishsticks/commit/8c56520b00d2e309c3457a8fa950db4305908fb6))
+
+### Fix
+
+* Added error handling for message updates ([1c7ca6e](https://github.com/SkyeRangerDelta/Fishsticks/commit/1c7ca6e815a9888488e3a435a7d134c729b2153e))
+* Fixed erroring command response ([0f4f67b](https://github.com/SkyeRangerDelta/Fishsticks/commit/0f4f67b8baf3e3beb9731ddd5b80e4eb84452421)), closes [#104](https://github.com/SkyeRangerDelta/Fishsticks/issues/104)
+* Isolated URL sanitization ([b66a685](https://github.com/SkyeRangerDelta/Fishsticks/commit/b66a6858309e29b5dbef077784c0f7df96e92b18)), closes [#107](https://github.com/SkyeRangerDelta/Fishsticks/issues/107)
+* Unbreak the daily poem thing ([9f266f7](https://github.com/SkyeRangerDelta/Fishsticks/commit/9f266f7546ae29be85f94ac67bfb3793ce162185))
+* Unbroke the game roles thing ([1b679d3](https://github.com/SkyeRangerDelta/Fishsticks/commit/1b679d3d522e834739938292d8af2aab9f295b1b)), closes [#119](https://github.com/SkyeRangerDelta/Fishsticks/issues/119)
+
+### New
+
+* Added specific quote selection ([9bc30ca](https://github.com/SkyeRangerDelta/Fishsticks/commit/9bc30ca598774dc43a5383556bcdc7cc8cffdeb3)), closes [#67](https://github.com/SkyeRangerDelta/Fishsticks/issues/67)
+
 # [2.0.0](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.19.9...v2.0.0) (2024-07-19)
 
 
