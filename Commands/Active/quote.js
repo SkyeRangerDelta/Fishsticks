@@ -3,23 +3,34 @@
 
 //Imports
 const { generateRandomQuote } = require( '../../Modules/Core/Core_Message' );
-// const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
+const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Globals
 const data = new SlashCommandBuilder()
 	.setName( 'quote' )
-	.setDescription( 'Does quote things.' )
-	.addSubcommand( s => s
+	.setDescription( 'Does quote things.' );
+
+data.addSubcommand( s => s
 		.setName( 'random' )
-		.setDescription( 'Displays a random quote.' ) )
-	.addSubcommand( s => s
+		.setDescription( 'Displays a random quote.' ) );
+
+data.addSubcommand( s => s
 		.setName( 'add' )
-		.setDescription( '[WIP] Add a new quote to the pool.' )
-	);
+		.setDescription( '[WIP] Add a new quote to the pool.' ) );
+
+
+data.addSubcommand( s => s
+	.setName( 'show' )
+	.setDescription( 'Lists a specific quote by ID from the pool.' )
+	.addIntegerOption( i => i
+		.setName( 'id' )
+		.setDescription( 'The quote ID to display.' )
+		.setRequired( true ) ) );
 
 //Functions
 async function run( fishsticks, int ) {
+	await int.deferReply();
 	const subCMD = int.options.getSubcommand();
 	//Syntax /quote text?
 
@@ -31,10 +42,24 @@ async function run( fishsticks, int ) {
 	if ( subCMD === 'random' ) {
 		//Displays a random quote
 		const q = await generateRandomQuote( fishsticks, int );
-		return int.reply( { content: q } );
+		return int.editReply( { content: q } );
+	}
+	else if ( subCMD === 'show' ) {
+		//Lists a specific quote by ID from the pool
+		const qID = `${int.options.getInteger( 'id' )}`;
+
+		try {
+			const res = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_QuoteRef', 'select', { id: qID } );
+			
+			int.editReply( { content: res.q } );
+		}
+		catch ( qErr ) {
+			console.error( qErr );
+			int.editReply( { content: 'I couldnt find that quote!' } );
+		}
 	}
 	else {
-		return int.reply( {
+		return int.editReply( {
 			content: 'WIP!',
 			ephemeral: true
 		} );

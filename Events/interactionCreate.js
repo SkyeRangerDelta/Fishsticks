@@ -50,6 +50,7 @@ async function execute( fishsticks, interaction ) {
             }, { id: 1 } );
         }
         catch ( cmdErr ) {
+            interaction.deferReply();
 
             //Fail here
             const upVal = {
@@ -74,7 +75,7 @@ async function execute( fishsticks, interaction ) {
                 log( 'err', '[INTERACTION] AAAAAAAHHHHHHHHHHHHHH - DO SOMETHING.' );
             }
             else {
-                await interaction.editReply( 'Looks like weve got a very serious situation on our hands.\n' + generateErrorMsg() + '\n' + cmdErr );
+                await interaction.editReply( 'Looks like weve got a very serious situation on our hands.\n' + generateErrorMsg() + '\n' + cmdErr + `\n${ cmdErr.stack }` );
             }
         }
     }
