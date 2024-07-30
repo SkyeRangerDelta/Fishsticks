@@ -29,7 +29,7 @@
     [
       "@semantic-release/changelog",
       {
-        "changelogTitle": "|| ${version} Changelog ||"
+        "changelogTitle": "|| v${version} Changelog ||"
       }
     ],
     [
