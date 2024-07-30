@@ -23,12 +23,12 @@ async function run( Fishsticks, int ) {
     int.deferReply( { ephemeral: true } );
 
     if( !hasPerms( int.member, ['CC Member', 'ACC Member', 'Event Coordinator'] ) ) {
-        return int.reply( { content: 'Only (A)CC Members can create temporary channels!', ephemeral: true } );
+        return int.editReply( { content: 'Only (A)CC Members can create temporary channels!', ephemeral: true } );
     }
 
     //Check voice state
     if ( !int.member.voice.channel || int.member.voice.channel.id !== chSpawner ) {
-        return int.reply( { content: 'You must connect to the channel spawner first!', ephemeral: true } );
+        return int.editReply( { content: 'You must connect to the channel spawner first!', ephemeral: true } );
     }
 
     await createCh( Fishsticks, int );
