@@ -16,7 +16,7 @@ env:
   IMAGE_NAME: "SkyeRangerDelta/Fishsticks"
 
 jobs:
-  build:
+  release:
 
     runs-on: ubuntu-latest
 
