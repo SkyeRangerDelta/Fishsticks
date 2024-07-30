@@ -1,5 +1,17 @@
 || ${version} Changelog ||
 
+# [3.0.0-Experimental.2](https://github.com/SkyeRangerDelta/Fishsticks/compare/v3.0.0-Experimental.1...v3.0.0-Experimental.2) (2024-07-30)
+
+
+### CI
+
+* Changed job name to release ([91e33fd](https://github.com/SkyeRangerDelta/Fishsticks/commit/91e33fd010ec2af92b2bd28325b92f5402b916fe))
+* Fixed release job ([94ee831](https://github.com/SkyeRangerDelta/Fishsticks/commit/94ee831290c54b258c9bf57cb1f28ef15fbb7512))
+
+### New
+
+* Added poem search features ([a1d4aef](https://github.com/SkyeRangerDelta/Fishsticks/commit/a1d4aef7b3393221282d3b3705ca6678ff877e66)), closes [#64](https://github.com/SkyeRangerDelta/Fishsticks/issues/64)
+
 # [3.0.0-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v2.0.0...v3.0.0-Experimental.1) (2024-07-30)
 
 
