@@ -1,3 +1,26 @@
+|| v${version} Changelog ||
+
+# [3.1.0-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v3.0.0...v3.1.0-Experimental.1) (2024-08-04)
+
+
+### Build
+
+* Upgrade NPM modules ([5c9da33](https://github.com/SkyeRangerDelta/Fishsticks/commit/5c9da3316ad35605fc00c1870016e3d35fe410e9))
+
+### Chore
+
+* Syntax changes ([afe2762](https://github.com/SkyeRangerDelta/Fishsticks/commit/afe2762868c6afa84188c6c3da5986b432650495))
+
+### CI
+
+* Added nodemon ([fca3bc8](https://github.com/SkyeRangerDelta/Fishsticks/commit/fca3bc823560d26be55565b9e575e41c093fa3c1))
+* Rename action ([0f28972](https://github.com/SkyeRangerDelta/Fishsticks/commit/0f289720276bc8726d5cff05725e9cfa0b9fc8fb))
+
+### New
+
+* Added Breadcrumbs relay F's ([b89b877](https://github.com/SkyeRangerDelta/Fishsticks/commit/b89b87781f84ec49d336fb6ae3895d65940210de))
+* Added say command ([ad1b102](https://github.com/SkyeRangerDelta/Fishsticks/commit/ad1b102b9a6ebc544b4cd510538e0f8437cad24c))
+
 || ${version} Changelog ||
 
 # [3.0.0](https://github.com/SkyeRangerDelta/Fishsticks/compare/v2.0.0...v3.0.0) (2024-07-30)
