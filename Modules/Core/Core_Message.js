@@ -11,7 +11,7 @@ const { processXP } = require( '../XP/XP_Core' );
 const { handleShiny } = require( '../Utility/Utils_Shiny' );
 
 const { prefix } = require( '../Core/Core_config.json' );
-const { discDen, prReqs } = require( '../Core/Core_ids.json' );
+const { discDen, prReqs, mcRelay, bcId } = require( '../Core/Core_ids.json' );
 
 //Exports
 module.exports = {
@@ -21,6 +21,68 @@ module.exports = {
 
 //Functions
 async function processMessage( Fishsticks, msg ) {
+
+    // Breadcrumbs stuff
+    // Check for messages in relay
+    if ( msg.channel.id === mcRelay && msg.author.id === bcId && msg.embeds.length > 0 ) {
+        // Get Relay channel
+        const relayChannel = Fishsticks.channels.cache.get( mcRelay );
+
+        // Check content for died
+        console.log( 'Relay message', msg.embeds[0].author.name );
+        const dm = msg.embeds[0].author.name.toLowerCase();
+        const deathKeywords = [
+            'died',
+            'dead',
+            'death',
+            'killed',
+            'drowned',
+            'burned',
+            'suffocated',
+            'walked into',
+            'fell from',
+            'blew up',
+            'fell into',
+            'starved',
+            'impaled',
+            'shot',
+            'blown up',
+            'squished',
+            'squashed',
+            'pummeled',
+            'stabbed',
+            'fireballed',
+            'experienced kinetic energy',
+            'hit the ground too hard',
+            'fell off',
+            'fell out of the world',
+            'fell while',
+            'was doomed',
+            'went up,',
+            'burned',
+            'went off',
+            'slain',
+            'struck',
+            'floor was lava',
+            'swim in lava',
+            'walked into',
+            'stung',
+            'obliterated',
+            'left the confines',
+            'poked',
+            'want to live',
+            'fell too,',
+            'too soft'
+        ];
+
+        const deathCheck = deathKeywords.some( word => dm.includes( word ) );
+        if ( deathCheck ) {
+            console.log( 'Death message' );
+            relayChannel.send( { content: 'F' } );
+        }
+
+        return;
+    }
 
     // --- Pre Message Core ---
 
@@ -76,7 +138,6 @@ async function processMessage( Fishsticks, msg ) {
     //Message handling
     if ( !msg.content.startsWith( prefix ) ) {
         //Passive Command Handler
-
         const passiveID = msg.content.trim().toLowerCase().split( ' ' )[0];
         try {
             const passiveCmd = require( `../../Commands/Passive/${passiveID}.js` );

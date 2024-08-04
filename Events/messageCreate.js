@@ -2,6 +2,7 @@
 
 //Imports
 const { processMessage } = require( '../Modules/Core/Core_Message' );
+const { bcId } = require( '../Modules/Core/Core_ids.json' );
 
 //Export
 module.exports = {
@@ -11,7 +12,7 @@ module.exports = {
 
 async function execute( fishsticks, msg ) {
     if ( msg.author === fishsticks.user ) return;
-    if ( msg.author.bot ) return;
+    if ( msg.author.bot && msg.author.id !== bcId ) return;
 
     processMessage( fishsticks, msg );
 }
