@@ -85,7 +85,7 @@ async function processMessage( Fishsticks, msg ) {
     }
 
     // Stop Breadcrumbs XP / other interactions
-    if ( msg.author.id === bcId ) return;
+    if ( msg.author.bot ) return;
 
     // --- Pre Message Core ---
 
