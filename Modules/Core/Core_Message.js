@@ -84,6 +84,9 @@ async function processMessage( Fishsticks, msg ) {
         return;
     }
 
+    // Stop Breadcrumbs XP / other interactions
+    if ( msg.author.bot ) return;
+
     // --- Pre Message Core ---
 
     //Member validation
