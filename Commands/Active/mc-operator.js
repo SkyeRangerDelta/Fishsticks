@@ -11,13 +11,35 @@ const data = new SlashCommandBuilder()
   .setName( 'mc-operator' )
   .setDescription( 'Enables Minecraft Operator command functions.' );
 
-data.addStringOption( o => o
-  .setName( 'message' )
-  .setDescription( 'The message to send to the server console.' )
-  .setRequired( true )
+data.addSubcommand( s => s
+  .setName( 'say' )
+  .setDescription( 'Sends a message to the server console.' )
+  .addStringOption( o => o
+    .setName( 'message' )
+    .setDescription( 'The message to send to the server console.' )
+    .setRequired( true )
+  )
 );
 
-const ampUri = `${ process.env.AMP_URL_CORE }${process.env.AMP_INSTANCE_PATH}${ process.env.CCCRAFT_INSTANCE_ID }`;
+data.addSubcommand( s => s
+  .setName( 'whitelist-add' )
+  .setDescription( 'Adds a user to the whitelist.' )
+  .addStringOption( o => o
+    .setName( 'username' )
+    .setDescription( 'The username to add to the whitelist.' )
+    .setRequired( true )
+  )
+);
+
+data.addSubcommand( s => s
+  .setName( 'whitelist-remove' )
+  .setDescription( 'Removes a user from the whitelist.' )
+  .addStringOption( o => o
+    .setName( 'username' )
+    .setDescription( 'The username to remove from the whitelist.' )
+    .setRequired( true )
+  )
+);
 
 //Functions
 async function run( fishsticks, int ) {
@@ -26,6 +48,15 @@ async function run( fishsticks, int ) {
   if ( !hasPerms( int.member, [ 'Minecraft OP' ] ) ) {
     return int.editReply( { content: 'You do not have permission to use this command.' } );
   }
+
+  const subcommand = int.options.getSubcommand();
+  const instanceID = subcommand === 'whitelist-add' || subcommand === 'whitelist-remove' ?
+    process.env.CCCRAFT_NODE_CONTROLLER_ID :
+    process.env.CCCRAFT_INSTANCE_ID;
+
+  const ampUri = `${ process.env.AMP_URL_CORE }${process.env.AMP_INSTANCE_PATH}${ instanceID }`;
+
+  console.log( ampUri );
 
   const AMP_API = new AMPAPI( `${ ampUri }` );
 
@@ -54,10 +85,25 @@ async function run( fishsticks, int ) {
       return int.editReply( { content: 'Something broke with AMP.' } );
     }
 
-    // Do test
+    // Do Thing
     console.info( 'Sending test command...' );
     if ( !AMP_API ) return int.editReply( { content: 'AMP API is not ready!' } );
-    await AMP_API.Core.SendConsoleMessageAsync( `say ${ int.options.getString( 'message' ) }` );
+
+    if ( subcommand === 'say' ) {
+      await AMP_API.Core.SendConsoleMessageAsync( `say ${ int.options.getString( 'message' ) }` );
+      return int.editReply( { content: 'Message sent.' } );
+    }
+    else if ( subcommand === 'whitelist-add' ) {
+      await AMP_API.Core.SendConsoleMessageAsync( `whitelist add ${ int.options.getString( 'username' ) }` );
+      return int.editReply( { content: 'User added to whitelist.' } );
+    }
+    else if ( subcommand === 'whitelist-remove' ) {
+      await AMP_API.Core.SendConsoleMessageAsync( `whitelist remove ${ int.options.getString( 'username' ) }` );
+      return int.editReply( { content: 'User removed from whitelist.' } );
+    }
+    else {
+      return int.editReply( { content: 'Invalid subcommand.' } );
+    }
 
   } catch {
     return int.editReply( { content: 'Failed to authenticate with AMP.' } );
