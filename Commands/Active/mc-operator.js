@@ -84,7 +84,7 @@ async function run( fishsticks, int ) {
     }
 
     // Do Thing
-    console.info( 'Sending test command...' );
+    console.info( 'Sending command...' );
     if ( !AMP_API ) return int.editReply( { content: 'AMP API is not ready!' } );
 
     if ( subcommand === 'say' ) {
