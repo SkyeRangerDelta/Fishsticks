@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/SkyeRangerDelta/Fishsticks#readme",
   "dependencies": {
+    "@cubecoders/ampapi": "^1.0.1",
     "@discordjs/builders": "^1.6.5",
     "@discordjs/rest": "^0.3.0",
     "@napi-rs/canvas": "^0.1.44",
