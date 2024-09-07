@@ -1,5 +1,38 @@
 || v${version} Changelog ||
 
+# [3.2.0](https://github.com/SkyeRangerDelta/Fishsticks/compare/v3.1.0...v3.2.0) (2024-09-07)
+
+
+### Build
+
+* Added AMP API driver ([2aec751](https://github.com/SkyeRangerDelta/Fishsticks/commit/2aec75105187b915e7eafcea303c1e591022a360))
+
+### chore
+
+* Remove BC from additional XP ([ec1d763](https://github.com/SkyeRangerDelta/Fishsticks/commit/ec1d7631d0c0a12cc8bcb5dd73fc5cc5c5fd3877))
+* Removed debug log ([d95941d](https://github.com/SkyeRangerDelta/Fishsticks/commit/d95941ddc634f679fd92d9c806a15a1eb85e5138))
+
+### Chore
+
+* Updated log ([acc4bcf](https://github.com/SkyeRangerDelta/Fishsticks/commit/acc4bcfd290d8de02c048aa4c319aa7ab16cdc41))
+
+### CI
+
+* ESLint to run on all PRs ([7d0a8e6](https://github.com/SkyeRangerDelta/Fishsticks/commit/7d0a8e667a4cfdc66afcbf7231cf1fbab321cfbd))
+
+### New
+
+* Added command logic for whitelisting ([0150227](https://github.com/SkyeRangerDelta/Fishsticks/commit/0150227023a9aa856383c062842d679c16437ce1))
+* Added mc-op command ([fe9d309](https://github.com/SkyeRangerDelta/Fishsticks/commit/fe9d3091d57a5cd5234f357ee2d7271b02e67876))
+
+### perf
+
+* Added error handling to cmd registration ([e006a1e](https://github.com/SkyeRangerDelta/Fishsticks/commit/e006a1e35692a3bf35aa1dee487729ae47aee490))
+
+### Refactor
+
+* Changed Breadcrumbs check to Bot ([98d5d08](https://github.com/SkyeRangerDelta/Fishsticks/commit/98d5d08784a12a1ec5cf4a4a5015548841bf9e7b))
+
 # [3.2.0-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v3.1.0...v3.2.0-Experimental.1) (2024-09-07)
 
 
