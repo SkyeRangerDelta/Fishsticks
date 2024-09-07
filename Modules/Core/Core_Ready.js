@@ -120,17 +120,22 @@ async function startUp( Fishsticks ) {
 	const commandData = fs.readdirSync( cmdPath ).filter( f => f.endsWith( '.js' ) );
 
 	for ( const cmdFile of commandData ) {
-		const cmd = require( `../../Commands/Active/${cmdFile}` );
+		try {
+			const cmd = require( `../../Commands/Active/${cmdFile}` );
 
-		//Register commands separately.
-		if ( cmd.global ) {
-			globalCmdObjs.push( cmd.data.toJSON() );
-		}
-		else {
-			commandObjs.push( cmd.data.toJSON() );
-		}
+			//Register commands separately.
+			if ( cmd.global ) {
+				globalCmdObjs.push( cmd.data.toJSON() );
+			}
+			else {
+				commandObjs.push( cmd.data.toJSON() );
+			}
 
-		Fishsticks.CMDS.set( cmd.data.name, cmd );
+			Fishsticks.CMDS.set( cmd.data.name, cmd );
+		}
+		catch ( e ) {
+			console.error( 'Got a mess here.', e );
+		}
 	}
 
 	log( 'proc', '[CMD-HANDLER] Beginning command registration' );
