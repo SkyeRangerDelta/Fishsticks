@@ -56,8 +56,6 @@ async function run( fishsticks, int ) {
 
   const ampUri = `${ process.env.AMP_URL_CORE }${process.env.AMP_INSTANCE_PATH}${ instanceID }`;
 
-  console.log( ampUri );
-
   const AMP_API = new AMPAPI( `${ ampUri }` );
 
   // Authenticate with AMP
