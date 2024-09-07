@@ -5,6 +5,9 @@ on:
     branches:
       - Experimental
       - master
+  pull_request:
+    branches:
+      - '*'
 
 jobs:
   eslint:
