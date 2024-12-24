@@ -100,6 +100,7 @@ jobs:
         uses: docker/metadata-action@v5 # v5.0.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: ${{ github.ref == 'refs/heads/Experimental' && 'latest-exp' || 'latest' }}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
