@@ -3,7 +3,7 @@
 
 //Imports
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
-const { AMPAPI } = require( '@cubecoders/ampapi' );
+// const { AMPAPI } = require( '@cubecoders/ampapi' );
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 
 //Globals
@@ -50,15 +50,19 @@ async function run( fishsticks, int ) {
   }
 
   const subcommand = int.options.getSubcommand();
-  const instanceID = subcommand === 'whitelist-add' || subcommand === 'whitelist-remove' ?
-    process.env.CCCRAFT_NODE_CONTROLLER_ID :
-    process.env.CCCRAFT_INSTANCE_ID;
+  console.info( `MC Operator: ${ subcommand }` );
+  // const instanceID = subcommand === 'whitelist-add' || subcommand === 'whitelist-remove' ?
+  //   process.env.CCCRAFT_NODE_CONTROLLER_ID :
+  //   process.env.CCCRAFT_INSTANCE_ID;
 
-  const ampUri = `${ process.env.AMP_URL_CORE }${process.env.AMP_INSTANCE_PATH}${ instanceID }`;
+  // const ampUri = `${ process.env.AMP_URL_CORE }${process.env.AMP_INSTANCE_PATH}${ instanceID }`;
 
-  const AMP_API = new AMPAPI( `${ ampUri }` );
+  // WARN: AMP API depends on vulnerable deps
+  // TODO: Implement an alternative to @cubecoders/ampapi
+  // const AMP_API = new AMPAPI( `${ ampUri }` );
 
   // Authenticate with AMP
+  /*
   try {
     console.info( 'Initializing AMP...' );
     let apiInit = await AMP_API.initAsync();
@@ -106,6 +110,8 @@ async function run( fishsticks, int ) {
   } catch {
     return int.editReply( { content: 'Failed to authenticate with AMP.' } );
   }
+
+   */
 
   // Determine and execute functions
 }
