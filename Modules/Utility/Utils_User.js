@@ -4,10 +4,9 @@
 //info, statistics, etc.
 
 //Imports
-const { fso_query } = require('../FSO/FSO_Utils');
-const { log } = require('../Utility/Utils_Log');
-const { flexTime } = require('./Utils_Time');
-const { DateTime } = require('luxon');
+const { fso_query } = require( '../FSO/FSO_Utils' );
+const { log } = require( '../Utility/Utils_Log' );
+const { DateTime } = require( 'luxon' );
 
 //Exports
 module.exports = {
@@ -17,10 +16,10 @@ module.exports = {
 };
 
 //Functions
-function hasPerms(member, perms) {
-	for (const perm in perms) {
-		if (member.roles.cache.some(role => role.name === perms[perm])) {
-			log('info', '[PERMS] User permission check passed.');
+function hasPerms( member, perms ) {
+	for ( const perm in perms ) {
+		if ( member.roles.cache.some( role => role.name === perms[perm] ) ) {
+			log( 'info', '[PERMS] User permission check passed.' );
 			return true;
 		}
 	}
@@ -30,33 +29,33 @@ function hasPerms(member, perms) {
 
 //Validate
 //Return the member record, create one if necessary
-async function fso_validate(Fishsticks, msg) {
-	let memberCheck = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: msg.author.id });
+async function fso_validate( Fishsticks, msg ) {
+	let memberCheck = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: msg.author.id } );
 
-	if (memberCheck != null) {
-		log('info', '[MEMBER-STATS] Member record located.');
+	if ( memberCheck != null ) {
+		log( 'info', '[MEMBER-STATS] Member record located.' );
 		//TODO: Integrity check
 
-		if (!memberCheck.notifications) {
-			await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', { $set: { 'notifications.xp': true } }, { id: msg.author.id });
-			memberCheck = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: msg.author.id });
+		if ( !memberCheck.notifications ) {
+			await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', { $set: { 'notifications.xp': true } }, { id: msg.author.id } );
+			memberCheck = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: msg.author.id } );
 		}
 
 		return memberCheck;
 	}
 	else {
-		log('info', '[MEMBER-STATS] No member record located, attempting to create one.');
+		log( 'info', '[MEMBER-STATS] No member record located, attempting to create one.' );
 
 		let vouchState = 'Not Yet';
 
-		if (hasPerms(msg.member, ['Recognized'])) {
+		if ( hasPerms( msg.member, ['Recognized'] ) ) {
 			vouchState = 'Yes';
 		}
 
-		const jt = new Date(msg.member.joinedTimestamp);
+		const jt = new Date( msg.member.joinedTimestamp );
 		const jtISO = jt.toISOString();
-		const jtDT = DateTime.fromISO(jtISO).setZone('UTC-5');
-		const jtFriendly = jtDT.toLocaleString(DateTime.DATETIME_MED);
+		const jtDT = DateTime.fromISO( jtISO ).setZone( 'UTC-5' );
+		const jtFriendly = jtDT.toLocaleString( DateTime.DATETIME_MED );
 
 		const memberRecord = {
 			id: msg.author.id,
@@ -85,21 +84,21 @@ async function fso_validate(Fishsticks, msg) {
 		};
 
 
-		const insertResponse = await insertNewMember(Fishsticks, memberRecord);
-		if (insertResponse) {
-			log('proc', '[MEMBER-STATS] New member record added successfully.');
-			return await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: msg.author.id });
+		const insertResponse = await insertNewMember( Fishsticks, memberRecord );
+		if ( insertResponse ) {
+			log( 'proc', '[MEMBER-STATS] New member record added successfully.' );
+			return await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: msg.author.id } );
 		}
 		else {
-			log('err', '[MEMBER-STATS] Record addition responded with an error.\n' + insertResponse);
+			log( 'err', '[MEMBER-STATS] Record addition responded with an error.\n' + insertResponse );
 		}
 	}
 }
 
-async function insertNewMember(Fishsticks, recordToAdd) {
-	const recordInsertionResponse = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'insert', recordToAdd);
+async function insertNewMember( Fishsticks, recordToAdd ) {
+	const recordInsertionResponse = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'insert', recordToAdd );
 
-	if (recordInsertionResponse.inserted === 1) {
+	if ( recordInsertionResponse.inserted === 1 ) {
 		return true;
 	}
 	else {
@@ -108,15 +107,15 @@ async function insertNewMember(Fishsticks, recordToAdd) {
 }
 
 //Clear member record
-async function clearRecord(Fishsticks, formerMember) {
+async function clearRecord( Fishsticks, formerMember ) {
 	//Desc: clears the former members FSO roles, vouches, and stats
 
-	const memberRecord = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'delete', { id: formerMember.id });
+	const memberRecord = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'delete', { id: formerMember.id } );
 
-	if (memberRecord.deletedCount !== 1) {
-		log('err', '[RECORD-MAINT] Could not clear the record in question!');
+	if ( memberRecord.deletedCount !== 1 ) {
+		log( 'err', '[RECORD-MAINT] Could not clear the record in question!' );
 	}
 	else {
-		log('proc', '[RECORD-MAINT] Departed member record cleared.');
+		log( 'proc', '[RECORD-MAINT] Departed member record cleared.' );
 	}
 }

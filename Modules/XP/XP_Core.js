@@ -2,10 +2,10 @@
 //=======================
 
 //Imports
-const { fso_query } = require('../FSO/FSO_Utils');
-const { log } = require('../Utility/Utils_Log');
-const { announcements, discDen, prReqs, bStudy, hangout } = require('../Core/Core_ids.json');
-const { createLevelBanner } = require('./XP_LevelUp');
+const { fso_query } = require( '../FSO/FSO_Utils' );
+const { log } = require( '../Utility/Utils_Log' );
+const { announcements, discDen, prReqs, bStudy, hangout } = require( '../Core/Core_ids.json' );
+const { createLevelBanner } = require( './XP_LevelUp' );
 
 //Exports
 module.exports = {
@@ -13,22 +13,22 @@ module.exports = {
 };
 
 //Functions
-async function processXP(fishsticks, cmd) {
-    log('info', '[XP-SYS] Processing message');
+async function processXP( fishsticks, cmd ) {
+    log( 'info', '[XP-SYS] Processing message' );
 
     //Check if non-processed channel
-    if (cmd.msg.channel.id === prReqs) {
-        log('info', '[XP-SYS] XP not handled in this channel.');
+    if ( cmd.msg.channel.id === prReqs ) {
+        log( 'info', '[XP-SYS] XP not handled in this channel.' );
         return;
     }
 
     //Get profile
-    const memberProf = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: cmd.msg.member.id });
+    const memberProf = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'select', { id: cmd.msg.member.id } );
 
     //Update profile
     let update = null;
 
-    if (!memberProf.lastMsg) {
+    if ( !memberProf.lastMsg ) {
         update = {
             $set: {
                 messagesSent: memberProf.messagesSent + 1,
@@ -44,40 +44,40 @@ async function processXP(fishsticks, cmd) {
         };
     }
 
-    await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', update, { id: cmd.msg.member.id });
+    await fso_query( fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', update, { id: cmd.msg.member.id } );
 
     //Valid message for XP?
     const msgTimeDiff = cmd.msg.createdAt - memberProf.lastMsg;
 
-    if (msgTimeDiff < 60000) {
-        return log('info', '[XP-SYS] Message sent too soon since previous for XP.');
+    if ( msgTimeDiff < 60000 ) {
+        return log( 'info', '[XP-SYS] Message sent too soon since previous for XP.' );
     }
 
     //Begin processing
-    await doXP(fishsticks, cmd, memberProf);
+    await doXP( fishsticks, cmd, memberProf );
 }
 
 //Begin working on XP
-async function doXP(fishsticks, cmd, memberProf) {
-    const msgScore = determineXPScore(cmd);
-    const xpGen = determineXP(msgScore);
+async function doXP( fishsticks, cmd, memberProf ) {
+    const msgScore = determineXPScore( cmd );
+    const xpGen = determineXP( msgScore );
 
     let currLvl = memberProf.xp.level;
     let lvlTriggered = false;
     const currXP = memberProf.xp.RP;
-    const xpForNxtLvl = Math.floor(66.1 * (Math.pow(currLvl + 1, 1.79)));
+    const xpForNxtLvl = Math.floor( 66.1 * ( Math.pow( currLvl + 1, 1.79 ) ) );
 
-    if (currXP + xpGen >= xpForNxtLvl) {
-        log('proc', '[XP-SYS] Level up! (+' + xpGen + ')');
+    if ( currXP + xpGen >= xpForNxtLvl ) {
+        log( 'proc', '[XP-SYS] Level up! (+' + xpGen + ')' );
         currLvl = currLvl + 1;
         lvlTriggered = true;
         //TODO: Canvas?
-        if (memberProf.notifications.xp) {
-            createLevelBanner(fishsticks, cmd, currLvl);
+        if ( memberProf.notifications.xp ) {
+            createLevelBanner( fishsticks, cmd, currLvl );
         }
     }
     else {
-        log('proc', '[XP-SYS] Added ' + xpGen + ' XP.');
+        log( 'proc', '[XP-SYS] Added ' + xpGen + ' XP.' );
     }
 
     const updateProf = {
@@ -92,32 +92,32 @@ async function doXP(fishsticks, cmd, memberProf) {
         }
     };
 
-    const updateProfRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', updateProf, { id: memberProf.id });
+    const updateProfRes = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', updateProf, { id: memberProf.id } );
 
-    if (updateProfRes.modifiedCount === 1) {
-        if (lvlTriggered) {
-            if (memberProf.notifications.xp) {
-                if (cmd.channel.id === discDen || cmd.channel.id === bStudy || cmd.channel.id === announcements) {
-                    const hangoutCh = await fishsticks.channels.cache.get(hangout);
-                    hangoutCh.send(`${cmd.msg.member}, You've reached level ${currLvl}!`)
-                        .then(sent => { setTimeout(() => { sent.delete(); }, 10000); });
+    if ( updateProfRes.modifiedCount === 1 ) {
+        if ( lvlTriggered ) {
+            if ( memberProf.notifications.xp ) {
+                if ( cmd.channel.id === discDen || cmd.channel.id === bStudy || cmd.channel.id === announcements ) {
+                    const hangoutCh = await fishsticks.channels.cache.get( hangout );
+                    hangoutCh.send( `${cmd.msg.member}, You've reached level ${currLvl}!` )
+                        .then( sent => { setTimeout( () => { sent.delete(); }, 10000 ); } );
                 }
                 else {
-                    cmd.reply(`You've reached level ${currLvl}!`, 10);
+                    cmd.reply( `You've reached level ${currLvl}!`, 10 );
                 }
             }
         }
     }
     else {
-        log('warn', '[XP-SYS] Error updating member XP profile!');
-        cmd.channel.send(`${fishsticks.RANGER}, went wrong with the XP profile update, check the logs!`);
+        log( 'warn', '[XP-SYS] Error updating member XP profile!' );
+        cmd.channel.send( `${fishsticks.RANGER}, went wrong with the XP profile update, check the logs!` );
     }
 }
 
 //Determines whether or not the XP accrued from this post will be increased due to quality
-function determineXPScore(cmd) {
+function determineXPScore( cmd ) {
     //Measure length
-    const lengthScore = Math.floor(Math.pow(cmd.msg.content.length, 0.2));
+    const lengthScore = Math.floor( Math.pow( cmd.msg.content.length, 0.2 ) );
 
     //Detect punctuation
     const puncScore = {
@@ -130,34 +130,34 @@ function determineXPScore(cmd) {
         dQuote: 0
     };
 
-    for (let x = 0; x < cmd.msg.content.length; x++) {
-        const i = cmd.msg.content.charAt(x);
+    for ( let x = 0; x < cmd.msg.content.length; x++ ) {
+        const i = cmd.msg.content.charAt( x );
 
-        if (i === '.') {
+        if ( i === '.' ) {
             puncScore.general++;
             puncScore.period++;
         }
-        else if (i === '?') {
+        else if ( i === '?' ) {
             puncScore.general++;
             puncScore.question++;
         }
-        else if (i === '!') {
+        else if ( i === '!' ) {
             puncScore.general++;
             puncScore.exclamation++;
         }
-        else if (i === `'`) {
+        else if ( i === `'` ) {
             puncScore.general++;
             puncScore.sQuote++;
         }
-        else if (i === '"') {
+        else if ( i === '"' ) {
             puncScore.general++;
             puncScore.dQuote++;
         }
     }
 
-    if (puncScore.general >= 1) {
+    if ( puncScore.general >= 1 ) {
         puncScore.score += 1;
-        puncScore.score += Math.floor(Math.pow(puncScore.general, 0.5));
+        puncScore.score += Math.floor( Math.pow( puncScore.general, 0.5 ) );
     }
 
     //Formatting?
@@ -171,61 +171,61 @@ function determineXPScore(cmd) {
         angle: 0
     };
 
-    for (let x = 0; x < cmd.msg.content.length; x++) {
-        const i = cmd.msg.content.charAt(x);
+    for ( let x = 0; x < cmd.msg.content.length; x++ ) {
+        const i = cmd.msg.content.charAt( x );
 
-        if (i === '*') {
+        if ( i === '*' ) {
             charScore.general++;
             charScore.asterisk++;
         }
-        else if (i === '_') {
+        else if ( i === '_' ) {
             charScore.general++;
             charScore.underscore++;
         }
-        else if (i === '~') {
+        else if ( i === '~' ) {
             charScore.general++;
             charScore.accent++;
         }
-        else if (i === '`') {
+        else if ( i === '`' ) {
             charScore.general++;
             charScore.grave++;
         }
-        else if (i === '>') {
+        else if ( i === '>' ) {
             charScore.general++;
             charScore.angle++;
         }
     }
 
-    if (charScore.general >= 1) {
+    if ( charScore.general >= 1 ) {
         charScore.score += 1;
     }
 
-    if (charScore.general % 2 === 0) {
-        charScore.score += Math.floor(Math.pow(charScore.general, 0.5));
+    if ( charScore.general % 2 === 0 ) {
+        charScore.score += Math.floor( Math.pow( charScore.general, 0.5 ) );
     }
 
     //Links
     let linkScore = 0;
-    if (cmd.msg.content.includes('http://') || cmd.msg.content.includes('https://')) {
+    if ( cmd.msg.content.includes( 'http://' ) || cmd.msg.content.includes( 'https://' ) ) {
         linkScore += 1;
     }
 
     //Attachments
-    const attachScore = Math.ceil(cmd.msg.attachments.size / 2);
+    const attachScore = Math.ceil( cmd.msg.attachments.size / 2 );
 
     //Emojis
-    const reactScore = Math.ceil(cmd.msg.reactions.cache.size / 4);
+    const reactScore = Math.ceil( cmd.msg.reactions.cache.size / 4 );
 
     //Final calc
     return lengthScore + puncScore.score + charScore.score + linkScore + attachScore + reactScore;
 }
 
 //Generates the XP
-function determineXP(msgScore) {
-    if (msgScore < 5) {
-        return Math.floor(Math.random() * (30 - 20) + 20);
+function determineXP( msgScore ) {
+    if ( msgScore < 5 ) {
+        return Math.floor( Math.random() * ( 30 - 20 ) + 20 );
     }
     else {
-        return Math.floor(Math.random() * (40 - 30) + 30);
+        return Math.floor( Math.random() * ( 40 - 30 ) + 30 );
     }
 }

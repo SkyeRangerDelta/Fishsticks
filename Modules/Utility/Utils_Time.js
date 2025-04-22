@@ -1,8 +1,7 @@
 // ---- Time Utility ----
 
 //Imports
-const DATE = require('date-and-time');
-const { DateTime } = require('luxon');
+const { DateTime } = require( 'luxon' );
 
 //Exports
 
@@ -17,14 +16,14 @@ module.exports = {
 };
 
 //Returns the given date: Wed Jul 28 1993
-function systemDate(date) {
+function systemDate( date ) {
 	return date.toDateString();
 }
 
 //Returns system time: 12:38
-function systemTime(date) {
+function systemTime( date ) {
 	let minutes = date.getMinutes();
-	if (minutes < 10) {
+	if ( minutes < 10 ) {
 		minutes = '0' + minutes;
 	}
 
@@ -32,39 +31,39 @@ function systemTime(date) {
 }
 
 //Returns a timestamp: Wed Jul 28 1993 - 12:38:00
-function systemTimestamp(date) {
-	if (!date) {
+function systemTimestamp( date ) {
+	if ( !date ) {
 		this.date = new Date();
 	}
 
-	return flexTime(date);
+	return flexTime( date );
 }
 
 //Returns a 'date-and-time' date obj
-function flexTime(date) {
-	if (!date) {
-		const newFlex = DateTime.now().setZone('UTC-5').toLocaleString(DateTime.DATETIME_MED);
+function flexTime( date ) {
+	if ( !date ) {
+		const newFlex = DateTime.now().setZone( 'UTC-5' ).toLocaleString( DateTime.DATETIME_MED );
 
 		return newFlex;
 	}
 	else {
-		const newFlex = new DateTime(date.toISOString(), { zone: 'UTC-5' }).toLocaleString(DateTime.DATETIME_MED);
+		const newFlex = new DateTime( date.toISOString(), { zone: 'UTC-5' } ).toLocaleString( DateTime.DATETIME_MED );
 
 		return newFlex;
 	}
 }
 
-function convertMs(ms) {
+function convertMs( ms ) {
     ms = ms * -1;
     let hour, minute, seconds;
 
-    seconds = Math.floor(ms / 1000);
-    minute = Math.floor(seconds / 60);
+    seconds = Math.floor( ms / 1000 );
+    minute = Math.floor( seconds / 60 );
     seconds = seconds % 60;
-    hour = Math.floor(minute / 60);
+    hour = Math.floor( minute / 60 );
 	minute = minute % 60;
 
-	const day = Math.floor(hour / 24);
+	const day = Math.floor( hour / 24 );
 
 	hour = hour % 24;
 
@@ -76,23 +75,23 @@ function convertMs(ms) {
     };
 }
 
-function convertMsFull(ms) {
+function convertMsFull( ms ) {
     ms = ms * -1;
     let hour, minute, seconds, day, month, year;
 
-    seconds = Math.floor(ms / 1000);
-    minute = Math.floor(seconds / 60);
+    seconds = Math.floor( ms / 1000 );
+    minute = Math.floor( seconds / 60 );
     seconds = seconds % 60;
-    hour = Math.floor(minute / 60);
+    hour = Math.floor( minute / 60 );
 	minute = minute % 60;
 
-	day = Math.floor(hour / 24);
+	day = Math.floor( hour / 24 );
 	day = day % 24;
 
-	month = Math.floor(day / 30);
+	month = Math.floor( day / 30 );
 	month = month % 30;
 
-	year = Math.floor(month / 12);
+	year = Math.floor( month / 12 );
 	year = year % 12;
 
 	hour = hour % 24;
@@ -101,13 +100,13 @@ function convertMsFull(ms) {
 }
 
 //Returns a string of the time in Years, Months, Days, Hours, Minutes, Seconds since the date provided
-function timeSinceDate(ms) {
-	const date = new Date(ms);
-	let impDate = DateTime.fromISO(date.toISOString());
-	impDate = impDate.setZone('UTC-5');
-	const now = DateTime.now().setZone('UTC-5');
+function timeSinceDate( ms ) {
+	const date = new Date( ms );
+	let impDate = DateTime.fromISO( date.toISOString() );
+	impDate = impDate.setZone( 'UTC-5' );
+	const now = DateTime.now().setZone( 'UTC-5' );
 
-	const diff = now.diff(impDate, ['years', 'months', 'days', 'hours', 'minutes', 'seconds']);
+	const diff = now.diff( impDate, ['years', 'months', 'days', 'hours', 'minutes', 'seconds'] );
 	const values = diff.values;
 
 

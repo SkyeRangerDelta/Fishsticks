@@ -1,22 +1,22 @@
 // ---- Boot Routine ----
 
 //Imports
-const { log } = require('../Utility/Utils_Log');
+const { log } = require( '../Utility/Utils_Log' );
 
-const { fso_connect, fso_query } = require('../FSO/FSO_Utils');
-const { convertMsFull, systemTimestamp } = require('../Utility/Utils_Time');
-const { embedBuilder } = require('../Utility/Utils_EmbedBuilder');
-const { terminate } = require('../Utility/Utils_Terminate');
+const { fso_connect, fso_query } = require( '../FSO/FSO_Utils' );
+const { convertMsFull, systemTimestamp } = require( '../Utility/Utils_Time' );
+const { embedBuilder } = require( '../Utility/Utils_EmbedBuilder' );
+const { terminate } = require( '../Utility/Utils_Terminate' );
 
-const fs = require('fs');
-const path = require('path');
-const { REST } = require('@discordjs/rest');
-const { Routes, ActivityType } = require('discord-api-types/v9');
+const fs = require( 'fs' );
+const path = require( 'path' );
+const { REST } = require( '@discordjs/rest' );
+const { Routes, ActivityType } = require( 'discord-api-types/v9' );
 
-const { guild_CCG, fs_console, fsID, bLogger, ranger } = require('./Core_ids.json');
-const { version } = require('../../package.json');
-const { primary, emergency } = require('./Core_config.json').colors;
-const { token } = require('./Core_config.json');
+const { guild_CCG, fs_console, fsID, bLogger, ranger } = require( './Core_ids.json' );
+const { version } = require( '../../package.json' );
+const { primary, emergency } = require( './Core_config.json' ).colors;
+const { token } = require( './Core_config.json' );
 
 //Exports
 module.exports = {
@@ -24,18 +24,18 @@ module.exports = {
 };
 
 //Functions
-async function startUp(Fishsticks) {
+async function startUp( Fishsticks ) {
 
 	//Test launch args
-	if (process.argv.length > 2) {
-		log('warn', '[FISHSTICKS] Fs was launched with at least one command line argument.');
+	if ( process.argv.length > 2 ) {
+		log( 'warn', '[FISHSTICKS] Fs was launched with at least one command line argument.' );
 
-		for (const arg in process.argv) {
-			if (process.argv[arg] === '-test') {
+		for ( const arg in process.argv ) {
+			if ( process.argv[arg] === '-test' ) {
 				Fishsticks.TESTMODE = true;
 			}
 
-			Fishsticks.NODEARGS.push(process.argv[arg]);
+			Fishsticks.NODEARGS.push( process.argv[arg] );
 		}
 	}
 
@@ -44,17 +44,17 @@ async function startUp(Fishsticks) {
 	const timeNow = Date.now();
 
 	//Init Objs
-	Fishsticks.CCG = await Fishsticks.guilds.fetch(guild_CCG);
-	Fishsticks.CONSOLE = await Fishsticks.channels.cache.get(fs_console);
-	Fishsticks.BOT_LOG = await Fishsticks.channels.cache.get(bLogger);
-	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch(ranger);
-	Fishsticks.MEMBER = await Fishsticks.CCG.members.fetch(fsID);
+	Fishsticks.CCG = await Fishsticks.guilds.fetch( guild_CCG );
+	Fishsticks.CONSOLE = await Fishsticks.channels.cache.get( fs_console );
+	Fishsticks.BOT_LOG = await Fishsticks.channels.cache.get( bLogger );
+	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch( ranger );
+	Fishsticks.MEMBER = await Fishsticks.CCG.members.fetch( fsID );
 
 	//Cache all members for ROLE-SYS checks
 	Fishsticks.CCG.members.fetch();
 
 	//Console confirmation
-	log('proc', '[CLIENT] Fishsticks is out of the oven.\n-------------------------------------------------------');
+	log( 'proc', '[CLIENT] Fishsticks is out of the oven.\n-------------------------------------------------------' );
 
 	// -- Perform startup routine --
 	//FSO Connection
@@ -74,22 +74,22 @@ async function startUp(Fishsticks) {
 		}
 		*/
 	}
-	catch (error) {
-		if (error.name === 'MongoServerSelectionError') {
-			log('err', '[FSO] [FATAL] FSO could not be reached!.\n' + error);
-			await Fishsticks.CONSOLE.send(`${Fishsticks.RANGER}, FSO connection failed, check the server and subroutine config.`);
-			return terminate(Fishsticks);
+	catch ( error ) {
+		if ( error.name === 'MongoServerSelectionError' ) {
+			log( 'err', '[FSO] [FATAL] FSO could not be reached!.\n' + error );
+			await Fishsticks.CONSOLE.send( `${Fishsticks.RANGER}, FSO connection failed, check the server and subroutine config.` );
+			return terminate( Fishsticks );
 		}
 		else {
-			log('err', '[FSO] Something has gone wrong in the startup routine.\n' + error);
+			log( 'err', '[FSO] Something has gone wrong in the startup routine.\n' + error );
 		}
 	}
 
 	//Sync FSO Status
-	const statusPreUpdate = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 });
+	const statusPreUpdate = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 } );
 
 	Fishsticks.session = ++statusPreUpdate.Session;
-	Fishsticks.lastSystemStart = convertMsFull(statusPreUpdate.StartupTime - timeNow);
+	Fishsticks.lastSystemStart = convertMsFull( statusPreUpdate.StartupTime - timeNow );
 	Fishsticks.DOCKET_PIN = statusPreUpdate.docketPinID || 0;
 
 	const filterDoc = {
@@ -104,40 +104,45 @@ async function startUp(Fishsticks) {
 		}
 	};
 
-	const statusPostUpdate = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', statusTableUpdate, filterDoc);
+	const statusPostUpdate = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_Status', 'update', statusTableUpdate, filterDoc );
 
-	if (statusPostUpdate.modifiedCount !== 1) {
-		log('warn', '[FSO] Status table update failed. Record update count was not expected.');
+	if ( statusPostUpdate.modifiedCount !== 1 ) {
+		log( 'warn', '[FSO] Status table update failed. Record update count was not expected.' );
 	}
 	else {
-		log ('info', '[FSO] Status table update done.');
+		log ( 'info', '[FSO] Status table update done.' );
 	}
 
 	// Register slash commands
 	const commandObjs = [];
 	const globalCmdObjs = [];
-	const cmdPath = path.join(__dirname, '../..', 'Commands/Active');
-	const commandData = fs.readdirSync(cmdPath).filter(f => f.endsWith('.js'));
+	const cmdPath = path.join( __dirname, '../..', 'Commands/Active' );
+	const commandData = fs.readdirSync( cmdPath ).filter( f => f.endsWith( '.js' ) );
 
-	for (const cmdFile of commandData) {
-		const cmd = require(`../../Commands/Active/${cmdFile}`);
+	for ( const cmdFile of commandData ) {
+		try {
+			const cmd = require( `../../Commands/Active/${cmdFile}` );
 
-		//Register commands separately.
-		if (cmd.global) {
-			globalCmdObjs.push(cmd.data.toJSON());
+			//Register commands separately.
+			if ( cmd.global ) {
+				globalCmdObjs.push( cmd.data.toJSON() );
+			}
+			else {
+				commandObjs.push( cmd.data.toJSON() );
+			}
+
+			Fishsticks.CMDS.set( cmd.data.name, cmd );
 		}
-		else {
-			commandObjs.push(cmd.data.toJSON());
+		catch ( e ) {
+			console.error( 'Got a mess here.', e );
 		}
-
-		Fishsticks.CMDS.set(cmd.data.name, cmd);
 	}
 
-	log('proc', '[CMD-HANDLER] Beginning command registration');
-	const rest = new REST({ version: 9 }).setToken(token);
+	log( 'proc', '[CMD-HANDLER] Beginning command registration' );
+	const rest = new REST( { version: 9 } ).setToken( token );
 	try {
 
-		log('proc', '[CMD-HANDLER] Doing global registration...');
+		log( 'proc', '[CMD-HANDLER] Doing global registration...' );
 		await rest.put(
 			Routes.applicationCommands(
 				`${fsID}`
@@ -145,7 +150,7 @@ async function startUp(Fishsticks) {
 			{ body: globalCmdObjs }
 		);
 
-		log('proc', '[CMD-HANDLER] Doing guild registration');
+		log( 'proc', '[CMD-HANDLER] Doing guild registration' );
 		await rest.put(
 			Routes.applicationGuildCommands(
 				`${fsID}`,
@@ -154,32 +159,32 @@ async function startUp(Fishsticks) {
 			{ body: commandObjs }
 		);
 
-		log('proc', '[CMD-HANDLER] Finished registering commands');
+		log( 'proc', '[CMD-HANDLER] Finished registering commands' );
 	}
-	catch (e) {
-		console.log(e);
-		log('err', '[CMD-HANDLER] Failed to finished registering commands!');
+	catch ( e ) {
+		console.log( e );
+		log( 'err', '[CMD-HANDLER] Failed to finished registering commands!' );
 		Fishsticks.destroy();
-		process.exit(1);
+		process.exit( 1 );
 	}
 
 	//Cache data
 	// - Poll messages
 	try {
-		const polls = await fso_query(Fishsticks.FSO_CONNECTION, 'FSO_Polls', 'selectAll');
-		for (const poll in polls) {
-			const ch = await Fishsticks.channels.cache.get(polls[poll].chId);
-			await ch.messages.fetch(polls[poll].intId);
+		const polls = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_Polls', 'selectAll' );
+		for ( const poll in polls ) {
+			const ch = await Fishsticks.channels.cache.get( polls[poll].chId );
+			await ch.messages.fetch( polls[poll].intId );
 			Fishsticks.pollCache++;
 		}
 	}
 	finally {
-		log('proc', `[POLL] Cached all ${Fishsticks.pollCache} polls successfully.`);
+		log( 'proc', `[POLL] Cached all ${Fishsticks.pollCache} polls successfully.` );
 	}
 
 	//Dispatch Startup Message
-	if (Fishsticks.TESTMODE) {
-		log('warn', '[FISHSTICKS] Fs has been booted into Test mode!');
+	if ( Fishsticks.TESTMODE ) {
+		log( 'warn', '[FISHSTICKS] Fs has been booted into Test mode!' );
 
 		const startupEmbed = {
 			title: 'Test Mode Boot',
@@ -187,7 +192,7 @@ async function startUp(Fishsticks) {
 			color: emergency,
 			noThumbnail: true,
 			footer: {
-				text: 'Sequence initiated at ' + systemTimestamp(timestamp)
+				text: 'Sequence initiated at ' + systemTimestamp( timestamp )
 			},
 			fields: [
 				{
@@ -198,13 +203,13 @@ async function startUp(Fishsticks) {
 			]
 		};
 
-		Fishsticks.CONSOLE.send({ embeds: [embedBuilder(startupEmbed)] });
+		Fishsticks.CONSOLE.send( { embeds: [embedBuilder( startupEmbed )] } );
 
 		//Set Status
-		await Fishsticks.user.setPresence({
+		await Fishsticks.user.setPresence( {
 			activities: [{ name: version + ' | TEST MODE', type: ActivityType.Listening }],
 			status: 'online'
-		});
+		} );
 	}
 	else {
 		const startupMessage = {
@@ -212,7 +217,7 @@ async function startUp(Fishsticks) {
 			description: 'Dipping in flour...\nBaking at 400°...\nFishticks ' + version + ' is ready to go!',
 			color: primary,
 			footer: {
-				text: 'Sequence initiated at ' + systemTimestamp(timestamp)
+				text: 'Sequence initiated at ' + systemTimestamp( timestamp )
 			},
 			fields: [
 				{
@@ -222,23 +227,23 @@ async function startUp(Fishsticks) {
 				},
 				{
 					name: 'Time since last startup',
-					value: convertMsFull(statusPreUpdate.StartupUTC - timeNow),
+					value: convertMsFull( statusPreUpdate.StartupUTC - timeNow ),
 					inline: true
 				}
 			]
 		};
 
-		const startupEmbed = embedBuilder(startupMessage);
-		Fishsticks.CONSOLE.send({ embeds: [startupEmbed] });
+		const startupEmbed = embedBuilder( startupMessage );
+		Fishsticks.CONSOLE.send( { embeds: [startupEmbed] } );
 
 		//Set Status
-		await Fishsticks.user.setPresence({
+		await Fishsticks.user.setPresence( {
 			activities: [{ name: 'for /help | ' + version, type: ActivityType.Watching }],
 			status: 'online'
-		});
+		} );
 	}
 
 	//Startup Complete
-	log('proc', '[CLIENT] Fishsticks is ready to run.\n-------------------------------------------------------');
+	log( 'proc', '[CLIENT] Fishsticks is ready to run.\n-------------------------------------------------------' );
 
 }

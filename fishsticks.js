@@ -16,15 +16,17 @@
 //				DEPENDENCIES
 //=============================================
 //Libraries
-const { Client, GatewayIntentBits } = require('discord.js');
-const schedule = require('node-schedule');
-const fs = require('fs');
-
-//Modules
-const { doDailyPost } = require('./Modules/Utility/Utils_Aux');
+const { Client, GatewayIntentBits } = require( 'discord.js' );
+const schedule = require( 'node-schedule' );
+const fs = require( 'fs' );
+const { config } = require( 'dotenv' );
 
 //Configs
-const { token } = require('./Modules/Core/Core_config.json');
+config();
+const token = process.env.TOKEN;
+
+//Modules
+const { doDailyPost } = require( './Modules/Utility/Utils_Aux' );
 
 
 //=============================================
@@ -32,7 +34,7 @@ const { token } = require('./Modules/Core/Core_config.json');
 //=============================================
 
 //Client
-const Fishsticks = new Client({
+const Fishsticks = new Client( {
 	intents: [
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMembers,
@@ -50,7 +52,7 @@ const Fishsticks = new Client({
 			'roles'
 		]
 	}
-});
+} );
 
 //Client Variables
 Fishsticks.FSO_CONNECTION = null;
@@ -69,15 +71,15 @@ Fishsticks.DOCKET_PIN = null;
 //=============================================
 //				EVENTS INDEX
 //=============================================
-const eventsIndex = fs.readdirSync('./Events').filter(f => f.endsWith('.js'));
+const eventsIndex = fs.readdirSync( './Events' ).filter( f => f.endsWith( '.js' ) );
 
-for (const eventFile in eventsIndex) {
-	const event = require(`./Events/${eventsIndex[eventFile]}`);
-	if (event.once) {
-		Fishsticks.once(event.name, (...args) => event.execute(Fishsticks, ...args));
+for ( const eventFile in eventsIndex ) {
+	const event = require( `./Events/${eventsIndex[eventFile]}` );
+	if ( event.once ) {
+		Fishsticks.once( event.name, ( ...args ) => event.execute( Fishsticks, ...args ) );
 	}
 	else {
-		Fishsticks.on(event.name, (...args) => event.execute(Fishsticks, ...args));
+		Fishsticks.on( event.name, ( ...args ) => event.execute( Fishsticks, ...args ) );
 	}
 }
 
@@ -85,23 +87,22 @@ for (const eventFile in eventsIndex) {
 //				   UTILITY
 //=============================================
 
-//Load ENV
-require('dotenv').config();
-
 //Schedule Crons
 const dailyRule = new schedule.RecurrenceRule();
 dailyRule.hour = 8;
 dailyRule.minute = 0;
 dailyRule.tz = 'America/New_York';
-schedule.scheduleJob(dailyRule, function() {
-	doDailyPost(Fishsticks);
-});
+schedule.scheduleJob( dailyRule, async function() {
+	await doDailyPost( Fishsticks );
+} );
 
-process.on('unhandledRejection', e => {
-	console.log('[ERR] ' + e);
-});
+process.on( 'unhandledRejection', e => {
+	console.log( '[ERR] ' + e );
+} );
 
 //==============================================
 // Login
 
-Fishsticks.login(token);
+Fishsticks.login( token ).then( () => {
+	console.log( 'Fishsticks is online!' );
+} );

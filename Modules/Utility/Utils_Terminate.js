@@ -6,14 +6,14 @@ module.exports = {
 };
 
 //Functions
-async function terminate(fishsticks) {
-    if (fishsticks.FSO_CONNECTION) {
+async function terminate( fishsticks ) {
+    if ( fishsticks.FSO_CONNECTION ) {
         await fishsticks.FSO_CONNECTION.close();
     }
 
-    if (fishsticks) {
-        await fishsticks.CONSOLE.send('[Utility Override] Controller terminating.');
+    if ( fishsticks ) {
+        await fishsticks.CONSOLE.send( '[Auxiliary Override] Controller terminating.' );
         fishsticks.destroy();
     }
-    process.exit(1);
+    process.exit( 1 );
 }

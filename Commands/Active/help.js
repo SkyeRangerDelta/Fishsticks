@@ -1,31 +1,31 @@
 // ---- Help ----
 
 //Imports
-const fs = require('fs');
+const fs = require( 'fs' );
 
-const { primary } = require('../../Modules/Core/Core_config.json');
-const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { primary } = require( '../../Modules/Core/Core_config.json' );
+const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Globals
 const data = new SlashCommandBuilder()
-	.setName('help')
-	.setDescription('Prints out the help list.');
+	.setName( 'help' )
+	.setDescription( 'Prints out the help list.' );
 
 //Functions
-function run(fishsticks, int) {
-	const cmdList = fs.readdirSync('./Commands/Active').filter(cmdFile => cmdFile.endsWith('.js'));
+function run( fishsticks, int ) {
+	const cmdList = fs.readdirSync( './Commands/Active' ).filter( cmdFile => cmdFile.endsWith( '.js' ) );
 	let helpMenu = '';
 
-	for (const file in cmdList) {
+	for ( const file in cmdList ) {
 		try {
-			const cmdFileID = cmdList[file].substring(0, cmdList[file].length - 3);
-			const helpFunc = require(`./${cmdFileID}`);
+			const cmdFileID = cmdList[file].substring( 0, cmdList[file].length - 3 );
+			const helpFunc = require( `./${cmdFileID}` );
 			const helpTxt = helpFunc.help();
-			helpMenu = helpMenu.concat(`**${cmdFileID}**: ${helpTxt}\n`);
+			helpMenu = helpMenu.concat( `**${cmdFileID}**: ${helpTxt}\n` );
 		}
-		catch (helpListErr) {
-			int.reply('Wait. Stop. No, something is off. Like literally turned off. ' + fishsticks.RANGER + ' Hey can you check on this please.');
+		catch ( helpListErr ) {
+			int.reply( 'Wait. Stop. No, something is off. Like literally turned off. ' + fishsticks.RANGER + ' Hey can you check on this please.' );
 			throw `${cmdList[file]} has no help entry!\n${helpListErr}`;
 		}
 	}
@@ -43,7 +43,7 @@ function run(fishsticks, int) {
 		noThumbnail: true
 	};
 
-	return int.reply({ embeds: [embedBuilder(helpPanel)], ephemeral: true });
+	return int.reply( { embeds: [embedBuilder( helpPanel )], ephemeral: true } );
 }
 
 function help() {

@@ -1,24 +1,24 @@
 // ---- APPLICATION COMMAND CREATE EVENT ----
 
 //Imports
-const { Logger } = require('../Modules/Logger/Log_Handler');
-const { systemTimestamp } = require('../Modules/Utility/Utils_Time');
-const { bLogger } = require('../Modules/Core/Core_ids.json');
-const { embedBuilder } = require('../Modules/Utility/Utils_EmbedBuilder');
+const { Logger } = require( '../Modules/Logger/Log_Handler' );
+const { systemTimestamp } = require( '../Modules/Utility/Utils_Time' );
+const { bLogger } = require( '../Modules/Core/Core_ids.json' );
+const { embedBuilder } = require( '../Modules/Utility/Utils_EmbedBuilder' );
 
 //Export
 module.exports = {
     name: 'applicationCommandCreate',
     once: false,
-    execute(fishsticks, appCmd) {
-        Logger({ type: 'App Command Create' });
+    execute( fishsticks, appCmd ) {
+        Logger( { type: 'App Command Create' } );
 
         const embed = {
             title: '[Command Created] ' + appCmd.name,
             description: 'A new application command was created.',
             noThumbnail: true,
             footer: {
-                text: `Created at ${systemTimestamp(appCmd.createdAt)}`
+                text: `Created at ${systemTimestamp( appCmd.createdAt )}`
             },
             fields: [
                 {
@@ -44,6 +44,6 @@ module.exports = {
             ]
         };
 
-        bLogger.send({ content: '[LOG]', embeds: [embedBuilder(embed)] });
+        bLogger.send( { content: '[LOG]', embeds: [embedBuilder( embed )] } );
     }
 };

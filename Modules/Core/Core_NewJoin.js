@@ -2,9 +2,9 @@
 // Handles a newcomer (not Recognized member) to the server object
 
 //Imports
-const { welcomeDM, welcomeBlurb1, welcomeBlurb2 } = require('../Library/systemResponses.json');
-const { cPad } = require('../Core/Core_ids.json');
-const { systemTimestamp } = require('../Utility/Utils_Time');
+const { welcomeDM, welcomeBlurb1, welcomeBlurb2 } = require( '../Library/systemResponses.json' );
+const { cPad } = require( '../Core/Core_ids.json' );
+const { systemTimestamp } = require( '../Utility/Utils_Time' );
 
 //Exports
 module.exports = {
@@ -12,9 +12,9 @@ module.exports = {
 };
 
 //Functions
-function handleNewJoin(fishsticks, newJoin) {
+function handleNewJoin( fishsticks, newJoin ) {
 	//Dispatch Welcome/Intro DM
-	newJoin.send(welcomeDM);
+	newJoin.send( welcomeDM );
 
 	//Dispatch Welcome Embed
 	const cPadEmbedPanel = {
@@ -32,6 +32,6 @@ function handleNewJoin(fishsticks, newJoin) {
 		]
 	};
 
-	const cPadCh = fishsticks.channels.cache.get(cPad);
-	cPadCh.send({ embeds: [cPadEmbedPanel] });
+	const cPadCh = fishsticks.channels.cache.get( cPad );
+	cPadCh.send( { embeds: [cPadEmbedPanel] } );
 }

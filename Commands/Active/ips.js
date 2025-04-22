@@ -2,16 +2,16 @@
 // Displays a list of CC related game server IPs
 
 //Imports
-const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Globals
 const data = new SlashCommandBuilder()
-	.setName('ips')
-	.setDescription('Prints out all CCG game server sockets.');
+	.setName( 'ips' )
+	.setDescription( 'Prints out all CCG game server sockets.' );
 
 //Functions
-function run(fishsticks, int) {
+function run( fishsticks, int ) {
     const ips = {
 		title: 'o0o - THE FISH SERVERS - o0o',
 		description: 'CCG recognized servers and their IPS.',
@@ -40,7 +40,7 @@ function run(fishsticks, int) {
 		noThumbnail: true
 	};
 
-    int.reply({ embeds: [embedBuilder(ips)], ephemeral: true });
+    int.reply( { embeds: [embedBuilder( ips )], ephemeral: true } );
 }
 
 function help() {

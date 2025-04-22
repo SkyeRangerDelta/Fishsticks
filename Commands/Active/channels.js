@@ -1,15 +1,15 @@
 //Imports
-const { embedBuilder } = require('../../Modules/Utility/Utils_EmbedBuilder');
+const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 
-const { primary } = require('../../Modules/Core/Core_config.json');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { primary } = require( '../../Modules/Core/Core_config.json' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Functions
 const data = new SlashCommandBuilder()
-	.setName('channels')
-	.setDescription('Prints out a description of all the channels.');
+	.setName( 'channels' )
+	.setDescription( 'Prints out a description of all the channels.' );
 
-function run(fishsticks, int) {
+function run( fishsticks, int ) {
     const channelsPanel = {
 		title: 'o0o - Channels - o0o',
 		description: 'A list of all the channels in CC and a brief description.\n' +
@@ -95,7 +95,7 @@ function run(fishsticks, int) {
 		]
 	};
 
-	int.reply({ embeds: [embedBuilder(channelsPanel)], ephemeral: true });
+	int.reply( { embeds: [embedBuilder( channelsPanel )], ephemeral: true } );
 }
 
 function help() {

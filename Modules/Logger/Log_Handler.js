@@ -2,8 +2,7 @@
 // Processes logging for client events
 
 //Imports
-const { log } = require('../Utility/Utils_Log');
-const { bLogger } = require('../Core/Core_ids.json');
+const { log } = require( '../Utility/Utils_Log' );
 
 //Exports
 module.exports = {
@@ -11,7 +10,7 @@ module.exports = {
 };
 
 //Main
-function Logger(data) {
-    log('info', '[INFO] Log Event: ' + data.type);
-    log('info', 'Something useful here eventually.');
+function Logger( data ) {
+    log( 'info', '[INFO] Log Event: ' + data.type );
+    log( 'info', 'Something useful here eventually.' );
 }
