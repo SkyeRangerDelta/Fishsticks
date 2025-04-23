@@ -44,9 +44,8 @@
     "@eslint/js": "^9.25.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "conventional-changelog-eslint": "^5.0.0",
     "eslint": "^9.25.1",
-    "semantic-release": "^23.0.8",
+    "semantic-release": "^24.2.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.31.0"
   },
