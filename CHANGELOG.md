@@ -1,3 +1,12 @@
+|| ${version} Changelog ||
+
+## [1.19.21-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.19.20...1.19.21-Experimental.1) (2025-04-23)
+
+
+### Performance Improvements
+
+* Added error handling to cmd registration ([e006a1e](https://github.com/SkyeRangerDelta/Fishsticks/commit/e006a1e35692a3bf35aa1dee487729ae47aee490))
+
 || v${version} Changelog ||
 
 # [3.2.0](https://github.com/SkyeRangerDelta/Fishsticks/compare/v3.1.0...v3.2.0) (2024-09-07)
