@@ -17,3 +17,6 @@ Modules/Core/Core_keys.json
 #Library - Declutter
 /Modules/Library/prayerReqs.json
 /Modules/Core/SSH/
+
+#Build
+/Deploy/
