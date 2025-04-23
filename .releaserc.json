@@ -14,8 +14,7 @@
         "preset": "angular",
         "types": [
           { "type": "docs",     "scope": "README", "release": "patch" },
-          { "type": "style",                       "release": "patch" },
-          { "type": "refactor",                    "release": "patch" }
+          { "type": "style",                       "release": "patch" }
         ],
         "parserOpts": {
           "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES"]
@@ -26,7 +25,7 @@
     [
       "@semantic-release/changelog",
       {
-        "changelogTitle": "|| ${version} Changelog ||"
+        "changelogTitle": "|| $v{version} Changelog ||"
       }
     ],
     ["@semantic-release/git", {
@@ -46,7 +45,7 @@
       }
     ]
   ],
-  "tagFormat": "${version}",
+  "tagFormat": "$v{version}",
   "GIT_AUTHOR_NAME": "SkyeRangerDelta",
   "GIT_AUTHOR_EMAIL": "skyerangerdelta@pldyn.net",
   "GIT_COMMITTER_NAME": "SkyeRangerDelta",
