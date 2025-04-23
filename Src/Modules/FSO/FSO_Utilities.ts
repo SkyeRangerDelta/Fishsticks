@@ -1,12 +1,24 @@
 // ---- Fishsticks Online Systems ----
 
 //Imports
-import {Filter, MongoClient} from "mongodb";
+import { MongoClient} from "mongodb";
 import Logger from "../Utility/Logger";
 
 //Data
-const client = new MongoClient()
+if ( !process.env.RDS ) {
+  Logger.log( 'FSO', 'err', "MongoDB connection string not found in environment variables." );
+  throw new Error( "MongoDB connection string not found in environment variables." );
+}
+
+const client = new MongoClient( process.env.RDS );
 
 //Functions
-
-//Exports
+export async function connect() {
+  try {
+    await client.connect();
+    Logger.log( 'FSO', 'info', "MongoDB connection established." );
+  } catch ( error ) {
+    Logger.log( 'FSO', 'err', `MongoDB connection failed: ${error}` );
+    throw error;
+  }
+}

@@ -20,10 +20,14 @@ dotenv.config();
 
 //Modules
 import { Fishsticks } from "./Modules/Core/SysClient";
-import { Collection } from "discord.js";
+import Logger from "./Modules/Utility/Logger";
+// import { Collection } from "discord.js";
 
 
 // === INIT ===
 //Event Handling
 
 //Login
+void Fishsticks.login( process.env.TOKEN ).then( () => {
+  Logger.log( 'CORE', 'proc', 'Fishsticks Online.' );
+} );
