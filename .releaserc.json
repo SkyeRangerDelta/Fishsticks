@@ -25,7 +25,7 @@
     [
       "@semantic-release/changelog",
       {
-        "changelogTitle": "|| $v{version} Changelog ||"
+        "changelogTitle": "|| v${version} Changelog ||"
       }
     ],
     ["@semantic-release/git", {
@@ -45,7 +45,7 @@
       }
     ]
   ],
-  "tagFormat": "$v{version}",
+  "tagFormat": "v${version}",
   "GIT_AUTHOR_NAME": "SkyeRangerDelta",
   "GIT_AUTHOR_EMAIL": "skyerangerdelta@pldyn.net",
   "GIT_COMMITTER_NAME": "SkyeRangerDelta",
