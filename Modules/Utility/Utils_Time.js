@@ -39,7 +39,6 @@ function systemTimestamp( date ) {
 	return flexTime( date );
 }
 
-//Returns a 'date-and-time' date obj
 function flexTime( date ) {
 	if ( !date ) {
 		const newFlex = DateTime.now().setZone( 'UTC-5' ).toLocaleString( DateTime.DATETIME_MED );
