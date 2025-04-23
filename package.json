@@ -7,6 +7,8 @@
     "start": "node fishsticks.js",
     "test": "node fishsticks.js -test",
     "dev": "nodemon fishsticks.js -test",
+    "build": "tsc",
+    "build-run": "npm run build && npm run start",
     "docker-build": "docker build -t fishsticks .",
     "docker-run": "docker run -d fishsticks",
     "docker-stop": "docker stop $(docker ps -q --filter ancestor=fishsticks)",
