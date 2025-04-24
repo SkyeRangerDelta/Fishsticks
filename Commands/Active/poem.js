@@ -179,31 +179,41 @@ async function buildPoem( int ) {
 
         //Make this easy and keep it to a small line count
         if ( parseInt( poemObj.linecount ) <= '30' ) break;
+
+        poemTxt = poemObj.lines.join( '\n' );
+
+        if ( poemTxt.length < 2048 ) {
+            log( 'info', '[POEM] [RANDOM] Selected poem: ' + poemObj.title );
+            break;
+        }
     }
 
-    if ( poemObj.lines.length > 30 ) {
+    if ( poemObj.lines.length > 30 || poemTxt.length > 2048 ) {
         if ( int ) {
-            return int.reply( 'Failed to find a suitable poem.' );
+            return int.reply( 'Failed to find a suitable poem (in a few tries).' );
         }
         else {
-            return log( 'info', 'Failed to find a suitable poem.' );
+            return log( 'info', 'Failed to find a suitable poem (in a few tries).' );
         }
     }
 
-    poemTxt = poemObj.lines.join( '\n' );
-
-    if ( poemTxt === '' || poemTxt.length > 2048 && int ) {
-        return int.reply( { content: 'Failed to find a suitable poem!' } );
+    if ( poemTxt === '' ) {
+        if ( int ) {
+            return int.reply( { content: 'I messed up somewhere, try again?' } );
+        }
+        else {
+            return log( 'info', 'Selected poem was wrong.' );
+        }
     }
 
     const poemEmbed = new EmbedBuilder()
         .setTitle( `*${poemObj.title}* - ${poemObj.author}` )
         .setDescription( `${poemTxt}` )
         .setFooter( {
-            text: 'API provided by PoetryDB.'
+            text: 'API provided by the STANDS4 Poetry API.'
         } );
 
-	if ( !int ) { //doDailyPost
+    if ( !int ) { //doDailyPost
         return poemEmbed;
     }
 
