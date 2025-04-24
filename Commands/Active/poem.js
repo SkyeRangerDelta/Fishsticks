@@ -178,10 +178,10 @@ async function buildPoem( int ) {
         poemObj = await fetchPoem();
 
         //Make this easy and keep it to a small line count
-        if ( parseInt( poemObj.linecount ) <= '20' ) break;
+        if ( parseInt( poemObj.linecount ) <= '30' ) break;
     }
 
-    if ( poemObj.lines.length > 20 ) {
+    if ( poemObj.lines.length > 30 ) {
         if ( int ) {
             return int.reply( 'Failed to find a suitable poem.' );
         }
