@@ -7,6 +7,7 @@ const https = require( 'https' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 const { EmbedBuilder } = require( 'discord.js' );
+const poemEntropyArray = require( '../../Modules/Library/poemEntropy.json' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -37,7 +38,15 @@ data.addSubcommand( s => s
     .setDescription( 'The author to search by.' )
     .setRequired( true ) ) );
 
-const API_URL = 'https://poetrydb.org/';
+const API_USER = process.env.STANDS4_USER;
+const API_KEY = process.env.STANDS4_KEY;
+
+if ( !API_USER || !API_KEY ) {
+    log( 'error', '[POEM] [API] API credentials not found!' );
+    throw new Error( '[POEM] [API] API credentials not found!' );
+}
+
+const API_URL = `https://www.stands4.com/services/v2/poetry.php?uid=${API_USER}&tokenid=${API_KEY}&format=json`;
 
 //Functions
 async function run( fishsticks, int ) {
@@ -60,10 +69,11 @@ async function run( fishsticks, int ) {
     }
 }
 
-async function fetchPoem() {
-    const payloadURL = `${API_URL}random`;
-
-    let poemObj = '';
+async function fetchPoemResults() {
+    let poemObj;
+    const poemEntropyIndex = Math.floor( Math.random() * poemEntropyArray.length );
+    const poemEntropy = poemEntropyArray[poemEntropyIndex];
+    const payloadURL = `${API_URL}?term=${poemEntropy}`;
 
     return new Promise( function( resolve, reject ) {
         https.get( payloadURL, ( done ) => {
@@ -170,17 +180,20 @@ async function searchPoemTitle( title, int ) {
 }
 
 async function buildPoem( int ) {
-    let poemObj;
+    let poemObj, poemRes;
     let poemTxt = '';
 
     for ( let l = 1; l < 6; l++ ) {
         log( 'info', `[POEM] (${l}) Obtaining a suitable poem.` );
-        poemObj = await fetchPoem();
+        poemRes = await fetchPoemResults();
+
+        const resultIndex = Math.floor( Math.random() * poemRes.results.length );
+        poemObj = poemRes.results[resultIndex];
 
         //Make this easy and keep it to a small line count
         if ( parseInt( poemObj.linecount ) <= '30' ) break;
 
-        poemTxt = poemObj.lines.join( '\n' );
+        poemTxt = poemObj.poem;
 
         if ( poemTxt.length < 2048 ) {
             log( 'info', '[POEM] [RANDOM] Selected poem: ' + poemObj.title );
@@ -188,7 +201,7 @@ async function buildPoem( int ) {
         }
     }
 
-    if ( poemObj.lines.length > 30 || poemTxt.length > 2048 ) {
+    if ( poemTxt.length > 2048 ) {
         if ( int ) {
             return int.reply( 'Failed to find a suitable poem (in a few tries).' );
         }
