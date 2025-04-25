@@ -220,7 +220,7 @@ async function buildPoem( int ) {
     }
 
     const poemEmbed = new EmbedBuilder()
-        .setTitle( `*${poemObj.title}* - ${poemObj.author}` )
+        .setTitle( `*${poemObj.title}* - ${poemObj.poet}` )
         .setDescription( `${poemTxt}` )
         .setFooter( {
             text: 'API provided by the STANDS4 Poetry API.'
