@@ -2,7 +2,6 @@
 //Toggles Creative role assignment
 
 //Imports
-const { creative } = require( '../../Modules/Core/Core_ids.json' );
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 

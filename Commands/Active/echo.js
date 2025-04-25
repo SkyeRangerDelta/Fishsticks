@@ -2,7 +2,6 @@
 //Posts an ping on a delayed timer in Announcements
 
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
-const { announcements } = require( '../../Modules/Core/Core_ids.json' );
 const { findRole } = require( './role' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 

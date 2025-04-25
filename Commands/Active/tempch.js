@@ -2,7 +2,6 @@
 // Creates temporary voice channels
 
 //Imports
-const { chSpawner } = require( '../../Modules/Core/Core_ids.json' );
 
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );

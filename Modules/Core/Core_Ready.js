@@ -13,7 +13,6 @@ const path = require( 'path' );
 const { REST } = require( '@discordjs/rest' );
 const { Routes, ActivityType } = require( 'discord-api-types/v9' );
 
-const { guild_CCG, fs_console, fsID, bLogger, ranger } = require( './Core_ids.json' );
 const { version } = require( '../../package.json' );
 const { primary, emergency } = require( './Core_config.json' ).colors;
 const { token } = require( './Core_config.json' );

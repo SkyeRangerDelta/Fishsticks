@@ -2,7 +2,6 @@
 // Links to the rules channel
 
 //Imports
-const { rules } = require( '../../Modules/Core/Core_ids.json' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Globals

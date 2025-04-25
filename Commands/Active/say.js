@@ -2,7 +2,6 @@
 
 //Imports
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
-const { ranger } = require( '../../Modules/Core/Core_ids.json' );
 
 //Globals
 const data = new SlashCommandBuilder()

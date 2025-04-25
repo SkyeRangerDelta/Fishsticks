@@ -4,7 +4,6 @@
 //Imports
 const { fso_query } = require( '../FSO/FSO_Utils' );
 const { log } = require( '../Utility/Utils_Log' );
-const { announcements, discDen, prReqs, bStudy, hangout } = require( '../Core/Core_ids.json' );
 const { createLevelBanner } = require( './XP_LevelUp' );
 
 //Exports

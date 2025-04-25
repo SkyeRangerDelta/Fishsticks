@@ -6,7 +6,6 @@ const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { systemTimestamp } = require( '../../Modules/Utility/Utils_Time' );
-const { council, meetingHall } = require( '../../Modules/Core/Core_ids.json' );
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 

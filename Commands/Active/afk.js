@@ -2,7 +2,6 @@
 //Renames the AFK voice chat
 
 //Imports
-const chs = require( '../../Modules/Core/Core_ids.json' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Functions

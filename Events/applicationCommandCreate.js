@@ -3,7 +3,6 @@
 //Imports
 const { Logger } = require( '../Modules/Logger/Log_Handler' );
 const { systemTimestamp } = require( '../Modules/Utility/Utils_Time' );
-const { bLogger } = require( '../Modules/Core/Core_ids.json' );
 const { embedBuilder } = require( '../Modules/Utility/Utils_EmbedBuilder' );
 
 //Export

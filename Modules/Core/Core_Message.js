@@ -11,7 +11,6 @@ const { processXP } = require( '../XP/XP_Core' );
 const { handleShiny } = require( '../Utility/Utils_Shiny' );
 
 const { prefix } = require( '../Core/Core_config.json' );
-const { discDen, prReqs, mcRelay, bcId } = require( '../Core/Core_ids.json' );
 
 //Exports
 module.exports = {

@@ -4,7 +4,6 @@
 //Imports
 const { createCanvas, loadImage } = require( '@napi-rs/canvas' );
 
-const { hangout, prReqs, announcements, discDen, bStudy } = require( '../Core/Core_ids.json' );
 const { log } = require( '../Utility/Utils_Log' );
 const { AttachmentBuilder } = require( 'discord.js' );
 

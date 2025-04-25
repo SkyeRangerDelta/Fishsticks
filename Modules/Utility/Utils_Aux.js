@@ -1,7 +1,6 @@
 // ---- Aux Utils ----
 
 //Imports
-const { debater, hangout } = require( '../../Modules/Core/Core_ids.json' );
 const { discussionDenRules } = require( '../Library/systemResponses.json' );
 
 const { buildPoem } = require( '../../Commands/Active/poem' );
@@ -9,8 +8,7 @@ const { startApp } = require( '../../Commands/Active/apply' );
 const { hasPerms } = require( './Utils_User' );
 const { embedBuilder } = require( './Utils_EmbedBuilder' );
 const { log } = require( '../Utility/Utils_Log' );
-
-//const axios = require('axios');
+const { fso_query } = require( "../FSO/FSO_Utils" );
 
 //Exports
 module.exports = {
@@ -61,7 +59,8 @@ async function validateAddedReaction( fishsticks, addedReaction, reactor ) {
 }
 
 async function doDailyPost( fishsticks ) {
-	const hangoutCH = fishsticks.CCG.channels.cache.get( hangout );
+	const hangoutID = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_IDs', 'select', { name: 'Hangout' } );
+	const hangoutCH = fishsticks.CCG.channels.cache.get( hangoutID );
 	hangoutCH.send( { embeds: [ await buildPoem()] } );
 }
 
@@ -110,6 +109,5 @@ async function handleDenMsg( cmd, fishsticks ) {
 		await cmd.msg.author.send( conMsg );
 
 		return cmd.reply( 'You need to agree to the den rules before posting here! Check your DMs!', 20 );
-		//182291777275822090
 	}
 }

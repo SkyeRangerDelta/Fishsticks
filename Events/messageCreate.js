@@ -2,7 +2,6 @@
 
 //Imports
 const { processMessage } = require( '../Modules/Core/Core_Message' );
-const { bcId } = require( '../Modules/Core/Core_ids.json' );
 
 //Export
 module.exports = {

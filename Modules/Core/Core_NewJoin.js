@@ -3,7 +3,6 @@
 
 //Imports
 const { welcomeDM, welcomeBlurb1, welcomeBlurb2 } = require( '../Library/systemResponses.json' );
-const { cPad } = require( '../Core/Core_ids.json' );
 const { systemTimestamp } = require( '../Utility/Utils_Time' );
 
 //Exports

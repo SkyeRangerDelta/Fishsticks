@@ -2,7 +2,6 @@
 //Vote for a user to join the community.
 
 //Imports
-const { recognized } = require( '../../Modules/Core/Core_ids.json' );
 const { handleNewMember } = require( '../../Modules/Core/Core_NewMember' );
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
