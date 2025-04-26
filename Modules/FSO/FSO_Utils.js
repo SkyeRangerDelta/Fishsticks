@@ -12,7 +12,8 @@ const { fsoValidationException } = require( '../Errors/fsoValidationException' )
 module.exports = {
 	fso_connect,
 	fso_status,
-	fso_query
+	fso_query,
+	buildEntitiesObject
 };
 
 //Functions
@@ -101,5 +102,47 @@ async function fso_query( connection, coll, key, value, filter, aFilter ) {
 			return await database.collection( coll ).count();
 		default:
 			throw new fsoValidationException( 'Invalid FSO Query!' );
+	}
+}
+
+async function buildEntitiesObject( Fishsticks ) {
+	log( 'info', '[FSO] Building entities data...' );
+
+	const entities = await fso_query( Fishsticks, 'FSO_IDs', 'selectAll' );
+
+	if ( !entities ) {
+		log( 'err', '[FSO] Failed to build entities object.' );
+		return;
+	}
+
+	//Get the guild first
+	const guild = entities.find( e => e.type === 'guild' );
+	if ( !guild ) {
+		log( 'err', '[FSO] Failed to get guild ID.' );
+		return;
+	}
+
+	Fishsticks.ENTITIES.CCG = guild.id;
+
+	for ( const entity of entities ) {
+		switch ( entity.type ) {
+			case 'user':
+				Fishsticks.ENTITIES.Users[ entity.name ] = entity.id;
+				break;
+			case 'role':
+				Fishsticks.ENTITIES.Roles[entity.name] = entity.id;
+				break
+			case 'channel':
+				Fishsticks.ENTITIES.Channels[entity.name] = entity.id;
+				break
+			case 'category':
+				Fishsticks.ENTITIES.Categories[entity.name] = entity.id;
+				break
+			default:
+				if ( entity.type === 'guild' ) break;
+
+				log( 'err', `[FSO] Skipping unchecked entity type: ${entity.type}` );
+				break;
+		}
 	}
 }

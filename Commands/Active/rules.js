@@ -11,7 +11,7 @@ const data = new SlashCommandBuilder()
 
 //Functions
 async function run( fishsticks, int ) {
-    const ruleCh = await fishsticks.channels.cache.get( rules );
+    const ruleCh = await fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels[ 'rules' ] );
     int.reply( { content: `See ${ruleCh}`, ephemeral: true } );
 }
 

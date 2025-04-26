@@ -67,6 +67,7 @@ Fishsticks.TESTMODE = false;
 Fishsticks.NODEARGS = [];
 Fishsticks.SUMM_BRODEMODE = false;
 Fishsticks.DOCKET_PIN = null;
+Fishsticks.ENTITIES = {};
 
 //=============================================
 //				EVENTS INDEX

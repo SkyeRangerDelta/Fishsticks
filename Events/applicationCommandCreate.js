@@ -43,6 +43,7 @@ module.exports = {
             ]
         };
 
+        const bLogger = fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels[ 'bot-logger' ] );
         bLogger.send( { content: '[LOG]', embeds: [embedBuilder( embed )] } );
     }
 };

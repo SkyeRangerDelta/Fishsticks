@@ -26,7 +26,7 @@ async function run( fishsticks, int ) {
     }
 
     //Get role
-    recognizedRole = await int.guild.roles.fetch( recognized );
+    recognizedRole = await int.guild.roles.fetch( fishsticks.ENTITIES.Roles[ 'Recognized' ] );
 
     //Interpret vouch
     const vouchee = int.options.getMember( 'vouchee' );

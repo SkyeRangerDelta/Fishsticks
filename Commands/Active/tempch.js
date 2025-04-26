@@ -26,7 +26,7 @@ async function run( Fishsticks, int ) {
     }
 
     //Check voice state
-    if ( !int.member.voice.channel || int.member.voice.channel.id !== chSpawner ) {
+    if ( !int.member.voice.channel || int.member.voice.channel.id !== fishsticks.ENTITIES.Channels[ 'channel-spawner' ] ) {
         return int.editReply( { content: 'You must connect to the channel spawner first!', ephemeral: true } );
     }
 
@@ -40,7 +40,7 @@ function help() {
 //Creates a temp channel
 async function createCh( Fishsticks, int ) {
 
-    const chSpawnerChannel = int.guild.channels.cache.get( chSpawner );
+    const chSpawnerChannel = int.guild.channels.cache.get( fishsticks.ENTITIES.Channels[ 'channel-spawner' ] );
     const maxUsers = int.options.getInteger( 'max-users' );
     const chName = int.options.getString( 'channel-name' );
 

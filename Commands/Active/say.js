@@ -16,7 +16,7 @@ data.addStringOption( s => s
 
 //Functions
 async function run( fishsticks, int ) {
-    if ( int.author.id !== ranger ) {
+    if ( int.author.id !== fishsticks.ENTITIES.Users[ 'skyerangerdelta' ] ) {
         return await int.reply( { content: 'You do not have permission to use this command.', ephemeral: true } );
     }
 

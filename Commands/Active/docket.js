@@ -297,7 +297,7 @@ async function listPoints( fishsticks, int, ext ) {
 
 	//Process fields
 	//If council
-	if ( int.channel.id === council ) {
+	if ( int.channel.id === fishsticks.ENTITIES.Channels[ '🤪council' ] ) {
 		for ( const point in pointListing ) {
 			listEmbed.fields.push( {
 				name: getTitle( pointListing[point] ),
@@ -329,7 +329,7 @@ async function listPoints( fishsticks, int, ext ) {
 //Pin List
 async function pinList( fishsticks, int ) {
 	//Check channel
-	if ( int.channel.id !== meetingHall ) {
+	if ( int.channel.id !== fishsticks.ENTITIES.Channels[ 'meeting-hall' ] ) {
 		return int.reply( {
 			content: 'You can only pin the docket in the Meeting Hall!',
 			ephemeral: true

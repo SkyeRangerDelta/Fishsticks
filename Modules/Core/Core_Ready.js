@@ -3,7 +3,7 @@
 //Imports
 const { log } = require( '../Utility/Utils_Log' );
 
-const { fso_connect, fso_query } = require( '../FSO/FSO_Utils' );
+const { fso_connect, fso_query, buildEntitiesObject } = require( '../FSO/FSO_Utils' );
 const { convertMsFull, systemTimestamp } = require( '../Utility/Utils_Time' );
 const { embedBuilder } = require( '../Utility/Utils_EmbedBuilder' );
 const { terminate } = require( '../Utility/Utils_Terminate' );
@@ -38,23 +38,6 @@ async function startUp( Fishsticks ) {
 		}
 	}
 
-	//Variables
-	const timestamp = new Date();
-	const timeNow = Date.now();
-
-	//Init Objs
-	Fishsticks.CCG = await Fishsticks.guilds.fetch( guild_CCG );
-	Fishsticks.CONSOLE = await Fishsticks.channels.cache.get( fs_console );
-	Fishsticks.BOT_LOG = await Fishsticks.channels.cache.get( bLogger );
-	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch( ranger );
-	Fishsticks.MEMBER = await Fishsticks.CCG.members.fetch( fsID );
-
-	//Cache all members for ROLE-SYS checks
-	Fishsticks.CCG.members.fetch();
-
-	//Console confirmation
-	log( 'proc', '[CLIENT] Fishsticks is out of the oven.\n-------------------------------------------------------' );
-
 	// -- Perform startup routine --
 	//FSO Connection
 	try {
@@ -84,6 +67,9 @@ async function startUp( Fishsticks ) {
 		}
 	}
 
+	const timestamp = new Date();
+	const timeNow = Date.now();
+
 	//Sync FSO Status
 	const statusPreUpdate = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 } );
 
@@ -111,6 +97,21 @@ async function startUp( Fishsticks ) {
 	else {
 		log ( 'info', '[FSO] Status table update done.' );
 	}
+
+	//Init Objs
+	await buildEntitiesObject( Fishsticks );
+
+	Fishsticks.CCG = Fishsticks.guilds.fetch( Fishsticks.ENTITIES.CCG );
+	Fishsticks.CONSOLE = Fishsticks.CCG.channels.fetch( Fishsticks.ENTITIES.Channels[ 'fishsticks-console' ] );
+	Fishsticks.BOT_LOG = Fishsticks.CCG.channels.fetch(Fishsticks.ENTITIES.Channels[ 'bot-logger' ]);
+	Fishsticks.RANGER = Fishsticks.CCG.members.fetch(Fishsticks.ENTITIES.Users[ 'skyerangerdelta' ]);
+	Fishsticks.MEMBER = Fishsticks.CCG.members.fetch(Fishsticks.ENTITIES[ 'Fishsticks' ]);
+
+	//Cache all members for ROLE-SYS checks
+	Fishsticks.CCG.members.fetch();
+
+	//Console confirmation
+	log( 'proc', '[CLIENT] Fishsticks is out of the oven.\n-------------------------------------------------------' );
 
 	// Register slash commands
 	const commandObjs = [];
@@ -144,7 +145,7 @@ async function startUp( Fishsticks ) {
 		log( 'proc', '[CMD-HANDLER] Doing global registration...' );
 		await rest.put(
 			Routes.applicationCommands(
-				`${fsID}`
+				`${ Fishsticks.MEMBER.id }`
 			),
 			{ body: globalCmdObjs }
 		);
@@ -152,8 +153,8 @@ async function startUp( Fishsticks ) {
 		log( 'proc', '[CMD-HANDLER] Doing guild registration' );
 		await rest.put(
 			Routes.applicationGuildCommands(
-				`${fsID}`,
-				`${guild_CCG}`
+				`${ Fishsticks.MEMBER.id }`,
+				`${ Fishsticks.CCG.id }`
 			),
 			{ body: commandObjs }
 		);
