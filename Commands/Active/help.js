@@ -3,7 +3,6 @@
 //Imports
 const fs = require( 'fs' );
 
-const { primary } = require( '../../Modules/Core/Core_config.json' );
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
@@ -35,7 +34,7 @@ function run( fishsticks, int ) {
 		description: 'A brief command description listing.\n' +
 						'------------------------------------\n' +
 						helpMenu,
-		color: primary,
+		color: fishsticks.CONFIG.colors.primary,
 		footer: {
 			text: 'Full Reference: https://wiki.pldyn.net/en/fishsticks/command-listing.'
 		},

@@ -5,7 +5,6 @@
 const rollLib = require( 'roll' );
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 
-const { primary } = require( '../../Modules/Core/Core_config.json' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 const roll = new rollLib();
@@ -76,7 +75,7 @@ function run( fishsticks, int ) {
 		footer: {
             text: `Random dice roller. Queried by ${int.member.displayName}`
         },
-		color: primary,
+		color: fishsticks.CONFIG.colors.primary,
 		fields: [
 			{
 				name: 'Dice Rolls',

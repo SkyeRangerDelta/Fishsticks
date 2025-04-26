@@ -10,8 +10,6 @@ const { handleDenMsg } = require( '../Utility/Utils_Aux' );
 const { processXP } = require( '../XP/XP_Core' );
 const { handleShiny } = require( '../Utility/Utils_Shiny' );
 
-const { prefix } = require( '../Core/Core_config.json' );
-
 //Exports
 module.exports = {
     processMessage,
@@ -20,6 +18,8 @@ module.exports = {
 
 //Functions
 async function processMessage( Fishsticks, msg ) {
+
+    const prefix = Fishsticks.CONFIG.prefix;
 
     // Breadcrumbs stuff
     // Check for messages in relay

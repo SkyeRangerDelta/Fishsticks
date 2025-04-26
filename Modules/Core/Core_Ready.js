@@ -3,7 +3,7 @@
 //Imports
 const { log } = require( '../Utility/Utils_Log' );
 
-const { fso_connect, fso_query, buildEntitiesObject } = require( '../FSO/FSO_Utils' );
+const { fso_connect, fso_query, buildEntitiesObject, getConfigData } = require( '../FSO/FSO_Utils' );
 const { convertMsFull, systemTimestamp } = require( '../Utility/Utils_Time' );
 const { embedBuilder } = require( '../Utility/Utils_EmbedBuilder' );
 const { terminate } = require( '../Utility/Utils_Terminate' );
@@ -14,8 +14,6 @@ const { REST } = require( '@discordjs/rest' );
 const { Routes, ActivityType } = require( 'discord-api-types/v9' );
 
 const { version } = require( '../../package.json' );
-const { primary, emergency } = require( './Core_config.json' ).colors;
-const { token } = require( './Core_config.json' );
 
 //Exports
 module.exports = {
@@ -25,9 +23,17 @@ module.exports = {
 //Functions
 async function startUp( Fishsticks ) {
 
+	const token = process.env.TOKEN;
+
+	if ( !token ) {
+		log( 'err', '[FISHSTICKS] [FATAL] Fishsticks could not be started! No token was found!' );
+		await Fishsticks.CONSOLE.send( `${Fishsticks.RANGER}, Fishsticks could not be started! No token was found!` );
+		return terminate( Fishsticks );
+	}
+
 	//Test launch args
 	if ( process.argv.length > 2 ) {
-		log( 'warn', '[FISHSTICKS] Fs was launched with at least one command line argument.' );
+		log( 'warn', '[FISHSTICKS] FS was launched with at least one command line argument.' );
 
 		for ( const arg in process.argv ) {
 			if ( process.argv[arg] === '-test' ) {
@@ -41,6 +47,7 @@ async function startUp( Fishsticks ) {
 	// -- Perform startup routine --
 	//FSO Connection
 	try {
+		log( 'info', '[FSO] Attempting to connect to FSO...' );
 		Fishsticks.FSO_CONNECTION = await fso_connect();
 
 		//Before FSO syncs begin - conduct a DB validation
@@ -100,12 +107,15 @@ async function startUp( Fishsticks ) {
 
 	//Init Objs
 	await buildEntitiesObject( Fishsticks );
+	await getConfigData( Fishsticks );
 
-	Fishsticks.CCG = Fishsticks.guilds.fetch( Fishsticks.ENTITIES.CCG );
-	Fishsticks.CONSOLE = Fishsticks.CCG.channels.fetch( Fishsticks.ENTITIES.Channels[ 'fishsticks-console' ] );
-	Fishsticks.BOT_LOG = Fishsticks.CCG.channels.fetch(Fishsticks.ENTITIES.Channels[ 'bot-logger' ]);
-	Fishsticks.RANGER = Fishsticks.CCG.members.fetch(Fishsticks.ENTITIES.Users[ 'skyerangerdelta' ]);
-	Fishsticks.MEMBER = Fishsticks.CCG.members.fetch(Fishsticks.ENTITIES[ 'Fishsticks' ]);
+	console.log( 'Entities: ', Fishsticks.ENTITIES );
+
+	Fishsticks.CCG = await Fishsticks.guilds.fetch( `${ Fishsticks.ENTITIES.CCG }` );
+	Fishsticks.CONSOLE = await Fishsticks.CCG.channels.fetch( `${ Fishsticks.ENTITIES.Channels[ 'fishsticks-console' ] }` );
+	Fishsticks.BOT_LOG = await Fishsticks.CCG.channels.fetch( `${ Fishsticks.ENTITIES.Channels[ 'bot-logger' ] }` );
+	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch( `${ Fishsticks.ENTITIES.Users[ 'skyerangerdelta' ] }` );
+	Fishsticks.MEMBER = await Fishsticks.CCG.members.fetch( `${ Fishsticks.ENTITIES[ 'Fishsticks' ] }` );
 
 	//Cache all members for ROLE-SYS checks
 	Fishsticks.CCG.members.fetch();
@@ -189,7 +199,7 @@ async function startUp( Fishsticks ) {
 		const startupEmbed = {
 			title: 'Test Mode Boot',
 			description: version + ' feels undercooked. Test mode time.',
-			color: emergency,
+			color: Fishsticks.CONFIG.colors.emergency,
 			noThumbnail: true,
 			footer: {
 				text: 'Sequence initiated at ' + systemTimestamp( timestamp )
@@ -215,7 +225,7 @@ async function startUp( Fishsticks ) {
 		const startupMessage = {
 			title: 'o0o - Fishsticks Startup - o0o',
 			description: 'Dipping in flour...\nBaking at 400°...\nFishticks ' + version + ' is ready to go!',
-			color: primary,
+			color: Fishsticks.CONFIG.colors.primary,
 			footer: {
 				text: 'Sequence initiated at ' + systemTimestamp( timestamp )
 			},
