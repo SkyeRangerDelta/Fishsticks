@@ -125,7 +125,7 @@ async function buildPayload( fishsticks, paramObj, int ) {
             }
 
             const verseEmbed = {
-              title: 'o0o - Bible (ESV) - o0o',
+              title: 'o0o - Bible - o0o',
               color: fishsticks.CONFIG.colors.primary,
               description: received.passages.toString(),
               footer: {
@@ -133,7 +133,7 @@ async function buildPayload( fishsticks, paramObj, int ) {
                       }
             };
 
-            int.reply( { embeds: [embedBuilder( verseEmbed )] } );
+            int.reply( { embeds: [embedBuilder( fishsticks, verseEmbed )] } );
         } );
     } );
 }

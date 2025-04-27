@@ -22,5 +22,5 @@ async function execute( fishsticks, oldCH, newCH ) {
 
     console.log( newCH.name );
 
-    fishsticks.BOT_LOG.send( { content: `${systemTimestamp()}`, embeds: [quickEmbed( qe )] } );
+    fishsticks.BOT_LOG.send( { content: `${systemTimestamp()}`, embeds: [quickEmbed( fishsticks, qe )] } );
 }

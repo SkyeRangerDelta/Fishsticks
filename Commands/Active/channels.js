@@ -94,7 +94,7 @@ function run( fishsticks, int ) {
 		]
 	};
 
-	int.reply( { embeds: [embedBuilder( channelsPanel )], ephemeral: true } );
+	int.reply( { embeds: [embedBuilder( fishsticks, channelsPanel )], ephemeral: true } );
 }
 
 function help() {

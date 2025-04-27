@@ -45,7 +45,7 @@ function run( fishsticks, int ) {
 		]
 	};
 
-    int.reply( { embeds: [embedBuilder( versionPanel )], ephemeral: true } );
+    int.reply( { embeds: [embedBuilder( fishsticks, versionPanel )], ephemeral: true } );
 }
 
 function help() {

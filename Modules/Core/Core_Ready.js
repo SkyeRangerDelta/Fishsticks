@@ -109,16 +109,15 @@ async function startUp( Fishsticks ) {
 	await buildEntitiesObject( Fishsticks );
 	await getConfigData( Fishsticks );
 
-	console.log( 'Entities: ', Fishsticks.ENTITIES );
-
-	Fishsticks.CCG = await Fishsticks.guilds.fetch( `${ Fishsticks.ENTITIES.CCG }` );
-	Fishsticks.CONSOLE = await Fishsticks.CCG.channels.fetch( `${ Fishsticks.ENTITIES.Channels[ 'fishsticks-console' ] }` );
-	Fishsticks.BOT_LOG = await Fishsticks.CCG.channels.fetch( `${ Fishsticks.ENTITIES.Channels[ 'bot-logger' ] }` );
-	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch( `${ Fishsticks.ENTITIES.Users[ 'skyerangerdelta' ] }` );
-	Fishsticks.MEMBER = await Fishsticks.CCG.members.fetch( `${ Fishsticks.ENTITIES[ 'Fishsticks' ] }` );
+	Fishsticks.CCG = await Fishsticks.guilds.cache.get( `${ Fishsticks.ENTITIES.CCG }` );
 
 	//Cache all members for ROLE-SYS checks
 	Fishsticks.CCG.members.fetch();
+
+	Fishsticks.CONSOLE = await Fishsticks.CCG.channels.cache.get( `${ Fishsticks.ENTITIES.Channels[ 'fishsticks-console' ] }` );
+	Fishsticks.BOT_LOG = await Fishsticks.CCG.channels.cache.get( `${ Fishsticks.ENTITIES.Channels[ 'bot-logger' ] }` );
+	Fishsticks.RANGER = await Fishsticks.CCG.members.cache.get( `${ Fishsticks.ENTITIES.Users[ 'skyerangerdelta' ] }` );
+	Fishsticks.MEMBER = await Fishsticks.CCG.members.cache.get( `${ Fishsticks.ENTITIES.Users[ 'Fishsticks' ] }` );
 
 	//Console confirmation
 	log( 'proc', '[CLIENT] Fishsticks is out of the oven.\n-------------------------------------------------------' );
@@ -213,7 +212,7 @@ async function startUp( Fishsticks ) {
 			]
 		};
 
-		Fishsticks.CONSOLE.send( { embeds: [embedBuilder( startupEmbed )] } );
+		Fishsticks.CONSOLE.send( { embeds: [ embedBuilder( Fishsticks, startupEmbed ) ] } );
 
 		//Set Status
 		await Fishsticks.user.setPresence( {
@@ -243,7 +242,7 @@ async function startUp( Fishsticks ) {
 			]
 		};
 
-		const startupEmbed = embedBuilder( startupMessage );
+		const startupEmbed = embedBuilder( Fishsticks, startupMessage );
 		Fishsticks.CONSOLE.send( { embeds: [startupEmbed] } );
 
 		//Set Status

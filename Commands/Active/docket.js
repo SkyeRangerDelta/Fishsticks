@@ -319,10 +319,10 @@ async function listPoints( fishsticks, int, ext ) {
 	}
 
 	if ( ext ) {
-		return int.channel.send( { embeds: [embedBuilder( listEmbed )] } );
+		return int.channel.send( { embeds: [embedBuilder( fishsticks, listEmbed )] } );
 	}
 	else {
-		await int.reply( { embeds: [embedBuilder( listEmbed )] } );
+		await int.reply( { embeds: [embedBuilder( fishsticks, listEmbed )] } );
 	}
 }
 

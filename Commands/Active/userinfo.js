@@ -135,7 +135,7 @@ async function run( fishsticks, int ) {
         ]
     };
 
-    int.reply( { content: 'Doing some snooping...', embeds: [embedBuilder( embed )] } );
+    int.reply( { content: 'Doing some snooping...', embeds: [embedBuilder( fishsticks, embed )] } );
 }
 
 function help() {

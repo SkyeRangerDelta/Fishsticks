@@ -20,5 +20,5 @@ async function execute( fishsticks, ban ) {
         description: `${ban.user.username} was unbanned by ${ban.client.user.username} with reason: ${ban.reason}`
     };
 
-    fishsticks.BOT_LOG.send( { content: `${systemTimestamp()}`, embeds: [quickEmbed( qe )] } );
+    fishsticks.BOT_LOG.send( { content: `${systemTimestamp()}`, embeds: [quickEmbed( fishsticks, qe )] } );
 }

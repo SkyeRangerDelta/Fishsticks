@@ -95,7 +95,7 @@ function run( fishsticks, int ) {
 		]
 	};
 
-    int.reply( { embeds: [embedBuilder( rollPanel )] } );
+    int.reply( { embeds: [embedBuilder( fishsticks, rollPanel )] } );
 }
 
 function genEncounter() {

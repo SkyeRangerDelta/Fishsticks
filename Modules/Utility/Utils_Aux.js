@@ -37,10 +37,10 @@ async function validateAddedReaction( fishsticks, addedReaction, reactor ) {
 	for ( const ID in fishsticks.debMsgIDs ) {
 		log( 'info', '[DEBATER] Checking IDs for debater rules acceptance.' );
 		if ( addedReaction.message.id === fishsticks.debMsgIDs[ID] ) {
-			const member = await fishsticks.CCG.members.fetch( reactor.id );
+			const member = await fishsticks.CCG.members.cache.get( reactor.id );
 			if ( !member ) throw 'Couldnt validate the member!';
 
-			const debRole = await fishsticks.CCG.roles.fetch( debater );
+			const debRole = await fishsticks.CCG.roles.cache.get( fishsticks.ENTITIES.Roles['Debater'] );
 			if ( !debRole ) throw 'Couldnt validate the debater role!';
 
 			try {
@@ -94,7 +94,7 @@ async function handleDenMsg( cmd, fishsticks ) {
 			description: discussionDenRules
 		};
 
-		await cmd.msg.author.send( { embeds: [embedBuilder( denMsg )] } )
+		await cmd.msg.author.send( { embeds: [embedBuilder( fishsticks, denMsg )] } )
 			.then( sent => {
 				sent.react( '✅' );
 				fishsticks.debMsgIDs.push( sent.id );

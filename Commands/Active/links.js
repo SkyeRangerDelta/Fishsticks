@@ -27,7 +27,7 @@ function run( fishsticks, int ) {
 		delete: 20000
 	};
 
-	int.reply( { embeds: [embedBuilder( links )], ephemeral: true } );
+	int.reply( { embeds: [embedBuilder( fishsticks, links )], ephemeral: true } );
 }
 
 function help() {

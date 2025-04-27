@@ -416,9 +416,9 @@ async function listRoles( fishsticks, int, ext ) {
     }
   };
 
-  await int.channel.send( { embeds: [embedBuilder( roleListEmbed )] } ).then( sent => {
+  await int.channel.send( { embeds: [embedBuilder( fishsticks, roleListEmbed )] } ).then( sent => {
     setTimeout( () => sent.delete(), 45000 );
-    int.channel.send( { embeds: [embedBuilder( inactiveListEmbed )] } ).then( sent2 => {
+    int.channel.send( { embeds: [embedBuilder( fishsticks, inactiveListEmbed )] } ).then( sent2 => {
       setTimeout( () => sent2.delete(), 45000 );
     } );
   } );
@@ -596,7 +596,7 @@ async function activateRole( fishsticks, int, obj ) {
       //Assign to founders
       log( 'info', '[ROLE-SYS] Assigning new role to members' );
       for ( const indexA in roleData.founders ) {
-        const memberItem = await fishsticks.CCG.members.fetch( `${roleData.founders[indexA]}` );
+        const memberItem = await fishsticks.CCG.members.cache.get( `${roleData.founders[indexA]}` );
 
         console.log( `Adding ${newRoleObj.name} to ${memberItem.displayName}.` );
 

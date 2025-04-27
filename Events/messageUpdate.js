@@ -42,5 +42,5 @@ async function execute( fishsticks, oldMsg, newMsg ) {
         description: `${msgMem.displayName}'s message in ${oldMsg.channel.name} was updated.`
     };
 
-    fishsticks.BOT_LOG.send( { content: `${systemTimestamp()}`, embeds: [quickEmbed( qe )] } );
+    fishsticks.BOT_LOG.send( { content: `${systemTimestamp()}`, embeds: [quickEmbed( fishsticks, qe )] } );
 }

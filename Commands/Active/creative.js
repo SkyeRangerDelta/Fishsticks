@@ -11,7 +11,7 @@ const data = new SlashCommandBuilder()
 	.setDescription( 'Toggles the Creative role assignment' );
 
 async function run( fishsticks, int ) {
-	const creativeRole = fishsticks.CCG.roles.fetch( fishsticks.ENTITIES.Roles['creative'] );
+	const creativeRole = fishsticks.CCG.roles.cache.get( fishsticks.ENTITIES.Roles['Creative'] );
 
 	if ( hasPerms( int.member, ['Creative'] ) ) {
 		int.member.roles.remove( creativeRole, 'Toggled by command.' );

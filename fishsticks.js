@@ -75,6 +75,7 @@ Fishsticks.ENTITIES = {
 	Guilds: {},
 };
 Fishsticks.ENTITIES.CCG = '';
+Fishsticks.CCG = {};
 Fishsticks.CONFIG = {};
 
 //=============================================

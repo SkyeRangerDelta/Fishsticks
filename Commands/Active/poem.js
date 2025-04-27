@@ -46,7 +46,7 @@ if ( !API_USER || !API_KEY ) {
     throw new Error( '[POEM] [API] API credentials not found!' );
 }
 
-const API_URL = `https://www.stands4.com/services/v2/poetry.php?uid=${API_USER}&tokenid=${API_KEY}&format=json`;
+const API_URL = `https://www.stands4.com/services/v2/poetry.php?uid=${API_USER}&tokenid=${API_KEY}`;
 
 //Functions
 async function run( fishsticks, int ) {
@@ -70,10 +70,10 @@ async function run( fishsticks, int ) {
 }
 
 async function fetchPoemResults() {
-    let poemObj;
+    let poemObj = '';
     const poemEntropyIndex = Math.floor( Math.random() * poemEntropyArray.length );
     const poemEntropy = poemEntropyArray[poemEntropyIndex];
-    const payloadURL = `${API_URL}?term=${poemEntropy}`;
+    const payloadURL = `${API_URL}&term=${poemEntropy}&format=json`;
 
     return new Promise( function( resolve, reject ) {
         https.get( payloadURL, ( done ) => {
@@ -85,7 +85,7 @@ async function fetchPoemResults() {
             } );
 
             done.on( 'end', function() {
-                resolve( JSON.parse( poemObj )[0] );
+                resolve( JSON.parse( poemObj ) );
             } );
 
             done.on( 'error', err => {
@@ -187,11 +187,10 @@ async function buildPoem( int ) {
         log( 'info', `[POEM] (${l}) Obtaining a suitable poem.` );
         poemRes = await fetchPoemResults();
 
-        const resultIndex = Math.floor( Math.random() * poemRes.results.length );
-        poemObj = poemRes.results[resultIndex];
+        console.log( poemRes.result );
 
-        //Make this easy and keep it to a small line count
-        if ( parseInt( poemObj.linecount ) <= '30' ) break;
+        const resultIndex = Math.floor( Math.random() * poemRes.result.length );
+        poemObj = poemRes.result[resultIndex];
 
         poemTxt = poemObj.poem;
 

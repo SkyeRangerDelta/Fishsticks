@@ -34,7 +34,7 @@ function embedBuilder( fishsticks, embed ) {
 	return embedObject;
 }
 
-function quickEmbed( data ) {
+function quickEmbed( fishsticks, data ) {
 	const qe = new EmbedBuilder();
 	qe.setTitle( data.title );
 	qe.setDescription( data.description );

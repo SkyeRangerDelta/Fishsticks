@@ -32,7 +32,7 @@ async function run( fishsticks, int ) {
 
   newName = `AFK (${a} ${f} ${k})`;
 
-  const AFKChannel = await fishticks.CCG.channels.fetch(fishsticks.ENTITIES[ 'afk' ]);
+  const AFKChannel = await fishsticks.CCG.channels.cache.get(fishsticks.ENTITIES.Channels[ 'afk' ]);
 
   AFKChannel.setName( newName, 'The AFK command was used!' )
       .then( int.reply( { content: 'Done!', ephemeral: true } ) );

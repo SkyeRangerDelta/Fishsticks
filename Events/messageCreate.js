@@ -11,7 +11,7 @@ module.exports = {
 
 async function execute( fishsticks, msg ) {
     if ( msg.author === fishsticks.user ) return;
-    if ( msg.author.bot && msg.author.id !== bcId ) return;
+    if ( msg.author.bot && msg.author.id !== fishsticks.ENTITIES.Users['Breadcrumbs'] ) return;
 
     processMessage( fishsticks, msg );
 }

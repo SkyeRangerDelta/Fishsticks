@@ -23,9 +23,9 @@ async function processMessage( Fishsticks, msg ) {
 
     // Breadcrumbs stuff
     // Check for messages in relay
-    if ( msg.channel.id === mcRelay && msg.author.id === bcId && msg.embeds.length > 0 ) {
+    if ( msg.channel.id === Fishsticks.ENTITIES.Channels['minecraft-relay'] && msg.author.id === Fishsticks.ENTITIES.Users['Breadcrumbs'] && msg.embeds.length > 0 ) {
         // Get Relay channel
-        const relayChannel = Fishsticks.channels.cache.get( mcRelay );
+        const relayChannel = Fishsticks.channels.cache.get( Fishsticks.ENTITIES.Channels['minecraft-relay'] );
 
         // Check content for died
         console.log( 'Relay message', msg.embeds[0].author.name );
@@ -121,7 +121,7 @@ async function processMessage( Fishsticks, msg ) {
     }
 
     //Check Debater
-    if ( msg.channel.id === discDen ) {
+    if ( msg.channel.id === Fishsticks.ENTITIES.Channels['discussion-den'] ) {
         await handleDenMsg( cmd, Fishsticks );
     }
 

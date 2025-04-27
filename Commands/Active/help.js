@@ -42,7 +42,7 @@ function run( fishsticks, int ) {
 		noThumbnail: true
 	};
 
-	return int.reply( { embeds: [embedBuilder( helpPanel )], ephemeral: true } );
+	return int.reply( { embeds: [embedBuilder( fishsticks, helpPanel )], ephemeral: true } );
 }
 
 function help() {

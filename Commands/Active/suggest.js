@@ -4,7 +4,6 @@
 //Imports
 const https = require( 'https' );
 
-const { fsSuggestionHook } = require( '../../Modules/Core/Core_keys.json' );
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 
 const { log } = require( '../../Modules/Utility/Utils_Log' );
@@ -30,6 +29,15 @@ async function run( fishsticks, int ) {
 
     const title = int.options.getString( 'subject' );
     const content = int.options.getString( 'content' );
+    const fsSuggestionHook = process.env.FS_SUGGESTION_HOOK;
+
+    if ( !fsSuggestionHook ) {
+        log( 'error', '[SUGGEST] [API] API credentials not found!' );
+        return int.editReply( {
+            content: 'Something went wrong. Ask Skye to investigate.',
+            ephemeral: true
+        } );
+    }
 
     let hookURL = fsSuggestionHook.concat( `?sender=${int.member.displayName}&suggTitle=${title}&suggBody=${content}` );
     hookURL = encodeURI( hookURL );
