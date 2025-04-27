@@ -177,7 +177,7 @@ async function buildPoem( int ) {
         log( 'info', `[POEM] (${l}) Obtaining a suitable poem.` );
         poemObj = await fetchPoemResults();
 
-        console.log( poemObj.result );
+        console.log( poemObj );
 
         poemTxt = poemObj.lines.join( '\n' );
 
