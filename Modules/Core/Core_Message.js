@@ -144,7 +144,7 @@ async function processMessage( Fishsticks, msg ) {
         try {
             const passiveCmd = require( `../../Commands/Passive/${passiveID}.js` );
 
-            if ( cmd.channel.id === prReqs ) return;
+            if ( cmd.channel.id === Fishsticks.ENTITIES.Channels['prayer-requests'] ) return;
 
             passiveCmd.run( Fishsticks, cmd );
         }

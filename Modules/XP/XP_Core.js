@@ -16,7 +16,7 @@ async function processXP( fishsticks, cmd ) {
     log( 'info', '[XP-SYS] Processing message' );
 
     //Check if non-processed channel
-    if ( cmd.msg.channel.id === prReqs ) {
+    if ( cmd.msg.channel.id === fishsticks.ENTITIES.Channels['prayer-requests'] ) {
         log( 'info', '[XP-SYS] XP not handled in this channel.' );
         return;
     }
