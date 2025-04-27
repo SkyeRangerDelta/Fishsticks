@@ -38,15 +38,7 @@ data.addSubcommand( s => s
     .setDescription( 'The author to search by.' )
     .setRequired( true ) ) );
 
-const API_USER = process.env.STANDS4_USER;
-const API_KEY = process.env.STANDS4_KEY;
-
-if ( !API_USER || !API_KEY ) {
-    log( 'error', '[POEM] [API] API credentials not found!' );
-    throw new Error( '[POEM] [API] API credentials not found!' );
-}
-
-const API_URL = `https://www.stands4.com/services/v2/poetry.php?uid=${API_USER}&tokenid=${API_KEY}`;
+const API_URL = `https://poetrydb.org`;
 
 //Functions
 async function run( fishsticks, int ) {
@@ -71,9 +63,7 @@ async function run( fishsticks, int ) {
 
 async function fetchPoemResults() {
     let poemObj = '';
-    const poemEntropyIndex = Math.floor( Math.random() * poemEntropyArray.length );
-    const poemEntropy = poemEntropyArray[poemEntropyIndex];
-    const payloadURL = `${API_URL}&term=${poemEntropy}&format=json`;
+    const payloadURL = `${API_URL}/random`;
 
     return new Promise( function( resolve, reject ) {
         https.get( payloadURL, ( done ) => {
@@ -85,7 +75,7 @@ async function fetchPoemResults() {
             } );
 
             done.on( 'end', function() {
-                resolve( JSON.parse( poemObj ) );
+                resolve( JSON.parse( poemObj )[0] );
             } );
 
             done.on( 'error', err => {
@@ -180,27 +170,24 @@ async function searchPoemTitle( title, int ) {
 }
 
 async function buildPoem( int ) {
-    let poemObj, poemRes;
+    let poemObj;
     let poemTxt = '';
 
     for ( let l = 1; l < 6; l++ ) {
         log( 'info', `[POEM] (${l}) Obtaining a suitable poem.` );
-        poemRes = await fetchPoemResults();
+        poemObj = await fetchPoemResults();
 
-        console.log( poemRes.result );
+        console.log( poemObj.result );
 
-        const resultIndex = Math.floor( Math.random() * poemRes.result.length );
-        poemObj = poemRes.result[resultIndex];
+        poemTxt = poemObj.lines.join( '\n' );
 
-        poemTxt = poemObj.poem;
-
-        if ( poemTxt.length < 2048 ) {
+        if ( poemTxt.length < 4096 ) {
             log( 'info', '[POEM] [RANDOM] Selected poem: ' + poemObj.title );
             break;
         }
     }
 
-    if ( poemTxt.length > 2048 ) {
+    if ( poemTxt.length > 4096 ) {
         if ( int ) {
             return int.reply( 'Failed to find a suitable poem (in a few tries).' );
         }
@@ -219,10 +206,13 @@ async function buildPoem( int ) {
     }
 
     const poemEmbed = new EmbedBuilder()
-        .setTitle( `*${poemObj.title}* - ${poemObj.poet}` )
+        .setTitle( `*${poemObj.title}*` )
+        .setAuthor( {
+            name: poemObj.author,
+        })
         .setDescription( `${poemTxt}` )
         .setFooter( {
-            text: 'API provided by the STANDS4 Poetry API.'
+            text: 'API provided by PoetryDB.'
         } );
 
     if ( !int ) { //doDailyPost
