@@ -9,11 +9,10 @@ const { embedBuilder } = require( '../Utility/Utils_EmbedBuilder' );
 const { terminate } = require( '../Utility/Utils_Terminate' );
 
 const fs = require( 'fs' );
+const { execSync } = require( 'child_process' );
 const path = require( 'path' );
 const { REST } = require( '@discordjs/rest' );
 const { Routes, ActivityType } = require( 'discord-api-types/v9' );
-
-const { version } = require( '../../package.json' );
 
 //Exports
 module.exports = {
@@ -24,6 +23,7 @@ module.exports = {
 async function startUp( Fishsticks ) {
 
 	const token = process.env.TOKEN;
+	const version = getVersion();
 
 	if ( !token ) {
 		log( 'err', '[FISHSTICKS] [FATAL] Fishsticks could not be started! No token was found!' );
@@ -216,7 +216,7 @@ async function startUp( Fishsticks ) {
 
 		//Set Status
 		await Fishsticks.user.setPresence( {
-			activities: [{ name: version + ' | TEST MODE', type: ActivityType.Listening }],
+			activities: [{ name: version + ' | TEST MODE', type: ActivityType.Custom }],
 			status: 'online'
 		} );
 	}
@@ -255,4 +255,8 @@ async function startUp( Fishsticks ) {
 	//Startup Complete
 	log( 'proc', '[CLIENT] Fishsticks is ready to run.\n-------------------------------------------------------' );
 
+}
+
+function getVersion() {
+	return execSync( 'git describe --tags --always', { encoding: 'utf8' } ).trim();
 }
