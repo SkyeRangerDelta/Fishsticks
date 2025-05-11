@@ -2,7 +2,6 @@
 //Renames the AFK voice chat
 
 //Imports
-const chs = require( '../../Modules/Core/Core_ids.json' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Functions
@@ -33,7 +32,7 @@ async function run( fishsticks, int ) {
 
   newName = `AFK (${a} ${f} ${k})`;
 
-  const AFKChannel = await fishsticks.channels.cache.get( chs.afkChannel );
+  const AFKChannel = await fishsticks.CCG.channels.cache.get(fishsticks.ENTITIES.Channels[ 'afk' ]);
 
   AFKChannel.setName( newName, 'The AFK command was used!' )
       .then( int.reply( { content: 'Done!', ephemeral: true } ) );

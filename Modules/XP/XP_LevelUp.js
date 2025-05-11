@@ -4,7 +4,6 @@
 //Imports
 const { createCanvas, loadImage } = require( '@napi-rs/canvas' );
 
-const { hangout, prReqs, announcements, discDen, bStudy } = require( '../Core/Core_ids.json' );
 const { log } = require( '../Utility/Utils_Log' );
 const { AttachmentBuilder } = require( 'discord.js' );
 
@@ -93,10 +92,14 @@ async function createLevelBanner( fishsticks, cmd, newLvl ) {
     const xpBannerAttachment = new AttachmentBuilder( await canvas.encode( 'png' ),
         { name: 'welcome-banner.png' } );
 
-    if ( cmd.channel.id === announcements || cmd.channel.id === discDen ||
-        cmd.channel.id === bStudy || cmd.channel.id === prReqs ) {
+    if (
+      cmd.channel.id === fishsticks.ENTITIES.Channels['announcements'] ||
+      cmd.channel.id === fishsticks.ENTITIES.Channels['discussion-den'] ||
+      cmd.channel.id === fishsticks.ENTITIES.Channels['bible-study'] ||
+      cmd.channel.id === fishsticks.ENTITIES.Channels['prayer-requests']
+    ) {
         //Redirect out of serious chats
-        const hangoutCh = await fishsticks.channels.cache.get( hangout );
+        const hangoutCh = await fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels['hangout'] );
         hangoutCh.send( { content: 'Level up!', files: [xpBannerAttachment] } )
             .then( sent => { setTimeout( () => { sent.delete(); }, 60000 ); } );
     }

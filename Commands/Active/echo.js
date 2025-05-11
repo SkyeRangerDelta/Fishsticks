@@ -2,7 +2,6 @@
 //Posts an ping on a delayed timer in Announcements
 
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
-const { announcements } = require( '../../Modules/Core/Core_ids.json' );
 const { findRole } = require( './role' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
@@ -48,7 +47,7 @@ data.addStringOption( o => o
 
 //Functions
 async function run( fishsticks, int ) {
-    annChannel = await fishsticks.channels.cache.get( announcements );
+    annChannel = await fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels[ 'announcements' ] );
 
     if ( !hasPerms( int.member, ['Event Coordinator', 'Moderator', 'Council Member', 'Council Advisor'] ) ) {
         return int.reply( { content: 'Hey, hey there; not so fast. You need permissions to run that command.', ephemeral: true } );

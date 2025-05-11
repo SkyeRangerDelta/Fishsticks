@@ -95,7 +95,7 @@ async function buildProfileBanner( fishsticks, int, profileEmbed ) {
             .then( sent => { setTimeout( () => { sent.delete(); }, 60000 ); } );
     }
     else {
-        int.channel.send( { embeds: [embedBuilder( profileEmbed )], files: [bannerAttachment] } )
+        int.channel.send( { embeds: [embedBuilder( fishsticks, profileEmbed )], files: [bannerAttachment] } )
             .then( sent => { setTimeout( () => { sent.delete(); }, 60000 ); } );
     }
 }

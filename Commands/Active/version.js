@@ -2,7 +2,6 @@
 
 //Imports
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
-const config = require( '../../Modules/Core/Core_config.json' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 const packageVer = require( '../../package.json' ).version;
 
@@ -21,7 +20,7 @@ function run( fishsticks, int ) {
 	const versionPanel = {
 		title: 'o0o - Fishsticks Version/About - o0o',
 		description: 'This contains general info about Fishsticks.',
-		color: config.colors.primary,
+		color: fishsticks.CONFIG.colors.primary,
 		footer: {
 			text: `Panel was summoned by ${int.member.displayName}. This message will delete itself in 30 seconds.`
 		},
@@ -46,7 +45,7 @@ function run( fishsticks, int ) {
 		]
 	};
 
-    int.reply( { embeds: [embedBuilder( versionPanel )], ephemeral: true } );
+    int.reply( { embeds: [embedBuilder( fishsticks, versionPanel )], ephemeral: true } );
 }
 
 function help() {

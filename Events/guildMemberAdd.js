@@ -22,5 +22,5 @@ async function execute( fishsticks, newMember ) {
         description: `${newMember.displayName} joined at ${systemTimestamp()}. Account date: ${newMember.created} (${convertMsFull( newMember.createdAt - timeNow )})`
     };
 
-    fishsticks.BOT_LOG.send( { content: `${systemTimestamp()}`, embeds: [quickEmbed( qe )] } );
+    fishsticks.BOT_LOG.send( { content: `${systemTimestamp()}`, embeds: [quickEmbed( fishsticks, qe )] } );
 }

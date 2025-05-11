@@ -40,7 +40,7 @@ function run( fishsticks, int ) {
 		noThumbnail: true
 	};
 
-    int.reply( { embeds: [embedBuilder( ips )], ephemeral: true } );
+    int.reply( { embeds: [embedBuilder( fishsticks, ips )], ephemeral: true } );
 }
 
 function help() {

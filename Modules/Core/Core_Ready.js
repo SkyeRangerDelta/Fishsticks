@@ -3,20 +3,16 @@
 //Imports
 const { log } = require( '../Utility/Utils_Log' );
 
-const { fso_connect, fso_query } = require( '../FSO/FSO_Utils' );
+const { fso_connect, fso_query, buildEntitiesObject, getConfigData } = require( '../FSO/FSO_Utils' );
 const { convertMsFull, systemTimestamp } = require( '../Utility/Utils_Time' );
 const { embedBuilder } = require( '../Utility/Utils_EmbedBuilder' );
 const { terminate } = require( '../Utility/Utils_Terminate' );
 
 const fs = require( 'fs' );
+const { execSync } = require( 'child_process' );
 const path = require( 'path' );
 const { REST } = require( '@discordjs/rest' );
 const { Routes, ActivityType } = require( 'discord-api-types/v9' );
-
-const { guild_CCG, fs_console, fsID, bLogger, ranger } = require( './Core_ids.json' );
-const { version } = require( '../../package.json' );
-const { primary, emergency } = require( './Core_config.json' ).colors;
-const { token } = require( './Core_config.json' );
 
 //Exports
 module.exports = {
@@ -26,9 +22,18 @@ module.exports = {
 //Functions
 async function startUp( Fishsticks ) {
 
+	const token = process.env.TOKEN;
+	const version = getVersion();
+
+	if ( !token ) {
+		log( 'err', '[FISHSTICKS] [FATAL] Fishsticks could not be started! No token was found!' );
+		await Fishsticks.CONSOLE.send( `${Fishsticks.RANGER}, Fishsticks could not be started! No token was found!` );
+		return terminate( Fishsticks );
+	}
+
 	//Test launch args
 	if ( process.argv.length > 2 ) {
-		log( 'warn', '[FISHSTICKS] Fs was launched with at least one command line argument.' );
+		log( 'warn', '[FISHSTICKS] FS was launched with at least one command line argument.' );
 
 		for ( const arg in process.argv ) {
 			if ( process.argv[arg] === '-test' ) {
@@ -39,26 +44,10 @@ async function startUp( Fishsticks ) {
 		}
 	}
 
-	//Variables
-	const timestamp = new Date();
-	const timeNow = Date.now();
-
-	//Init Objs
-	Fishsticks.CCG = await Fishsticks.guilds.fetch( guild_CCG );
-	Fishsticks.CONSOLE = await Fishsticks.channels.cache.get( fs_console );
-	Fishsticks.BOT_LOG = await Fishsticks.channels.cache.get( bLogger );
-	Fishsticks.RANGER = await Fishsticks.CCG.members.fetch( ranger );
-	Fishsticks.MEMBER = await Fishsticks.CCG.members.fetch( fsID );
-
-	//Cache all members for ROLE-SYS checks
-	Fishsticks.CCG.members.fetch();
-
-	//Console confirmation
-	log( 'proc', '[CLIENT] Fishsticks is out of the oven.\n-------------------------------------------------------' );
-
 	// -- Perform startup routine --
 	//FSO Connection
 	try {
+		log( 'info', '[FSO] Attempting to connect to FSO...' );
 		Fishsticks.FSO_CONNECTION = await fso_connect();
 
 		//Before FSO syncs begin - conduct a DB validation
@@ -84,6 +73,9 @@ async function startUp( Fishsticks ) {
 			log( 'err', '[FSO] Something has gone wrong in the startup routine.\n' + error );
 		}
 	}
+
+	const timestamp = new Date();
+	const timeNow = Date.now();
 
 	//Sync FSO Status
 	const statusPreUpdate = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 } );
@@ -112,6 +104,23 @@ async function startUp( Fishsticks ) {
 	else {
 		log ( 'info', '[FSO] Status table update done.' );
 	}
+
+	//Init Objs
+	await buildEntitiesObject( Fishsticks );
+	await getConfigData( Fishsticks );
+
+	Fishsticks.CCG = await Fishsticks.guilds.cache.get( `${ Fishsticks.ENTITIES.CCG }` );
+
+	//Cache all members for ROLE-SYS checks
+	Fishsticks.CCG.members.fetch();
+
+	Fishsticks.CONSOLE = await Fishsticks.CCG.channels.cache.get( `${ Fishsticks.ENTITIES.Channels[ 'fishsticks-console' ] }` );
+	Fishsticks.BOT_LOG = await Fishsticks.CCG.channels.cache.get( `${ Fishsticks.ENTITIES.Channels[ 'bot-logger' ] }` );
+	Fishsticks.RANGER = await Fishsticks.CCG.members.cache.get( `${ Fishsticks.ENTITIES.Users[ 'skyerangerdelta' ] }` );
+	Fishsticks.MEMBER = await Fishsticks.CCG.members.cache.get( `${ Fishsticks.ENTITIES.Users[ 'Fishsticks' ] }` );
+
+	//Console confirmation
+	log( 'proc', '[CLIENT] Fishsticks is out of the oven.\n-------------------------------------------------------' );
 
 	// Register slash commands
 	const commandObjs = [];
@@ -145,7 +154,7 @@ async function startUp( Fishsticks ) {
 		log( 'proc', '[CMD-HANDLER] Doing global registration...' );
 		await rest.put(
 			Routes.applicationCommands(
-				`${fsID}`
+				`${ Fishsticks.MEMBER.id }`
 			),
 			{ body: globalCmdObjs }
 		);
@@ -153,8 +162,8 @@ async function startUp( Fishsticks ) {
 		log( 'proc', '[CMD-HANDLER] Doing guild registration' );
 		await rest.put(
 			Routes.applicationGuildCommands(
-				`${fsID}`,
-				`${guild_CCG}`
+				`${ Fishsticks.MEMBER.id }`,
+				`${ Fishsticks.CCG.id }`
 			),
 			{ body: commandObjs }
 		);
@@ -189,7 +198,7 @@ async function startUp( Fishsticks ) {
 		const startupEmbed = {
 			title: 'Test Mode Boot',
 			description: version + ' feels undercooked. Test mode time.',
-			color: emergency,
+			color: Fishsticks.CONFIG.colors.emergency,
 			noThumbnail: true,
 			footer: {
 				text: 'Sequence initiated at ' + systemTimestamp( timestamp )
@@ -203,11 +212,11 @@ async function startUp( Fishsticks ) {
 			]
 		};
 
-		Fishsticks.CONSOLE.send( { embeds: [embedBuilder( startupEmbed )] } );
+		Fishsticks.CONSOLE.send( { embeds: [ embedBuilder( Fishsticks, startupEmbed ) ] } );
 
 		//Set Status
 		await Fishsticks.user.setPresence( {
-			activities: [{ name: version + ' | TEST MODE', type: ActivityType.Listening }],
+			activities: [{ name: version + ' | TEST MODE', type: ActivityType.Custom }],
 			status: 'online'
 		} );
 	}
@@ -215,7 +224,7 @@ async function startUp( Fishsticks ) {
 		const startupMessage = {
 			title: 'o0o - Fishsticks Startup - o0o',
 			description: 'Dipping in flour...\nBaking at 400°...\nFishticks ' + version + ' is ready to go!',
-			color: primary,
+			color: Fishsticks.CONFIG.colors.primary,
 			footer: {
 				text: 'Sequence initiated at ' + systemTimestamp( timestamp )
 			},
@@ -233,7 +242,7 @@ async function startUp( Fishsticks ) {
 			]
 		};
 
-		const startupEmbed = embedBuilder( startupMessage );
+		const startupEmbed = embedBuilder( Fishsticks, startupMessage );
 		Fishsticks.CONSOLE.send( { embeds: [startupEmbed] } );
 
 		//Set Status
@@ -246,4 +255,8 @@ async function startUp( Fishsticks ) {
 	//Startup Complete
 	log( 'proc', '[CLIENT] Fishsticks is ready to run.\n-------------------------------------------------------' );
 
+}
+
+function getVersion() {
+	return execSync( 'git describe --tags --always', { encoding: 'utf8' } ).trim();
 }

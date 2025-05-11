@@ -114,7 +114,7 @@ async function run( fishsticks, int ) {
         return await buildProfileBanner( fishsticks, int, profileEmbed );
     }
     else {
-        await int.editReply( { embeds: [embedBuilder( profileEmbed )] } );
+        await int.editReply( { embeds: [embedBuilder( fishsticks, profileEmbed )] } );
     }
 }
 

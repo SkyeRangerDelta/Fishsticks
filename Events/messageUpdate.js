@@ -17,20 +17,27 @@ async function execute( fishsticks, oldMsg, newMsg ) {
     if ( !oldMsg || !newMsg ) return console.log( 'Empty message?' );
 
     let msgMem;
-    if ( oldMsg.partial ) {
 
-        try {
-            await newMsg.fetch();
-        }
-        catch ( e ) {
-            console.log( e );
-            return;
-        }
+    try {
+        if ( oldMsg.partial ) {
 
-        msgMem = await newMsg.member.fetch();
+            try {
+                await newMsg.fetch();
+            }
+            catch ( e ) {
+                console.log( e );
+                return;
+            }
+
+            msgMem = await newMsg.member.fetch();
+        }
+        else {
+            msgMem = await oldMsg.member.fetch();
+        }
     }
-    else {
-        msgMem = await oldMsg.member.fetch();
+    catch (e) {
+        console.error( 'Something about this update is hinky.' );
+        return;
     }
 
     if ( msgMem === fishsticks.member || msgMem.id === fishsticks.user.id || msgMem.user.bot ) return;
@@ -42,5 +49,5 @@ async function execute( fishsticks, oldMsg, newMsg ) {
         description: `${msgMem.displayName}'s message in ${oldMsg.channel.name} was updated.`
     };
 
-    fishsticks.BOT_LOG.send( { content: `${systemTimestamp()}`, embeds: [quickEmbed( qe )] } );
+    fishsticks.BOT_LOG.send( { content: `${systemTimestamp()}`, embeds: [quickEmbed( fishsticks, qe )] } );
 }

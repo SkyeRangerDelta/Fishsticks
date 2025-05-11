@@ -12,7 +12,9 @@ const { fsoValidationException } = require( '../Errors/fsoValidationException' )
 module.exports = {
 	fso_connect,
 	fso_status,
-	fso_query
+	fso_query,
+	buildEntitiesObject,
+	getConfigData
 };
 
 //Functions
@@ -101,5 +103,63 @@ async function fso_query( connection, coll, key, value, filter, aFilter ) {
 			return await database.collection( coll ).count();
 		default:
 			throw new fsoValidationException( 'Invalid FSO Query!' );
+	}
+}
+
+async function buildEntitiesObject( Fishsticks ) {
+	log( 'info', '[FSO] Building entities data...' );
+
+	const entities = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_IDs', 'selectAll' );
+
+	if ( !entities ) {
+		log( 'err', '[FSO] Failed to build entities object.' );
+		return;
+	}
+
+	//Get the guild first
+	const guild = entities.find( e => e.type === 'guild' );
+	if ( !guild ) {
+		log( 'err', '[FSO] Failed to get guild ID.' );
+		return;
+	}
+
+	Fishsticks.ENTITIES.CCG = `${ guild.identifier }`;
+
+	for ( const entity of entities ) {
+		switch ( entity.type ) {
+			case 'member':
+				Fishsticks.ENTITIES.Users[ `${ entity.name }` ] = `${ entity.identifier }`;
+				break;
+			case 'role':
+				Fishsticks.ENTITIES.Roles[ `${ entity.name }` ] = `${ entity.identifier }`;
+				break
+			case 'channel':
+				Fishsticks.ENTITIES.Channels[ `${ entity.name }` ] = `${ entity.identifier }`;
+				break
+			case 'category':
+				Fishsticks.ENTITIES.Categories[ `${ entity.name }` ] = `${ entity.identifier }`;
+				break
+			case 'guild':
+				Fishsticks.ENTITIES.Guilds[ `${ entity.name }` ] = `${ entity.identifier }`;
+				break
+			default:
+				log( 'err', `[FSO] Skipping unchecked entity type: ${entity.type}` );
+				break;
+		}
+	}
+}
+
+async function getConfigData( Fishsticks ) {
+	log( 'info', '[FSO] Building config data...' );
+
+	const config = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_Config', 'select', { id: "fs_config" } );
+
+	if ( !config ) {
+		log( 'err', '[FSO] Failed to build config object.' );
+		return;
+	}
+
+	Fishsticks.CONFIG = {
+		...config,
 	}
 }

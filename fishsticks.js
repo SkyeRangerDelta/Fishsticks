@@ -67,6 +67,16 @@ Fishsticks.TESTMODE = false;
 Fishsticks.NODEARGS = [];
 Fishsticks.SUMM_BRODEMODE = false;
 Fishsticks.DOCKET_PIN = null;
+Fishsticks.ENTITIES = {
+	Users: {},
+	Roles: {},
+	Channels: {},
+	Categories: {},
+	Guilds: {},
+};
+Fishsticks.ENTITIES.CCG = '';
+Fishsticks.CCG = {};
+Fishsticks.CONFIG = {};
 
 //=============================================
 //				EVENTS INDEX
@@ -104,5 +114,5 @@ process.on( 'unhandledRejection', e => {
 // Login
 
 Fishsticks.login( token ).then( () => {
-	console.log( 'Fishsticks is online!' );
+	console.log( 'Fishsticks is logged in!' );
 } );

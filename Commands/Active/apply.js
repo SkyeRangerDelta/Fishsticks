@@ -5,7 +5,6 @@
 // const { introduction, formQuestions } = require( '../../Modules/Library/appQuestions.json' );
 // const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
-// const { primary } = require( '../../Modules/Core/Core_config.json' ).colors;
 
 //Functions
 const data = new SlashCommandBuilder()
@@ -18,7 +17,7 @@ function run( fishsticks, int ) {
 	// const introPanel = {
 	// 	title: 'o0o - Christian Crew Membership Application - o0o',
 	// 	description: introduction,
-	// 	color: primary,
+	// 	color: fishsticks.CONFIG.colors.primary,
 	// 	footer: {
 	// 		text: 'If you did not issue this command, or no longer wish to continue; please type `stop` at any time.'
 	// 	},

@@ -2,7 +2,6 @@
 const { createCanvas, loadImage } = require( '@napi-rs/canvas' );
 const { log } = require( '../Utility/Utils_Log' );
 
-const chs = require( './Core_ids.json' );
 const { AttachmentBuilder } = require( 'discord.js' );
 
 //Exports

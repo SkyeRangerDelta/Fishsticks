@@ -95,7 +95,7 @@ async function run( fishsticks, int ) {
 	} );
 
 	//Send embed
-	await int.editReply( { embeds: [embedBuilder( statusReport )] } );
+	await int.editReply( { embeds: [embedBuilder( fishsticks, statusReport )] } );
 }
 
 function help() {

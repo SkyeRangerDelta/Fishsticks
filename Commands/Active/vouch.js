@@ -2,7 +2,6 @@
 //Vote for a user to join the community.
 
 //Imports
-const { recognized } = require( '../../Modules/Core/Core_ids.json' );
 const { handleNewMember } = require( '../../Modules/Core/Core_NewMember' );
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
@@ -27,7 +26,7 @@ async function run( fishsticks, int ) {
     }
 
     //Get role
-    recognizedRole = await int.guild.roles.fetch( recognized );
+    recognizedRole = await int.guild.roles.fetch( fishsticks.ENTITIES.Roles[ 'Recognized' ] );
 
     //Interpret vouch
     const vouchee = int.options.getMember( 'vouchee' );

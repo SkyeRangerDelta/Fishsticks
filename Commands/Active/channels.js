@@ -1,7 +1,6 @@
 //Imports
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 
-const { primary } = require( '../../Modules/Core/Core_config.json' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Functions
@@ -14,7 +13,7 @@ function run( fishsticks, int ) {
 		title: 'o0o - Channels - o0o',
 		description: 'A list of all the channels in CC and a brief description.\n' +
 						'Note the following key:\n🔇: You should mute channels with this icon.\n🔒: Channels with this require extra permissions.',
-		color: primary,
+		color: fishsticks.CONFIG.colors.primary,
 		footer: {
 			text: 'Ask staff for more info.'
 		},
@@ -95,7 +94,7 @@ function run( fishsticks, int ) {
 		]
 	};
 
-	int.reply( { embeds: [embedBuilder( channelsPanel )], ephemeral: true } );
+	int.reply( { embeds: [embedBuilder( fishsticks, channelsPanel )], ephemeral: true } );
 }
 
 function help() {

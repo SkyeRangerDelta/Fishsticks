@@ -6,7 +6,6 @@ const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { systemTimestamp } = require( '../../Modules/Utility/Utils_Time' );
-const { council, meetingHall } = require( '../../Modules/Core/Core_ids.json' );
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
@@ -298,7 +297,7 @@ async function listPoints( fishsticks, int, ext ) {
 
 	//Process fields
 	//If council
-	if ( int.channel.id === council ) {
+	if ( int.channel.id === fishsticks.ENTITIES.Channels[ '🤪council' ] ) {
 		for ( const point in pointListing ) {
 			listEmbed.fields.push( {
 				name: getTitle( pointListing[point] ),
@@ -320,17 +319,17 @@ async function listPoints( fishsticks, int, ext ) {
 	}
 
 	if ( ext ) {
-		return int.channel.send( { embeds: [embedBuilder( listEmbed )] } );
+		return int.channel.send( { embeds: [embedBuilder( fishsticks, listEmbed )] } );
 	}
 	else {
-		await int.reply( { embeds: [embedBuilder( listEmbed )] } );
+		await int.reply( { embeds: [embedBuilder( fishsticks, listEmbed )] } );
 	}
 }
 
 //Pin List
 async function pinList( fishsticks, int ) {
 	//Check channel
-	if ( int.channel.id !== meetingHall ) {
+	if ( int.channel.id !== fishsticks.ENTITIES.Channels[ 'meeting-hall' ] ) {
 		return int.reply( {
 			content: 'You can only pin the docket in the Meeting Hall!',
 			ephemeral: true

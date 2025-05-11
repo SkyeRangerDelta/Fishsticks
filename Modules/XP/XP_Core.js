@@ -4,7 +4,6 @@
 //Imports
 const { fso_query } = require( '../FSO/FSO_Utils' );
 const { log } = require( '../Utility/Utils_Log' );
-const { announcements, discDen, prReqs, bStudy, hangout } = require( '../Core/Core_ids.json' );
 const { createLevelBanner } = require( './XP_LevelUp' );
 
 //Exports
@@ -17,7 +16,7 @@ async function processXP( fishsticks, cmd ) {
     log( 'info', '[XP-SYS] Processing message' );
 
     //Check if non-processed channel
-    if ( cmd.msg.channel.id === prReqs ) {
+    if ( cmd.msg.channel.id === fishsticks.ENTITIES.Channels['prayer-requests'] ) {
         log( 'info', '[XP-SYS] XP not handled in this channel.' );
         return;
     }
@@ -97,7 +96,9 @@ async function doXP( fishsticks, cmd, memberProf ) {
     if ( updateProfRes.modifiedCount === 1 ) {
         if ( lvlTriggered ) {
             if ( memberProf.notifications.xp ) {
-                if ( cmd.channel.id === discDen || cmd.channel.id === bStudy || cmd.channel.id === announcements ) {
+                if ( cmd.channel.id === fishsticks.ENTITIES.Channels['discussion-den'] ||
+                  cmd.channel.id === fishsticks.ENTITIES.Channels['bible-study'] ||
+                  cmd.channel.id === fishsticks.ENTITIES.Channels['announcements'] ) {
                     const hangoutCh = await fishsticks.channels.cache.get( hangout );
                     hangoutCh.send( `${cmd.msg.member}, You've reached level ${currLvl}!` )
                         .then( sent => { setTimeout( () => { sent.delete(); }, 10000 ); } );

@@ -2,7 +2,6 @@
 // Links to the rules channel
 
 //Imports
-const { rules } = require( '../../Modules/Core/Core_ids.json' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Globals
@@ -12,7 +11,7 @@ const data = new SlashCommandBuilder()
 
 //Functions
 async function run( fishsticks, int ) {
-    const ruleCh = await fishsticks.channels.cache.get( rules );
+    const ruleCh = await fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels[ 'rules' ] );
     int.reply( { content: `See ${ruleCh}`, ephemeral: true } );
 }
 

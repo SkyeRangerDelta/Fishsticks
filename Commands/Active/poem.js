@@ -7,6 +7,7 @@ const https = require( 'https' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 const { EmbedBuilder } = require( 'discord.js' );
+const poemEntropyArray = require( '../../Modules/Library/poemEntropy.json' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -37,7 +38,7 @@ data.addSubcommand( s => s
     .setDescription( 'The author to search by.' )
     .setRequired( true ) ) );
 
-const API_URL = 'https://poetrydb.org/';
+const API_URL = `https://poetrydb.org`;
 
 //Functions
 async function run( fishsticks, int ) {
@@ -60,10 +61,9 @@ async function run( fishsticks, int ) {
     }
 }
 
-async function fetchPoem() {
-    const payloadURL = `${API_URL}random`;
-
+async function fetchPoemResults() {
     let poemObj = '';
+    const payloadURL = `${API_URL}/random`;
 
     return new Promise( function( resolve, reject ) {
         https.get( payloadURL, ( done ) => {
@@ -175,35 +175,47 @@ async function buildPoem( int ) {
 
     for ( let l = 1; l < 6; l++ ) {
         log( 'info', `[POEM] (${l}) Obtaining a suitable poem.` );
-        poemObj = await fetchPoem();
+        poemObj = await fetchPoemResults();
 
-        //Make this easy and keep it to a small line count
-        if ( parseInt( poemObj.linecount ) <= '20' ) break;
+        console.log( poemObj );
+
+        poemTxt = poemObj.lines.join( '\n' );
+
+        if ( poemTxt.length < 4096 ) {
+            log( 'info', '[POEM] [RANDOM] Selected poem: ' + poemObj.title );
+            break;
+        }
     }
 
-    if ( poemObj.lines.length > 20 ) {
+    if ( poemTxt.length > 4096 ) {
         if ( int ) {
-            return int.reply( 'Failed to find a suitable poem.' );
+            return int.reply( 'Failed to find a suitable poem (in a few tries).' );
         }
         else {
-            return log( 'info', 'Failed to find a suitable poem.' );
+            return log( 'info', 'Failed to find a suitable poem (in a few tries).' );
         }
     }
 
-    poemTxt = poemObj.lines.join( '\n' );
-
-    if ( poemTxt === '' || poemTxt.length > 2048 && int ) {
-        return int.reply( { content: 'Failed to find a suitable poem!' } );
+    if ( poemTxt === '' ) {
+        if ( int ) {
+            return int.reply( { content: 'I messed up somewhere, try again?' } );
+        }
+        else {
+            return log( 'info', 'Selected poem was wrong.' );
+        }
     }
 
     const poemEmbed = new EmbedBuilder()
-        .setTitle( `*${poemObj.title}* - ${poemObj.author}` )
+        .setTitle( `*${poemObj.title}*` )
+        .setAuthor( {
+            name: poemObj.author,
+        })
         .setDescription( `${poemTxt}` )
         .setFooter( {
             text: 'API provided by PoetryDB.'
         } );
 
-	if ( !int ) { //doDailyPost
+    if ( !int ) { //doDailyPost
         return poemEmbed;
     }
 
