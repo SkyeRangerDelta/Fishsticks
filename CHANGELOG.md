@@ -1,5 +1,27 @@
 || v${version} Changelog ||
 
+# [1.20.0-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.19.21-Experimental.1...v1.20.0-Experimental.1) (2025-05-11)
+
+
+### Bug Fixes
+
+* Changed author property ([3856d82](https://github.com/SkyeRangerDelta/Fishsticks/commit/3856d820dea744c8530e965ade0e836e49afcdcb))
+* Corrected channel ID accessor ([47e8e23](https://github.com/SkyeRangerDelta/Fishsticks/commit/47e8e23423fec25e73139598ab15e8d1c58ae432))
+* Corrected console log ([a5ef266](https://github.com/SkyeRangerDelta/Fishsticks/commit/a5ef2664c120b6cfa636dfc9ced45265471585be))
+* Patched messageUpdate on non-member message ([7aeb2dd](https://github.com/SkyeRangerDelta/Fishsticks/commit/7aeb2dd409def021a104956498051c50c9eed8fb))
+* Unbreak all the code ([62bf610](https://github.com/SkyeRangerDelta/Fishsticks/commit/62bf610824456e2d8ed01c3a164aaaa368681946))
+* Unbreak the poem thing ([dd6031a](https://github.com/SkyeRangerDelta/Fishsticks/commit/dd6031abfe4253bfb0e0deb75cb5edd5e7516c11))
+
+
+### Features
+
+* Added poem entropy words ([eedcbec](https://github.com/SkyeRangerDelta/Fishsticks/commit/eedcbecdf477bcf4c4e9a94dd94ce946ffa2da1b))
+* Changed versioning to use git ([99dd32b](https://github.com/SkyeRangerDelta/Fishsticks/commit/99dd32bc6ebe6edbf1b8c2ddc476cdd7049853cf))
+* Committed the broken stuff ([642bf39](https://github.com/SkyeRangerDelta/Fishsticks/commit/642bf397cf6a7e43aec88c7dd817b03197505667))
+* Committed the fix to the broken stuff ([ef183ea](https://github.com/SkyeRangerDelta/Fishsticks/commit/ef183ea7ebcb12fd15f2a5f7fc86f2d5ed84190f))
+* Increased poem line count to 30 ([9eccf86](https://github.com/SkyeRangerDelta/Fishsticks/commit/9eccf86b4425d9721d6cb64b07c8bb40ceacd805))
+* More broken code ([b156886](https://github.com/SkyeRangerDelta/Fishsticks/commit/b1568861b505d3f643f8fde7599830b3d22191fa))
+
 ## [1.19.21-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.19.20...v1.19.21-Experimental.1) (2025-04-23)
 
 
