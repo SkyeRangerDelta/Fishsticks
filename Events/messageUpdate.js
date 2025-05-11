@@ -36,7 +36,7 @@ async function execute( fishsticks, oldMsg, newMsg ) {
         }
     }
     catch (e) {
-        console.log( e );
+        console.error( 'Something about this update is hinky.' );
         return;
     }
 
