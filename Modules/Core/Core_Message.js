@@ -9,6 +9,7 @@ const { fso_query } = require( '../FSO/FSO_Utils' );
 const { handleDenMsg } = require( '../Utility/Utils_Aux' );
 const { processXP } = require( '../XP/XP_Core' );
 const { handleShiny } = require( '../Utility/Utils_Shiny' );
+const { TextChannel } = require( "discord.js" );
 
 //Exports
 module.exports = {
@@ -197,7 +198,7 @@ async function processQuote( fishsticks, cmd ) {
 
     if ( ( tick - 1 ) === 0 ) {
         const newTickNum = newTick();
-        await generateRandomQuote( fishsticks, cmd );
+        await generateRandomQuote( fishsticks, cmd, true );
 
         await updateQuoteTick( fishsticks, newTickNum );
     }
@@ -226,14 +227,33 @@ async function updateQuoteTick( fishsticks, tickNum ) {
 }
 
 //Generate the random quote and return
-async function generateRandomQuote( fishsticks, int ) {
+async function generateRandomQuote( fishsticks, int, random = false ) {
     const quotes = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_QuoteRef', 'selectAll' );
 
     const quoteIndex = Math.floor( Math.random() * quotes.length );
     log( 'proc', `[R-QUOTE] New quote fired. Index ${quoteIndex}.` );
 
+    if ( !random ) {
+        return quotes[quoteIndex].q;
+    }
+
     //Send it
-    int.channel.send( `${quotes[quoteIndex].q}` );
+    //But do a channel check on it first
+    const skipChannels = new Set([
+      fishsticks.ENTITIES.Channels['prayer-requests'],
+      fishsticks.ENTITIES.Channels['discussion-den'],
+      fishsticks.ENTITIES.Channels['minecraft-relay'],
+      fishsticks.ENTITIES.Channels['announcements'],
+      fishsticks.ENTITIES.Channels['crash-pad']
+    ])
+    if ( skipChannels.has( int.channel.id ) ) {
+        const hangout = fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels[ 'hangout' ] );
+        await hangout.send( `${quotes[quoteIndex].q}` );
+    }
+    else {
+        int.channel.send( `${quotes[quoteIndex].q}` );
+    }
+
 }
 
 //Generate a new tick count
