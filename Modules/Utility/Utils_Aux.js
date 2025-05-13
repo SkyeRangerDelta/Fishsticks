@@ -59,8 +59,8 @@ async function validateAddedReaction( fishsticks, addedReaction, reactor ) {
 }
 
 async function doDailyPost( fishsticks ) {
-	const hangoutID = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_IDs', 'select', { name: 'Hangout' } );
-	const hangoutCH = fishsticks.CCG.channels.cache.get( hangoutID );
+	const hangoutID = fishsticks.ENTITIES.Channels[ 'hangout' ];
+	const hangoutCH = fishsticks.channels.cache.get( hangoutID );
 	hangoutCH.send( { embeds: [ await buildPoem()] } );
 }
 

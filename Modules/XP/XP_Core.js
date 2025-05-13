@@ -99,7 +99,7 @@ async function doXP( fishsticks, cmd, memberProf ) {
                 if ( cmd.channel.id === fishsticks.ENTITIES.Channels['discussion-den'] ||
                   cmd.channel.id === fishsticks.ENTITIES.Channels['bible-study'] ||
                   cmd.channel.id === fishsticks.ENTITIES.Channels['announcements'] ) {
-                    const hangoutCh = await fishsticks.channels.cache.get( hangout );
+                    const hangoutCh = await fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels[ 'hangout' ] );
                     hangoutCh.send( `${cmd.msg.member}, You've reached level ${currLvl}!` )
                         .then( sent => { setTimeout( () => { sent.delete(); }, 10000 ); } );
                 }
