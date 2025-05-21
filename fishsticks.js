@@ -77,6 +77,7 @@ Fishsticks.ENTITIES = {
 Fishsticks.ENTITIES.CCG = '';
 Fishsticks.CCG = {};
 Fishsticks.CONFIG = {};
+Fishsticks.GIT_INSTALL_TOKEN = '';
 
 //=============================================
 //				EVENTS INDEX

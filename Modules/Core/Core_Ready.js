@@ -13,6 +13,8 @@ const { execSync } = require( 'child_process' );
 const path = require( 'path' );
 const { REST } = require( '@discordjs/rest' );
 const { Routes, ActivityType } = require( 'discord-api-types/v9' );
+const axios = require( "axios" );
+const { sign } = require( "jsonwebtoken" );
 
 //Exports
 module.exports = {
@@ -118,6 +120,8 @@ async function startUp( Fishsticks ) {
 	Fishsticks.BOT_LOG = await Fishsticks.CCG.channels.cache.get( `${ Fishsticks.ENTITIES.Channels[ 'bot-logger' ] }` );
 	Fishsticks.RANGER = await Fishsticks.CCG.members.cache.get( `${ Fishsticks.ENTITIES.Users[ 'skyerangerdelta' ] }` );
 	Fishsticks.MEMBER = await Fishsticks.CCG.members.cache.get( `${ Fishsticks.ENTITIES.Users[ 'Fishsticks' ] }` );
+
+	await getAppInstallInfo( Fishsticks );
 
 	//Console confirmation
 	log( 'proc', '[CLIENT] Fishsticks is out of the oven.\n-------------------------------------------------------' );
@@ -259,4 +263,23 @@ async function startUp( Fishsticks ) {
 
 function getVersion() {
 	return execSync( 'git describe --tags --always', { encoding: 'utf8' } ).trim();
+}
+
+function getAppInstallInfo( Fishsticks ) {
+	const pk = fs.readFileSync( process.env.GIT_KEY_PATH, 'utf8' );
+
+	if ( !pk || pk.length === 0 ) {
+		log( 'error', '[SUGGEST] [API] API credentials key not found!' );
+	}
+
+	const JWT = sign( {
+			iss: clientId,
+			exp: Math.floor( Date.now() / 1000 ) + 60,
+			iat: Math.floor( Date.now() / 1000 )
+		},
+		pk,
+		{ algorithm: 'RS256' }
+	);
+
+	const res = axios.get()
 }

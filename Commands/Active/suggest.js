@@ -3,11 +3,12 @@
 
 //Imports
 const https = require( 'https' );
+const fs = require( 'fs' );
+const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { sign } = require( "jsonwebtoken" );
 
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
-
 const { log } = require( '../../Modules/Utility/Utils_Log' );
-const { SlashCommandBuilder } = require( '@discordjs/builders' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -29,33 +30,37 @@ async function run( fishsticks, int ) {
 
     const title = int.options.getString( 'subject' );
     const content = int.options.getString( 'content' );
-    const fsSuggestionHook = process.env.FS_SUGGESTION_HOOK;
 
-    if ( !fsSuggestionHook ) {
-        log( 'error', '[SUGGEST] [API] API credentials not found!' );
+    const clientId = process.env.GIT_CLIENT_ID;
+    const gitURI = process.env.GIT_URI;
+
+    const issuesURL = `${gitURI}/issues`;
+
+    if ( !clientId || clientId.length === 0 ) {
+        log( 'error', '[SUGGEST] [API] API ID credential not found!' );
         return int.editReply( {
             content: 'Something went wrong. Ask Skye to investigate.',
             ephemeral: true
         } );
     }
 
-    let hookURL = fsSuggestionHook.concat( `?sender=${int.member.displayName}&suggTitle=${title}&suggBody=${content}` );
-    hookURL = encodeURI( hookURL );
-
     //Attempt suggestion send
     log( 'info', '[SUGGEST] Dispatching a request.' );
-    https.get( hookURL, ( res ) => {
-        if ( res.statusCode === 200 ) {
-            log( 'info', '[SUGGEST] Status: ' + res.statusCode );
-            return int.editReply( { content: 'Suggestion posted.', ephemeral: true } );
+
+    const res = axios.post(
+        issuesURL,
+        {
+            title: title,
+            body: content
+        },
+        {
+            headers: {
+                Authorization: `token ${ fishsticks.GIT_INSTALL_TOKEN }`,
+                Accept: 'application/vnd.github.v3+json',
+                'User-Agent': 'Fishsticks'
+            }
         }
-    } ).on( 'error', ( eventGetError ) => {
-        console.log( eventGetError );
-        return int.editReply( {
-            content: 'Something isnt working.',
-            ephemeral: true
-        } );
-    } );
+    )
 
     //FSO Sync Suggestions
     log( 'info', '[SUGGEST] Syncing member suggestions' );
