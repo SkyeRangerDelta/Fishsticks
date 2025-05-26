@@ -121,8 +121,6 @@ async function startUp( Fishsticks ) {
 	Fishsticks.RANGER = await Fishsticks.CCG.members.cache.get( `${ Fishsticks.ENTITIES.Users[ 'skyerangerdelta' ] }` );
 	Fishsticks.MEMBER = await Fishsticks.CCG.members.cache.get( `${ Fishsticks.ENTITIES.Users[ 'Fishsticks' ] }` );
 
-	await getAppInstallInfo( Fishsticks );
-
 	//Console confirmation
 	log( 'proc', '[CLIENT] Fishsticks is out of the oven.\n-------------------------------------------------------' );
 
@@ -263,23 +261,4 @@ async function startUp( Fishsticks ) {
 
 function getVersion() {
 	return execSync( 'git describe --tags --always', { encoding: 'utf8' } ).trim();
-}
-
-function getAppInstallInfo( Fishsticks ) {
-	const pk = fs.readFileSync( process.env.GIT_KEY_PATH, 'utf8' );
-
-	if ( !pk || pk.length === 0 ) {
-		log( 'error', '[SUGGEST] [API] API credentials key not found!' );
-	}
-
-	const JWT = sign( {
-			iss: clientId,
-			exp: Math.floor( Date.now() / 1000 ) + 60,
-			iat: Math.floor( Date.now() / 1000 )
-		},
-		pk,
-		{ algorithm: 'RS256' }
-	);
-
-	const res = axios.get()
 }
