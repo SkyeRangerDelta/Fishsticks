@@ -217,10 +217,7 @@ async function startUp( Fishsticks ) {
     Fishsticks.CONSOLE.send( { embeds: [ embedBuilder( Fishsticks, startupEmbed ) ] } );
 
     //Set Status
-    await Fishsticks.user.setPresence( {
-      activities: [{ name: version + ' | TEST MODE', type: ActivityType.Custom }],
-      status: 'online'
-    } );
+    startRotatingStatuses( Fishsticks, true );
   }
   else {
     const startupMessage = {
@@ -248,10 +245,7 @@ async function startUp( Fishsticks ) {
     Fishsticks.CONSOLE.send( { embeds: [startupEmbed] } );
 
     //Set Status
-    await Fishsticks.user.setPresence( {
-      activities: [{ name: 'for /help | ' + version, type: ActivityType.Watching }],
-      status: 'online'
-    } );
+    startRotatingStatuses( Fishsticks );
   }
 
   //Startup Complete
@@ -261,4 +255,39 @@ async function startUp( Fishsticks ) {
 
 function getVersion() {
   return execSync( 'git describe --tags --always', { encoding: 'utf8' } ).trim();
+}
+
+async function startRotatingStatuses( Fishsticks, testMode = false ) {
+  const statuses = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_Statuses', 'selectAll' );
+
+  if ( !statuses || statuses.length === 0 ) {
+    statuses.push( { name: 'for /help', type: 'watching' } );
+  }
+
+  let i = 0;
+  let cType;
+  setInterval( () => {
+    switch ( statuses[ i ].type ) {
+      case 'playing':
+        cType = ActivityType.Playing;
+        break;
+      case 'listening':
+        cType = ActivityType.Listening;
+        break;
+      case 'watching':
+        cType = ActivityType.Watching;
+        break;
+      case 'competing':
+        cType = ActivityType.Competing;
+        break;
+      default:
+        cType = ActivityType.Custom;
+    }
+
+    Fishsticks.user.setPresence( {
+      activities: [{ name: testMode ? `${ statuses[i].name } | TEST MODE` : statuses[i].name, type: cType }],
+      status: 'online'
+    } );
+    i = ( i + 1 ) % statuses.length;
+  }, 60000 );
 }
