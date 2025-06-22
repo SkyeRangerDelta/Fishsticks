@@ -55,7 +55,7 @@ async function fso_status( connection ) {
 }
 
 async function fso_query( connection, coll, key, value, filter, aFilter ) {
-  log( 'info', '[FSO] Dispatching a query' );
+  log( 'debug', '[FSO] Dispatching a query' );
 
   const filterDoc = { id: 1 };
   const updateDoc = {

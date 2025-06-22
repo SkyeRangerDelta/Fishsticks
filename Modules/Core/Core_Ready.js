@@ -215,9 +215,6 @@ async function startUp( Fishsticks ) {
     };
 
     Fishsticks.CONSOLE.send( { embeds: [ embedBuilder( Fishsticks, startupEmbed ) ] } );
-
-    //Set Status
-    startRotatingStatuses( Fishsticks, true );
   }
   else {
     const startupMessage = {
@@ -241,11 +238,10 @@ async function startUp( Fishsticks ) {
       ]
     };
 
+    startRotatingStatuses( Fishsticks );
+
     const startupEmbed = embedBuilder( Fishsticks, startupMessage );
     Fishsticks.CONSOLE.send( { embeds: [startupEmbed] } );
-
-    //Set Status
-    startRotatingStatuses( Fishsticks );
   }
 
   //Startup Complete
@@ -258,10 +254,15 @@ function getVersion() {
 }
 
 async function startRotatingStatuses( Fishsticks, testMode = false ) {
+  log( 'info', '[FISHSTICKS] Starting rotating status messages.' );
+
   const statuses = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_Statuses', 'selectAll' );
 
   if ( !statuses || statuses.length === 0 ) {
     statuses.push( { name: 'for /help', type: 'watching' } );
+  }
+  else {
+    log( 'proc', `[FISHSTICKS] Found ${statuses.length} rotating statuses.` );
   }
 
   let i = 0;

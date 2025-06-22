@@ -19,6 +19,10 @@ module.exports = {
 			case 'proc':
 				console.log( colors.green( '[SUCCESS] ' + msg ) );
 				break;
+			case 'debug':
+				if ( process.env.DEBUG !== 'true' || !process.argv.includes('-debug') ) return;
+				console.log( colors.grey( '[DEBUG] ' + msg ) );
+				break;
 			default:
 				console.log( colors.bgYellow( '[UNKNOWN ERROR] ' + msg ) );
 		}
