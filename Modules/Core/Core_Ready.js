@@ -238,11 +238,11 @@ async function startUp( Fishsticks ) {
       ]
     };
 
-    startRotatingStatuses( Fishsticks );
-
     const startupEmbed = embedBuilder( Fishsticks, startupMessage );
     Fishsticks.CONSOLE.send( { embeds: [startupEmbed] } );
   }
+
+  startRotatingStatuses( Fishsticks );
 
   //Startup Complete
   log( 'proc', '[CLIENT] Fishsticks is ready to run.\n-------------------------------------------------------' );
@@ -256,7 +256,7 @@ function getVersion() {
 async function startRotatingStatuses( Fishsticks, testMode = false ) {
   log( 'info', '[FISHSTICKS] Starting rotating status messages.' );
 
-  const statuses = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_Statuses', 'selectAll' );
+  const statuses = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_StatusMessages', 'selectAll' );
 
   if ( !statuses || statuses.length === 0 ) {
     statuses.push( { name: 'for /help', type: 'watching' } );
@@ -265,9 +265,10 @@ async function startRotatingStatuses( Fishsticks, testMode = false ) {
     log( 'proc', `[FISHSTICKS] Found ${statuses.length} rotating statuses.` );
   }
 
-  let i = 0;
-  let cType;
   setInterval( () => {
+    let cType;
+    let i = Math.floor( Math.random() * statuses.length );
+
     switch ( statuses[ i ].type ) {
       case 'playing':
         cType = ActivityType.Playing;
@@ -289,6 +290,5 @@ async function startRotatingStatuses( Fishsticks, testMode = false ) {
       activities: [{ name: testMode ? `${ statuses[i].name } | TEST MODE` : statuses[i].name, type: cType }],
       status: 'online'
     } );
-    i = ( i + 1 ) % statuses.length;
-  }, 60000 );
+  }, 15000 );
 }
