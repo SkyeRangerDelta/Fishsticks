@@ -290,5 +290,5 @@ async function startRotatingStatuses( Fishsticks, testMode = false ) {
       activities: [{ name: testMode ? `${ statuses[i].name } | TEST MODE` : statuses[i].name, type: cType }],
       status: 'online'
     } );
-  }, 15000 );
+  }, 180000 );
 }
