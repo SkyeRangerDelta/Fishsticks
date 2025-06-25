@@ -51,3 +51,22 @@ async function definitionRequest( userName, word ) {
 
     return response.choices[0].message.content;
 }
+
+async function getResponse( userName, context, command ) {
+    const response = await openai.chat.completions.create( {
+        model: defaultModel,
+        messages: [
+            { role: 'system', content: botPsyche + 'In this case, an error has been generated.' },
+            { role: 'user', content: `${userName} has ${ context } in the command ${ command }` }
+        ],
+        max_tokens: 150,
+        temperature: 0.3,
+        frequency_penalty: 0.2,
+        presence_penalty: 1.0,
+        n: 1
+    } );
+
+    log( 'debug', '[GPT] response generated: ' + response.choices[0].message.content );
+
+    return response.choices[0].message.content;
+}
