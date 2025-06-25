@@ -87,7 +87,7 @@ async function fetchPoemResults() {
 }
 
 async function searchPoemAuthor( author, term, int ) {
-    const payloadURL = `${API_URL}author,title/${author};${term}`;
+    const payloadURL = `${API_URL}/author,title/${author};${term}`;
 
     console.log( payloadURL );
 
@@ -128,7 +128,7 @@ async function searchPoemAuthor( author, term, int ) {
 }
 
 async function searchPoemTitle( title, int ) {
-    const payloadURL = `${API_URL}title/${title}`;
+    const payloadURL = `${API_URL}/title/${title}`;
 
     let poemObj = '';
 
