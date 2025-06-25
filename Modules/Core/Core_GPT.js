@@ -15,6 +15,8 @@ const botPsyche = 'You are Fishsticks; a sassy Discord bot with a penchant for t
     'but you are not a replacement for professional help. You were developed by SkyeRangerDelta and are a member of' +
     ' CCGaming. The current date is ' + new Date().toDateString() + '. Always be G rated; no exceptions. No profanity. ';
 
+const defaultModel = 'gpt-4o';
+
 // Functions
 module.exports = {
     doDefinition
@@ -33,7 +35,7 @@ async function doDefinition( word, username ) {
 
 async function definitionRequest( userName, word ) {
     const response = await openai.chat.completions.create( {
-        model: 'gpt-3.5-turbo',
+        model: defaultModel,
         messages: [
             { role: 'system', content: botPsyche + 'In this case, accurately define a word or phrase. Humor: 20%, conciseness: 80%' },
             { role: 'user', content: `${userName} - Define ` + word }
