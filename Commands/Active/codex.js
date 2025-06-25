@@ -4,6 +4,7 @@
 const fs = require( 'fs' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 const cmdList = fs.readdirSync( './Commands/Active' ).filter( dirItem => dirItem.endsWith( '.js' ) );
 
@@ -18,20 +19,26 @@ data.addStringOption( o => o
 	.setRequired( true )
 );
 
-function run( fishsticks, int ) {
+async function run( fishsticks, int ) {
 	log( 'info', '[CODEX] Attempting to find command.' );
 	const cmdID = int.options.getString( 'command-id' ).toLowerCase();
 
-    for ( const file in cmdList ) {
-		const fileID = cmdList[file].substring( 0, cmdList[file].length - 3 );
+	for ( const file in cmdList ) {
+		const fileID = cmdList[ file ].substring( 0, cmdList[ file ].length - 3 );
 		if ( fileID.toLowerCase() === cmdID ) {
-			const helpFile = require( `./${fileID}` );
+			const helpFile = require( `./${ fileID }` );
 			const helpEntry = helpFile.help();
-			return int.reply( { content: helpEntry + `\nThat entry can be found here: https://wiki.pldyn.net/fishsticks/command-listing#${fileID}`, ephemeral: true } );
+			return int.reply( {
+				content: helpEntry + `\nThat entry can be found here: https://wiki.pldyn.net/fishsticks/command-listing#${ fileID }`,
+				ephemeral: true
+			} );
 		}
 	}
 
-	int.reply( { content: 'There is no such command.', ephemeral: true } );
+	int.reply( {
+		content: `${ await getErrorResponse( int.client.user.displayName, 'codex', 'This help article doesn\'t exist.' ) }`,
+		ephemeral: true
+	} );
 }
 
 function help() {

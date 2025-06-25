@@ -4,6 +4,7 @@
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 const { findRole } = require( './role' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 let annChannel;
 
@@ -50,18 +51,18 @@ async function run( fishsticks, int ) {
     annChannel = await fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels[ 'announcements' ] );
 
     if ( !hasPerms( int.member, ['Event Coordinator', 'Moderator', 'Council Member', 'Council Advisor'] ) ) {
-        return int.reply( { content: 'Hey, hey there; not so fast. You need permissions to run that command.', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'the user did not have permission to run the command' ) }`, ephemeral: true } );
     }
 
     //Syntax: echo wait-time role-ping(?) ping-type(?) announcement
 
     if ( !int.options.getString( 'announcement' ) ) {
-        return int.reply( { content: 'Why do I waste my time here. You cant dispatch an announcement with nothing in the message.', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'the message content was empty.' ) }`, ephemeral: true } );
     }
 
     let waitTime = int.options.getNumber( 'wait-time' );
     if ( waitTime <= 0 ) {
-        return int.reply( { content: 'Thought you could pull a fast one huh? Right, if you dont want a delay, post it yourself.', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'the wait-time before posting a delayed message was empty or not a number.' ) }`, ephemeral: true } );
     }
     else {
         waitTime = waitTime * 60 * 1000;
