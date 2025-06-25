@@ -47,7 +47,7 @@ async function definitionRequest( userName, word ) {
         n: 1
     } );
 
-    log( 'info', '[GPT] Definition returned: ' + response.choices[0].message.content );
+    log( 'debug', '[GPT] Definition returned: ' + response.choices[0].message.content );
 
     return response.choices[0].message.content;
 }
