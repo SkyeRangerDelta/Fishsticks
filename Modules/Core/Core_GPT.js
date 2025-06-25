@@ -53,7 +53,7 @@ async function definitionRequest( userName, word ) {
     return response.choices[0].message.content;
 }
 
-async function getErrorResponse( userName, context, command ) {
+async function getErrorResponse( userName, command, context ) {
     const response = await openai.chat.completions.create( {
         model: defaultModel,
         messages: [
