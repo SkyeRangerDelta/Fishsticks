@@ -5,6 +5,7 @@
 const { generateRandomQuote } = require( '../../Modules/Core/Core_Message' );
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -55,12 +56,12 @@ async function run( fishsticks, int ) {
 		}
 		catch ( qErr ) {
 			console.error( qErr );
-			int.editReply( { content: 'I couldnt find that quote!' } );
+			int.editReply( { content: `${ await getErrorResponse( int.client.user.displayName, 'quote', 'the command failed to find the targeted quote to post.' ) }` } );
 		}
 	}
 	else {
 		return int.editReply( {
-			content: 'WIP!',
+			content: `${ await getErrorResponse( int.client.user.displayName, 'quote', 'this part of the command isn\'t finished quite yet.' ) }`,
 			ephemeral: true
 		} );
 		/*

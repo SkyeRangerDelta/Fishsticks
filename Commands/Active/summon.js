@@ -3,6 +3,7 @@
 //Imports
 const { log } = require( '../../Modules/Utility/Utils_Log.js' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -56,7 +57,7 @@ async function run( fishsticks, int ) {
     }
     catch ( summonErr ) {
         log( 'info', '[SUMMON] Summon Err\n' + summonErr );
-        return int.reply( { content: '*You failed to summon that, perhaps you have no mana?*', ephemeral: true } ); //Friendly response on failure
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'summon', 'the target spell wasn\'t able to be cast.' ) }`, ephemeral: true } ); //Friendly response on failure
     }
 }
 

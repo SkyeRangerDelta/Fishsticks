@@ -10,6 +10,7 @@ const { sign } = require( "jsonwebtoken" );
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const axios = require( "axios" );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -71,7 +72,7 @@ async function run( fishsticks, int ) {
 
             if ( !success ) {
                 log( 'error', '[SUGGEST] Failed to regenerate GitHub token.' );
-                return int.followUp( { content: 'Failed to post your suggestion. Please try again later.' } );
+                return int.followUp( { content: `${ await getErrorResponse( int.client.user.displayName, 'suggest', 'the command got a bad response from the server about posting the suggestion issue to GitHub.' ) }` } );
             }
 
             //Retry the request with the new token
@@ -99,17 +100,17 @@ async function run( fishsticks, int ) {
             }
             catch ( retryError ) {
                 log( 'error', `[SUGGEST] Failed to post suggestion after token regeneration: ${retryError.message}` );
-                return int.followUp( { content: 'Failed to post your suggestion. Please try again later.' } );
+                return int.followUp( { content: `${ await getErrorResponse( int.client.user.displayName, 'suggest', 'the command got a bad response from the server about posting the suggestion issue to GitHub.' ) }` } );
             }
         }
 
         log( 'error', `[SUGGEST] Failed to post suggestion: ${postError.message}` );
-        return int.followUp( { content: 'Failed to post your suggestion. Please try again later.' } );
+        return int.followUp( { content: `${ await getErrorResponse( int.client.user.displayName, 'suggest', 'the command got a bad response from the server about posting the suggestion issue to GitHub.' ) }` } );
     }
 
     if ( res.status !== 201 ) {
         log( 'error', `[SUGGEST] Failed to post suggestion: ${res.status} - ${res.statusText}` );
-        return int.followUp( { content: 'Failed to post your suggestion. Please try again later.' } );
+        return int.followUp( { content: `${ await getErrorResponse( int.client.user.displayName, 'suggest', 'the command got a bad response from the server about posting the suggestion issue to GitHub.' ) }` } );
     }
 
     //FSO Sync Suggestions
@@ -127,7 +128,7 @@ async function run( fishsticks, int ) {
         log( 'proc', '[SUGGEST] Synced.' );
     }
     else {
-        return int.followUp( { content: 'Something went wrong. Ask Skye to investigate.' } );
+        return int.followUp( { content: `${ await getErrorResponse( int.client.user.displayName, 'suggest', 'something went wrong trying to open the GitHub issue.' ) }` } );
     }
 
     log( 'info', '[SUGGEST] Suggestion posted successfully.' );
@@ -139,6 +140,11 @@ function help() {
 }
 
 async function getAppInstallInfo( Fishsticks ) {
+    if ( !process.env.GIT_KEY_PATH || !process.env.GIT_CLIENT_ID || !process.env.GIT_ACCT ) {
+        log( 'error', '[SUGGEST] [API] GitHub credentials not found in environment variables!' );
+        return false;
+    }
+
     const pk = fs.readFileSync( process.env.GIT_KEY_PATH, 'utf8' );
     const clientId = process.env.GIT_CLIENT_ID;
 

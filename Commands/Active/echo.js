@@ -69,7 +69,7 @@ async function run( fishsticks, int ) {
     }
 
     if ( !int.options.getRole( 'role-ping' ) && !int.options.getString( 'ping-type' ) ) {
-        return int.reply( { content: 'My goodness, you are quite the obnoxious one arent you? You need to specify a ping type or role ping!', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'the announcement ping type was wrong.' ) }`, ephemeral: true } );
     }
     else if ( !int.options.getString( 'ping-type' ) ) {
         //Check role
@@ -77,7 +77,7 @@ async function run( fishsticks, int ) {
         const roleObj = await findRole( fishsticks, role.name );
 
         if ( !roleObj || roleObj === -1 ) {
-            return int.reply( { content: 'Did you ping a valid game role?', ephemeral: true } );
+            return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'game role that was pinged was wrong.' ) }`, ephemeral: true } );
         }
         else {
             int.reply( { content: 'Timeout set, waiting ' + int.options.getNumber( 'wait-time' ) + ' minutes before deploying.', ephemeral: true } );
@@ -96,11 +96,11 @@ async function run( fishsticks, int ) {
             setTimeout( dispatchMsg, waitTime, int.options.getString( 'announcement' ) );
         }
         else {
-            return int.reply( { content: 'Invalid ping type! Im not out here to make random announcements.', ephemeral: true } );
+            return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'the ping type for the announcement was wrong.' ) }`, ephemeral: true } );
         }
     }
     else {
-        return int.reply( { content: 'Looks like you found a way to befuddle me. Still wont make the announcement though - recheck your ping types.', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'something went wrong we\'re not quite sure of.' ) }`, ephemeral: true } );
     }
 }
 

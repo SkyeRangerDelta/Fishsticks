@@ -2,6 +2,7 @@
 
 //Imports
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -17,7 +18,7 @@ data.addStringOption( s => s
 //Functions
 async function run( fishsticks, int ) {
     if ( int.author.id !== fishsticks.ENTITIES.Users[ 'skyerangerdelta' ] ) {
-        return await int.reply( { content: 'You do not have permission to use this command.', ephemeral: true } );
+        return await int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'say', 'the user didn\'t have permission to use the command.' ) }`, ephemeral: true } );
     }
 
     await int.channel.send( { content: `${ int.options.getString( 'msg-content' ) }` } );

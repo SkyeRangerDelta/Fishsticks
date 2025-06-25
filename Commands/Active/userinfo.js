@@ -7,6 +7,7 @@ const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -30,7 +31,7 @@ const data = new SlashCommandBuilder()
 
 async function run( fishsticks, int ) {
     if ( !hasPerms( int.member, ['Moderator', 'Council Member'] ) ) {
-        return int.reply( 'You lack the permissions to do this!' );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'userinfo', 'the user did not have permission to run the command.' ) }` } );
     }
 
     const subCMD = int.options.getSubcommand();
@@ -59,7 +60,7 @@ async function run( fishsticks, int ) {
 
     if ( !targetMember ) {
         log( 'warn', '[USER-INFO] Couldnt id a user.' );
-        return int.reply( { content: 'Couldnt identify a user!', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'userinfo', 'the specified user was invalid.' ) }`, ephemeral: true } );
     }
 
     const targetUser = targetMember.user;

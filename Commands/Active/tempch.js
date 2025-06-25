@@ -8,6 +8,7 @@ const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 const { ChannelType } = require( 'discord-api-types/v9' );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -22,12 +23,12 @@ async function run( Fishsticks, int ) {
     int.deferReply( { ephemeral: true } );
 
     if( !hasPerms( int.member, ['CC Member', 'ACC Member', 'Event Coordinator'] ) ) {
-        return int.editReply( { content: 'Only (A)CC Members can create temporary channels!', ephemeral: true } );
+        return int.editReply( { content: `${ await getErrorResponse( int.client.user.displayName, 'tempch', 'the user didn\'t have permission to use the command.' ) }`, ephemeral: true } );
     }
 
     //Check voice state
     if ( !int.member.voice.channel || int.member.voice.channel.id !== fishsticks.ENTITIES.Channels[ 'channel-spawner' ] ) {
-        return int.editReply( { content: 'You must connect to the channel spawner first!', ephemeral: true } );
+        return int.editReply( { content: `${ await getErrorResponse( int.client.user.displayName, 'tempch', 'the user wasn\'t in the Channel spawner before running the command (they have to be)' ) }`, ephemeral: true } );
     }
 
     await createCh( Fishsticks, int );

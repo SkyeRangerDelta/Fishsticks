@@ -8,6 +8,7 @@ const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 const { EmbedBuilder } = require( 'discord.js' );
 const poemEntropyArray = require( '../../Modules/Library/poemEntropy.json' );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -92,7 +93,7 @@ async function searchPoemAuthor( author, term, int ) {
 
     let poemObj = '';
 
-    return new Promise( function( resolve, reject ) {
+    return new Promise( async function( resolve, reject ) {
         https.get( payloadURL, ( done ) => {
 
             log( 'info', '[POEM] [SEARCH] Status: ' + done.statusCode );
@@ -101,14 +102,12 @@ async function searchPoemAuthor( author, term, int ) {
                 poemObj += content;
             } );
 
-            done.on( 'end', function() {
+            done.on( 'end', async function() {
                 const poemData = JSON.parse( poemObj );
 
                 if ( poemData.status === 404 ) {
-                    return int.reply( { content: 'No poems found!' } );
+                    return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'poem', 'the command couldn\'t find the poem to post.' ) }`, } );
                 }
-
-                console.log( poemData );
 
                 const poemTxt = poemData[0].lines.join( '\n' );
                 const poemEmbed = new EmbedBuilder()
@@ -189,7 +188,7 @@ async function buildPoem( int ) {
 
     if ( poemTxt.length > 4096 ) {
         if ( int ) {
-            return int.reply( 'Failed to find a suitable poem (in a few tries).' );
+            return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'poem', 'the command could not find a poem after a few tries.' ) }` } );
         }
         else {
             return log( 'info', 'Failed to find a suitable poem (in a few tries).' );
@@ -198,7 +197,7 @@ async function buildPoem( int ) {
 
     if ( poemTxt === '' ) {
         if ( int ) {
-            return int.reply( { content: 'I messed up somewhere, try again?' } );
+            return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'poem', 'something went wrong finding a poem.' ) }` } );
         }
         else {
             return log( 'info', 'Selected poem was wrong.' );

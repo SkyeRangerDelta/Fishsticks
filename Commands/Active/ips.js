@@ -18,12 +18,12 @@ function run( fishsticks, int ) {
 		delete: 60000,
 		fields: [
 			{
-				name: 'ARK: Survival Evolved (Admin: Nils Sargon)',
-				value: 'Socket: `158.69.13.88:51226` - Request password'
+				name: '~~ARK: Survival Evolved (Admin: Nils Sargon)~~',
+				value: '~~Socket: `158.69.13.88:51226` - Request password~~'
 			},
 			{
-				name: 'Terraria (Admin: Winged Scribe)',
-				value: 'Socket: `tr.pldyn.net:41213` - Request password'
+				name: '~~Terraria (Admin: Winged Scribe)~~',
+				value: '~~Socket: `tr.pldyn.net:41213` - Request password~~'
 			},
 			{
 				name: 'Minecraft (Admin: Minecraft Ops)',
@@ -35,7 +35,7 @@ function run( fishsticks, int ) {
 			}
 		],
 		footer: {
-			text: 'If any IPs are bad, or missing - let a staff member know.'
+			text: 'If any IPs are bad, or missing - let a staff member know. Items with strikethroughs are no longer active.'
 		},
 		noThumbnail: true
 	};
