@@ -288,7 +288,7 @@ async function startRotatingStatuses( Fishsticks, testMode = false ) {
 
     Fishsticks.user.setPresence( {
       activities: [{ name: testMode ? `${ statuses[i].name } | TEST MODE` : statuses[i].name, type: cType }],
-      status: 'online'
+      status: testMode ? 'away' : 'online'
     } );
   }, 180000 );
 }
