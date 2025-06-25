@@ -57,7 +57,7 @@ async function getResponse( userName, context, command ) {
         model: defaultModel,
         messages: [
             { role: 'system', content: botPsyche + 'In this case, an error has been generated.' },
-            { role: 'user', content: `${userName} has ${ context } in the command ${ command }` }
+            { role: 'user', content: `${userName} ran the command ${ command } and ${ context }.` }
         ],
         max_tokens: 150,
         temperature: 0.3,
