@@ -124,6 +124,8 @@ async function draftNotice( fishsticks, title, content, classType, author ) {
 
   const messageLinkUsed = false;
 
+  let messageDate;
+
   // Determine if the content value is equal to a discord message link; if so, fetch the content from the linked message
   // and use that instead.
   // IE: https://discord.com/channels/125677594669481984/704876734197137439/724799927527538739
@@ -146,6 +148,7 @@ async function draftNotice( fishsticks, title, content, classType, author ) {
       }
 
       content = message.content;
+      messageDate = message.createdAt;
     }
     catch ( e ) {
       log( 'error', `[SPA] Failed to fetch channel: ${ e.message }` );
@@ -161,7 +164,8 @@ async function draftNotice( fishsticks, title, content, classType, author ) {
     title: title,
     content: editedContent,
     class: classType,
-    author: author
+    author: author,
+    createdAt: messageDate
   };
 
   let res;
