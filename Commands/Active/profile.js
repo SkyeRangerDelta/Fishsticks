@@ -6,6 +6,7 @@ const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { timeSinceDate } = require( '../../Modules/Utility/Utils_Time' );
 const { buildProfileBanner } = require( '../../Modules/Utility/Utils_Profile' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 
 //Globals
@@ -110,11 +111,11 @@ async function run( fishsticks, int ) {
     };
 
     if ( subCMD === 'detailed' ) {
-        await int.editReply( { content: 'Its coming right up, baking in the oven...', ephemeral: true } );
+        await int.editReply( { content: 'Its coming right up, baking in the oven...', flags: MessageFlags.Ephemeral } );
         return await buildProfileBanner( fishsticks, int, profileEmbed );
     }
     else {
-        await int.editReply( { embeds: [embedBuilder( profileEmbed )] } );
+        await int.editReply( { embeds: [embedBuilder( fishsticks, profileEmbed )] } );
     }
 }
 

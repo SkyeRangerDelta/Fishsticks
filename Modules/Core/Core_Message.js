@@ -9,9 +9,7 @@ const { fso_query } = require( '../FSO/FSO_Utils' );
 const { handleDenMsg } = require( '../Utility/Utils_Aux' );
 const { processXP } = require( '../XP/XP_Core' );
 const { handleShiny } = require( '../Utility/Utils_Shiny' );
-
-const { prefix } = require( '../Core/Core_config.json' );
-const { discDen, prReqs, mcRelay, bcId } = require( '../Core/Core_ids.json' );
+const { TextChannel } = require( "discord.js" );
 
 //Exports
 module.exports = {
@@ -22,11 +20,13 @@ module.exports = {
 //Functions
 async function processMessage( Fishsticks, msg ) {
 
+    const prefix = Fishsticks.CONFIG.prefix;
+
     // Breadcrumbs stuff
     // Check for messages in relay
-    if ( msg.channel.id === mcRelay && msg.author.id === bcId && msg.embeds.length > 0 ) {
+    if ( msg.channel.id === Fishsticks.ENTITIES.Channels['minecraft-relay'] && msg.author.id === Fishsticks.ENTITIES.Users['Breadcrumbs'] && msg.embeds.length > 0 ) {
         // Get Relay channel
-        const relayChannel = Fishsticks.channels.cache.get( mcRelay );
+        const relayChannel = Fishsticks.channels.cache.get( Fishsticks.ENTITIES.Channels['minecraft-relay'] );
 
         // Check content for died
         console.log( 'Relay message', msg.embeds[0].author.name );
@@ -122,7 +122,7 @@ async function processMessage( Fishsticks, msg ) {
     }
 
     //Check Debater
-    if ( msg.channel.id === discDen ) {
+    if ( msg.channel.id === Fishsticks.ENTITIES.Channels['discussion-den'] ) {
         await handleDenMsg( cmd, Fishsticks );
     }
 
@@ -145,7 +145,7 @@ async function processMessage( Fishsticks, msg ) {
         try {
             const passiveCmd = require( `../../Commands/Passive/${passiveID}.js` );
 
-            if ( cmd.channel.id === prReqs ) return;
+            if ( cmd.channel.id === Fishsticks.ENTITIES.Channels['prayer-requests'] ) return;
 
             passiveCmd.run( Fishsticks, cmd );
         }
@@ -198,7 +198,7 @@ async function processQuote( fishsticks, cmd ) {
 
     if ( ( tick - 1 ) === 0 ) {
         const newTickNum = newTick();
-        await generateRandomQuote( fishsticks, cmd );
+        await generateRandomQuote( fishsticks, cmd, true );
 
         await updateQuoteTick( fishsticks, newTickNum );
     }
@@ -227,14 +227,33 @@ async function updateQuoteTick( fishsticks, tickNum ) {
 }
 
 //Generate the random quote and return
-async function generateRandomQuote( fishsticks, int ) {
+async function generateRandomQuote( fishsticks, int, random = false ) {
     const quotes = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_QuoteRef', 'selectAll' );
 
     const quoteIndex = Math.floor( Math.random() * quotes.length );
     log( 'proc', `[R-QUOTE] New quote fired. Index ${quoteIndex}.` );
 
+    if ( !random ) {
+        return quotes[quoteIndex].q;
+    }
+
     //Send it
-    int.channel.send( `${quotes[quoteIndex].q}` );
+    //But do a channel check on it first
+    const skipChannels = new Set([
+      fishsticks.ENTITIES.Channels['prayer-requests'],
+      fishsticks.ENTITIES.Channels['discussion-den'],
+      fishsticks.ENTITIES.Channels['minecraft-relay'],
+      fishsticks.ENTITIES.Channels['announcements'],
+      fishsticks.ENTITIES.Channels['crash-pad']
+    ])
+    if ( skipChannels.has( int.channel.id ) ) {
+        const hangout = fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels[ 'hangout' ] );
+        await hangout.send( `${quotes[quoteIndex].q}` );
+    }
+    else {
+        int.channel.send( `${quotes[quoteIndex].q}` );
+    }
+
 }
 
 //Generate a new tick count

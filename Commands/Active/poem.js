@@ -7,6 +7,8 @@ const https = require( 'https' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 const { EmbedBuilder } = require( 'discord.js' );
+const poemEntropyArray = require( '../../Modules/Library/poemEntropy.json' );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -37,7 +39,7 @@ data.addSubcommand( s => s
     .setDescription( 'The author to search by.' )
     .setRequired( true ) ) );
 
-const API_URL = 'https://poetrydb.org/';
+const API_URL = `https://poetrydb.org`;
 
 //Functions
 async function run( fishsticks, int ) {
@@ -60,10 +62,9 @@ async function run( fishsticks, int ) {
     }
 }
 
-async function fetchPoem() {
-    const payloadURL = `${API_URL}random`;
-
+async function fetchPoemResults() {
     let poemObj = '';
+    const payloadURL = `${API_URL}/random`;
 
     return new Promise( function( resolve, reject ) {
         https.get( payloadURL, ( done ) => {
@@ -86,13 +87,13 @@ async function fetchPoem() {
 }
 
 async function searchPoemAuthor( author, term, int ) {
-    const payloadURL = `${API_URL}author,title/${author};${term}`;
+    const payloadURL = `${API_URL}/author,title/${author};${term}`;
 
     console.log( payloadURL );
 
     let poemObj = '';
 
-    return new Promise( function( resolve, reject ) {
+    return new Promise( async function( resolve, reject ) {
         https.get( payloadURL, ( done ) => {
 
             log( 'info', '[POEM] [SEARCH] Status: ' + done.statusCode );
@@ -101,14 +102,12 @@ async function searchPoemAuthor( author, term, int ) {
                 poemObj += content;
             } );
 
-            done.on( 'end', function() {
+            done.on( 'end', async function() {
                 const poemData = JSON.parse( poemObj );
 
                 if ( poemData.status === 404 ) {
-                    return int.reply( { content: 'No poems found!' } );
+                    return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'poem', 'the command couldn\'t find the poem to post.' ) }`, } );
                 }
-
-                console.log( poemData );
 
                 const poemTxt = poemData[0].lines.join( '\n' );
                 const poemEmbed = new EmbedBuilder()
@@ -129,7 +128,7 @@ async function searchPoemAuthor( author, term, int ) {
 }
 
 async function searchPoemTitle( title, int ) {
-    const payloadURL = `${API_URL}title/${title}`;
+    const payloadURL = `${API_URL}/title/${title}`;
 
     let poemObj = '';
 
@@ -175,35 +174,47 @@ async function buildPoem( int ) {
 
     for ( let l = 1; l < 6; l++ ) {
         log( 'info', `[POEM] (${l}) Obtaining a suitable poem.` );
-        poemObj = await fetchPoem();
+        poemObj = await fetchPoemResults();
 
-        //Make this easy and keep it to a small line count
-        if ( parseInt( poemObj.linecount ) <= '20' ) break;
+        console.log( poemObj );
+
+        poemTxt = poemObj.lines.join( '\n' );
+
+        if ( poemTxt.length < 4096 ) {
+            log( 'info', '[POEM] [RANDOM] Selected poem: ' + poemObj.title );
+            break;
+        }
     }
 
-    if ( poemObj.lines.length > 20 ) {
+    if ( poemTxt.length > 4096 ) {
         if ( int ) {
-            return int.reply( 'Failed to find a suitable poem.' );
+            return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'poem', 'the command could not find a poem after a few tries.' ) }` } );
         }
         else {
-            return log( 'info', 'Failed to find a suitable poem.' );
+            return log( 'info', 'Failed to find a suitable poem (in a few tries).' );
         }
     }
 
-    poemTxt = poemObj.lines.join( '\n' );
-
-    if ( poemTxt === '' || poemTxt.length > 2048 && int ) {
-        return int.reply( { content: 'Failed to find a suitable poem!' } );
+    if ( poemTxt === '' ) {
+        if ( int ) {
+            return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'poem', 'something went wrong finding a poem.' ) }` } );
+        }
+        else {
+            return log( 'info', 'Selected poem was wrong.' );
+        }
     }
 
     const poemEmbed = new EmbedBuilder()
-        .setTitle( `*${poemObj.title}* - ${poemObj.author}` )
+        .setTitle( `*${poemObj.title}*` )
+        .setAuthor( {
+            name: poemObj.author,
+        })
         .setDescription( `${poemTxt}` )
         .setFooter( {
             text: 'API provided by PoetryDB.'
         } );
 
-	if ( !int ) { //doDailyPost
+    if ( !int ) { //doDailyPost
         return poemEmbed;
     }
 

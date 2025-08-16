@@ -3,6 +3,7 @@
 
 //Imports
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -29,7 +30,7 @@ function run( fishsticks, int ) {
     }
 
     const output = outputArr.join( '' );
-    int.reply( { content: 'Copy and Paste this:\n' + output, ephemeral: true } );
+    int.reply( { content: 'Copy and Paste this:\n' + output, flags: MessageFlags.Ephemeral } );
 
 }
 

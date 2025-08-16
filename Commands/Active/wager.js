@@ -9,6 +9,7 @@ const {
     // TextInputStyle,
     // ModalBuilder,
 } = require( 'discord.js' );
+// const { MessageFlags } = require( "discord-api-types/v10" );
 // const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 // const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 // const { log } = require( '../../Modules/Utility/Utils_Log' );
@@ -62,7 +63,7 @@ async function buy( fishsticks, int, acceptedLotteries ) {
                 .addOptions( availLotteries )
         );
 
-    return int.reply( { content: 'Choose a lottery to buy a ticket from.', components: [msgRow], ephemeral: true } );
+    return int.reply( { content: 'Choose a lottery to buy a ticket from.', components: [msgRow], flags: MessageFlags.Ephemeral } );
 }
 
 async function buyModal( fishsticks, int ) {
@@ -84,7 +85,7 @@ async function buyModal( fishsticks, int ) {
         compArr.push( new ActionRowBuilder().addComponents( fetchLotComp( selectedLottery, lotteryData ) ) );
     }
 
-    if ( !compArr || compArr.length === 0 ) int.reply( { content: 'Cancelled.', ephemeral: true } );
+    if ( !compArr || compArr.length === 0 ) int.reply( { content: 'Cancelled.', flags: MessageFlags.Ephemeral } );
 
     buyForm.addComponents( compArr );
     await int.showModal( buyForm );
@@ -136,7 +137,7 @@ function fetchLotComp( lotCode, lotteryObj ) {
 
 async function close( fishsticks, int, lotteriesArr ) {
     if ( !hasPerms( int.member, ['Event Coordinator'] ) ) {
-        int.reply( { content: 'Only ECs can close the running lottery!', ephemeral: true } );
+        int.reply( { content: 'Only ECs can close the running lottery!', flags: MessageFlags.Ephemeral } );
     }
 
     //TODO: Implement term closures
@@ -210,7 +211,7 @@ function handleLotteryModal( fishsticks, int ) {
     //TODO: Implement actually buying the ticket(s)
     log( 'info', 'Modal submission here.' );
     console.log( int.fields );
-    int.reply( { content: `Tickets bought? ${int.fields}`, ephemeral: true } );
+    int.reply( { content: `Tickets bought? ${int.fields}`, flags: MessageFlags.Ephemeral } );
 }
 
  */

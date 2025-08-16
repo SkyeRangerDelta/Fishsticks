@@ -22,5 +22,5 @@ async function execute( fishsticks, prevMember ) {
         description: `${prevMember.displayName} departed at ${systemTimestamp()}. Account date: ${prevMember.created} (${convertMsFull( prevMember.createdAt - timeNow )})`
     };
 
-    fishsticks.BOT_LOG.send( { content: `${systemTimestamp()}`, embeds: [quickEmbed( qe )] } );
+    fishsticks.BOT_LOG.send( { content: `${systemTimestamp()}`, embeds: [quickEmbed( fishsticks, qe )] } );
 }

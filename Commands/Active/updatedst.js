@@ -3,10 +3,12 @@
 
 //Imports
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 const { Client } = require( 'ssh2' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 const { readFileSync } = require( 'fs' );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -19,9 +21,9 @@ data.addBooleanOption( o => o
 );
 
 //Functions
-function run( fishsticks, int ) {
+async function run( fishsticks, int ) {
     if ( !hasPerms( int.member, ['Server Manager'] ) ) {
-        return int.reply( { content: 'You can\'t do this!', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'updatedst', 'the user did not have permission to update the server/run the command.' ) }`, flags: MessageFlags.Ephemeral } );
     }
 
     const verboseLog = int.options.getBoolean( 'show-log' ) || false;
@@ -53,13 +55,13 @@ function run( fishsticks, int ) {
         passphrase: process.env.SSH_PASS_HOLO
     } ).on( 'close', () => {
         fishsticks.CONSOLE.send( '```[Update DST] Update done. (Console closed)```' );
-        return int.editReply( { content: 'Job\'s done.', ephemeral: true } );
+        return int.editReply( { content: 'Job\'s done.', flags: MessageFlags.Ephemeral } );
     } ).on( 'end', () => {
         fishsticks.CONSOLE.send( '```[Update DST] Update done. (Shell exited)```' );
-        return int.editReply( { content: 'Job\'s completed.', ephemeral: true } );
-    } ).on( 'error', ( err ) => {
+        return int.editReply( { content: 'Job\'s completed.', flags: MessageFlags.Ephemeral } );
+    } ).on( 'error', async ( err ) => {
         fishsticks.CONSOLE.send( '```[Update DST] Update errored! (Console error reported)```' );
-        return int.editReply( { content: `Job errored: ${err}`, ephemeral: true } );
+        return int.editReply( { content: `${ await getErrorResponse( int.client.user.displayName, 'updatedst', `the updater encountered the error: ${ err }` ) }`, flags: MessageFlags.Ephemeral } );
     } );
 }
 

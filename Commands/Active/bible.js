@@ -7,10 +7,12 @@
 const https = require( 'https' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
+const { getErrorResponse } = require('../../Modules/Core/Core_GPT');
 
-const { bibleAPI } = require( '../../Modules/Core/Core_keys.json' );
-const { primary } = require( '../../Modules/Core/Core_config.json' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
+
+const bibleAPI = process.env.BIBLE_API;
 
 const data = new SlashCommandBuilder()
 	.setName( 'bible' )
@@ -22,6 +24,10 @@ data.addNumberOption( o => o.setName( 'verse' ).setDescription( 'The verse to pu
 data.addNumberOption( o => o.setName( 'end-verse' ).setDescription( 'The verse to end with.' ).setRequired( false ) );
 
 async function run( fishsticks, int ) {
+
+  if ( !bibleAPI ) {
+    return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'bible', 'The API key for the bible command is missing.' ) }`, flags: MessageFlags.Ephemeral } );
+  }
 
     //Command breakup
     /*
@@ -54,11 +60,11 @@ async function run( fishsticks, int ) {
         params.book = parseBook[1];
     }
 
-    await buildPayload( params, int );
+    await buildPayload( fishsticks, params, int );
 }
 
 //Construct a payload to be shipped off
-async function buildPayload( paramObj, int ) {
+async function buildPayload( fishsticks, paramObj, int ) {
     console.log( 'Attempting to build a payload request.' );
 
     const API_URL = 'https://api.esv.org/v3/passage/text/';
@@ -111,25 +117,25 @@ async function buildPayload( paramObj, int ) {
             const received = JSON.parse( content );
 
             if ( !received.passages ) {
-                return int.reply( { content: 'Couldnt find any passages!', ephemeral: true } );
+                return int.reply( { content: `${ getErrorResponse( int.client.user.displayName, 'bible', 'The API didn\'t return any text.' ) }`, flags: MessageFlags.Ephemeral } );
             }
             else if ( !received.passages[0] ) {
-                return int.reply( { content: 'Are you sure what you put in there was meant to be there? Check to make sure your parameters are correct.', ephemeral: true } );
+                return int.reply( { content: `${ getErrorResponse( int.client.user.displayName, 'bible', 'The API didn\'t return any text.' ) }`, flags: MessageFlags.Ephemeral } );
             }
-            else if ( received.passages[0].length > 2048 ) {
-                return int.reply( { content: 'The passage is too large! Try breaking it into smaller verses.', ephemeral: true } );
+            else if ( received.passages[0].length > 4096 ) {
+                return int.reply( { content: `${ getErrorResponse( int.client.user.displayName, 'bible', 'The text returned as too large for the post to be made.' ) }`, flags: MessageFlags.Ephemeral } );
             }
 
             const verseEmbed = {
-				title: 'o0o - Bible (ESV) - o0o',
-				color: primary,
-				description: received.passages.toString(),
-				footer: {
-                    text: 'ESV Bible provided by Crossway Publishers; licensed to Fishsticks.'
-                }
-			};
+              title: 'o0o - Bible - o0o',
+              color: fishsticks.CONFIG.colors.primary,
+              description: received.passages.toString(),
+              footer: {
+                          text: 'ESV Bible provided by Crossway Publishers; licensed to Fishsticks.'
+                      }
+            };
 
-            int.reply( { embeds: [embedBuilder( verseEmbed )] } );
+            int.reply( { embeds: [embedBuilder( fishsticks, verseEmbed )] } );
         } );
     } );
 }

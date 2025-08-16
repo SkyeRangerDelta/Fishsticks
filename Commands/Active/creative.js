@@ -2,9 +2,9 @@
 //Toggles Creative role assignment
 
 //Imports
-const { creative } = require( '../../Modules/Core/Core_ids.json' );
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Functions
 const data = new SlashCommandBuilder()
@@ -12,15 +12,15 @@ const data = new SlashCommandBuilder()
 	.setDescription( 'Toggles the Creative role assignment' );
 
 async function run( fishsticks, int ) {
-	const creativeRole = fishsticks.CCG.roles.cache.get( creative );
+	const creativeRole = fishsticks.CCG.roles.cache.get( fishsticks.ENTITIES.Roles['Creative'] );
 
 	if ( hasPerms( int.member, ['Creative'] ) ) {
 		int.member.roles.remove( creativeRole, 'Toggled by command.' );
-		int.reply( { content: 'Removed.', ephemeral: true } );
+		int.reply( { content: 'Removed.', flags: MessageFlags.Ephemeral } );
 	}
 	else {
 		int.member.roles.add( creativeRole, 'Toggled by command.' );
-		int.reply( { content: 'Assigned.', ephemeral: true } );
+		int.reply( { content: 'Assigned.', flags: MessageFlags.Ephemeral } );
 	}
 }
 

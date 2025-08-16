@@ -12,6 +12,7 @@ const { DuplicatedRoleException } = require( '../../Modules/Errors/DuplicatedRol
 const { DateTime } = require( 'luxon' );
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 const { flexTime } = require( '../../Modules/Utility/Utils_Time' );
 
 //Globals
@@ -93,7 +94,7 @@ data.addSubcommand( s => s
 
 //Functions
 async function run( fishsticks, int ) {
-  //return int.reply({ content: 'This thing is mad busted right now...so just...dont try for now. Nothing works, Im sorry.', ephemeral: true });
+  //return int.reply({ content: 'This thing is mad busted right now...so just...dont try for now. Nothing works, Im sorry.', flags: MessageFlags.Ephemeral });
   //int.deferReply();
 
   subCMD = int.options.getSubcommand();
@@ -150,7 +151,7 @@ async function parseRequest( fishsticks, int ) {
       break;
 
     default:
-      int.reply( { content: 'I honestly have no idea how you got here. Im impressed. Somehow you got around using a subcommand, please specify one.', ephemeral: true } );
+      int.reply( { content: 'I honestly have no idea how you got here. Im impressed. Somehow you got around using a subcommand, please specify one.', flags: MessageFlags.Ephemeral } );
   }
 }
 
@@ -194,7 +195,7 @@ async function newRole( fishsticks, int ) {
   //Add role to the listings
   const addRes = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_Roles', 'insert', newRoleObj );
   if ( addRes.acknowledged === true ) {
-    int.reply( { content: 'Role listed.', ephemeral: true } );
+    int.reply( { content: 'Role listed.', flags: MessageFlags.Ephemeral } );
   }
   else {
     throw 'Something went wrong adding the role to the listings...';
@@ -203,7 +204,7 @@ async function newRole( fishsticks, int ) {
 
 //Edit a role
 async function editRole( fishsticks, int ) {
-  int.reply( { content: 'WIP. Not ready yet.', ephemeral: true } );
+  int.reply( { content: 'WIP. Not ready yet.', flags: MessageFlags.Ephemeral } );
 }
 
 //Vote for a role
@@ -225,14 +226,14 @@ async function voteRole( fishsticks, int, redirectData ) {
 
 
   if ( roleObj.votes >= 5 ) {
-    int.reply( { content: 'This role has already been officialized, assigning it instead...', ephemeral: true } );
+    int.reply( { content: 'This role has already been officialized, assigning it instead...', flags: MessageFlags.Ephemeral } );
     return joinRole( fishsticks, int, roleObj );
   }
   else {
     //Run through founders to prevent dupe
     for ( const memID in roleObj.founders ) {
       if ( roleObj.founders[memID] === int.member.id ) {
-        return int.reply( { content: 'You already voted for this role! Get outta here!', ephemeral: true } );
+        return int.reply( { content: 'You already voted for this role! Get outta here!', flags: MessageFlags.Ephemeral } );
       }
     }
 
@@ -265,7 +266,7 @@ async function voteRole( fishsticks, int, redirectData ) {
       const secondUpdate = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_Roles', 'select', { name: roleObj.name } );
       const missingVotes = 5 - secondUpdate.votes;
 
-      int.reply( { content: `Vote counted; ${roleObj.name} requires ${missingVotes} vote(s) before being activated!`, ephemeral: true } );
+      int.reply( { content: `Vote counted; ${roleObj.name} requires ${missingVotes} vote(s) before being activated!`, flags: MessageFlags.Ephemeral } );
     }
   }
 }
@@ -289,7 +290,7 @@ async function joinRole( fishsticks, int, redirectData ) {
 
   //Check if this person already has the role
   if ( hasPerms( int.member, [`${roleObj.name}`] ) ) {
-    return int.reply( { content: 'You already have this role!', ephemeral: true } );
+    return int.reply( { content: 'You already have this role!', flags: MessageFlags.Ephemeral } );
   }
 
   // Check if this is a game role
@@ -312,14 +313,14 @@ async function joinRole( fishsticks, int, redirectData ) {
             int.channel.send(`${int.member} has joined ${roleY}!`);
         }
         else {
-            int.reply({ content: 'Something is...incorrect. Have someone check your roles.', ephemeral: true });
+            int.reply({ content: 'Something is...incorrect. Have someone check your roles.', flags: MessageFlags.Ephemeral });
         }
     });
      */
     return int.reply( `${int.member} has joined ${roleY}!` );
   } ).catch( err => {
     log( 'err', '[ROLE-SYS] [JOIN] Error:\n' + err.stack );
-    return int.reply( { content: 'Something went wrong trying to add your role.\n' + err, ephemeral: true } );
+    return int.reply( { content: 'Something went wrong trying to add your role.\n' + err, flags: MessageFlags.Ephemeral } );
   } );
 }
 //
@@ -330,7 +331,7 @@ async function leaveRole( fishsticks, int ) {
   const roleX = int.options.getRole( 'role' );
   if ( roleX.active === false ) {
     //Vote role override
-    int.reply( { content: 'No active role to leave!', ephemeral: true } );
+    int.reply( { content: 'No active role to leave!', flags: MessageFlags.Ephemeral } );
   }
   else {
     //Get role and remove
@@ -338,7 +339,7 @@ async function leaveRole( fishsticks, int ) {
 
     //Check if this person already has left the role
     if ( !hasPerms( int.member, [`${roleX.name}`] ) ) {
-      return int.reply( { content: 'You already have left this role!', ephemeral: true } );
+      return int.reply( { content: 'You already have left this role!', flags: MessageFlags.Ephemeral } );
     }
 
     int.member.roles.remove( roleY ).then( function() {
@@ -353,16 +354,16 @@ async function leaveRole( fishsticks, int ) {
       fso_query(fishsticks.FSO_CONNECTION, 'FSO_Roles', 'update', roleUpdate, { id: int.member.id })
           .then(done => {
           if (done.modifiedCount === 1) {
-              return int.reply({ content: 'Role removed.', ephemeral: true });
+              return int.reply({ content: 'Role removed.', flags: MessageFlags.Ephemeral });
           }
           else {
-              return int.reply({ content: 'Something is...incorrect. Have someone check your roles.', ephemeral: true });
+              return int.reply({ content: 'Something is...incorrect. Have someone check your roles.', flags: MessageFlags.Ephemeral });
           }
       });
        */
-      return int.reply( { content: 'Role removed.', ephemeral: true } );
+      return int.reply( { content: 'Role removed.', flags: MessageFlags.Ephemeral } );
     } ).catch( err => {
-      return int.reply( { content: 'Something went wrong trying to remove your role.\n' + err, ephemeral: true } );
+      return int.reply( { content: 'Something went wrong trying to remove your role.\n' + err, flags: MessageFlags.Ephemeral } );
     } );
   }
 }
@@ -416,30 +417,30 @@ async function listRoles( fishsticks, int, ext ) {
     }
   };
 
-  await int.channel.send( { embeds: [embedBuilder( roleListEmbed )] } ).then( sent => {
+  await int.channel.send( { embeds: [embedBuilder( fishsticks, roleListEmbed )] } ).then( sent => {
     setTimeout( () => sent.delete(), 45000 );
-    int.channel.send( { embeds: [embedBuilder( inactiveListEmbed )] } ).then( sent2 => {
+    int.channel.send( { embeds: [embedBuilder( fishsticks, inactiveListEmbed )] } ).then( sent2 => {
       setTimeout( () => sent2.delete(), 45000 );
     } );
   } );
 
   if ( ext ) {
-    return int.editReply( { content: 'Done.', ephemeral: true } );
+    return int.editReply( { content: 'Done.', flags: MessageFlags.Ephemeral } );
   }
   else {
-    return int.reply( { content: 'Done.', ephemeral: true } );
+    return int.reply( { content: 'Done.', flags: MessageFlags.Ephemeral } );
   }
 }
 
 //Print the stats for a single role
 /*
 async function detailsRole( fishsticks, int ) {
-  return int.reply( { content: 'WIP. Not ready yet.', ephemeral: true } );
+  return int.reply( { content: 'WIP. Not ready yet.', flags: MessageFlags.Ephemeral } );
 
   const roleObj = await findRole( fishsticks, int );
 
   if( !roleObj || roleObj === -1 ) {
-    return int.reply( { content: 'No role found!', ephemeral: true } );
+    return int.reply( { content: 'No role found!', flags: MessageFlags.Ephemeral } );
   }
 
   log( 'info', '[ROLE] Displaying about for ' + roleObj.name );
@@ -579,7 +580,7 @@ async function activateRole( fishsticks, int, obj ) {
       reason: '[ROLE-SYS] Game role subroutine has created a new role based on the votes fo 5 different members.'
     } ).then( async newRoleObj => {
       log( 'proc', `[ROLE-SYS] Created new role ${newRoleObj.name}` );
-      int.reply( { content: 'Activation successful!', ephemeral: true } );
+      int.reply( { content: 'Activation successful!', flags: MessageFlags.Ephemeral } );
 
       const updateData = {
         $set: {
@@ -596,7 +597,7 @@ async function activateRole( fishsticks, int, obj ) {
       //Assign to founders
       log( 'info', '[ROLE-SYS] Assigning new role to members' );
       for ( const indexA in roleData.founders ) {
-        const memberItem = await fishsticks.CCG.members.fetch( `${roleData.founders[indexA]}` );
+        const memberItem = await fishsticks.CCG.members.cache.get( `${roleData.founders[indexA]}` );
 
         console.log( `Adding ${newRoleObj.name} to ${memberItem.displayName}.` );
 
@@ -622,15 +623,15 @@ function checkDupes( roleObj, int ) {
       return -1;
     }
     else if ( currentPool[roleItem].game === roleObj.name ) {
-      int.reply( { content: '*Suspecting sus*; that role name already exists as a game in the listing.', ephemeral: true } );
+      int.reply( { content: '*Suspecting sus*; that role name already exists as a game in the listing.', flags: MessageFlags.Ephemeral } );
       return -2;
     }
     else if ( currentPool[roleItem].name === roleObj.game ) {
-      int.reply( { content: 'There is a role with that game as its name already in the listing!', ephemeral: true } );
+      int.reply( { content: 'There is a role with that game as its name already in the listing!', flags: MessageFlags.Ephemeral } );
       return -3;
     }
     else if ( currentPool[roleItem].game === roleObj.game ) {
-      int.reply( { content: 'A role with that game already exists!', ephemeral: true } );
+      int.reply( { content: 'A role with that game already exists!', flags: MessageFlags.Ephemeral } );
       return -4;
     }
   }

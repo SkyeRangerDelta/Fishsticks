@@ -5,6 +5,8 @@
 const { generateRandomQuote } = require( '../../Modules/Core/Core_Message' );
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -55,13 +57,13 @@ async function run( fishsticks, int ) {
 		}
 		catch ( qErr ) {
 			console.error( qErr );
-			int.editReply( { content: 'I couldnt find that quote!' } );
+			int.editReply( { content: `${ await getErrorResponse( int.client.user.displayName, 'quote', 'the command failed to find the targeted quote to post.' ) }` } );
 		}
 	}
 	else {
 		return int.editReply( {
-			content: 'WIP!',
-			ephemeral: true
+			content: `${ await getErrorResponse( int.client.user.displayName, 'quote', 'this part of the command isn\'t finished quite yet.' ) }`,
+			flags: MessageFlags.Ephemeral
 		} );
 		/*
 		//Takes content as quote
@@ -69,7 +71,7 @@ async function run( fishsticks, int ) {
 		const quoteRes = await fso_query(fishsticks.FSO_CONNECTION, 'FSO_QuoteRef', 'insert', { id: quoteNum - 1, q: qText });
 
 		if (quoteRes.acknowledged === true) {
-			return int.reply({ content: 'Added! (Index ' + (quoteNum - 1) + ').', ephemeral: true });
+			return int.reply({ content: 'Added! (Index ' + (quoteNum - 1) + ').', flags: MessageFlags.Ephemeral });
 		}
 		else {
 			return int.reply({ content: 'I dont know if that actually got added. Ping ' + fishsticks.RANGER});

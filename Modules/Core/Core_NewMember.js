@@ -2,7 +2,6 @@
 const { createCanvas, loadImage } = require( '@napi-rs/canvas' );
 const { log } = require( '../Utility/Utils_Log' );
 
-const chs = require( './Core_ids.json' );
 const { AttachmentBuilder } = require( 'discord.js' );
 
 //Exports
@@ -29,7 +28,7 @@ async function handleNewMember( fishsticks, newMember ) {
     const ctx = canvas.getContext( '2d' );
 
     //Get hangout
-    const dispatchChannel = await fishsticks.channels.cache.get( chs.hangout );
+    const dispatchChannel = await fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels[ 'hangout' ] );
 
     //Do canvas load
     const background = await loadImage( './Images/Utility/memberWelcomeBanner.jpg' );

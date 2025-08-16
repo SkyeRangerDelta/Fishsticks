@@ -2,9 +2,10 @@
 //Posts an ping on a delayed timer in Announcements
 
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
-const { announcements } = require( '../../Modules/Core/Core_ids.json' );
 const { findRole } = require( './role' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 let annChannel;
 
@@ -48,28 +49,28 @@ data.addStringOption( o => o
 
 //Functions
 async function run( fishsticks, int ) {
-    annChannel = await fishsticks.channels.cache.get( announcements );
+    annChannel = await fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels[ 'announcements' ] );
 
     if ( !hasPerms( int.member, ['Event Coordinator', 'Moderator', 'Council Member', 'Council Advisor'] ) ) {
-        return int.reply( { content: 'Hey, hey there; not so fast. You need permissions to run that command.', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'the user did not have permission to run the command' ) }`, flags: MessageFlags.Ephemeral } );
     }
 
     //Syntax: echo wait-time role-ping(?) ping-type(?) announcement
 
     if ( !int.options.getString( 'announcement' ) ) {
-        return int.reply( { content: 'Why do I waste my time here. You cant dispatch an announcement with nothing in the message.', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'the message content was empty.' ) }`, flags: MessageFlags.Ephemeral } );
     }
 
     let waitTime = int.options.getNumber( 'wait-time' );
     if ( waitTime <= 0 ) {
-        return int.reply( { content: 'Thought you could pull a fast one huh? Right, if you dont want a delay, post it yourself.', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'the wait-time before posting a delayed message was empty or not a number.' ) }`, flags: MessageFlags.Ephemeral } );
     }
     else {
         waitTime = waitTime * 60 * 1000;
     }
 
     if ( !int.options.getRole( 'role-ping' ) && !int.options.getString( 'ping-type' ) ) {
-        return int.reply( { content: 'My goodness, you are quite the obnoxious one arent you? You need to specify a ping type or role ping!', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'the announcement ping type was wrong.' ) }`, flags: MessageFlags.Ephemeral } );
     }
     else if ( !int.options.getString( 'ping-type' ) ) {
         //Check role
@@ -77,10 +78,10 @@ async function run( fishsticks, int ) {
         const roleObj = await findRole( fishsticks, role.name );
 
         if ( !roleObj || roleObj === -1 ) {
-            return int.reply( { content: 'Did you ping a valid game role?', ephemeral: true } );
+            return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'game role that was pinged was wrong.' ) }`, flags: MessageFlags.Ephemeral } );
         }
         else {
-            int.reply( { content: 'Timeout set, waiting ' + int.options.getNumber( 'wait-time' ) + ' minutes before deploying.', ephemeral: true } );
+            int.reply( { content: 'Timeout set, waiting ' + int.options.getNumber( 'wait-time' ) + ' minutes before deploying.', flags: MessageFlags.Ephemeral } );
             setTimeout( dispatchMsg, waitTime, role + ', ' + int.options.getString( 'announcement' ) );
         }
     }
@@ -88,19 +89,19 @@ async function run( fishsticks, int ) {
         //Check ping type (ensure a choice selection)
         const pingType = int.options.getString( 'ping-type' );
         if ( pingType === 'here' || pingType === 'everyone' ) {
-            int.reply( { content: 'Timeout set, waiting ' + int.options.getNumber( 'wait-time' ) + ' minutes before deploying.', ephemeral: true } );
+            int.reply( { content: 'Timeout set, waiting ' + int.options.getNumber( 'wait-time' ) + ' minutes before deploying.', flags: MessageFlags.Ephemeral } );
             setTimeout( dispatchMsg, waitTime, `@${pingType}, ` + int.options.getString( 'announcement' ) );
         }
         else if ( pingType === 'soft' ) {
-            int.reply( { content: 'Timeout set, waiting ' + int.options.getNumber( 'wait-time' ) + ' minutes before deploying.', ephemeral: true } );
+            int.reply( { content: 'Timeout set, waiting ' + int.options.getNumber( 'wait-time' ) + ' minutes before deploying.', flags: MessageFlags.Ephemeral } );
             setTimeout( dispatchMsg, waitTime, int.options.getString( 'announcement' ) );
         }
         else {
-            return int.reply( { content: 'Invalid ping type! Im not out here to make random announcements.', ephemeral: true } );
+            return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'the ping type for the announcement was wrong.' ) }`, flags: MessageFlags.Ephemeral } );
         }
     }
     else {
-        return int.reply( { content: 'Looks like you found a way to befuddle me. Still wont make the announcement though - recheck your ping types.', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'something went wrong we\'re not quite sure of.' ) }`, flags: MessageFlags.Ephemeral } );
     }
 }
 
