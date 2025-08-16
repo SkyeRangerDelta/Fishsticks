@@ -3,6 +3,7 @@
 
 //Imports
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Functions
 const data = new SlashCommandBuilder()
@@ -21,13 +22,13 @@ async function run( fishsticks, int ) {
   const k = int.options.getString( 'k-starting-word' ).toLowerCase();
 
   if ( a.charAt( 0 ) !== 'a' ) {
-    return int.reply( { content: '(A)FK - The word needs to start with an A!', ephemeral: true } );
+    return int.reply( { content: '(A)FK - The word needs to start with an A!', flags: MessageFlags.Ephemeral } );
 	}
 	else if ( f.charAt( 0 ) !== 'f' ) {
-    return int.reply( { content: 'A(F)K - The word needs to start with an F!', ephemeral: true } );
+    return int.reply( { content: 'A(F)K - The word needs to start with an F!', flags: MessageFlags.Ephemeral } );
 	}
 	else if ( k.charAt( 0 ) !== 'k' ) {
-    return int.reply( { content: 'AF(K) - The word needs to start with a K!', ephemeral: true } );
+    return int.reply( { content: 'AF(K) - The word needs to start with a K!', flags: MessageFlags.Ephemeral } );
   }
 
   newName = `AFK (${a} ${f} ${k})`;
@@ -35,7 +36,7 @@ async function run( fishsticks, int ) {
   const AFKChannel = await fishsticks.CCG.channels.cache.get(fishsticks.ENTITIES.Channels[ 'afk' ]);
 
   AFKChannel.setName( newName, 'The AFK command was used!' )
-      .then( int.reply( { content: 'Done!', ephemeral: true } ) );
+      .then( int.reply( { content: 'Done!', flags: MessageFlags.Ephemeral } ) );
 }
 
 function help() {

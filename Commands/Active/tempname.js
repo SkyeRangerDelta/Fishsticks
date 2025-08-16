@@ -5,6 +5,7 @@
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
@@ -19,12 +20,12 @@ data.addIntegerOption( o => o.setName( 'max-users' ).setDescription( 'Set a maxi
 async function run( fishsticks, int ) {
     const currChannel = int.member.voice.channel;
     if ( !currChannel ) {
-        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'tempname', 'the user was not in the channel they wanted to change the name of.' ) }`, ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'tempname', 'the user was not in the channel they wanted to change the name of.' ) }`, flags: MessageFlags.Ephemeral } );
     }
 
     const chRes = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_TempCh', 'select', { id: currChannel.id } );
     if ( !chRes ) {
-        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'tempname', 'the user tried to change the name of a non-temporary channel.' ) }`, ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'tempname', 'the user tried to change the name of a non-temporary channel.' ) }`, flags: MessageFlags.Ephemeral } );
     }
 
     //Syntax: /tempname new-name max-users
@@ -32,7 +33,7 @@ async function run( fishsticks, int ) {
     const newUserLimit = int.options.getInteger( 'max-users' );
 
     if ( !newTitle ) {
-        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'tempname', 'the user did not supply a new name for the channel.' ) }`, ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'tempname', 'the user did not supply a new name for the channel.' ) }`, flags: MessageFlags.Ephemeral } );
     }
 
     if ( !newUserLimit ) {
@@ -42,7 +43,7 @@ async function run( fishsticks, int ) {
 
             return int.reply( {
                 content: 'Done!',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             } );
         } );
     }
@@ -54,7 +55,7 @@ async function run( fishsticks, int ) {
 
                 return int.reply( {
                     content: 'Done!',
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 } );
             } );
         } );

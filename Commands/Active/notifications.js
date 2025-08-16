@@ -5,6 +5,7 @@
 const { ActionRowBuilder, StringSelectMenuBuilder } = require( 'discord.js' );
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -57,7 +58,7 @@ async function run( fishsticks, int ) {
     );
 
     //Dispatch post
-    return int.reply( { content: `${int.member.displayName}'s notification settings:`, components: [msgRow], ephemeral: true } );
+    return int.reply( { content: `${int.member.displayName}'s notification settings:`, components: [msgRow], flags: MessageFlags.Ephemeral } );
 }
 
 function help() {
@@ -83,7 +84,7 @@ async function handleNotificationToggle( fishsticks, interaction ) {
             }
         }
     }
-    return interaction.reply( { content: `Updated ${updates} setting(s).`, ephemeral: true } );
+    return interaction.reply( { content: `Updated ${updates} setting(s).`, flags: MessageFlags.Ephemeral } );
 }
 
 //Exports

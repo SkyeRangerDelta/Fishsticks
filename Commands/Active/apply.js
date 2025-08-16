@@ -5,6 +5,7 @@
 // const { introduction, formQuestions } = require( '../../Modules/Library/appQuestions.json' );
 // const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Functions
 const data = new SlashCommandBuilder()
@@ -31,7 +32,7 @@ function run( fishsticks, int ) {
 	// 	} );
 
 	// TODO: Not done
-	return int.reply( { content: 'This command aint done just yet. You can still apply for membership via this link: https://bit.ly/CCMemberApp', ephemeral: true } );
+	return int.reply( { content: 'This command aint done just yet. You can still apply for membership via this link: https://bit.ly/CCMemberApp', flags: MessageFlags.Ephemeral } );
 }
 
 function help() {

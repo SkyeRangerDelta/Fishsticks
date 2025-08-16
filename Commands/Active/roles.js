@@ -4,6 +4,7 @@
 //Imports
 const { listRoles } = require( './role' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -12,7 +13,7 @@ const data = new SlashCommandBuilder()
 
 //Functions
 async function run( fishsticks, int ) {
-	int.deferReply( { ephemeral: true } );
+	int.deferReply( { flags: MessageFlags.Ephemeral } );
 	await listRoles( fishsticks, int, true );
 }
 

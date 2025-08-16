@@ -3,6 +3,7 @@
 
 //Imports
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -26,7 +27,7 @@ function run( fishsticks, int ) {
     const rawTime = int.options.getInteger( 'wait-time' );
     const waitTime = rawTime * 1000 * 60;
 
-    int.reply( { content: `Very good, I'll come find you in ${rawTime} minutes.`, ephemeral: true } );
+    int.reply( { content: `Very good, I'll come find you in ${rawTime} minutes.`, flags: MessageFlags.Ephemeral } );
 
     setTimeout( function() {
         int.channel.send( { content: `${int.member}, The time is now!\n${int.options.getString( 'reminder-text' )}` } );

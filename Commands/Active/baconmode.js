@@ -2,6 +2,7 @@
 
 //Imports
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Functions
 const data = new SlashCommandBuilder()
@@ -29,11 +30,11 @@ function run( fishsticks, int ) {
     if ( subCMD === 'clear' ) {
 
         if ( !fishsticks.baconTarget ) {
-            return int.reply( { content: 'But....there is no bacon target to clear!', ephemeral: true } );
+            return int.reply( { content: 'But....there is no bacon target to clear!', flags: MessageFlags.Ephemeral } );
         }
 
         fishsticks.baconTarget = null;
-        return int.reply( { content: 'Cleared the bacon target.', ephemeral: true } );
+        return int.reply( { content: 'Cleared the bacon target.', flags: MessageFlags.Ephemeral } );
     }
 
     //Set target global
@@ -44,7 +45,7 @@ function run( fishsticks, int ) {
         throw 'Bacon mode failed to engage.';
     }
 
-    int.reply( { content: 'Bacon mode engaged!', ephemeral: true } );
+    int.reply( { content: 'Bacon mode engaged!', flags: MessageFlags.Ephemeral } );
 
 }
 

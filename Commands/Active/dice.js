@@ -6,6 +6,8 @@ const rollLib = require( 'roll' );
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
+
 const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 const roll = new rollLib();
@@ -45,7 +47,7 @@ async function run( fishsticks, int ) {
   if ( !valid ) {
     return int.reply( {
       content: `${ await getErrorResponse( int.client.user.displayName, 'dice roll', 'the command said it was invalid.' ) }`,
-      ephemeral: true
+      flags: MessageFlags.Ephemeral
     } );
   }
 

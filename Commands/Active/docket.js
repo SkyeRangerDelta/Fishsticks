@@ -8,6 +8,7 @@ const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { systemTimestamp } = require( '../../Modules/Utility/Utils_Time' );
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //TODO: Conduct tests on multi-option commands
@@ -121,7 +122,7 @@ async function addPoint( fishsticks, int ) {
 		if ( !hasPerms( int.member, ['Council Member'] ) ) {
 			return int.reply( {
 				content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the user did not have permission to create closed docket items.' ) }`,
-				ephemeral: true
+				flags: MessageFlags.Ephemeral
 			} );
 		}
 	}
@@ -130,10 +131,10 @@ async function addPoint( fishsticks, int ) {
 	const docketAddResponse = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_Docket', 'insert', newDocketPoint );
 
 	if ( docketAddResponse.acknowledged === true ) {
-		int.reply( { content: 'Docket point added!', ephemeral: true } );
+		int.reply( { content: 'Docket point added!', flags: MessageFlags.Ephemeral } );
 	}
 	else {
-		int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the command reported creating the item failed.' ) }` + fishsticks.RANGER, ephemeral: true } );
+		int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the command reported creating the item failed.' ) }` + fishsticks.RANGER, flags: MessageFlags.Ephemeral } );
 	}
 }
 
@@ -161,10 +162,10 @@ async function editPoint( fishsticks, int ) {
 
 	//Check response
 	if ( editDispatch.modifiedCount === 1 ) {
-		return int.reply( { content: 'Point updated!', ephemeral: true } );
+		return int.reply( { content: 'Point updated!', flags: MessageFlags.Ephemeral } );
 	}
 	else {
-		return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'a docket item failed to update.' ) }`, ephemeral: true } );
+		return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'a docket item failed to update.' ) }`, flags: MessageFlags.Ephemeral } );
 	}
 
 }
@@ -184,7 +185,7 @@ async function deletePoint( fishsticks, int ) {
 		throw 'Deletion error!';
 	}
 	else {
-		return int.reply( { content: 'Point deleted!', ephemeral: true } );
+		return int.reply( { content: 'Point deleted!', flags: MessageFlags.Ephemeral } );
 	}
 
 }
@@ -210,7 +211,7 @@ async function toggleStickyPoint( fishsticks, int ) {
 		throw 'Update error!';
 	}
 	else {
-		return int.reply( { content: 'Sticky toggled!', ephemeral: true } );
+		return int.reply( { content: 'Sticky toggled!', flags: MessageFlags.Ephemeral } );
 	}
 }
 
@@ -220,7 +221,7 @@ async function toggleClosedPoint( fishsticks, int ) {
 	if ( !hasPerms( int.member, ['Council Member'] ) ) {
 		return int.reply( {
 			content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the user did not have permission to toggle closed docket items.' ) }`,
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} );
 	}
 
@@ -241,21 +242,21 @@ async function toggleClosedPoint( fishsticks, int ) {
 		throw 'Update error!';
 	}
 	else {
-		return int.reply( { content: 'Closed toggled!', ephemeral: true } );
+		return int.reply( { content: 'Closed toggled!', flags: MessageFlags.Ephemeral } );
 	}
 }
 
 //Clear
 async function clearDocket( fishsticks, int ) {
 	if( !hasPerms( int.member, ['Moderator', 'Council Member', 'Council Advisor'] ) ) {
-		return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the user did not have permission to clear all docket items' ) }`, ephemeral: true } );
+		return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the user did not have permission to clear all docket items' ) }`, flags: MessageFlags.Ephemeral } );
 	}
 
 	const docketListing = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_Docket', 'selectAll' );
 
 	if ( !docketListing ) {
 		log( 'info', '[DOCKET] No points found.' );
-		return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the user tried to delete all docket items from an already empty docket' ) }`, ephemeral: true } );
+		return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the user tried to delete all docket items from an already empty docket' ) }`, flags: MessageFlags.Ephemeral } );
 	}
 
 	for ( const point in docketListing ) {
@@ -264,12 +265,12 @@ async function clearDocket( fishsticks, int ) {
 			const delRes = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_Docket', 'delete', { pointID: docketListing[point].pointID } );
 
 			if ( delRes.deletedCount !== 1 ) {
-				return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the command failed to delete all docket points when it attempted to.' ) }`, ephemeral: true } );
+				return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the command failed to delete all docket points when it attempted to.' ) }`, flags: MessageFlags.Ephemeral } );
 			}
 		}
 	}
 
-	return int.reply( { content: 'Docket cleared!', ephemeral: true } );
+	return int.reply( { content: 'Docket cleared!', flags: MessageFlags.Ephemeral } );
 }
 
 //List
@@ -333,7 +334,7 @@ async function pinList( fishsticks, int ) {
 	if ( int.channel.id !== fishsticks.ENTITIES.Channels[ 'meeting-hall' ] ) {
 		return int.reply( {
 			content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'tried to pin the docket in a channel other than the Meeting-Hall' ) }`,
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} );
 	}
 
@@ -355,7 +356,7 @@ async function pinList( fishsticks, int ) {
 		docketList.pin();
 		return int.reply( {
 			content: 'Pinned!',
-			ephemeral: true
+			flags: MessageFlags.Ephemeral
 		} );
 	}
 	else {
@@ -370,7 +371,7 @@ async function pinList( fishsticks, int ) {
 
 			return int.reply( {
 				content: 'Pinned!',
-				ephemeral: true
+				flags: MessageFlags.Ephemeral
 			} );
 		}
 		catch ( e ) {
@@ -385,7 +386,7 @@ async function pinList( fishsticks, int ) {
 
 			return int.reply( {
 				content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the command failed to successfully pin the docket to the channel' ) }`,
-				ephemeral: true
+				flags: MessageFlags.Ephemeral
 			} );
 		}
 	}
@@ -421,13 +422,13 @@ async function getDocketPointValidate( fishsticks, int ) {
 
 	//Validate
 	if ( !dtPoint ) {
-		return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the specified docket item couldn\'t be found.' ) }`, ephemeral: true } );
+		return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the specified docket item couldn\'t be found.' ) }`, flags: MessageFlags.Ephemeral } );
 	}
 	else if ( !dtPoint.pointID ) {
-		return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the specified docket item couldn\'t be found.' ) }`, ephemeral: true } );
+		return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the specified docket item couldn\'t be found.' ) }`, flags: MessageFlags.Ephemeral } );
 	}
 	else if ( dtPoint.pointID !== pointNum ) {
-		return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the specified docket item couldn\'t be found.' ) }`, ephemeral: true } );
+		return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'docket', 'the specified docket item couldn\'t be found.' ) }`, flags: MessageFlags.Ephemeral } );
 	}
 
 	return dtPoint;

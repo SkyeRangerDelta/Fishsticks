@@ -5,6 +5,7 @@
 const https = require( 'https' );
 const fs = require( 'fs' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 const { sign } = require( "jsonwebtoken" );
 
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
@@ -28,7 +29,7 @@ const data = new SlashCommandBuilder()
 
 async function run( fishsticks, int ) {
     //Syntax: /suggest subject content
-    int.deferReply( { ephemeral: true } );
+    int.deferReply( { flags: MessageFlags.Ephemeral } );
 
     if ( !fishsticks.GIT_INSTALL_TOKEN ||
       fishsticks.GIT_INSTALL_TOKEN_GEN_TIME < Date.now() - 1000 * 60 * 60

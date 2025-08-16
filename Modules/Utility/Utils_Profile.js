@@ -91,7 +91,7 @@ async function buildProfileBanner( fishsticks, int, profileEmbed ) {
     log( 'info', '[NEW-MEM] Banner saved, pending dispatch' );
     const bannerAttachment = new AttachmentBuilder( await canvas.encode( 'png' ), { name: 'welcome-banner.png' } );
     if ( !profileEmbed ) {
-        int.channel.send( { files: [bannerAttachment], ephemeral: true } )
+        int.channel.send( { files: [bannerAttachment], flags: MessageFlags.Ephemeral } )
             .then( sent => { setTimeout( () => { sent.delete(); }, 60000 ); } );
     }
     else {

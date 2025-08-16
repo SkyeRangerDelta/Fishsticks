@@ -7,7 +7,7 @@ const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
-const { ChannelType } = require( 'discord-api-types/v9' );
+const { ChannelType, MessageFlags } = require( "discord-api-types/v10" );
 const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
@@ -20,15 +20,15 @@ data.addIntegerOption( o => o.setName( 'max-users' ).setDescription( 'How many v
 
 //Functions
 async function run( Fishsticks, int ) {
-    int.deferReply( { ephemeral: true } );
+    int.deferReply( { flags: MessageFlags.Ephemeral } );
 
     if( !hasPerms( int.member, ['CC Member', 'ACC Member', 'Event Coordinator'] ) ) {
-        return int.editReply( { content: `${ await getErrorResponse( int.client.user.displayName, 'tempch', 'the user didn\'t have permission to use the command.' ) }`, ephemeral: true } );
+        return int.editReply( { content: `${ await getErrorResponse( int.client.user.displayName, 'tempch', 'the user didn\'t have permission to use the command.' ) }`, flags: MessageFlags.Ephemeral } );
     }
 
     //Check voice state
     if ( !int.member.voice.channel || int.member.voice.channel.id !== fishsticks.ENTITIES.Channels[ 'channel-spawner' ] ) {
-        return int.editReply( { content: `${ await getErrorResponse( int.client.user.displayName, 'tempch', 'the user wasn\'t in the Channel spawner before running the command (they have to be)' ) }`, ephemeral: true } );
+        return int.editReply( { content: `${ await getErrorResponse( int.client.user.displayName, 'tempch', 'the user wasn\'t in the Channel spawner before running the command (they have to be)' ) }`, flags: MessageFlags.Ephemeral } );
     }
 
     await createCh( Fishsticks, int );
@@ -63,7 +63,7 @@ async function createCh( Fishsticks, int ) {
 
             return int.editReply( {
                 content: 'Done!',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             } );
         } );
     }
@@ -85,7 +85,7 @@ async function createCh( Fishsticks, int ) {
 
             return int.editReply( {
                 content: 'Done!',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             } );
         } );
     }

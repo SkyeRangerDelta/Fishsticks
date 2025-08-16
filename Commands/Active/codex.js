@@ -4,6 +4,7 @@
 const fs = require( 'fs' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 const cmdList = fs.readdirSync( './Commands/Active' ).filter( dirItem => dirItem.endsWith( '.js' ) );
@@ -30,14 +31,14 @@ async function run( fishsticks, int ) {
 			const helpEntry = helpFile.help();
 			return int.reply( {
 				content: helpEntry + `\nThat entry can be found here: https://wiki.pldyn.net/fishsticks/command-listing#${ fileID }`,
-				ephemeral: true
+				flags: MessageFlags.Ephemeral
 			} );
 		}
 	}
 
 	int.reply( {
 		content: `${ await getErrorResponse( int.client.user.displayName, 'codex', 'This help article doesn\'t exist.' ) }`,
-		ephemeral: true
+		flags: MessageFlags.Ephemeral
 	} );
 }
 

@@ -10,6 +10,7 @@ const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 const { getErrorResponse } = require('../../Modules/Core/Core_GPT');
 
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 const bibleAPI = process.env.BIBLE_API;
 
@@ -25,7 +26,7 @@ data.addNumberOption( o => o.setName( 'end-verse' ).setDescription( 'The verse t
 async function run( fishsticks, int ) {
 
   if ( !bibleAPI ) {
-    return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'bible', 'The API key for the bible command is missing.' ) }`, ephemeral: true } );
+    return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'bible', 'The API key for the bible command is missing.' ) }`, flags: MessageFlags.Ephemeral } );
   }
 
     //Command breakup
@@ -116,13 +117,13 @@ async function buildPayload( fishsticks, paramObj, int ) {
             const received = JSON.parse( content );
 
             if ( !received.passages ) {
-                return int.reply( { content: `${ getErrorResponse( int.client.user.displayName, 'bible', 'The API didn\'t return any text.' ) }`, ephemeral: true } );
+                return int.reply( { content: `${ getErrorResponse( int.client.user.displayName, 'bible', 'The API didn\'t return any text.' ) }`, flags: MessageFlags.Ephemeral } );
             }
             else if ( !received.passages[0] ) {
-                return int.reply( { content: `${ getErrorResponse( int.client.user.displayName, 'bible', 'The API didn\'t return any text.' ) }`, ephemeral: true } );
+                return int.reply( { content: `${ getErrorResponse( int.client.user.displayName, 'bible', 'The API didn\'t return any text.' ) }`, flags: MessageFlags.Ephemeral } );
             }
             else if ( received.passages[0].length > 4096 ) {
-                return int.reply( { content: `${ getErrorResponse( int.client.user.displayName, 'bible', 'The text returned as too large for the post to be made.' ) }`, ephemeral: true } );
+                return int.reply( { content: `${ getErrorResponse( int.client.user.displayName, 'bible', 'The text returned as too large for the post to be made.' ) }`, flags: MessageFlags.Ephemeral } );
             }
 
             const verseEmbed = {

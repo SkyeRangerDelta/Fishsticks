@@ -5,6 +5,7 @@ const fs = require( 'fs' );
 
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
@@ -27,7 +28,7 @@ async function run( fishsticks, int ) {
 		catch ( helpListErr ) {
 			int.reply( {
 				content: `${ await getErrorResponse( int.client.user.displayName, 'help', 'the help article couldn\'t be found.' ) }`,
-				ephemeral: true
+				flags: MessageFlags.Ephemeral
 			} );
 			throw `${cmdList[file]} has no help entry!\n${helpListErr}`;
 		}
@@ -46,7 +47,7 @@ async function run( fishsticks, int ) {
 		noThumbnail: true
 	};
 
-	return int.reply( { embeds: [embedBuilder( fishsticks, helpPanel )], ephemeral: true } );
+	return int.reply( { embeds: [embedBuilder( fishsticks, helpPanel )], flags: MessageFlags.Ephemeral } );
 }
 
 function help() {
