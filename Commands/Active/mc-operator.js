@@ -3,8 +3,10 @@
 
 //Imports
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 // const { AMPAPI } = require( '@cubecoders/ampapi' );
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -43,10 +45,10 @@ data.addSubcommand( s => s
 
 //Functions
 async function run( fishsticks, int ) {
-  await int.deferReply( { ephemeral: true } );
+  await int.deferReply( { flags: MessageFlags.Ephemeral } );
 
   if ( !hasPerms( int.member, [ 'Minecraft OP' ] ) ) {
-    return int.editReply( { content: 'You do not have permission to use this command.' } );
+    return int.editReply( { content: `${ await getErrorResponse( int.client.user.displayName, 'echo', 'the user didnt have the permission to use the command.' ) }` } );
   }
 
   const subcommand = int.options.getSubcommand();

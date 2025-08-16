@@ -7,6 +7,8 @@ const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { log } = require( '../../Modules/Utility/Utils_Log' );
 const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -22,7 +24,7 @@ let recognizedRole;
 async function run( fishsticks, int ) {
     //Ensure perms
     if ( !hasPerms( int.member, ['Moderator', 'Council Member', 'Council Advisor'] ) ) {
-        return int.reply( { content: 'You dont have permission to vouch people in!', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'vouch', 'the user doesn\'t have permission to vouch people in.' ) }`, flags: MessageFlags.Ephemeral } );
     }
 
     //Get role
@@ -35,17 +37,17 @@ async function run( fishsticks, int ) {
     if ( vouchee.id === fishsticks.user.id ) {
         //Prevent Fs vouches
         log( 'info', `[VOUCH] ${int.member.displayName} tried to vouch Fishsticks in.` );
-        return int.reply( { content: '*Shakes head* No. This is not how that works.', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'vouch', 'the user tried to vouch Fishsticks in.' ) }`, flags: MessageFlags.Ephemeral } );
     }
     else if ( vouchee.id === int.member.id ) {
         //Prevent self-vouching
         log( 'info', `[VOUCH] ${int.member.displayName} tried to vouch themselves in.` );
-        return int.reply( { content: '*No*. Duh. You cannot vouch for yourself.', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'vouch', 'the user tried to vouch for themselves.' ) }`, flags: MessageFlags.Ephemeral } );
     }
     else if ( hasPerms( vouchee, ['Recognized', 'CC Member', 'ACC Member'] ) ) {
         //Prevent membership vouches
         log( 'info', `[VOUCH] ${int.member.displayName} tried to vouch someone who didn't need it in.` );
-        return int.reply( { content: `Why...why? ${vouchee.displayName} definitely doesn't need it.`, ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'vouch', `the vouchee (${ vouchee.displayName }) had already been vouched into the server.` ) }`, flags: MessageFlags.Ephemeral } );
     }
 
     if ( !vouchee ) {
@@ -59,14 +61,14 @@ async function run( fishsticks, int ) {
 
     if ( !vouchQuery ) {
         log( 'info', '[VOUCH] Failed to collect vouchee record!' );
-        return int.reply( { content: `I can't do that until ${vouchee.displayName} has a valid FSO record. Get them to say something in chat.`, ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'vouch', `the command errored because ${ vouchee.displayName } needs to say something in the chat first.` ) }`, flags: MessageFlags.Ephemeral } );
     }
 
     //Do FSO checks/validation then add
     const memberVouches = vouchQuery.vouches;
 
     if( memberVouches.includes( int.member.id ) ) {
-        return await int.reply( { content: `You've already vouched for ${vouchee.displayName}!`, ephemeral: true } );
+        return await int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'vouch', `the failed because the user had already vouched for ${ vouchee.displayName }.` ) }`, flags: MessageFlags.Ephemeral } );
     }
 
     if ( memberVouches.length < 2 ) {
@@ -75,7 +77,7 @@ async function run( fishsticks, int ) {
     }
     else {
         //Not clear
-        return int.reply( { content: 'This person has already reached 2 vouches! If they are lacking Recognized despite this, ping Skye.', ephemeral: true } );
+        return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'vouch', `${ vouchee.displayName } had already been vouched in - they should check with a moderator to assign the role if need be.` ) }`, flags: MessageFlags.Ephemeral } );
     }
 
 }
@@ -102,12 +104,12 @@ async function addVouch( fishsticks, int, memberFSORecord, ref ) {
             await int.channel.send( { content: `${memberFSORecord.username} has been vouched for and has been granted Recognized!` } );
             await int.reply( {
                 content: 'Done!',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             } );
             return handleNewMember( fishsticks, vouchee ); //Handle member welcome graphic
         }
         else {
-            return int.reply( { content: 'Mmmmmmmm, something is wrong and the vouch may have not been tallied correctly.', ephemeral: true } );
+            return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'vouch', 'something unknown went wrong processing the vouch.' ) }`, flags: MessageFlags.Ephemeral } );
         }
     }
     else {
@@ -121,10 +123,10 @@ async function addVouch( fishsticks, int, memberFSORecord, ref ) {
         const addVouchRes = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_MemberStats', 'update', recordUpdate, { id: memberFSORecord.id } );
 
         if ( addVouchRes.modifiedCount === 1 ) {
-            return int.reply( { content: `${memberFSORecord.username} has been vouched for and needs only one more vouch.`, ephemeral: true } );
+            return int.reply( { content: `${memberFSORecord.username} has been vouched for and needs only one more vouch.`, flags: MessageFlags.Ephemeral } );
         }
         else {
-            return int.reply( { content: 'Mmmmmmmm, something is wrong and the vouch may have not been tallied correctly.', ephemeral: true } );
+            return int.reply( { content: `${ await getErrorResponse( int.client.user.displayName, 'vouch', 'something unknown went wrong processing the vouch.' ) }`, flags: MessageFlags.Ephemeral } );
         }
     }
 }

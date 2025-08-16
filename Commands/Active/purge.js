@@ -6,6 +6,7 @@
 // const { log } = require( '../../Modules/Utility/Utils_Log' );
 // const { hasPerms } = require( '../../Modules/Utility/Utils_User' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -24,14 +25,14 @@ const data = new SlashCommandBuilder()
 async function run( fishsticks, int ) {
     return int.reply( {
         content: 'This is a WIP, come back later.',
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
     } );
 
     /*
-    await int.deferReply( { ephemeral: true } );
+    await int.deferReply( { flags: MessageFlags.Ephemeral } );
     //Permissions check
     if ( !hasPerms( int.member, ['Moderator', 'Council Member', 'Council Advisor'] ) ) {
-        return int.reply( { content: 'Your lack of permissions disturbs me.', ephemeral: true } );
+        return int.reply( { content: 'Your lack of permissions disturbs me.', flags: MessageFlags.Ephemeral } );
     }
 
     //Syntax: /purge post-count target-user?
@@ -44,16 +45,16 @@ async function run( fishsticks, int ) {
         log( 'info', '[PURGE] No user detected, initiating general deletion.' );
 
         if ( count === 0 ) {
-            return int.reply( { content: 'No number specified, might as well just delete the whole channel if you want them all gone.', ephemeral: true } );
+            return int.reply( { content: 'No number specified, might as well just delete the whole channel if you want them all gone.', flags: MessageFlags.Ephemeral } );
         }
 
         const targetChannelMsgs = await targetChannel.messages.fetch( { limit: count } );
 
         if ( await delMsgs( targetChannelMsgs, targetChannel ) === 1 ) {
-            await int.editReply( { content: 'Ok done.', ephemeral: true } );
+            await int.editReply( { content: 'Ok done.', flags: MessageFlags.Ephemeral } );
         }
         else {
-            await int.editReply( { content: 'Something is WRONG!', ephemeral: true } );
+            await int.editReply( { content: 'Something is WRONG!', flags: MessageFlags.Ephemeral } );
         }
     }
     else {
@@ -65,10 +66,10 @@ async function run( fishsticks, int ) {
             const targetChannelMsgs = await targetChannel.messages.fetch().then( m => m.filter( a => a.author.id === targetMember.id ) );
 
             if ( await delMsgs( targetChannelMsgs, targetChannel ) === 1 ) {
-                await int.editReply( { content: 'Ok done.', ephemeral: true } );
+                await int.editReply( { content: 'Ok done.', flags: MessageFlags.Ephemeral } );
             }
             else {
-                await int.editReply( { content: 'Something is WRONG!', ephemeral: true } );
+                await int.editReply( { content: 'Something is WRONG!', flags: MessageFlags.Ephemeral } );
             }
         }
         else {
@@ -76,10 +77,10 @@ async function run( fishsticks, int ) {
             const targetChannelMsgs = await targetChannel.messages.fetch( { limit: count } ).then( m => m.filter( a => a.author.id === targetMember.id ) );
 
             if ( await delMsgs( targetChannelMsgs, targetChannel ) === 1 ) {
-                await int.editReply( { content: 'Ok done.', ephemeral: true } );
+                await int.editReply( { content: 'Ok done.', flags: MessageFlags.Ephemeral } );
             }
             else {
-                await int.editReply( { content: 'Something is WRONG!', ephemeral: true } );
+                await int.editReply( { content: 'Something is WRONG!', flags: MessageFlags.Ephemeral } );
             }
         }
     }

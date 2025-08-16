@@ -3,6 +3,7 @@
 //Imports
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 const packageVer = require( '../../package.json' ).version;
 
 //Globals
@@ -45,7 +46,7 @@ function run( fishsticks, int ) {
 		]
 	};
 
-    int.reply( { embeds: [embedBuilder( fishsticks, versionPanel )], ephemeral: true } );
+    int.reply( { embeds: [embedBuilder( fishsticks, versionPanel )], flags: MessageFlags.Ephemeral } );
 }
 
 function help() {

@@ -4,6 +4,7 @@
 //Imports
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -27,7 +28,7 @@ function run( fishsticks, int ) {
 		delete: 20000
 	};
 
-	int.reply( { embeds: [embedBuilder( fishsticks, links )], ephemeral: true } );
+	int.reply( { embeds: [embedBuilder( fishsticks, links )], flags: MessageFlags.Ephemeral } );
 }
 
 function help() {

@@ -5,6 +5,8 @@ const fs = require( 'fs' );
 
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
+const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -12,7 +14,7 @@ const data = new SlashCommandBuilder()
 	.setDescription( 'Prints out the help list.' );
 
 //Functions
-function run( fishsticks, int ) {
+async function run( fishsticks, int ) {
 	const cmdList = fs.readdirSync( './Commands/Active' ).filter( cmdFile => cmdFile.endsWith( '.js' ) );
 	let helpMenu = '';
 
@@ -24,7 +26,10 @@ function run( fishsticks, int ) {
 			helpMenu = helpMenu.concat( `**${cmdFileID}**: ${helpTxt}\n` );
 		}
 		catch ( helpListErr ) {
-			int.reply( 'Wait. Stop. No, something is off. Like literally turned off. ' + fishsticks.RANGER + ' Hey can you check on this please.' );
+			int.reply( {
+				content: `${ await getErrorResponse( int.client.user.displayName, 'help', 'the help article couldn\'t be found.' ) }`,
+				flags: MessageFlags.Ephemeral
+			} );
 			throw `${cmdList[file]} has no help entry!\n${helpListErr}`;
 		}
 	}
@@ -42,7 +47,7 @@ function run( fishsticks, int ) {
 		noThumbnail: true
 	};
 
-	return int.reply( { embeds: [embedBuilder( fishsticks, helpPanel )], ephemeral: true } );
+	return int.reply( { embeds: [embedBuilder( fishsticks, helpPanel )], flags: MessageFlags.Ephemeral } );
 }
 
 function help() {

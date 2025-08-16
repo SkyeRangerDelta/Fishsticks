@@ -3,6 +3,7 @@
 
 //Imports
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -12,7 +13,7 @@ const data = new SlashCommandBuilder()
 //Functions
 async function run( fishsticks, int ) {
     const ruleCh = await fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels[ 'rules' ] );
-    int.reply( { content: `See ${ruleCh}`, ephemeral: true } );
+    int.reply( { content: `See ${ruleCh}`, flags: MessageFlags.Ephemeral } );
 }
 
 function help() {

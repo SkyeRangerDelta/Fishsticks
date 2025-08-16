@@ -1,22 +1,25 @@
-#General
+# General
 /node_modules
 .env
 
-#JetBrains
+# JetBrains
 .idea
 /.idea
 .idea/*
 .idea/workspace.xml
 
-#Core
+# Core
 /Modules/Core/Core_ids.json
 /Modules/Core/Core_config.json
 /Modules/Core/Core_keys.json
 Modules/Core/Core_keys.json
 
-#Library - Declutter
+# Library - Declutter
 /Modules/Library/prayerReqs.json
 /Modules/Core/SSH/
 
-#Build
+# Build
 /Deploy/
+
+# Keys
+/Modules/Keys/fishsticks-ccg.private-key.pem

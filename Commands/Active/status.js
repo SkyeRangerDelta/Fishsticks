@@ -6,6 +6,7 @@ const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { convertMsFull } = require( '../../Modules/Utility/Utils_Time' );
 const { version } = require( '../../package.json' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -14,7 +15,7 @@ const data = new SlashCommandBuilder()
 
 //Functions
 async function run( fishsticks, int ) {
-	await int.deferReply( { ephemeral: true } );
+	await int.deferReply( { flags: MessageFlags.Ephemeral } );
 
 	//Get FSO status
 	const fsoStatus = await fso_query( fishsticks.FSO_CONNECTION, 'FSO_Status', 'select', { id: 1 } );

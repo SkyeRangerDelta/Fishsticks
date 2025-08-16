@@ -2,6 +2,7 @@
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
+const { MessageFlags } = require( "discord-api-types/v10" );
 
 //Functions
 const data = new SlashCommandBuilder()
@@ -94,7 +95,7 @@ function run( fishsticks, int ) {
 		]
 	};
 
-	int.reply( { embeds: [embedBuilder( fishsticks, channelsPanel )], ephemeral: true } );
+	int.reply( { embeds: [embedBuilder( fishsticks, channelsPanel )], flags: MessageFlags.Ephemeral } );
 }
 
 function help() {

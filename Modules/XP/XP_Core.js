@@ -96,10 +96,16 @@ async function doXP( fishsticks, cmd, memberProf ) {
     if ( updateProfRes.modifiedCount === 1 ) {
         if ( lvlTriggered ) {
             if ( memberProf.notifications.xp ) {
-                if ( cmd.channel.id === fishsticks.ENTITIES.Channels['discussion-den'] ||
-                  cmd.channel.id === fishsticks.ENTITIES.Channels['bible-study'] ||
-                  cmd.channel.id === fishsticks.ENTITIES.Channels['announcements'] ) {
-                    const hangoutCh = await fishsticks.channels.cache.get( hangout );
+                const skipChannels = new Set([
+                    fishsticks.ENTITIES.Channels['prayer-requests'],
+                    fishsticks.ENTITIES.Channels['discussion-den'],
+                    fishsticks.ENTITIES.Channels['minecraft-relay'],
+                    fishsticks.ENTITIES.Channels['announcements'],
+                    fishsticks.ENTITIES.Channels['crash-pad']
+                ]);
+
+                if ( skipChannels.has( cmd.channel.id ) ) {
+                    const hangoutCh = await fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels[ 'hangout' ] );
                     hangoutCh.send( `${cmd.msg.member}, You've reached level ${currLvl}!` )
                         .then( sent => { setTimeout( () => { sent.delete(); }, 10000 ); } );
                 }
