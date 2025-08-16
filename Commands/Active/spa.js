@@ -146,7 +146,6 @@ async function draftNotice( fishsticks, title, content, classType, author ) {
       }
 
       content = message.content;
-      log( 'info', `[SPA] Fetched content from message link: ${ content }` );
     }
     catch ( e ) {
       log( 'error', `[SPA] Failed to fetch channel: ${ e.message }` );
