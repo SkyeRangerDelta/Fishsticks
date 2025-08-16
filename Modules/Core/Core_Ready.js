@@ -242,11 +242,10 @@ async function startUp( Fishsticks ) {
     Fishsticks.CONSOLE.send( { embeds: [startupEmbed] } );
   }
 
-  startRotatingStatuses( Fishsticks );
-
   //Startup Complete
   log( 'proc', '[CLIENT] Fishsticks is ready to run.\n-------------------------------------------------------' );
 
+  startRotatingStatuses( Fishsticks );
 }
 
 function getVersion() {
@@ -254,8 +253,6 @@ function getVersion() {
 }
 
 async function startRotatingStatuses( Fishsticks, testMode = false ) {
-  log( 'info', '[FISHSTICKS] Starting rotating status messages.' );
-
   const statuses = await fso_query( Fishsticks.FSO_CONNECTION, 'FSO_StatusMessages', 'selectAll' );
 
   if ( !statuses || statuses.length === 0 ) {
@@ -264,6 +261,8 @@ async function startRotatingStatuses( Fishsticks, testMode = false ) {
   else {
     log( 'proc', `[FISHSTICKS] Found ${statuses.length} rotating statuses.` );
   }
+
+  log( 'info', '[FISHSTICKS] Starting rotating status messages.' );
 
   setInterval( () => {
     let cType;
