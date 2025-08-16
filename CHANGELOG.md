@@ -1,5 +1,34 @@
 || v${version} Changelog ||
 
+# [1.20.0-Experimental.2](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.20.0-Experimental.1...v1.20.0-Experimental.2) (2025-08-16)
+
+
+### Bug Fixes
+
+* Changed status change time to 3m ([7118056](https://github.com/SkyeRangerDelta/Fishsticks/commit/7118056e5131f08e787c1dedc7da2a16eca9c0dc))
+* Correct URL bugs with poem ([1ec717c](https://github.com/SkyeRangerDelta/Fishsticks/commit/1ec717c671346d152ef6dda5dbbdaafa28364f02))
+* Corrected context parameter ([5c01aeb](https://github.com/SkyeRangerDelta/Fishsticks/commit/5c01aebc5bf84d45fa4b76653e4a6ee9d06b0a58))
+* Corrected rotating status logic ([8cdfb56](https://github.com/SkyeRangerDelta/Fishsticks/commit/8cdfb561e34173d0460496fe6baa0b179691e82a))
+* Fixes XP level up messages from posting in some channels ([f817b6b](https://github.com/SkyeRangerDelta/Fishsticks/commit/f817b6b3f6600d76547b781933d5c049aa3bd53a))
+* Prevents rticks from messaging some channels ([b9c63a5](https://github.com/SkyeRangerDelta/Fishsticks/commit/b9c63a551f6edf919c588e2583fe35c5ac4e7dec)), closes [#139](https://github.com/SkyeRangerDelta/Fishsticks/issues/139)
+
+
+### Features
+
+* Added away status mode for test mode ([2444236](https://github.com/SkyeRangerDelta/Fishsticks/commit/2444236183113276d94c9461c55238fd4049780c))
+* Added broken suggestion code ([6add1f9](https://github.com/SkyeRangerDelta/Fishsticks/commit/6add1f9c2d543377a21b50a56213df8c8d371083))
+* Added debug log level ([df28d7c](https://github.com/SkyeRangerDelta/Fishsticks/commit/df28d7c91362b2db2f6643bcbe115283a471c5ef))
+* Added generative error responses for Bible, Codex, Dice, Docket, and Echo ([1d40eff](https://github.com/SkyeRangerDelta/Fishsticks/commit/1d40eff8a8cd06b1d6993f0243ccec4b17cad516))
+* Added GitHub App integration for issues ([f603b58](https://github.com/SkyeRangerDelta/Fishsticks/commit/f603b58ad0ac0cfd4976c2ae3f14e5b06bc68bc2)), closes [#141](https://github.com/SkyeRangerDelta/Fishsticks/issues/141)
+* Added GPT response generator ([45c9f79](https://github.com/SkyeRangerDelta/Fishsticks/commit/45c9f7946a7af4c0232f6268cc27db23793dd85e))
+* Added helper script to add statuses to FSO ([b963621](https://github.com/SkyeRangerDelta/Fishsticks/commit/b963621e36ea6b0f68ca0eecd933de7fc03819f0))
+* Added rotating status logic ([8f0ea83](https://github.com/SkyeRangerDelta/Fishsticks/commit/8f0ea837b985039d6c749998c4427289f9e66d62)), closes [#140](https://github.com/SkyeRangerDelta/Fishsticks/issues/140)
+* Added SPA command ([be5718e](https://github.com/SkyeRangerDelta/Fishsticks/commit/be5718e043ff0448666218428a001b38cbc670be))
+* Added statuses ([f82841d](https://github.com/SkyeRangerDelta/Fishsticks/commit/f82841da805e7a4674c180e39282174e8da1205a))
+* Corrected missing hangout cache collectors ([6594895](https://github.com/SkyeRangerDelta/Fishsticks/commit/6594895594650ed35af68210a9425cad3ea8e75c))
+* Implement psyche updates for all other relevant commands ([ae9b2f9](https://github.com/SkyeRangerDelta/Fishsticks/commit/ae9b2f908b65172aff06af7142d3524884b2a474))
+* SPA uses dates from links if provided ([2eb9115](https://github.com/SkyeRangerDelta/Fishsticks/commit/2eb9115741a7b3a10081a5a491c68202c6d1d02b))
+
 # [1.20.0-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.19.21-Experimental.1...v1.20.0-Experimental.1) (2025-05-11)
 
 
