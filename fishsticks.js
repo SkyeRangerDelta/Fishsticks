@@ -99,15 +99,6 @@ for ( const eventFile in eventsIndex ) {
 //				   UTILITY
 //=============================================
 
-//Schedule Crons
-const dailyRule = new schedule.RecurrenceRule();
-dailyRule.hour = 8;
-dailyRule.minute = 0;
-dailyRule.tz = 'America/New_York';
-schedule.scheduleJob( dailyRule, async function() {
-	await doDailyPost( Fishsticks );
-} );
-
 process.on( 'unhandledRejection', e => {
 	console.log( '[ERR] ' + e );
 } );
