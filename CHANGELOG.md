@@ -1,5 +1,12 @@
 || v${version} Changelog ||
 
+# [1.21.0-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.20.0...v1.21.0-Experimental.1) (2025-12-25)
+
+
+### Features
+
+* Disable daily posts ([34d451d](https://github.com/SkyeRangerDelta/Fishsticks/commit/34d451d63a0e1fd4f4023de12f482b01aee9a83e))
+
 # [1.20.0](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.19.20...v1.20.0) (2025-08-16)
 
 
