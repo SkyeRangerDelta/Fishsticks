@@ -31,6 +31,6 @@ function handleNewJoin( fishsticks, newJoin ) {
     ]
   };
 
-  const cPadCh = Fishsticks.channels.cache.get( Fishsticks.ENTITIES.Channels['crash-pad'] );
+  const cPadCh = fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels['crash-pad'] );
   cPadCh.send( { embeds: [cPadEmbedPanel] } );
 }
