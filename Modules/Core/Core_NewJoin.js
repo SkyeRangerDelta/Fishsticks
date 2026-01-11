@@ -7,30 +7,30 @@ const { systemTimestamp } = require( '../Utility/Utils_Time' );
 
 //Exports
 module.exports = {
-	handleNewJoin
+  handleNewJoin
 };
 
 //Functions
 function handleNewJoin( fishsticks, newJoin ) {
-	//Dispatch Welcome/Intro DM
-	newJoin.send( welcomeDM );
+  //Dispatch Welcome/Intro DM
+  newJoin.send( welcomeDM );
 
-	//Dispatch Welcome Embed
-	const cPadEmbedPanel = {
-		title: `o0o - Welcome, ${newJoin.displayName}!`,
-		description: `${welcomeBlurb1} ${fishsticks.RANGER} ${welcomeBlurb2}`,
-		footer: {
-			text: `${newJoin.displayName} joined at ${systemTimestamp}.`
-		},
-		thumbnail: `${newJoin.displayAvatarURL()}`,
-		fields: [
-			{
-				name: `Welcome to the official CC Discord, ${newJoin.displayName}!`,
-				value: 'Stick around for some Fish!'
-			}
-		]
-	};
+  //Dispatch Welcome Embed
+  const cPadEmbedPanel = {
+    title: `o0o - Welcome, ${newJoin.displayName}!`,
+    description: `${welcomeBlurb1} ${fishsticks.RANGER} ${welcomeBlurb2}`,
+    footer: {
+      text: `${newJoin.displayName} joined at ${systemTimestamp}.`
+    },
+    thumbnail: `${newJoin.displayAvatarURL()}`,
+    fields: [
+      {
+        name: `Welcome to the official CC Discord, ${newJoin.displayName}!`,
+        value: 'Stick around for some Fish!'
+      }
+    ]
+  };
 
-	const cPadCh = fishsticks.channels.cache.get( cPad );
-	cPadCh.send( { embeds: [cPadEmbedPanel] } );
+  const cPadCh = fishsticks.channels.cache.get( cPad );
+  cPadCh.send( { embeds: [cPadEmbedPanel] } );
 }
