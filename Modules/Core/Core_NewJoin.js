@@ -11,7 +11,7 @@ module.exports = {
 };
 
 //Functions
-function handleNewJoin( fishsticks, newJoin ) {
+async function handleNewJoin( fishsticks, newJoin ) {
   //Dispatch Welcome/Intro DM
   newJoin.send( welcomeDM );
 
@@ -31,6 +31,6 @@ function handleNewJoin( fishsticks, newJoin ) {
     ]
   };
 
-  const cPadCh = fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels['crash-pad'] );
+  const cPadCh = await fishsticks.channels.cache.get( fishsticks.ENTITIES.Channels['crash-pad'] );
   cPadCh.send( { embeds: [cPadEmbedPanel] } );
 }
