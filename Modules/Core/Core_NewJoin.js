@@ -31,6 +31,6 @@ function handleNewJoin( fishsticks, newJoin ) {
     ]
   };
 
-  const cPadCh = fishsticks.ENTITIES.channels[ 'cPad' ];
+  const cPadCh = fishsticks.ENTITIES.Channels[ 'cPad' ];
   cPadCh.send( { embeds: [cPadEmbedPanel] } );
 }
