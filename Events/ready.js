@@ -5,7 +5,7 @@ const { startUp } = require( '../Modules/Core/Core_Ready' );
 
 //Export
 module.exports = {
-    name: 'ready',
+    name: 'clientReady',
     once: true,
     execute
 };
