@@ -1,5 +1,12 @@
 || v${version} Changelog ||
 
+# [1.21.0-Experimental.3](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.21.0-Experimental.2...v1.21.0-Experimental.3) (2026-01-12)
+
+
+### Bug Fixes
+
+* Added error handling to key load ([d83f8ed](https://github.com/SkyeRangerDelta/Fishsticks/commit/d83f8ed4fa6ba80dfe00ae60c7f39f0ba7176603))
+
 # [1.21.0-Experimental.2](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.21.0-Experimental.1...v1.21.0-Experimental.2) (2026-01-11)
 
 
