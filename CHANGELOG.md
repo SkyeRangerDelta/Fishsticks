@@ -1,5 +1,15 @@
 || v${version} Changelog ||
 
+## [1.21.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.21.0...v1.21.1) (2026-01-12)
+
+
+### Bug Fixes
+
+* Added error handling to key load ([d83f8ed](https://github.com/SkyeRangerDelta/Fishsticks/commit/d83f8ed4fa6ba80dfe00ae60c7f39f0ba7176603))
+* Corrected channel definition ([da1b554](https://github.com/SkyeRangerDelta/Fishsticks/commit/da1b55413ef376b11b38f4329006cad84058ffc9)), closes [#160](https://github.com/SkyeRangerDelta/Fishsticks/issues/160)
+* Updated deprecated ready event ([c33c098](https://github.com/SkyeRangerDelta/Fishsticks/commit/c33c098a03516de831e3d3081be52fecdea41b68))
+* Updated the channel definition again ([30761c3](https://github.com/SkyeRangerDelta/Fishsticks/commit/30761c37423b1620ed03fc276f0e5b631e890111))
+
 ## [1.21.1-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.21.0...v1.21.1-Experimental.1) (2026-01-12)
 
 
