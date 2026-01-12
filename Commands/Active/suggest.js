@@ -146,7 +146,15 @@ async function getAppInstallInfo( Fishsticks ) {
         return false;
     }
 
-    const pk = fs.readFileSync( process.env.GIT_KEY_PATH, 'utf8' );
+    let pk;
+    try {
+        pk = fs.readFileSync( process.env.GIT_KEY_PATH, 'utf8' );
+    }
+    catch ( keyPathReadError ) {
+        log( 'error', '[SUGGEST] [API] Failed to read GitHub private key: ' + keyPathReadError.message );
+        return false;
+    }
+
     const clientId = process.env.GIT_CLIENT_ID;
 
     if ( !clientId || clientId.length === 0 ) {
