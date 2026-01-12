@@ -56,6 +56,33 @@ jobs:
         run: npx semantic-release
 
 
+  merge-to-experimental:
+
+    runs-on: ubuntu-latest
+    needs:
+      - release
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+          token: ${{ secrets.SEMRELEASE_REPO }}
+
+      - name: Configure git
+        run: |
+          git config user.name "SkyeRangerDelta"
+          git config user.email "skyerangerdelta@pldyn.net"
+
+      - name: Merge master into Experimental
+        run: |
+          git fetch origin Experimental
+          git checkout Experimental
+          git merge origin/master -m "chore: Merge master changes into Experimental [skip ci]"
+          git push origin Experimental
+
   deploy:
 
     runs-on: ubuntu-latest
