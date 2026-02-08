@@ -105,7 +105,7 @@ async function run( fishsticks, int ) {
 
     if ( !fromRate || !toRate ) {
       return int.editReply( {
-        content: `Couldn't find exchange rate data for one of those currencies.`
+        content: `Couldn't find exchange rate data for one of those currencies. ${ fromRate } / ${ toRate }`
       } );
     }
 
