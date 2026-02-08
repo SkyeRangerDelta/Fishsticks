@@ -33,7 +33,7 @@ async function execute( fishsticks, interaction ) {
                 await cmd.autocomplete( fishsticks, interaction );
             }
             catch ( acErr ) {
-                log( 'warn', '[AUTOCOMPLETE] Error: ' + acErr );
+                log( 'warn', '[AUTOCOMPLETE] Error: ', acErr );
             }
         }
     }
