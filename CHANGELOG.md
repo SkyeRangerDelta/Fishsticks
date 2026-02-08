@@ -1,5 +1,18 @@
 || v${version} Changelog ||
 
+# [1.22.0-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.21.1...v1.22.0-Experimental.1) (2026-02-08)
+
+
+### Bug Fixes
+
+* Appended caught error instead of concatenating it ([0ad8294](https://github.com/SkyeRangerDelta/Fishsticks/commit/0ad82945093ccd5c2f6d9c147beba0ff3623fdde))
+* Correctly render ambient status types. ([8fc10c9](https://github.com/SkyeRangerDelta/Fishsticks/commit/8fc10c90c48cc78656757bb5518552956222e33f))
+
+
+### Features
+
+* Added comprehensive unit conversion system ([0946e30](https://github.com/SkyeRangerDelta/Fishsticks/commit/0946e30ca2c7b11bc37d801cc35934b6242ad82f)), closes [#170](https://github.com/SkyeRangerDelta/Fishsticks/issues/170)
+
 ## [1.21.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.21.0...v1.21.1) (2026-01-12)
 
 
