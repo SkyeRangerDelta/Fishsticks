@@ -6,7 +6,7 @@ const { fso_query } = require( '../../Modules/FSO/FSO_Utils' );
 const { convertMsFull } = require( '../../Modules/Utility/Utils_Time' );
 const { version } = require( '../../package.json' );
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
-const { MessageFlags } = require( "discord-api-types/v10" );
+const { MessageFlags, ActivityType } = require( "discord-api-types/v10" );
 
 //Globals
 const data = new SlashCommandBuilder()
@@ -91,7 +91,7 @@ async function run( fishsticks, int ) {
 
 	//Reset Status
 	await fishsticks.user.setPresence( {
-		activities: [{ name: 'for !help | ' + version, type: 'WATCHING' }],
+		activities: [{ name: 'for !help | ' + version, type: ActivityType.Watching }],
 		status: 'online'
 	} );
 

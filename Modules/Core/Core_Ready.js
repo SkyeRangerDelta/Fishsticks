@@ -285,8 +285,13 @@ async function startRotatingStatuses( Fishsticks, testMode = false ) {
         cType = ActivityType.Custom;
     }
 
+    const activityName = testMode ? `${ statuses[i].name } | TEST MODE` : statuses[i].name;
+    const activity = cType === ActivityType.Custom
+      ? { name: 'Fishsticks', state: activityName, type: cType }
+      : { name: activityName, type: cType };
+
     Fishsticks.user.setPresence( {
-      activities: [{ name: testMode ? `${ statuses[i].name } | TEST MODE` : statuses[i].name, type: cType }],
+      activities: [activity],
       status: testMode ? 'away' : 'online'
     } );
   }, 180000 );
