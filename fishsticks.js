@@ -17,7 +17,6 @@
 //=============================================
 //Libraries
 const { Client, GatewayIntentBits } = require( 'discord.js' );
-const schedule = require( 'node-schedule' );
 const fs = require( 'fs' );
 const { config } = require( 'dotenv' );
 
