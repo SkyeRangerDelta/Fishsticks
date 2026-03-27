@@ -24,3 +24,4 @@ Modules/Core/Core_keys.json
 # Keys
 /Modules/Keys/fishsticks-ccg.private-key.pem
 .claude/settings.local.json
+CLAUDE.md
