@@ -31,7 +31,7 @@ jobs:
           persist-credentials: false
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -45,9 +45,6 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
-
-      - name: Install sem-rel dependencies
-        run: npm i @semantic-release/changelog @semantic-release/git
 
       - name: Build Release
         env:
@@ -121,7 +118,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.SemRelease_Repo }}
+          password: ${{ secrets.SEMRELEASE_REPO }}
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
