@@ -23,18 +23,19 @@ This is the official Christian Crew Gaming (CCG) Discord bot. Fishsticks (or jus
 ## Code Integrity
 Designed and based primarily on JavaScript (Discord.js)
 
-###Requirements
-- Axios (0.24.0)
-- Canvas (2.7.8)
-- Colors (1.4.8)
-- Date-and-time (2.0.0)
-- Discord.js (13.1.0)
-- ESLint (7.13.0)
-- Luxon (2.2.0)
-- MongoDB (4.2.1)
-- NPM (7.24.0)
-- Oxford-Dictionary (1.6.0)
+### Requirements
+- @discordjs/builders(1.14.0)
+- @discordjs/rest (2.6.0)
+- @napi-rs/Canvas (0.1.97)
+- Axios (1.14.0)
+- Colors (1.4.0)
+- discord-api-types (0.38.39)
+- Discord.js (14.25.1)
+- jsonwebtoken (9.0.3)
+- Luxon (3.7.2)
+- MongoDB (7.1.1)
 - Roll (1.2.0)
+- SSH2 (1.17.0)
 
 ## Privacy?
 IDs and data are handled purely for data processing such as user permission checks, data validation, and statistics controls. Users can view how their information is handled via the Fishsticks Online (FSO) control panel and under the PlDyn Privacy statament online (https://pldyn.net).
