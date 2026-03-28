@@ -2,15 +2,13 @@
 //Compute complex dice calculations!
 
 //Imports
-const rollLib = require( 'roll' );
+const { validate, roll } = require( '../../Modules/Utility/Utils_Dice' );
 const { embedBuilder } = require( '../../Modules/Utility/Utils_EmbedBuilder' );
 
 const { SlashCommandBuilder } = require( '@discordjs/builders' );
 const { MessageFlags } = require( "discord-api-types/v10" );
 
 const { getErrorResponse } = require( '../../Modules/Core/Core_GPT' );
-
-const roll = new rollLib();
 
 //Functions
 const data = new SlashCommandBuilder()
@@ -38,11 +36,11 @@ async function run( fishsticks, int ) {
   }
 
   //Command Breakup
-  const dieRoll = int.options.getString( 'calculation' );
-  const diceRolled = dieRoll.split( '+' );
+  const dieRoll = int.options.getString( 'calculation' ).replace( /\s/g, '' ).replace( /,/g, '+' );
+  const diceRolled = dieRoll.match( /\d*d(?:\d+|%)(?:[bw]\d+)?/g ) || [];
 
   //Validate
-  const valid = roll.validate( dieRoll );
+  const valid = validate( dieRoll );
 
   if ( !valid ) {
     return int.reply( {
@@ -52,50 +50,47 @@ async function run( fishsticks, int ) {
   }
 
   //Handle Roll(s)
-  const rollResult = roll.roll( dieRoll );
-  let diceRolls = '', dieCalcs = '';
+  const rollResult = roll( dieRoll );
+  const isMultiGroup = diceRolled.length > 1;
 
-  for ( let t = rollResult.calculations.length - 1; t > -1; t-- ) {
-    dieCalcs = dieCalcs.concat( `${ rollResult.calculations[ t ] }\n` );
-  }
+  //Build breakdown - step-by-step with dice rolls and modifiers
+  const segments = dieRoll.split( /(?=[+\-])/ );
+  let diceIdx = 0;
+  let breakdown = '';
 
-  for ( const dieRollResult in rollResult.rolled ) {
-    let rollNumbers = '';
+  for ( const seg of segments ) {
+    const hasOp = /^[+\-]/.test( seg );
+    const op = hasOp ? seg[0] : '';
+    const cleanSeg = hasOp ? seg.substring( 1 ) : seg;
 
-    for ( const dieRollResult2 in rollResult.rolled[ dieRollResult ] ) {
-
-      rollNumbers = rollNumbers.concat( `${ rollResult.rolled[ dieRollResult ][ dieRollResult2 ] }, ` );
+    if ( cleanSeg.includes( 'd' ) ) {
+      const label = diceRolled[diceIdx] || cleanSeg;
+      const rolls = isMultiGroup ? rollResult.rolled[diceIdx] : rollResult.rolled;
+      breakdown += `🎲 ${op ? op + ' ' : ''}**${label}** → [${rolls.join( ', ' )}]\n`;
+      diceIdx++;
     }
-
-    diceRolls = diceRolls.concat( `**${ diceRolled[ dieRollResult ] }**: ${ rollNumbers }\n` );
-  }
-
-  if ( diceRolled.length === 1 ) {
-    diceRolls = `**${ diceRolled[ 0 ] }**: ${ rollResult.rolled }`;
+    else {
+      breakdown += `${op === '-' ? '▻ -' : '▻ +'}${cleanSeg}\n`;
+    }
   }
 
   //Build embed
   const rollPanel = {
-    title: '🎲 Rolling the dice 🎲',
-    description: `**Total**: ${ rollResult.result }`,
+    title: '🎲 Dice Roll',
+    description: `\`${dieRoll}\`\n### Total: ${rollResult.result}`,
     footer: {
-      text: `Random dice roller. Queried by ${ int.member.displayName }`
+      text: `Queried by ${ int.member.displayName }`
     },
     color: fishsticks.CONFIG.colors.primary,
     fields: [
       {
-        name: 'Dice Rolls',
-        value: diceRolls,
+        name: 'Breakdown',
+        value: breakdown,
         inline: true
       },
       {
-        name: 'Encounter Type',
+        name: 'Encounter',
         value: genEncounter(),
-        inline: true
-      },
-      {
-        name: 'Calculations',
-        value: dieCalcs,
         inline: true
       }
     ]

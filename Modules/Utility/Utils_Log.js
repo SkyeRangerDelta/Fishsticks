@@ -1,7 +1,7 @@
 // -- Log System --
 
 //Imports
-const colors = require( 'colors' );
+const colors = require( './Utils_Ansi' );
 
 //Exports
 module.exports = {

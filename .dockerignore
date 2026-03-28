@@ -1,3 +1,40 @@
+# Dependencies (installed in Docker build)
 node_modules
+
+# IDE
 .idea
-Modules/Core/SSH/fs_id_rsa
+
+# Git
+.git
+.gitignore
+
+# GitHub
+.github
+
+# Environment
+.env
+
+# Build output (TS compilation)
+Deploy/
+
+# TypeScript source (not used at runtime)
+Src/
+
+# Fonts (no registerFont calls)
+Fonts/
+
+# Documentation
+*.md
+LICENSE
+
+# Config files not needed at runtime
+.releaserc.json
+tsconfig.json
+eslint.config.mjs
+
+# Secrets
+Modules/Core/SSH/
+Modules/Keys/
+
+# Claude Code
+.claude/
