@@ -249,7 +249,12 @@ async function startUp( Fishsticks ) {
 }
 
 function getVersion() {
-  return execSync( 'git describe --tags --always', { encoding: 'utf8' } ).trim();
+  try {
+    return execSync( 'git describe --tags --always', { encoding: 'utf8' } ).trim();
+  }
+  catch {
+    return require( '../../package.json' ).version;
+  }
 }
 
 async function startRotatingStatuses( Fishsticks, testMode = false ) {
