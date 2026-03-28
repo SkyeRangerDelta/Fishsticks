@@ -28,6 +28,12 @@
         "changelogTitle": "|| v${version} Changelog ||"
       }
     ],
+    [
+      "@semantic-release/npm",
+      {
+        "npmPublish": false
+      }
+    ],
     ["@semantic-release/git", {
       "assets": [
         "package.json",
@@ -37,13 +43,7 @@
       ],
       "message": "Chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
     }],
-    "@semantic-release/github",
-    [
-      "@semantic-release/npm",
-      {
-        "npmPublish": false
-      }
-    ]
+    "@semantic-release/github"
   ],
   "tagFormat": "v${version}",
   "GIT_AUTHOR_NAME": "SkyeRangerDelta",
