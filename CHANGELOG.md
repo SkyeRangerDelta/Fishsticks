@@ -1,5 +1,13 @@
 || v${version} Changelog ||
 
+# [1.22.0-Experimental.2](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.22.0-Experimental.1...v1.22.0-Experimental.2) (2026-03-28)
+
+
+### Bug Fixes
+
+* Corrected adversarial backtracking on regex ([c8c5dc8](https://github.com/SkyeRangerDelta/Fishsticks/commit/c8c5dc84b92bb5248cba1556be110fd42e3741df))
+* Corrected URL parsing ([e064b88](https://github.com/SkyeRangerDelta/Fishsticks/commit/e064b88b5a52114acfc0dff41c27fdcf0065cd62))
+
 # [1.22.0-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.21.1...v1.22.0-Experimental.1) (2026-02-08)
 
 
