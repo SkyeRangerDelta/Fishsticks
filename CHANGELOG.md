@@ -1,5 +1,23 @@
 || v${version} Changelog ||
 
+# [1.22.0](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.21.1...v1.22.0) (2026-03-28)
+
+
+### Bug Fixes
+
+* Appended caught error instead of concatenating it ([0ad8294](https://github.com/SkyeRangerDelta/Fishsticks/commit/0ad82945093ccd5c2f6d9c147beba0ff3623fdde))
+* Corrected adversarial backtracking on regex ([c8c5dc8](https://github.com/SkyeRangerDelta/Fishsticks/commit/c8c5dc84b92bb5248cba1556be110fd42e3741df))
+* Corrected releaserc ordering ([50e477e](https://github.com/SkyeRangerDelta/Fishsticks/commit/50e477ec6f8dc83ec7608679afcb15573eec7238))
+* Corrected URL parsing ([e064b88](https://github.com/SkyeRangerDelta/Fishsticks/commit/e064b88b5a52114acfc0dff41c27fdcf0065cd62))
+* Corrected versioning ([79c8f22](https://github.com/SkyeRangerDelta/Fishsticks/commit/79c8f22de4862ebcefceedd123b65e590d724692))
+* Correctly render ambient status types. ([8fc10c9](https://github.com/SkyeRangerDelta/Fishsticks/commit/8fc10c90c48cc78656757bb5518552956222e33f))
+* Removed git check on non-git systems ([5800fa7](https://github.com/SkyeRangerDelta/Fishsticks/commit/5800fa78d907ca7fa4ee9dee0ccb82dcb503e424))
+
+
+### Features
+
+* Added comprehensive unit conversion system ([0946e30](https://github.com/SkyeRangerDelta/Fishsticks/commit/0946e30ca2c7b11bc37d801cc35934b6242ad82f)), closes [#170](https://github.com/SkyeRangerDelta/Fishsticks/issues/170)
+
 # [1.22.0-Experimental.4](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.22.0-Experimental.3...v1.22.0-Experimental.4) (2026-03-28)
 
 
