@@ -1,5 +1,12 @@
 || v${version} Changelog ||
 
+# [1.22.0-Experimental.3](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.22.0-Experimental.2...v1.22.0-Experimental.3) (2026-03-28)
+
+
+### Bug Fixes
+
+* Removed git check on non-git systems ([5800fa7](https://github.com/SkyeRangerDelta/Fishsticks/commit/5800fa78d907ca7fa4ee9dee0ccb82dcb503e424))
+
 # [1.22.0-Experimental.2](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.22.0-Experimental.1...v1.22.0-Experimental.2) (2026-03-28)
 
 
