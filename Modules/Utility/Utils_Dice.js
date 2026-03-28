@@ -2,16 +2,31 @@
 // Native replacement for the 'roll' npm package.
 // Supports standard dice notation: NdN, d%, +, -, *, /, best-of (b), worst-of (w).
 
-//Validation regex (matches the original roll package)
-const DICE_REGEX = /^(\d*)d(\d+|\%)(([\+\-\/\*bw])(\d+))?(([\+\-\/\*])(\d+|(\d*)d(\d+|\%)(([\+\-\/\*bw])(\d+))?))*$/;
 const SEGMENT_REGEX = /^(\d*)d(\d+|%)(?:([bw*\/])(\d+))?$/;
+const CONSTANT_REGEX = /^\d+$/;
 
 //Exports
 module.exports = { validate, roll };
 
 //Functions
 function validate( notation ) {
-	return DICE_REGEX.test( notation );
+	if ( !notation || typeof notation !== 'string' ) return false;
+
+	const segments = notation.split( /[\+\-]/ );
+	if ( segments.length === 0 || segments.some( s => s === '' ) ) return false;
+
+	let hasDice = false;
+	for ( const seg of segments ) {
+		if ( seg.includes( 'd' ) ) {
+			if ( !SEGMENT_REGEX.test( seg ) ) return false;
+			hasDice = true;
+		}
+		else if ( !CONSTANT_REGEX.test( seg ) ) {
+			return false;
+		}
+	}
+
+	return hasDice;
 }
 
 function roll( notation ) {
