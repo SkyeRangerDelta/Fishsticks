@@ -249,7 +249,12 @@ async function startUp( Fishsticks ) {
 }
 
 function getVersion() {
-  return execSync( 'git describe --tags --always', { encoding: 'utf8' } ).trim();
+  try {
+    return execSync( 'git describe --tags --always', { encoding: 'utf8' } ).trim();
+  }
+  catch {
+    return require( '../../package.json' ).version;
+  }
 }
 
 async function startRotatingStatuses( Fishsticks, testMode = false ) {
@@ -265,28 +270,30 @@ async function startRotatingStatuses( Fishsticks, testMode = false ) {
   log( 'info', '[FISHSTICKS] Starting rotating status messages.' );
 
   setInterval( () => {
-    let cType;
+    let prefix;
     let i = Math.floor( Math.random() * statuses.length );
 
     switch ( statuses[ i ].type ) {
       case 'playing':
-        cType = ActivityType.Playing;
+        prefix = 'Playing ';
         break;
       case 'listening':
-        cType = ActivityType.Listening;
+        prefix = 'Listening to ';
         break;
       case 'watching':
-        cType = ActivityType.Watching;
+        prefix = 'Watching ';
         break;
       case 'competing':
-        cType = ActivityType.Competing;
+        prefix = 'Competing in ';
         break;
       default:
-        cType = ActivityType.Custom;
+        prefix = '';
     }
 
+    const statusText = `${ prefix }${ statuses[i].name }${ testMode ? ' | TEST MODE' : '' }`;
+
     Fishsticks.user.setPresence( {
-      activities: [{ name: testMode ? `${ statuses[i].name } | TEST MODE` : statuses[i].name, type: cType }],
+      activities: [{ name: 'Fishsticks', state: statusText, type: ActivityType.Custom }],
       status: testMode ? 'away' : 'online'
     } );
   }, 180000 );

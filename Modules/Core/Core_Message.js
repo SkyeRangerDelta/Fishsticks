@@ -154,18 +154,11 @@ async function processMessage( Fishsticks, msg ) {
         }
         finally {
             // Sort The Nod
-            const twitchURL = 'https://twitch.tv/';
-            if ( findURL( twitchURL, msg.content ) ) {
+            if ( containsTwitchLink( msg.content ) ) {
                 if ( !hasPerms( cmd.msg.member, ['The Nod'] ) && !hasPerms( cmd.msg.member, ['Moderator', 'Council Member', 'Council Advisor'] ) ) {
                     cmd.reply( 'You need the nod to post Twitch links!' );
                 }
             }
-
-            // if (cmd.msg.content.includes('https://twitch.tv/')) {
-            //     if (!hasPerms(cmd.msg.member, ['The Nod']) && !hasPerms(cmd.msg.member, ['Moderator', 'Council Member', 'Council Advisor'])) {
-            //         cmd.reply('You need the nod to post Twitch links!');
-            //     }
-            // }
 
             //Shiny?
             const number = Math.random() * ( 8192 - 1 ) + 1;
@@ -261,14 +254,16 @@ function newTick() {
     return Math.round( Math.random() * ( 1000 - 25 ) + 25 );
 }
 
-// Find a matching URL
-function findURL( url, str ) {
-    const escapedUrl = sanitize( url );
-    const pattern = new RegExp( escapedUrl, 'i' );
-
-    return pattern.test( str );
-}
-
-function sanitize( str ) {
-    return str.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' );
+// Check if a message contains a Twitch link by parsing URLs and checking the hostname
+function containsTwitchLink( str ) {
+    const urls = str.match( /https?:\/\/[^\s]+/gi ) || [];
+    return urls.some( u => {
+        try {
+            const parsed = new URL( u );
+            return parsed.hostname === 'twitch.tv' || parsed.hostname === 'www.twitch.tv';
+        }
+        catch {
+            return false;
+        }
+    } );
 }

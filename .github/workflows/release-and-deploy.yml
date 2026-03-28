@@ -26,12 +26,12 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -45,9 +45,6 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
-
-      - name: Install sem-rel dependencies
-        run: npm i @semantic-release/changelog @semantic-release/git
 
       - name: Build Release
         env:
@@ -65,7 +62,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: master
           fetch-depth: 0
@@ -97,13 +94,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
         if: github.event_name != 'pull_request'
-        uses: sigstore/cosign-installer@v3.8.1
+        uses: sigstore/cosign-installer@v4.1.1
         with:
           cosign-release: 'v2.2.2'
 
@@ -117,17 +116,17 @@ jobs:
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3 # v3.0.0
+        uses: docker/login-action@v4 # v3.0.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.SemRelease_Repo }}
+          password: ${{ secrets.SEMRELEASE_REPO }}
 
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
         id: meta
-        uses: docker/metadata-action@v5 # v5.0.0
+        uses: docker/metadata-action@v6 # v5.0.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: ${{ github.ref == 'refs/heads/Experimental' && 'latest-exp' || 'latest' }}

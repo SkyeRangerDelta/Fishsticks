@@ -26,6 +26,17 @@ async function execute( fishsticks, interaction ) {
     else if ( interaction.isStringSelectMenu() ) {
         await handleSelectInteraction( fishsticks, interaction );
     }
+    else if ( interaction.isAutocomplete() ) {
+        const cmd = fishsticks.CMDS.get( interaction.commandName );
+        if ( cmd && cmd.autocomplete ) {
+            try {
+                await cmd.autocomplete( fishsticks, interaction );
+            }
+            catch ( acErr ) {
+                log( 'warn', '[AUTOCOMPLETE] Error: ', acErr );
+            }
+        }
+    }
     else if ( interaction.isCommand() ) {
         const cmd = fishsticks.CMDS.get( interaction.commandName );
         if ( !cmd ) {

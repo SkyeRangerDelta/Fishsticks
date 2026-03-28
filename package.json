@@ -1,6 +1,6 @@
 {
   "name": "fishsticks",
-  "version": "3.2.0",
+  "version": "1.22.0-Experimental.4",
   "description": "The official CCG Discord bot",
   "main": "fishsticks.js",
   "scripts": {
@@ -25,33 +25,28 @@
   },
   "homepage": "https://github.com/SkyeRangerDelta/Fishsticks#readme",
   "dependencies": {
-    "@discordjs/builders": "^1.13.0",
+    "@discordjs/builders": "^1.14.0",
     "@discordjs/rest": "^2.6.0",
-    "@napi-rs/canvas": "^0.1.83",
-    "axios": "^1.13.2",
-    "colors": "^1.4.0",
-    "discord-api-types": "^0.38.34",
+    "@napi-rs/canvas": "^0.1.97",
+    "axios": "^1.14.0",
+    "discord-api-types": "^0.38.39",
     "discord.js": "^14.25.1",
-    "dotenv": "^17.2.3",
-    "extract-urls": "^1.3.2",
-    "jsonwebtoken": "^9.0.2",
+    "dotenv": "^17.3.1",
+    "jsonwebtoken": "^9.0.3",
     "luxon": "^3.7.2",
-    "mongodb": "^7.0.0",
-    "node-schedule": "^2.0.0",
-    "openai": "^6.9.1",
-    "roll": "^1.2.0",
+    "mongodb": "^7.1.1",
+    "openai": "^6.33.0",
     "ssh2": "^1.17.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "eslint": "^9.39.1",
-    "semantic-release": "^25.0.2",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.48.0"
+    "eslint": "^10.1.0",
+    "globals": "^17.4.0",
+    "semantic-release": "^25.0.3",
+    "typescript": "^6.0.2"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   }
 }

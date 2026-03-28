@@ -1,7 +1,7 @@
 // === Sys Logger ===
 
 //Imports
-import colors from "colors/safe";
+const colors = require( '../../../Modules/Utility/Utils_Ansi' );
 
 //Exports
 export default {
