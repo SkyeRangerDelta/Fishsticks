@@ -1,5 +1,13 @@
 || v${version} Changelog ||
 
+# [1.22.0-Experimental.4](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.22.0-Experimental.3...v1.22.0-Experimental.4) (2026-03-28)
+
+
+### Bug Fixes
+
+* Corrected releaserc ordering ([50e477e](https://github.com/SkyeRangerDelta/Fishsticks/commit/50e477ec6f8dc83ec7608679afcb15573eec7238))
+* Corrected versioning ([79c8f22](https://github.com/SkyeRangerDelta/Fishsticks/commit/79c8f22de4862ebcefceedd123b65e590d724692))
+
 # [1.22.0-Experimental.3](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.22.0-Experimental.2...v1.22.0-Experimental.3) (2026-03-28)
 
 
