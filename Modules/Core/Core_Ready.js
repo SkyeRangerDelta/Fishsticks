@@ -254,9 +254,8 @@ async function startUp( Fishsticks ) {
 function registerCanvasFonts() {
   const fontsDir = path.join( __dirname, '../..', 'Fonts' );
   const fontFiles = [
-    { file: 'OpenSans-Regular.ttf', alias: 'Open Sans' },
-    { file: 'OpenSans-Bold.ttf', alias: 'Open Sans Bold' },
-    { file: 'Roboto-Bold.ttf', alias: 'Roboto Bold' }
+    { file: 'Cinzel-VF.ttf', alias: 'Cinzel' },
+    { file: 'PlayfairDisplay-VF.ttf', alias: 'Playfair Display' }
   ];
 
   let registered = 0;

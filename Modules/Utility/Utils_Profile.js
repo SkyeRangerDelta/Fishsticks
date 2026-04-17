@@ -45,17 +45,17 @@ async function buildProfileBanner( fishsticks, int, profileEmbed ) {
 
     //Apply text
     //Upper title
-    ctx.font = '30px "Open Sans Bold"';
+    ctx.font = 'bold 30px "Cinzel"';
     ctx.fillStyle = '#ffffff';
     ctx.fillText( `${int.member.displayName}`, canvas.width / 2.5, canvas.height / 3.5 );
 
     //Level Detail
-    ctx.font = '70px "Roboto Bold"';
+    ctx.font = '900 70px "Playfair Display"';
     ctx.fillStyle = '#add8e6';
     ctx.fillText( `${lvl}`, canvas.width / 1.9, canvas.height / 1.8 );
 
     //Quick Info
-    ctx.font = '25px "Open Sans"';
+    ctx.font = '25px "Cinzel"';
     ctx.fillStyle = '#ffffff';
     ctx.fillText( `XP: ${memberProf.xp.RP}`, canvas.width / 2.5, canvas.height / 1.1 );
     ctx.fillText( `Goldfish: ${memberProf.xp.goldfish}`, canvas.width / 1.7, canvas.height / 1.1 );

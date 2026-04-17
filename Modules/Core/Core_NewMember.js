@@ -15,7 +15,7 @@ const applyText = ( canvas, text ) => {
     let fontSize = 70;
 
     do {
-        ctx.font = `${fontSize -= 10}px "Open Sans Bold"`;
+        ctx.font = `bold ${fontSize -= 10}px "Cinzel"`;
     } while ( ctx.measureText( text ).width > canvas.width - 300 );
 
     log( 'info', '[NEW-MEM] Text header applications done.' );
@@ -43,12 +43,12 @@ async function handleNewMember( fishsticks, newMember ) {
     ctx.fillText( `${newMember.displayName}`, canvas.width / 2.5, canvas.height / 1.8 );
 
     //--> Welcome
-    ctx.font = '30px "Open Sans Bold"';
+    ctx.font = 'bold 30px "Cinzel"';
     ctx.fillStyle = '#ffffff';
     ctx.fillText( 'Please welcome, ', canvas.width / 2.5, canvas.height / 3.5 );
 
     //--> Subheading
-    ctx.font = '26px "Open Sans"';
+    ctx.font = '26px "Cinzel"';
     ctx.fillStyle = '#ffffff';
     ctx.fillText( 'Stick around for some fish!', canvas.width / 2.5, canvas.height / 1.1 );
     log( 'info', '[NEW-MEM] Text applications done.' );

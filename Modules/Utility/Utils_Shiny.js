@@ -18,7 +18,7 @@ function applyText( canvas, text ) {
 	let fontSize = 60;
 
 	do {
-		ctx.font = `${fontSize -= 4}px "Open Sans Bold"`;
+		ctx.font = `900 ${fontSize -= 4}px "Playfair Display"`;
 	} while ( ctx.measureText( text ).width > canvas.width - 300 && fontSize > 12 );
 
 	return ctx.font;
