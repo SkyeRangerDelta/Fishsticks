@@ -1,5 +1,13 @@
 || v${version} Changelog ||
 
+## [1.22.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.22.0...v1.22.1) (2026-04-17)
+
+
+### Bug Fixes
+
+* Corrected fonts on banners ([06c6dfb](https://github.com/SkyeRangerDelta/Fishsticks/commit/06c6dfb3da372a351c2fc7c6ac74bf2bec565ab1)), closes [#195](https://github.com/SkyeRangerDelta/Fishsticks/issues/195)
+* Profile banner messages will clean themselves up now ([fca809d](https://github.com/SkyeRangerDelta/Fishsticks/commit/fca809d6ee870da69085ff95d0658b437afeadd8))
+
 ## [1.22.1-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.22.0...v1.22.1-Experimental.1) (2026-04-17)
 
 
