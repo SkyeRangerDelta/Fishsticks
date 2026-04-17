@@ -13,6 +13,7 @@ const { execSync } = require( 'child_process' );
 const path = require( 'path' );
 const { REST } = require( '@discordjs/rest' );
 const { Routes, ActivityType } = require( 'discord-api-types/v9' );
+const { GlobalFonts } = require( '@napi-rs/canvas' );
 const axios = require( "axios" );
 const { sign } = require( "jsonwebtoken" );
 
@@ -26,6 +27,8 @@ async function startUp( Fishsticks ) {
 
   const token = process.env.TOKEN;
   const version = getVersion();
+
+  registerCanvasFonts();
 
   if ( !token ) {
     log( 'err', '[FISHSTICKS] [FATAL] Fishsticks could not be started! No token was found!' );
@@ -246,6 +249,27 @@ async function startUp( Fishsticks ) {
   log( 'proc', '[CLIENT] Fishsticks is ready to run.\n-------------------------------------------------------' );
 
   startRotatingStatuses( Fishsticks );
+}
+
+function registerCanvasFonts() {
+  const fontsDir = path.join( __dirname, '../..', 'Fonts' );
+  const fontFiles = [
+    { file: 'Cinzel-VF.ttf', alias: 'Cinzel' },
+    { file: 'PlayfairDisplay-VF.ttf', alias: 'Playfair Display' }
+  ];
+
+  let registered = 0;
+  for ( const { file, alias } of fontFiles ) {
+    const fontPath = path.join( fontsDir, file );
+    if ( !fs.existsSync( fontPath ) ) {
+      log( 'warn', `[FONTS] Missing font file: ${file}` );
+      continue;
+    }
+    GlobalFonts.registerFromPath( fontPath, alias );
+    registered++;
+  }
+
+  log( 'proc', `[FONTS] Registered ${registered} canvas font(s).` );
 }
 
 function getVersion() {

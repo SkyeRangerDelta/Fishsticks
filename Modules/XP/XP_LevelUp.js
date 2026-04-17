@@ -44,17 +44,17 @@ async function createLevelBanner( fishsticks, cmd, newLvl ) {
 
     //Apply text
     //Upper title
-    ctx.font = '30px Trebuchet MS';
+    ctx.font = 'bold 30px "Cinzel"';
     ctx.fillStyle = '#ffffff';
     ctx.fillText( `${cmd.msg.member.displayName}`, canvas.width / 2.5, canvas.height / 3.5 );
 
     //Level shift
-    ctx.font = '70px Verdana';
+    ctx.font = '900 70px "Playfair Display"';
     ctx.fillStyle = '#add8e6';
     ctx.fillText( `${newLvl - 1} -> ${newLvl}`, canvas.width / 1.9, canvas.height / 1.8 );
 
     //Lower title
-    ctx.font = '26px Trebuchet MS';
+    ctx.font = '26px "Cinzel"';
     ctx.fillStyle = '#ffffff';
     ctx.fillText( 'Congrats on your work!', canvas.width / 2.5, canvas.height / 1.1 );
 

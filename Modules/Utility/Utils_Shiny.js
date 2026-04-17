@@ -2,7 +2,7 @@
 // Renders a graphic of a sent message in a glamorous way
 
 //Imports
-const Discord = require( 'discord.js' );
+const { AttachmentBuilder } = require( 'discord.js' );
 
 const { createCanvas, loadImage } = require( '@napi-rs/canvas' );
 const { log } = require( './Utils_Log' );
@@ -13,14 +13,13 @@ module.exports = {
 };
 
 //Functions
-//Whatever this is supposed to be used for
 function applyText( canvas, text ) {
 	const ctx = canvas.getContext( '2d' );
-	let fontSize = 16;
+	let fontSize = 60;
 
 	do {
-		ctx.font = `${fontSize -= 10}px Trebuchet MS`;
-	} while ( ctx.measureText( text ).width > canvas.width - 300 );
+		ctx.font = `900 ${fontSize -= 4}px "Playfair Display"`;
+	} while ( ctx.measureText( text ).width > canvas.width - 300 && fontSize > 12 );
 
 	return ctx.font;
 }
@@ -45,6 +44,7 @@ async function handleShiny( msg ) {
 	ctx.fillText( `${msg.content}`, canvas.width / 2.5, canvas.height / 1.8 );
 
 	//Save and fire off
-	const shinyAttachment = new Discord.MessageAttachment( canvas.toBuffer(), 'welcome-banner.png' );
+	const shinyAttachment = new AttachmentBuilder( await canvas.encode( 'png' ),
+		{ name: 'shiny-banner.png' } );
 	await msg.channel.send( { content: 'Oooooh, pretty...', files: [shinyAttachment] } );
 }

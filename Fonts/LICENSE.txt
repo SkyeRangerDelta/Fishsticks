@@ -1,0 +1,22 @@
+Bundled Font Licenses
+=====================
+
+Cinzel (Cinzel-VF.ttf)
+----------------------
+Copyright 2012 The Cinzel Project Authors
+  (https://github.com/googlefonts/cinzel)
+
+Licensed under the SIL Open Font License, Version 1.1.
+Full license text: https://openfontlicense.org
+
+Playfair Display (PlayfairDisplay-VF.ttf)
+-----------------------------------------
+Copyright 2017 The Playfair Project Authors
+  (https://github.com/clauseggers/Playfair-Display)
+
+Licensed under the SIL Open Font License, Version 1.1.
+Full license text: https://openfontlicense.org
+
+The OFL permits redistribution with the software, including within
+container images and Git repositories, provided copyright and license
+notices are preserved. This file satisfies that requirement.

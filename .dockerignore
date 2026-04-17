@@ -20,9 +20,6 @@ Deploy/
 # TypeScript source (not used at runtime)
 Src/
 
-# Fonts (no registerFont calls)
-Fonts/
-
 # Documentation
 *.md
 LICENSE
