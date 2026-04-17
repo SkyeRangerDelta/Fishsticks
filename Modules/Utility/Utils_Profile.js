@@ -45,17 +45,17 @@ async function buildProfileBanner( fishsticks, int, profileEmbed ) {
 
     //Apply text
     //Upper title
-    ctx.font = '30px Trebuchet MS';
+    ctx.font = '30px "Open Sans Bold"';
     ctx.fillStyle = '#ffffff';
     ctx.fillText( `${int.member.displayName}`, canvas.width / 2.5, canvas.height / 3.5 );
 
     //Level Detail
-    ctx.font = '70px Verdana';
+    ctx.font = '70px "Roboto Bold"';
     ctx.fillStyle = '#add8e6';
     ctx.fillText( `${lvl}`, canvas.width / 1.9, canvas.height / 1.8 );
 
     //Quick Info
-    ctx.font = '25px Trebuchet MS';
+    ctx.font = '25px "Open Sans"';
     ctx.fillStyle = '#ffffff';
     ctx.fillText( `XP: ${memberProf.xp.RP}`, canvas.width / 2.5, canvas.height / 1.1 );
     ctx.fillText( `Goldfish: ${memberProf.xp.goldfish}`, canvas.width / 1.7, canvas.height / 1.1 );
@@ -91,7 +91,7 @@ async function buildProfileBanner( fishsticks, int, profileEmbed ) {
     log( 'info', '[NEW-MEM] Banner saved, pending dispatch' );
     const bannerAttachment = new AttachmentBuilder( await canvas.encode( 'png' ), { name: 'welcome-banner.png' } );
     if ( !profileEmbed ) {
-        int.channel.send( { files: [bannerAttachment], flags: MessageFlags.Ephemeral } )
+        int.channel.send( { files: [bannerAttachment] } )
             .then( sent => { setTimeout( () => { sent.delete(); }, 60000 ); } );
     }
     else {
@@ -106,7 +106,7 @@ function getLevelBadgePath( newLvl ) {
         return `./Images/Utility/Ranks/1-18/${newLvl}.png`;
     }
     else if ( newLvl <= 36 ) {
-        return `/Images/Utility/Ranks/19-36/${newLvl}.png`;
+        return `./Images/Utility/Ranks/19-36/${newLvl}.png`;
     }
     else if ( newLvl <= 54 ) {
         return `./Images/Utility/Ranks/37-54/${newLvl}.png`;

@@ -1,0 +1,21 @@
+Bundled Font Licenses
+=====================
+
+Open Sans (OpenSans-Regular.ttf, OpenSans-Bold.ttf)
+---------------------------------------------------
+Copyright 2020 The Open Sans Project Authors
+  (https://github.com/googlefonts/opensans)
+
+Licensed under the SIL Open Font License, Version 1.1.
+Full license text: https://openfontlicense.org
+
+Roboto (Roboto-Bold.ttf)
+------------------------
+Copyright 2011 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0.
+Full license text: https://www.apache.org/licenses/LICENSE-2.0
+
+Both licenses permit redistribution with the software, including within
+container images and Git repositories, provided copyright and license
+notices are preserved. This file satisfies that requirement.
