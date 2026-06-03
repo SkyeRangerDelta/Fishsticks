@@ -35,13 +35,13 @@
     "jsonwebtoken": "^9.0.3",
     "luxon": "^3.7.2",
     "mongodb": "^7.2.0",
-    "openai": "^6.39.0",
+    "openai": "^6.41.0",
     "ssh2": "^1.17.0"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "eslint": "^10.4.0",
+    "eslint": "^10.4.1",
     "globals": "^17.6.0",
     "semantic-release": "^25.0.3",
     "typescript": "^6.0.3"
