@@ -44,7 +44,7 @@
     "eslint": "^10.6.0",
     "globals": "^17.7.0",
     "semantic-release": "^25.0.5",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "engines": {
     "node": ">=24"
