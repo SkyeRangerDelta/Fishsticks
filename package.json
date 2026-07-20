@@ -26,16 +26,16 @@
   "homepage": "https://github.com/SkyeRangerDelta/Fishsticks#readme",
   "dependencies": {
     "@discordjs/builders": "^1.14.1",
-    "@discordjs/rest": "^2.6.0",
+    "@discordjs/rest": "^2.6.3",
     "@napi-rs/canvas": "^1.0.2",
     "axios": "^1.18.1",
     "discord-api-types": "^0.38.49",
-    "discord.js": "^14.26.5",
+    "discord.js": "^14.27.0",
     "dotenv": "^17.4.2",
     "jsonwebtoken": "^9.0.3",
     "luxon": "^3.7.2",
     "mongodb": "^7.5.0",
-    "openai": "^6.46.0",
+    "openai": "^6.48.0",
     "ssh2": "^1.17.0"
   },
   "devDependencies": {
@@ -43,7 +43,7 @@
     "@semantic-release/git": "^10.0.1",
     "eslint": "^10.7.0",
     "globals": "^17.7.0",
-    "semantic-release": "^25.0.7",
+    "semantic-release": "^25.0.8",
     "typescript": "^7.0.2"
   },
   "engines": {
