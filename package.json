@@ -35,7 +35,7 @@
     "jsonwebtoken": "^9.0.3",
     "luxon": "^3.7.2",
     "mongodb": "^7.5.0",
-    "openai": "^6.49.0",
+    "openai": "^7.3.0",
     "ssh2": "^1.17.0"
   },
   "devDependencies": {
