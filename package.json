@@ -29,21 +29,21 @@
     "@discordjs/rest": "^2.6.3",
     "@napi-rs/canvas": "^1.0.3",
     "axios": "^1.19.0",
-    "discord-api-types": "^0.38.52",
+    "discord-api-types": "^0.38.53",
     "discord.js": "^14.27.0",
     "dotenv": "^17.4.2",
     "jsonwebtoken": "^9.0.3",
     "luxon": "^3.7.2",
     "mongodb": "^7.5.0",
-    "openai": "^7.3.0",
+    "openai": "^7.4.0",
     "ssh2": "^1.17.0"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/git": "^11.0.1",
     "eslint": "^10.8.0",
-    "globals": "^17.8.0",
-    "semantic-release": "^25.0.8",
+    "globals": "^17.9.0",
+    "semantic-release": "^25.0.9",
     "typescript": "^7.0.2"
   },
   "engines": {
