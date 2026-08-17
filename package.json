@@ -27,7 +27,7 @@
   "dependencies": {
     "@discordjs/builders": "^1.14.1",
     "@discordjs/rest": "^2.6.3",
-    "@napi-rs/canvas": "^1.0.3",
+    "@napi-rs/canvas": "^1.0.6",
     "axios": "^1.19.0",
     "discord-api-types": "^0.38.53",
     "discord.js": "^14.27.0",
@@ -41,8 +41,8 @@
   "devDependencies": {
     "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/git": "^11.0.1",
-    "eslint": "^10.8.0",
-    "globals": "^17.9.0",
+    "eslint": "^10.8.1",
+    "globals": "^17.11.0",
     "semantic-release": "^25.0.9",
     "typescript": "^7.0.2"
   },
