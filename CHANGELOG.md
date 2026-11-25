@@ -1,5 +1,11 @@
 || v${version} Changelog ||
 
+## [1.22.2-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.22.1...v1.22.2-Experimental.1) (2026-11-25)
+
+### Bug Fixes
+
+* Corrected FSO failure logic ([6e52270](https://github.com/SkyeRangerDelta/Fishsticks/commit/6e52270992b16a0629faa391e25618ec3468d5c7))
+
 ## [1.22.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.22.0...v1.22.1) (2026-04-17)
 
 
