@@ -20,20 +20,16 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [24.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      # Node version is sourced from package.json "engines.node"
+      - name: Use Node.js (package.json engines)
         uses: actions/setup-node@v7
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: package.json
           cache: 'npm'
 
       - name: Cache
@@ -98,6 +94,17 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
 
+      # Resolve the Node major version from package.json "engines.node" (e.g. "^26" -> "26")
+      - name: Resolve Node version
+        id: node
+        run: |
+          NODE_MAJOR=$(jq -r '.engines.node' package.json | grep -oE '[0-9]+' | head -n1)
+          if [ -z "$NODE_MAJOR" ]; then
+            echo "::error::Unable to resolve a Node major version from package.json engines.node"
+            exit 1
+          fi
+          echo "major=$NODE_MAJOR" >> "$GITHUB_OUTPUT"
+
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
@@ -141,6 +148,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NODE_VERSION=${{ steps.node.outputs.major }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
