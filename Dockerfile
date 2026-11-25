@@ -1,7 +1,11 @@
 #===========================
 # Fishsticks Docker Image Config
 #===========================
-FROM node:24-alpine AS build
+# NODE_VERSION is supplied by CI from package.json "engines.node".
+# The default here only applies to local builds (npm run docker-build).
+ARG NODE_VERSION=26
+
+FROM node:${NODE_VERSION}-alpine AS build
 
 WORKDIR /Fishsticks
 COPY package*.json ./
@@ -11,7 +15,7 @@ RUN npm ci --omit=dev
 #===========================
 # Runtime
 #===========================
-FROM node:24-alpine
+FROM node:${NODE_VERSION}-alpine
 LABEL   authors="SkyeRangerDelta" \
         version="latest" \
         description="CCG Official Discord Bot" \
