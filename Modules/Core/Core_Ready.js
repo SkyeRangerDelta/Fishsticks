@@ -71,7 +71,6 @@ async function startUp( Fishsticks ) {
   catch ( error ) {
     if ( error.name === 'MongoServerSelectionError' ) {
       log( 'err', '[FSO] [FATAL] FSO could not be reached!.\n' + error );
-      await Fishsticks.CONSOLE.send( `${Fishsticks.RANGER}, FSO connection failed, check the server and subroutine config.` );
       return terminate( Fishsticks );
     }
     else {
