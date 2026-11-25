@@ -1,5 +1,34 @@
 || v${version} Changelog ||
 
+## [1.22.2](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.22.1...v1.22.2) (2026-11-25)
+
+### Bug Fixes
+
+* Corrected FSO failure logic ([6e52270](https://github.com/SkyeRangerDelta/Fishsticks/commit/6e52270992b16a0629faa391e25618ec3468d5c7))
+
+### Chores
+
+* Purged old TS ([70c486f](https://github.com/SkyeRangerDelta/Fishsticks/commit/70c486f75492c70b5be2d84899d43b828bb14302))
+
+### Continuous Integration
+
+* bump @humanfs/node from 0.16.7 to 0.16.8 ([4283ad4](https://github.com/SkyeRangerDelta/Fishsticks/commit/4283ad4f8179dcae33668c11bda6922e0d276cd3))
+* bump actions/cache from 4 to 5 ([d2dcfdd](https://github.com/SkyeRangerDelta/Fishsticks/commit/d2dcfddf117765579baa1d8e05e0d9411bf936f1))
+* bump actions/cache from 5 to 6 ([37832c6](https://github.com/SkyeRangerDelta/Fishsticks/commit/37832c68260f0ee7a14528e1a388b975f73e83d1))
+* bump actions/checkout from 6 to 7 ([d40ee9a](https://github.com/SkyeRangerDelta/Fishsticks/commit/d40ee9abfcdc2415bff1c192e4549d811814020f))
+* bump actions/setup-node from 6 to 7 ([b0904d3](https://github.com/SkyeRangerDelta/Fishsticks/commit/b0904d3d25be58150fe04c154206661cc127cb6d))
+* bump brace-expansion from 5.0.7 to 5.0.12 ([de0a2b7](https://github.com/SkyeRangerDelta/Fishsticks/commit/de0a2b7cb0d10b1fd06c2834139f61223b302514))
+* bump docker/build-push-action from 6 to 7 ([e1fe7d0](https://github.com/SkyeRangerDelta/Fishsticks/commit/e1fe7d0bc90801b85c36f0616d95d54b6f608ac5))
+* bump docker/setup-buildx-action from 3 to 4 ([4e69400](https://github.com/SkyeRangerDelta/Fishsticks/commit/4e694003fedf6f938316f043b1fb035a4da362e8))
+* bump follow-redirects from 1.16.1 to 1.16.2 ([9f378ef](https://github.com/SkyeRangerDelta/Fishsticks/commit/9f378ef1a6d4f43df6841c03d7795f044e3e372f))
+* bump github/codeql-action from 4 to 4.37.3 ([754c4ac](https://github.com/SkyeRangerDelta/Fishsticks/commit/754c4ac8bcfd1cec349107489330d3db0cc289a0))
+* bump github/codeql-action from 4.37.3 to 4.37.9 ([adc667e](https://github.com/SkyeRangerDelta/Fishsticks/commit/adc667e756501eb917713b0086aeb15a00335809))
+* bump github/codeql-action from 4.37.9 to 4.38.2 ([fcacf5a](https://github.com/SkyeRangerDelta/Fishsticks/commit/fcacf5ac64e46d16d450e95846fba83eb857a08f))
+* bump github/codeql-action from 4.38.2 to 4.39.1 ([8a8a897](https://github.com/SkyeRangerDelta/Fishsticks/commit/8a8a8973dc09f71b6b6e1f684a5e0eb61464a272))
+* bump sigstore/cosign-installer from 4.1.1 to 4.1.2 ([85773df](https://github.com/SkyeRangerDelta/Fishsticks/commit/85773dfa8ecfba12447e61e3de157a28c8e831e3))
+* Gate Docker deploys on published releases and expand release notes ([f45080a](https://github.com/SkyeRangerDelta/Fishsticks/commit/f45080aea4697179e76c064ceb1ad47d1f8c25c3))
+* Retooled workflows to use package engine version ([6bf6523](https://github.com/SkyeRangerDelta/Fishsticks/commit/6bf65239d07afc9ee698957b3f30fa51572c7a37))
+
 ## [1.22.2-Experimental.1](https://github.com/SkyeRangerDelta/Fishsticks/compare/v1.22.1...v1.22.2-Experimental.1) (2026-11-25)
 
 ### Bug Fixes
